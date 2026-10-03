@@ -7,7 +7,7 @@ Until the first PyPI release, install it from GitHub. Afterwards, `paper-preflig
 will do.
 
 ```bash
-uvx --from "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight" paper-preflight mcp
+uvx --from "paper-preflight[mcp]" paper-preflight mcp
 ```
 
 ## Claude Code plugin
@@ -53,7 +53,7 @@ Replace the `uvx` arguments with `paper-preflight mcp` if it is installed.
 **Claude Code**
 
 ```bash
-claude mcp add paper-preflight -- uvx --from "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight" paper-preflight mcp
+claude mcp add paper-preflight -- uvx --from "paper-preflight[mcp]" paper-preflight mcp
 ```
 
 **Codex** (`~/.codex/config.toml`)
@@ -61,7 +61,7 @@ claude mcp add paper-preflight -- uvx --from "paper-preflight[mcp] @ git+https:/
 ```toml
 [mcp_servers.paper-preflight]
 command = "uvx"
-args = ["--from", "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight", "paper-preflight", "mcp"]
+args = ["--from", "paper-preflight[mcp]", "paper-preflight", "mcp"]
 ```
 
 **Cursor** (`.cursor/mcp.json`)
@@ -71,7 +71,7 @@ args = ["--from", "paper-preflight[mcp] @ git+https://github.com/amos689/paper-p
   "mcpServers": {
     "paper-preflight": {
       "command": "uvx",
-      "args": ["--from", "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight", "paper-preflight", "mcp"]
+      "args": ["--from", "paper-preflight[mcp]", "paper-preflight", "mcp"]
     }
   }
 }
@@ -85,7 +85,7 @@ args = ["--from", "paper-preflight[mcp] @ git+https://github.com/amos689/paper-p
     "paper-preflight": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["--from", "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight", "paper-preflight", "mcp"]
+      "args": ["--from", "paper-preflight[mcp]", "paper-preflight", "mcp"]
     }
   }
 }

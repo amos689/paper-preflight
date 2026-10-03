@@ -1,5 +1,7 @@
 # paper-preflight
 
+<!-- mcp-name: io.github.amos689/paper-preflight -->
+
 **English** · [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
@@ -21,8 +23,8 @@ work:
 
 When it cannot tell, it says so instead of guessing.
 
-> **Status: early release.** The checks below work today; install from GitHub until the first
-> PyPI release (v0.1, planned for November 2026).
+> **Status: v0.1, an early release.** False positives are the bugs we most want to hear
+> about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
 purpose. A real run, against the live sources:
@@ -117,10 +119,10 @@ evaluation harness and every run's summary are in [`evals/`](evals/README.md).
 
 ## Quick start
 
-You need [uv](https://docs.astral.sh/uv/).
+With [uv](https://docs.astral.sh/uv/) nothing needs installing (or `pip install paper-preflight`):
 
 ```bash
-uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check path/to/paper
+uvx paper-preflight check path/to/paper
 ```
 
 `path/to/paper` is the project directory, its main `.tex` file, or a single `.bib` file.

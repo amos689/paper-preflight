@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - RELEASE-DATE
+
+The first release.
+
 ### Added
 
 - Project scaffold: packaging, CLI entry point (`--version`, `doctor`), CI, contribution docs.
@@ -82,3 +86,6 @@ All notable changes to this project are documented here. The format follows
   when the venue is the same (REF013).
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
+
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/amos689/paper-preflight/releases/tag/v0.1.0

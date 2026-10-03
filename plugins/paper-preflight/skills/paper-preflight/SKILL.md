@@ -16,7 +16,7 @@ to run it, fix what it proves wrong, and hand the user what only they can decide
   `.bib` file) as `path`. Page with `offset=next_offset` until `next_offset` is null.
 - Otherwise run the CLI from the project root:
   `paper-preflight check . --format json`
-  (or `uvx --from "paper-preflight @ git+https://github.com/amos689/paper-preflight" paper-preflight check . --format json`).
+  (or `uvx paper-preflight check . --format json`).
 - Exit codes: 0 clean, 1 blocking findings, 2 incomplete run (a source was unavailable),
   3 usage error. `preflight_explain` (or the rule table in the output) explains any rule ID.
 

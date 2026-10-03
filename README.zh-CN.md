@@ -19,8 +19,8 @@
 
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
-> **状态：早期版本。** 下面列出的检查现在就能用；在首个 PyPI 版本（v0.1，计划 2026 年 11 月）
-> 发布之前，请从 GitHub 安装。
+> **状态：v0.1，早期版本。** 最希望收到的是误报反馈：请
+> [提交 issue](https://github.com/amos689/paper-preflight/issues)。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
 （直连真实数据源）的完整输出：
@@ -108,10 +108,10 @@ HALLMARK v1.2.3 两个公开数据集的全部条目，2026-10-03 运行。"只�
 
 ## 快速上手
 
-需要先安装 [uv](https://docs.astral.sh/uv/)。
+有 [uv](https://docs.astral.sh/uv/) 就无需安装（也可以 `pip install paper-preflight`）：
 
 ```bash
-uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check path/to/paper
+uvx paper-preflight check path/to/paper
 ```
 
 `path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。
