@@ -1,0 +1,7 @@
+# Sources whose records must never anchor a reference.
+# Each entry needs a reason and the evidence date; keep this list small and evidence-based.
+
+[[source]]
+doi_prefix = "10.65215"
+crossref_member = "54718"
+reason = "Bulk posted-content copies of famous papers with the original titles and authors, dated 2025 (spike S2, 2026-10-03)"
