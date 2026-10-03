@@ -7,7 +7,7 @@ from typing import Any
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import SourceClient, SourcePolicy
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 DOIS_URL = "https://api.datacite.org/dois"
 BATCH = 25
@@ -19,7 +19,7 @@ POLICY = SourcePolicy(name="datacite", min_interval=1.0)
 def parse_doi(data: dict[str, Any]) -> SourceRecord:
     attributes = data.get("attributes") or {}
     doi = str(attributes.get("doi") or data.get("id") or "").lower()
-    titles = [collapse(str(t.get("title", ""))) for t in attributes.get("titles") or []]
+    titles = [plain_title(str(t.get("title", ""))) for t in attributes.get("titles") or []]
     authors: list[Person] = []
     for creator in attributes.get("creators") or []:
         if creator.get("nameType") == "Organizational" or not (

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import re
 from dataclasses import dataclass, field
 
@@ -11,6 +12,22 @@ _SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv"}
 
 def collapse(text: str) -> str:
     return " ".join(text.split())
+
+
+_TAG_RE = re.compile(r"<[^<>]+>")
+
+
+def plain_title(text: str) -> str:
+    r"""A title without the markup registries keep in it: HTML and MathML tags, entities, and TeX
+    math. A HALLMARK VALID entry was flagged because Crossref's title was
+    "$${{\mathrm {Latent}}Out}$$: an unsupervised deep anomaly detection approach ...".
+    """
+    text = html.unescape(_TAG_RE.sub("", text))
+    if "$" in text or "\\" in text:
+        from paper_preflight.bib.parse import latex_to_text
+
+        text = latex_to_text(text)
+    return collapse(text)
 
 
 @dataclass(frozen=True)

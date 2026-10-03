@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 DOIRA_URL = "https://doi.org/doiRA/"
 HANDLE_URL = "https://doi.org/api/handles/"
@@ -121,7 +121,7 @@ def parse_csl(doi: str, csl: dict[str, Any], agency: str) -> SourceRecord:
     return SourceRecord(
         source=f"doiorg:{agency.lower()}",
         source_id=doi.lower(),
-        title=collapse(str(title)),
+        title=plain_title(str(title)),
         authors=authors,
         year=year,
         years=frozenset({year} if year else set()),

@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 
 from paper_preflight.sources import arxiv, crossref, datacite, dblp, doiorg, openalex
-from paper_preflight.sources.record import Person
+from paper_preflight.sources.record import Person, plain_title
 
 FIXTURES = Path(__file__).parent / "fixtures" / "sources"
 
@@ -178,3 +178,35 @@ def test_csl_parsing() -> None:
     assert record.title == "Attention Is All You Need"
     assert record.year == 2017
     assert record.authors[0].family == "Vaswani"
+
+
+@pytest.mark.parametrize(
+    ("raw", "plain"),
+    [
+        # a Crossref title behind a false REF012 on a HALLMARK VALID entry
+        (
+            r"$${{\mathrm {Latent}}Out}$$: an unsupervised deep anomaly detection approach",
+            "LatentOut : an unsupervised deep anomaly detection approach",
+        ),
+        ("Learning with <i>Noisy</i> Labels in <sub>2</sub>D", "Learning with Noisy Labels in 2D"),
+        ('A <mml:math xmlns:mml="x"><mml:mi>k</mml:mi></mml:math>-means study', "A k-means study"),
+        ("Tom &amp; Jerry", "Tom & Jerry"),
+        (
+            "Deep Residual Learning   for Image Recognition",
+            "Deep Residual Learning for Image Recognition",
+        ),
+    ],
+)
+def test_plain_title(raw: str, plain: str) -> None:
+    assert plain_title(raw) == plain
+
+
+def test_crossref_titles_lose_their_markup() -> None:
+    item = {
+        "DOI": "10.1/x",
+        "title": ["Learning with <i>Noisy</i> Labels"],
+        "subtitle": ["A <b>Study</b>"],
+    }
+    record = crossref.parse_work(item)
+    assert record.title == "Learning with Noisy Labels"
+    assert record.alt_titles == ("Learning with Noisy Labels: A Study",)
