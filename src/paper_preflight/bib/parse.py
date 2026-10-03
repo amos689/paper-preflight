@@ -13,6 +13,7 @@ duplicate keys) are treated exactly like normal ones:
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 from dataclasses import dataclass, field
@@ -156,7 +157,20 @@ def unescape_identifier(value: str) -> str:
     return _SIMPLE_ESCAPES_RE.sub(r"\1", value).replace("{", "").replace("}", "").strip()
 
 
+_HTML_ENTITY_RE = re.compile(r"&(?:#\d+|#x[0-9a-fA-F]+|[a-zA-Z]+);")
+_LATEX_SPECIAL = {"&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_"}
+
+
+def _decode_entity(match: re.Match[str]) -> str:
+    """An HTML entity as the character it stands for, escaped if LaTeX treats it specially."""
+    char = html.unescape(match.group(0))
+    return _LATEX_SPECIAL.get(char, char)
+
+
 def latex_to_text(value: str) -> str:
+    # BibTeX copied from web pages carries HTML entities ("Francesco d&apos;Amore" in a dblp-
+    # scraped HALLMARK entry); decode them first, or "&" reaches LaTeX as an alignment tab.
+    value = _HTML_ENTITY_RE.sub(_decode_entity, value)
     try:
         text = _latex2text.latex_to_text(value)
     except Exception:  # pylatexenc can fail on malformed input; fall back
