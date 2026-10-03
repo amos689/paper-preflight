@@ -1,0 +1,12 @@
+{
+  "name": "paper-preflight",
+  "description": "Verify every reference of a LaTeX paper against real scholarly records (Crossref, dblp, arXiv, DataCite, OpenAlex) before submission. No LLM in the verdicts; abstains when unsure.",
+  "author": {
+    "name": "paper-preflight contributors",
+    "url": "https://github.com/amos689/paper-preflight"
+  },
+  "homepage": "https://github.com/amos689/paper-preflight",
+  "repository": "https://github.com/amos689/paper-preflight",
+  "license": "MIT",
+  "keywords": ["latex", "bibtex", "citations", "references", "hallucinated-citations", "academic-writing", "mcp"]
+}
