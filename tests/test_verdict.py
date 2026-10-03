@@ -581,6 +581,29 @@ def test_a_short_title_names_one_work_at_the_same_venue_and_year(
     assert ("REF010" in rules(result)) is bound
 
 
+@pytest.mark.parametrize(
+    ("recorded", "venue", "bound"),
+    [
+        ("Robust Sparse Attention for Long Video Summarization", "ACL", True),
+        # a sibling paper elsewhere, or more than two words off: perhaps another work
+        ("Robust Sparse Attention for Long Video Summarization", "EMNLP", False),
+        ("Robust Sparse Attention for Short Video Captioning", "ACL", False),
+    ],
+)
+def test_a_title_two_words_off_binds_with_the_same_people_and_venue(
+    recorded: str, venue: str, bound: bool
+) -> None:
+    # HALLMARK near-miss titles below the search threshold ("Inference" for "Reasoning")
+    entry = bib(NO_DOI)
+    real = record(recorded, source="dblp", venue=venue)
+    result = assess(entry, search_result(entry, real), current_year=YEAR)
+    assert (result.record is not None) is bound
+    if bound:
+        (finding,) = result.findings
+        assert finding.rule_id == "REF012"
+        assert '"document" where the record has "video"' in finding.message.en
+
+
 @pytest.mark.parametrize(("venue", "bound"), [("ACL", True), ("EMNLP", False)])
 def test_a_far_year_is_no_reprint_at_the_same_venue(venue: str, bound: bool) -> None:
     # an ICLR 2017 paper cited as ICLR 2023: venues do not reprint their papers
