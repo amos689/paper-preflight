@@ -1,0 +1,74 @@
+# Flags paper-preflight raises on references the study labels "verified" (the work exists), each
+# checked by hand. The study's label is about existence; a reference to a real work can still
+# carry an error. evals/run_badalova_mayr.py reports the raw comparison and, next to it, one
+# that counts these judgements.
+#
+# kind = "metadata_error"   the reference has the error the finding names: the flag is right
+# kind = "advice"           REF015 only: a published version exists; advice, not an error
+# kind = "false_positive"   the reference is right, the tool is wrong
+#
+# note: a reason one lookup can confirm.
+
+[reference.p1r1]
+kind = "advice"
+note = "arXiv 2507.19457 (GEPA) was published at ICLR 2026."
+
+[reference.p1r20]
+kind = "advice"
+note = "arXiv 2505.15948 has a published version (WOOC 2025, 10.5281/zenodo.16367716)."
+
+[reference.p3r3]
+kind = "advice"
+note = "arXiv 1904.09751 (The Curious Case of Neural Text Degeneration) is ICLR 2020."
+
+[reference.p3r13]
+kind = "advice"
+note = "arXiv 1804.07461 (GLUE) is BlackboxNLP@EMNLP 2018, 10.18653/v1/w18-5446."
+
+[reference.p3r37]
+kind = "advice"
+note = "arXiv 2402.03563 was published at ICML 2024."
+
+[reference.p3r54]
+kind = "advice"
+note = "arXiv 2305.19187 was published in TMLR (2024)."
+
+[reference.p2r7]
+kind = "metadata_error"
+note = "The first author of 10.1371/journal.pone.0157989 is Geraint Duck; the reference says 'Goran Duck'."
+
+[reference.p3r12]
+kind = "metadata_error"
+note = "DeBERTa (ICLR 2021) is by He, Xiaodong Liu, Gao and Chen; the reference says 'Weizhu Liu'."
+
+[reference.p3r14]
+kind = "metadata_error"
+note = "The ACL 2017 title is 'TriviaQA: A Large Scale Distantly Supervised Challenge Dataset for Reading Comprehension'; the reference drops 'Dataset'."
+
+[reference.p3r33]
+kind = "metadata_error"
+note = "The DOI is written '0.18653/v1/2024.acl-long.276'; the real one is 10.18653/v1/2024.acl-long.276."
+
+[reference.p3r51]
+kind = "metadata_error"
+note = "The NeurIPS 2011 paper's third author is Jeffrey Pennington; the reference says 'Jeffrey Pennin'."
+
+[reference.p2r3]
+kind = "false_positive"
+note = "A poster abstract at the 1st SciNLP workshop (2020) that no queried source indexes; the study's manual check found it."
+
+[reference.p1r3]
+kind = "false_positive"
+note = "BIR 2024 workshop paper; dblp files it under 2025, the year its proceedings appeared (key conf/birws/AtanassovaB24)."
+
+[reference.p1r10]
+kind = "false_positive"
+note = "arXiv lists 'Gemma Team' as first author; the reference writes 'Gemma'."
+
+[reference.p2r13]
+kind = "false_positive"
+note = "Crossref lists an affiliation ('G4.19 Research Group, ...') as the first author of 10.26615/978-954-452-056-4_083."
+
+[reference.p3r29]
+kind = "false_positive"
+note = "Kamilė Lukošiūtė is on the arXiv record of 2302.07459; the reference has her name right."

@@ -102,3 +102,21 @@ stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1):
   make this batch a development batch; measuring those fixes will need a new week of papers.
 - The sources are not committed (arXiv's default licence does not allow redistribution); the
   manifests `evals/real_papers.toml` and `evals/real_papers_heldout.toml` list the IDs.
+
+## Head-to-head: Badalova & Mayr (2026)
+
+Badalova and Mayr checked 104 references from three documents by hand (71 verified, 33
+problematic) and published whether each of five tools flagged them (Zenodo
+10.5281/zenodo.21457492, CC BY 4.0). `evals/run_badalova_mayr.py` runs paper-preflight on the
+same references, transcribed to BibTeX as written (`evals/badalova_mayr.bib`), and reports
+precision with a Wilson 95% interval: with 33 problematic references, small differences are
+noise. The results are in [`results/badalova-mayr.md`](results/badalova-mayr.md).
+
+- **Reviewing paper-preflight's flags** on references the study labels verified found five
+  that carry a real error (a wrong author name, a missing title word, a broken DOI);
+  `evals/badalova_mayr_review.toml` lists every judgement. A second table counts them as
+  problematic for every tool.
+- **This data was looked at before the reported run.** The first run measured 62.8% precision
+  [47.9%, 75.6%]. Two causes of false flags found then were fixed (#72: the year in a dblp key;
+  #73/#74: team authors), and four names whose letters the published CSV lost to its encoding
+  were restored from the documents.
