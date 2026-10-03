@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "paper-preflight": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight",
+        "paper-preflight",
+        "mcp",
+        "--root",
+        "${CLAUDE_PROJECT_DIR}"
+      ]
+    }
+  }
+}
