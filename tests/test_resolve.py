@@ -3,7 +3,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from paper_preflight.bib.parse import parse_bib_file
+from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.cache import Cache
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.sources import base
@@ -109,6 +109,19 @@ async def test_bot_wall_is_recorded_as_unavailable_not_negative() -> None:
     assert fabricated.unavailable == {"dblp": "challenge"}
     assert "dblp" not in fabricated.negative
     assert fabricated.negative == {"crossref"}
+
+
+@pytest.mark.anyio
+async def test_first_definition_of_a_duplicate_key_wins_across_files() -> None:
+    # \bibliography{a,b}: BibTeX keeps the definition from a.bib and ignores the one in b.bib
+    first = parse_bib_text("@article{k, title = {The First Title}, year = 2020}", Path("a.bib"))
+    second = parse_bib_text("@misc{k, title = {The Second Title}, year = 2021}", Path("b.bib"))
+    async with httpx.AsyncClient(transport=httpx.MockTransport(FakeWeb())) as http:
+        evidence = await resolve(
+            first.entries + second.entries, Sources.create(http, Cache(None), environ={})
+        )
+    assert evidence["k"].info.title == "The First Title"
+    assert evidence["k"].info.year == 2020
 
 
 @pytest.mark.anyio
