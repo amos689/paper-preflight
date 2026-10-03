@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# paper-preflight outputs
+.preflight/
+
+# Spike scratch space and downloaded benchmark data (never committed)
+.spikes/
+evals/.data/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

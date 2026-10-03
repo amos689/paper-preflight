@@ -1,0 +1,49 @@
+name: False positive / 误报
+description: paper-preflight flagged a reference that is actually correct. / 工具把一条正确的参考文献报成了问题。
+labels: ["false-positive", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        False positives are the bugs we care about most — thank you!
+        误报是我们最重视的 bug，感谢反馈！
+
+        Please only paste the affected BibTeX entry, not unpublished manuscript text.
+        请只粘贴相关的 BibTeX 条目，不要粘贴未发表的论文正文。
+  - type: input
+    id: version
+    attributes:
+      label: paper-preflight version / 版本
+      placeholder: "paper-preflight --version"
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: Rule ID and finding ID / 规则与发现编号
+      placeholder: "REF003 f-1a2b3c"
+    validations:
+      required: true
+  - type: textarea
+    id: entry
+    attributes:
+      label: BibTeX entry / BibTeX 条目
+      render: bibtex
+    validations:
+      required: true
+  - type: textarea
+    id: explain
+    attributes:
+      label: Output of `paper-preflight explain <finding-id> --evidence` / explain 输出
+      render: text
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it correct? / 为什么它是正确的？
+      description: Links to the official record (publisher page, DOI, proceedings, arXiv). / 请给出官方记录链接。
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system / 操作系统
