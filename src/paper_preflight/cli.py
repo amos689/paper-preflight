@@ -229,3 +229,26 @@ def doctor(
     for probe in asyncio.run(probe_sources()):
         took = f"{probe.seconds:5.2f} s" if probe.seconds is not None else " " * 7
         typer.echo(f"  {source_name(probe.source):<17} {probe.status:<12} {took}  {probe.detail}")
+
+
+@app.command()
+def mcp(
+    root: Annotated[
+        Path, typer.Option("--root", help="Workspace root; the tools never read outside it.")
+    ] = Path("."),
+) -> None:
+    """Run the MCP server on stdio for coding agents (needs the "mcp" extra)."""
+    try:
+        from paper_preflight.mcp_server import create_server
+    except ImportError as exc:
+        typer.echo(
+            'paper-preflight: the MCP server needs the "mcp" extra: '
+            'pip install "paper-preflight[mcp]"',
+            err=True,
+        )
+        raise typer.Exit(EXIT_USAGE) from exc
+    if not root.is_dir():
+        typer.echo(f"paper-preflight: --root {root} is not a directory", err=True)
+        raise typer.Exit(EXIT_USAGE)
+    server = create_server(root, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    server.run(show_banner=False)  # stdout carries the protocol: nothing else may be printed

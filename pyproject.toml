@@ -49,6 +49,11 @@ Homepage = "https://github.com/amos689/paper-preflight"
 Issues = "https://github.com/amos689/paper-preflight/issues"
 Changelog = "https://github.com/amos689/paper-preflight/blob/main/CHANGELOG.md"
 
+[project.optional-dependencies]
+mcp = [
+    "fastmcp>=4.0,<4.1",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=8",
@@ -59,6 +64,7 @@ dev = [
     "ruff>=0.16",
     "mypy>=1.15",
     "pre-commit>=4",
+    "fastmcp>=4.0,<4.1",
 ]
 
 [tool.hatch.version]
