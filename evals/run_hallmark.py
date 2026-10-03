@@ -32,6 +32,7 @@ from paper_preflight.evaluation.hallmark import (
     Example,
     Outcome,
     load,
+    load_disputed,
     predict,
     render_markdown,
     score,
@@ -115,6 +116,9 @@ def main() -> None:
         for mode, rules in MODES.items()
     }
     scores = score(examples, outcomes)
+    disputed = load_disputed(ROOT / "hallmark_disputed.toml")
+    kept = [e for e in examples if e.key not in disputed]
+    undisputed = score(kept, outcomes)
 
     results = ROOT / "results"
     results.mkdir(exist_ok=True)
@@ -148,7 +152,7 @@ def main() -> None:
         or "none",
         "Unparsed entries": str(len(unparsed)),
     }
-    markdown = render_markdown(scores, header)
+    markdown = render_markdown(scores, header, undisputed, len(examples) - len(kept))
     (results / f"{name}.md").write_text(markdown, encoding="utf-8", newline="\n")
     print(markdown)
 
