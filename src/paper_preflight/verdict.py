@@ -48,6 +48,7 @@ MIN_TITLE_ONLY_WORDS = 6  # a title this long names one work, even when the auth
 MIN_VENUE_TITLE_WORDS = 4  # ... and one this long does too, at the same venue in the same year
 MAX_REWORDED_WORDS = 2  # a title this many words off is the same work, given the same people
 MIN_REWORDED_SCORE = 0.85  # ... and this similar overall
+OLD_WORK_YEAR = 1990  # before this, the indexes cover too little to call a work not found
 
 
 class Verdict(StrEnum):
@@ -66,6 +67,7 @@ class Reason(StrEnum):
     GREY_LITERATURE = "GREY_LITERATURE"
     UNINDEXED_LINK = "UNINDEXED_LINK"
     TOO_NEW = "TOO_NEW"
+    OLD_WORK = "OLD_WORK"
     IDENTIFIER_EXISTS_NO_METADATA = "IDENTIFIER_EXISTS_NO_METADATA"
     CORRUPTED_SOURCE_RECORD = "CORRUPTED_SOURCE_RECORD"
     AMBIGUOUS_CANDIDATES = "AMBIGUOUS_CANDIDATES"
@@ -88,6 +90,10 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
         "条目链接的网站不在任何已查询来源的收录范围内，请人工核对该链接",
     ),
     Reason.TOO_NEW: ("too recent to be indexed yet", "过新，可能尚未被收录"),
+    Reason.OLD_WORK: (
+        "published before 1990, when the indexes cover little; check it by hand",
+        "1990 年以前的作品，索引收录不全，请人工核对",
+    ),
     Reason.IDENTIFIER_EXISTS_NO_METADATA: (
         "the identifier exists but no source returned its metadata",
         "标识符存在，但没有来源返回其元数据",
@@ -803,6 +809,10 @@ def _abstention_reasons(
     # Pilipinas, proceedings.spp-online.org): no source knowing it says nothing about it
     elif not live_ids and unindexed_hosts(info.link_hosts):
         reasons.append(Reason.UNINDEXED_LINK)
+    # works from before the indexes' digital coverage: real papers of the 1950s and 60s in
+    # mechanics and physics (Barenblatt 1952, Bluman & Cole 1969) are known to none of them
+    if not live_ids and info.year is not None and info.year < OLD_WORK_YEAR:
+        reasons.append(Reason.OLD_WORK)
     # this year's and next year's papers may not be indexed yet; a later year is just wrong
     if not live_ids and info.year is not None and current_year <= info.year <= current_year + 1:
         reasons.append(Reason.TOO_NEW)
