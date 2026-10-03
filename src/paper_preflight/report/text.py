@@ -62,4 +62,38 @@ def render_text(
     else:
         summary = f"{errors} error(s) · {warnings} warning(s) · {infos} info"
     style = "bold red" if errors else ("yellow" if warnings else "green")
+    verification = verification_line(result, zh)
+    if verification:
+        console.print(verification, highlight=False)
     console.print(summary, style=style, highlight=False)
+
+
+_VERDICT_LABEL = {
+    "verified": ("verified", "已核实"),
+    "metadata_mismatch": ("metadata mismatch", "元数据不符"),
+    "identifier_conflict": ("identifier conflict", "标识符冲突"),
+    "not_found": ("not found", "未找到"),
+    "cannot_determine": ("cannot determine", "无法确定"),
+}
+
+
+def verification_line(result: CheckResult, zh: bool) -> str:
+    """``References: 9 verified · 1 not found · 2 cannot determine (offline: 2 not verified)``."""
+    if result.verification == "skipped":
+        return ""
+    if not result.verdicts:
+        return "参考文献核查：没有需要核查的条目" if zh else "References: none to verify"
+    parts = [
+        f"{_VERDICT_LABEL[verdict][1]} {n}" if zh else f"{n} {_VERDICT_LABEL[verdict][0]}"
+        for verdict, n in result.verdict_counts().items()
+        if n
+    ]
+    line = ("参考文献核查：" if zh else "References: ") + " · ".join(parts)
+    if result.unverified_offline:
+        n = result.unverified_offline
+        line += (
+            f"（离线模式：{n} 条没有缓存结果，未核查）"
+            if zh
+            else f" (offline: {n} without a cached answer, not verified)"
+        )
+    return line

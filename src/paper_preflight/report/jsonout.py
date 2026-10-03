@@ -8,6 +8,7 @@ from typing import Any
 
 from paper_preflight.check import CheckResult
 from paper_preflight.findings import Severity
+from paper_preflight.verdict import Assessment
 
 SCHEMA_VERSION = "0.1"
 
@@ -24,6 +25,7 @@ def to_json_dict(
     if max_findings is not None:
         findings = findings[:max_findings]
     base = result.root
+    reported = {f.fingerprint for f in result.findings}
     return {
         "schema_version": SCHEMA_VERSION,
         "tool": {"name": "paper-preflight", "version": result.tool_version},
@@ -47,12 +49,39 @@ def to_json_dict(
             "infos": result.count(Severity.INFO),
             "total_findings": len(result.findings),
         },
+        "verification": {
+            "mode": result.verification,
+            "verdicts": result.verdict_counts(),
+            "unverified_offline": result.unverified_offline,
+        },
+        "references": [_reference(a, reported) for a in result.verdicts.values()],
         "findings": [f.to_dict(base) for f in findings],
         "pagination": {
             "offset": offset,
             "returned": len(findings),
             "truncated": truncated,
         },
+    }
+
+
+def _reference(assessment: Assessment, reported: set[str]) -> dict[str, Any]:
+    record = assessment.record
+    return {
+        "key": assessment.key,
+        "verdict": assessment.verdict.value,
+        "reasons": [r.value for r in assessment.reasons],
+        "flags": sorted(assessment.flags),
+        "matched": None
+        if record is None
+        else {
+            "source": record.source,
+            "id": record.source_id,
+            "title": record.title,
+            "year": record.year,
+            "venue": record.venue,
+            "doi": record.doi,
+        },
+        "findings": [f.fingerprint for f in assessment.findings if f.fingerprint in reported],
     }
 
 

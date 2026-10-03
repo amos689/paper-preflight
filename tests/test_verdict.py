@@ -15,7 +15,8 @@ from paper_preflight.sources.record import Person, SourceRecord
 from paper_preflight.verdict import Assessment, Reason, Verdict, assess, assess_all, run_findings
 
 from .fake_web import FakeWeb
-from .test_resolve import fast  # noqa: F401  (autouse: no pacing delays)
+
+pytestmark = pytest.mark.usefixtures("fast")
 
 DEMO = Path(__file__).parent.parent / "examples" / "demo-paper" / "refs.bib"
 YEAR = 2026
@@ -129,6 +130,22 @@ async def test_unavailable_source_is_not_a_negative_answer() -> None:
     (incomplete,) = run_findings(evidence)
     assert incomplete.rule_id == "RUN001"
     assert "dblp (challenge)" in incomplete.message.en
+
+
+@pytest.mark.anyio
+async def test_arxiv_outage_does_not_turn_a_preprint_year_into_an_error() -> None:
+    # Seen live on 2026-10-03: arXiv answered 429, so the preprint entry was found by title
+    # search and bound to the published CVPR 2016 record. Its year (2015) is the preprint's,
+    # which is expected; the right finding is REF015, not a year mismatch.
+    web = FakeWeb()
+    web.fail("export.arxiv.org", "429")
+    assessments, _ = await run_demo(web)
+    preprint = assessments["he2015residual"]
+    assert preprint.record is not None
+    assert preprint.record.source == "crossref"  # the published version, found by title
+    assert (preprint.verdict, rules(preprint)) == (Verdict.VERIFIED, {"REF015"})
+    gelu = assessments["hendrycks2016gelu"]
+    assert (gelu.verdict, gelu.reasons) == (Verdict.CANNOT_DETERMINE, (Reason.SOURCES_UNAVAILABLE,))
 
 
 @pytest.mark.anyio

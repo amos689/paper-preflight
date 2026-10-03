@@ -9,6 +9,9 @@ from paper_preflight.cli import EXIT_FINDINGS, EXIT_OK, EXIT_USAGE, app
 
 runner = CliRunner()
 
+# the CLI now verifies references too (against the recorded web, see conftest.py)
+pytestmark = pytest.mark.usefixtures("fast")
+
 MAIN = r"""\documentclass{article}
 \begin{document}
 See \citep{good, missing_key} and \citet{good}.
