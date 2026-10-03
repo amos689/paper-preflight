@@ -13,7 +13,7 @@ from typing import Any
 from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
 from paper_preflight.sources.record import Person, SourceRecord, collapse
 
 DOIRA_URL = "https://doi.org/doiRA/"
@@ -61,13 +61,36 @@ async def registration_agencies(
         fetched = await client.get_json(DOIRA_URL + path, classify=classify)
         for answer in parse_doira(fetched.data):
             result[answer.doi.lower()] = answer
+        # doiRA answers a bare "Error" for DOIs whose prefix is not registered at all (a made-up
+        # 10.77771/... in HALLMARK). That word alone proves nothing, so the Handle API decides.
+        for doi in unclear_dois(fetched.data):
+            try:
+                exists = await handle_exists(client, doi)
+            except SourceUnavailable:
+                continue  # stays unknown: an unanswered check is not a negative
+            if exists is False:
+                result[doi] = AgencyAnswer(doi, None, False)
     return result
 
 
+def unclear_dois(payload: Any) -> list[str]:
+    """DOIs for which doiRA gave neither an agency nor "DOI does not exist"."""
+    unclear: list[str] = []
+    for item in payload or []:
+        status = str(item.get("status", "")).lower()
+        if not item.get("RA") and status and "does not exist" not in status:
+            unclear.append(str(item.get("DOI", "")).lower())
+    return unclear
+
+
 async def handle_exists(client: SourceClient, doi: str) -> bool | None:
-    """Ask the Handle API whether a DOI exists; None when the answer is unclear."""
+    """Ask the Handle API whether a DOI exists; None when the answer is unclear.
+
+    404 means the handle does not exist; 400 with "That prefix doesn't live here" (responseCode
+    301) means the prefix is not registered with the DOI system, so no DOI under it exists.
+    """
     fetched = await client.get_json(
-        HANDLE_URL + quote(doi, safe="/"), params={"type": "URL"}, negative_statuses=(404,)
+        HANDLE_URL + quote(doi, safe="/"), params={"type": "URL"}, negative_statuses=(404, 400)
     )
     if fetched.data is None:
         return False
