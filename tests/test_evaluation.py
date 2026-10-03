@@ -100,3 +100,23 @@ def test_scores() -> None:
     markdown = render_markdown({"fabrication": scores}, {"Data": "synthetic"})
     assert "| fabrication | 66.7% | 66.7% |" in markdown
     assert "| merged_citation (stress) |" in markdown
+
+
+def test_disputed_labels_get_their_own_summary(tmp_path: Path) -> None:
+    from paper_preflight.evaluation.hallmark import load_disputed
+
+    path = tmp_path / "disputed.toml"
+    path.write_text('[[entry]]\nkey = "v3"\nreason = "DOI is another paper"\n', encoding="utf-8")
+    disputed = load_disputed(path)
+    assert disputed == {"v3": "DOI is another paper"}
+    assert load_disputed(tmp_path / "missing.toml") == {}
+
+    examples = [example("v1", None), example("v3", None), example("h1", "plausible_fabrication")]
+    outcomes: dict[str, Outcome] = {"v1": "clean", "v3": "flag", "h1": "flag"}
+    every = score(examples, {"fabrication": outcomes})
+    kept = score([e for e in examples if e.key not in disputed], {"fabrication": outcomes})
+    assert every["fabrication"].precision == 1 / 2
+    assert kept["fabrication"].precision == 1.0
+    markdown = render_markdown(every, {"Data": "synthetic"}, kept, len(disputed))
+    assert "## Summary without the 1 disputed labels" in markdown
+    assert markdown.count("| fabrication |") == 2  # both summaries

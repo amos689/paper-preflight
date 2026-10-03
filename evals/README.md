@@ -49,3 +49,12 @@ hallucinations, so they do not count either.
 
 `evals/results/hallmark-<split>[-sample<N>].md` holds the summary of a run (committed); the
 `.jsonl` next to it has one line per entry (git-ignored).
+
+### Disputed labels
+
+Some entries HALLMARK labels VALID are not correct citations: their DOI points to another paper,
+or their author list names people who did not write the paper. Each one was checked by hand
+against the registries; `evals/hallmark_disputed.toml` lists them with a reason that one lookup
+can confirm. Results are always reported as HALLMARK labels them, and every summary adds a
+second table without the disputed entries, so both numbers are visible. Reports of further
+label problems are welcome as issues.
