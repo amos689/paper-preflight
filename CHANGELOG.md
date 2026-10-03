@@ -30,3 +30,5 @@ All notable changes to this project are documented here. The format follows
   (`docs/mcp.md`).
 - Claude Code plugin and marketplace (`plugins/paper-preflight`): the MCP server plus a
   `paper-preflight` skill that runs the check before a paper is called finished.
+- `paper-preflight explain [RULE]`: what a rule detects, its severity, its message and whether a
+  fix is safe; without an argument it lists every rule.
