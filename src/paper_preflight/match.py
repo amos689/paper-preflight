@@ -201,18 +201,28 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
 _APOSTROPHES = re.compile("['\u2018\u2019\u02bc\u0060\u00b4]")
 
 
+def _group_key(name: str) -> str:
+    """A group's key: "Gemma Team" (arXiv) is the entry's "{Gemma}", "The LIGO Scientific
+    Collaboration" its "LIGO Scientific"."""
+    words = re.findall(r"\w+", fold(_APOSTROPHES.sub("", name)))
+    core = words[1:] if len(words) > 1 and words[0] == "the" else words
+    while len(core) > 1 and core[-1] in COLLECTIVE_WORDS:
+        core.pop()
+    return " ".join(core)
+
+
 def surname_key(person: Person) -> str:
     """Comparison key: last word of the folded family name (``van der Berg`` → ``berg``).
 
     Apostrophes are dropped, so O'Connell and O’Connell (as Crossref writes it) are one key.
     """
     if person.literal:
-        words = re.findall(r"\w+", fold(_APOSTROPHES.sub("", person.literal)))
-        # "Gemma Team" (arXiv) is the entry's "{Gemma}", "The LIGO Collaboration" its "LIGO"
-        core = words[1:] if len(words) > 1 and words[0] == "the" else words
-        while len(core) > 1 and core[-1] in COLLECTIVE_WORDS:
-            core.pop()
-        return " ".join(core)
+        return _group_key(person.literal)
+    family = re.findall(r"\w+", fold(person.family))
+    if person.given and family and all(word in COLLECTIVE_WORDS for word in family):
+        # BibTeX reads "Team, Chameleon" and "Gemma Team" as a given name and the family name
+        # "Team": the group the record calls "Chameleon Team"
+        return _group_key(f"{person.given} {person.family}")
     words = re.findall(r"[\w-]+", fold(_APOSTROPHES.sub("", person.family)))
     return words[-1].strip("-") if words else ""
 

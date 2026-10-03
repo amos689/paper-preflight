@@ -492,6 +492,29 @@ def test_a_team_is_one_author_named_by_its_project() -> None:
     assert not other.first_author_match
 
 
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
+        # entries of real papers, as BibTeX reads them: given name "Chameleon", family "Team"
+        ("Team, Chameleon", "Chameleon Team"),
+        ("Team, Gemini and Anil, Rohan", "Gemini Team"),
+        ("Gemma Team and Aishwarya Kamath and others", "Gemma Team"),
+        ("Collaboration, Euclid and others", "Euclid Collaboration"),
+        (r"Collaboration, {\relax DESI} and others", "DESI Collaboration"),
+        ("Gopakumar, Vignesh and Team, MAST", "MAST Team"),
+    ],
+)
+def test_a_team_written_as_a_name_is_the_team(written: str, recorded: str) -> None:
+    record = SourceRecord(
+        source="arxiv", source_id="x", title="t",
+        authors=(Person.from_display(recorded), Person("Anil", "Rohan"),
+                 Person("Gopakumar", "Vignesh"), Person("Kamath", "Aishwarya")),
+        authors_ordered=False,
+    )  # fmt: skip
+    check = check_authors(parse_authors(written), record)
+    assert (check.missing, check.disjoint) == ((), False)
+
+
 def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     # arXiv 2303.08774 (GPT-4 Technical Report) lists "OpenAI", then Josh Achiam, ...
     record = SourceRecord(
