@@ -353,3 +353,13 @@ def test_crossref_venue_names_and_issns() -> None:
     assert record.venue_aliases == ("Research and Advanced Technology for Digital Libraries",)
     assert record.issns == {"0302-9743", "1611-3349"}
     assert {"short-container-title", "ISSN"} <= set(crossref.SELECT.split(","))
+
+
+def test_dblp_title_prefixes_query() -> None:
+    lows = [dblp.prefix_range(t)[0] for t in ("Attention Is All You Need", "Segment Anything")]
+    query = dblp.title_prefixes_query(lows)
+    assert query.count("{ SELECT ?pub ?t (") == 2
+    assert "(0 AS ?i)" in query
+    assert "(1 AS ?i)" in query
+    assert 'FILTER(?t >= "attention is all you need" && ?t < "attention is all you neee")' in query
+    assert "UNION" in query

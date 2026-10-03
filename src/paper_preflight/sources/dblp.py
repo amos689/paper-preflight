@@ -26,6 +26,7 @@ REC = "https://dblp.org/rec/"
 POLICY = SourcePolicy(name="dblp", min_interval=1.0, max_concurrency=1, timeout=30.0)
 SPARQL_ACCEPT = {"Accept": "application/sparql-results+json"}
 CHUNK = 50  # IRIs or DOIs per batch query; keeps the GET request short
+TITLE_CHUNK = 10  # title prefixes per query: ten range scans take about a second together
 
 
 def _escape(value: str) -> str:
@@ -56,6 +57,18 @@ def title_prefix_query(title: str) -> str:
         f'  ?pub dblp:title ?t . FILTER(?t >= "{_escape(low)}" && ?t < "{_escape(high)}")\n'
         "} LIMIT 100"
     )
+
+
+def title_prefixes_query(lows: list[str]) -> str:
+    """One query for several title prefixes; ``?i`` says which prefix a row answers."""
+    parts = []
+    for i, low in enumerate(lows):
+        high = low[:-1] + chr(ord(low[-1]) + 1)
+        parts.append(
+            f"  {{ SELECT ?pub ?t ({i} AS ?i) WHERE {{ ?pub dblp:title ?t . "
+            f'FILTER(?t >= "{_escape(low)}" && ?t < "{_escape(high)}") }} LIMIT 100 }}'
+        )
+    return PREFIX + "SELECT ?i ?pub ?t WHERE {\n" + "\n  UNION\n".join(parts) + "\n}"
 
 
 def full_records_query(pubs: Iterable[str]) -> str:
@@ -186,6 +199,34 @@ async def _select(client: SourceClient, query: str) -> Any:
 
 async def title_candidates(client: SourceClient, title: str) -> list[tuple[str, str]]:
     return parse_title_candidates(await _select(client, title_prefix_query(title)))
+
+
+async def title_candidates_many(
+    client: SourceClient, titles: Iterable[str]
+) -> dict[str, list[tuple[str, str]]]:
+    """(pub, title) candidates for each title, ten prefixes per query, cached per prefix.
+
+    Keyed by the prefix (``prefix_range(title)[0]``); a title without a letter to search for
+    gets no candidates.
+    """
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        found: dict[str, list[list[str]]] = {low: [] for low in chunk}
+        for row in _bindings(await _select(client, title_prefixes_query(chunk))):
+            found[chunk[int(row["i"])]].append([row["pub"], clean_title(row.get("t", ""))])
+        return {low: rows for low, rows in found.items() if rows}
+
+    def as_tuples(found: dict[str, Any]) -> dict[str, list[tuple[str, str]]]:
+        return {low: [(pub, title) for pub, title in rows] for low, rows in found.items()}
+
+    lows = [low for low in (prefix_range(t)[0] for t in titles) if low]
+    try:
+        found = await client.batch(
+            "prefix", lows, fetch_chunk, chunk_size=TITLE_CHUNK, kind=EntryKind.SEARCH
+        )
+    except PartialUnavailable as partial:
+        raise partial.with_found(as_tuples(partial.found)) from None
+    return as_tuples(found)
 
 
 # The batch lookups below are cached per IRI or DOI (SourceClient.batch), so a later run whose

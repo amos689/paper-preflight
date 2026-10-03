@@ -9,6 +9,7 @@ mode (bot wall, 429) to test unavailability handling.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote
@@ -154,14 +155,38 @@ class FakeWeb:
             return httpx.Response(200, json=_sparql(rows, ["doi", "pub"]))
         if "authoredBy" in query:
             return httpx.Response(200, json=_load("dblp/link_corr_to_conf.json"))
-        if "VALUES ?pub" in query and "KingmaB14" in query:
-            return httpx.Response(200, json=_load("dblp/full_records_adam.json"))
         if "VALUES ?pub" in query:
-            return httpx.Response(200, json=_load("dblp/full_records.json"))
-        if "quantum gradient folding" in query:
-            return httpx.Response(200, json=_load("dblp/prefix_t8.json"))
-        if "adam: a method for stochastic" in query:
-            return httpx.Response(200, json=_load("dblp/prefix_adam.json"))
-        if "attention is all you need" in query:
-            return httpx.Response(200, json=_load("dblp/prefix_t1.json"))
-        return httpx.Response(200, json=_sparql([], ["pub", "t"]))
+            # a batch may ask for several entries' records: answer each one requested
+            payload = _load("dblp/full_records.json")
+            rows = [
+                row
+                for name in ("dblp/full_records.json", "dblp/full_records_adam.json")
+                for row in _load(name)["results"]["bindings"]
+                if f"<{row['pub']['value']}>" in query
+            ]
+            payload["results"]["bindings"] = [
+                row for i, row in enumerate(rows) if row not in rows[:i]
+            ]
+            return httpx.Response(200, json=payload)
+        if " AS ?i)" in query:
+            # title prefixes, ten to a query: each part answered as a single query would be
+            bindings = []
+            for part in query.split("{ SELECT")[1:]:
+                index = re.search(r"\((\d+) AS \?i\)", part)
+                for row in _prefix(part)["results"]["bindings"]:
+                    bindings.append({**row, "i": {"type": "literal", "value": index.group(1)}})
+            return httpx.Response(
+                200, json={"head": {"vars": ["i", "pub", "t"]}, "results": {"bindings": bindings}}
+            )
+        return httpx.Response(200, json=_prefix(query))
+
+
+def _prefix(query: str) -> Any:
+    """The recorded answer to one title-prefix query."""
+    if "quantum gradient folding" in query:
+        return _load("dblp/prefix_t8.json")
+    if "adam: a method for stochastic" in query:
+        return _load("dblp/prefix_adam.json")
+    if "attention is all you need" in query:
+        return _load("dblp/prefix_t1.json")
+    return _sparql([], ["pub", "t"])
