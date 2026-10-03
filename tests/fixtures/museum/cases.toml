@@ -614,3 +614,30 @@ key = "p3r55"
 expect = ["REF011"]
 note = "wrong authors (study label: problematic)"
 
+[[case]]
+name = "fp-barenblatt1952some"
+source = "real_papers:2607.07425v1"
+key = "barenblatt1952some"
+expect = []
+note = "was REF003: Barenblatt (1952), Prikl. Mat. Mekh. 16: a real paper no source indexes (OLD_WORK)"
+
+[[case]]
+name = "fp-zel1950towards"
+source = "real_papers:2607.07425v1"
+key = "zel1950towards"
+expect = []
+note = "was REF003: Zel'dovich & Kompaneets (1950), Ioffe birthday collection (OLD_WORK)"
+
+[[case]]
+name = "fp-bluman1969general"
+source = "real_papers:2607.07425v1"
+key = "bluman1969general"
+expect = []
+note = "was REF003: Bluman & Cole, J. Math. Mech. 18 (1969) (OLD_WORK)"
+
+[[case]]
+name = "fp-putnam1961"
+source = "real_papers:2608.04024v1"
+key = "Putnam1961"
+expect = []
+note = "was REF003: Putnam, ARS Journal 31 (1961) (OLD_WORK)"

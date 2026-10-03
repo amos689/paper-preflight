@@ -296,6 +296,18 @@ def test_a_link_to_a_site_no_source_indexes_is_no_proof_of_absence(
         assert result.reasons == (Reason.UNINDEXED_LINK,)
 
 
+@pytest.mark.parametrize(("year", "reasons"), [(1969, (Reason.OLD_WORK,)), (1990, ())])
+def test_an_old_work_nobody_knows_is_not_called_not_found(
+    year: int, reasons: tuple[Reason, ...]
+) -> None:
+    # real papers of the 1950s and 60s (Barenblatt 1952, Bluman & Cole 1969) are in no index
+    entry = bib(NO_DOI.replace("2023", str(year)))
+    item = evidence_for(entry, searched={"dblp", "crossref"}, negative={"dblp", "crossref"})
+    result = assess(entry, item, current_year=YEAR)
+    assert result.reasons == reasons
+    assert result.verdict is (Verdict.CANNOT_DETERMINE if reasons else Verdict.NOT_FOUND)
+
+
 def test_short_title_is_never_not_found() -> None:
     entry = bib(CS_ENTRY.replace(TITLE, "Sparse Attention Revisited").replace(
         "  doi = {10.1234/acl.2023.1},\n", ""
