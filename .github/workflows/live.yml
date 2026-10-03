@@ -1,0 +1,40 @@
+name: Live sources
+
+# The tests answer from recorded responses; this checks the demo paper against the real sources
+# (evals/live_smoke.py), so a source that changes, or a request it starts to reject, shows up
+# within a week, and before merging any change to how the sources are asked.
+on:
+  schedule:
+    - cron: "41 4 * * 3" # weekly, Wednesdays 04:41 UTC
+  pull_request:
+    paths:
+      - "src/paper_preflight/sources/**"
+      - "src/paper_preflight/resolve.py"
+      - "evals/live_smoke.py"
+      - "examples/demo-paper/**"
+      - ".github/workflows/live.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: The demo paper's online expectations hold against the live sources
+        env:
+          # optional: puts Crossref requests in its polite pool; the check runs without it
+          PAPER_PREFLIGHT_EMAIL: ${{ secrets.PAPER_PREFLIGHT_EMAIL }}
+        run: uv run python evals/live_smoke.py
