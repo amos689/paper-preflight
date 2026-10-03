@@ -135,7 +135,7 @@ def main() -> None:
                 continue
             data = record(case)
             target.write_text(
-                json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+                json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8"
             )
             ok = data["recorded"]["rules"] == sorted(case["expect"])
             print(f"{'ok ' if ok else 'BAD'} {case['name']}: {data['recorded']} "
