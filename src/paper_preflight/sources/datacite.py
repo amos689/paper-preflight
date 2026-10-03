@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
 from typing import Any
 
@@ -14,12 +15,18 @@ BATCH = 25
 FIELDS = "doi,titles,creators,publicationYear,version,types,url,identifiers,publisher,dates"
 
 POLICY = SourcePolicy(name="datacite", min_interval=1.0)
+# Zenodo titles a GitHub release "owner/repo: tag" ("pyRiemann/pyRiemann: v0.10"); the work is
+# the repository, as its citation names it
+_GITHUB_RELEASE = re.compile(r"^[\w.-]+/([\w.-]+): v?\d[\w.+-]*$")
 
 
 def parse_doi(data: dict[str, Any]) -> SourceRecord:
     attributes = data.get("attributes") or {}
     doi = str(attributes.get("doi") or data.get("id") or "").lower()
     titles = [plain_title(str(t.get("title", ""))) for t in attributes.get("titles") or []]
+    release = _GITHUB_RELEASE.match(titles[0]) if titles else None
+    if release:
+        titles = [release.group(1), *titles]
     authors: list[Person] = []
     for creator in attributes.get("creators") or []:
         if creator.get("nameType") == "Organizational" or not (

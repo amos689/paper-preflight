@@ -552,3 +552,31 @@ def test_apostrophes_do_not_make_another_person(written: str, recorded: str) -> 
     )
     check = check_authors(parse_authors(written), record)
     assert (check.status, check.missing) == ("match", ())
+
+
+@pytest.mark.parametrize(
+    ("entry", "recorded"),
+    [
+        # IEEE's section label (10.1109/mci.2015.2471235)
+        ("Ensemble Classification and Regression-Recent Developments, Applications and Future "
+         "Directions", "Ensemble Classification and Regression-Recent Developments, "
+         "Applications and Future Directions [Review Article]"),
+        # a letter Crossref lost (10.1007/bf01336768)
+        ("Berechnung der nat{\\\"u}rlichen Linienbreite auf Grund der Diracschen Lichttheorie",
+         "Berechnung der nat\ufffdrlichen Linienbreite auf Grund der Diracschen Lichttheorie"),
+        # Crossref keeps only the main title (10.1016/bs.aamop.2017.02.003)
+        ("Optical Nanofibers: A New Platform for Quantum Optics", "Optical Nanofibers"),
+    ],
+)  # fmt: skip
+def test_registry_title_artefacts_are_not_differences(entry: str, recorded: str) -> None:
+    (parsed,) = parse_bib_text(f"@article{{k, title = {{{entry}}}}}", Path("x.bib")).entries
+    record = SourceRecord(source="crossref", source_id="x", title=recorded)
+    check = check_title(parsed.text("title"), record)
+    assert check.status in {"match", "variant"}
+    assert not check.changed
+
+
+def test_a_lost_letter_matches_only_its_place() -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="Ein nat\ufffdrlicher Fall")
+    assert check_title("Ein natürlicher Fall", record).changed == ()
+    assert check_title("Ein künstlicher Fall", record).changed

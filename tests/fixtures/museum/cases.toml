@@ -690,3 +690,31 @@ source = "real_papers:2607.06902v1"
 key = "Corbett+00"
 expect = []
 note = "was REF013: MNRAS 319(3), December 2000 (the DOI says 2000); Crossref's backfile deposit gives 2002"
+
+[[case]]
+name = "fp-ren2016ensemble"
+source = "real_papers:2607.06872v2"
+key = "ren2016ensemble"
+expect = []
+note = "was REF012: Crossref's title ends with IEEE's section label '[Review Article]'"
+
+[[case]]
+name = "fp-weisskopf1930"
+source = "real_papers:2607.06888v1"
+key = "Weisskopf1930"
+expect = []
+note = "was REF012: Crossref's title has U+FFFD for the 'ü' of 'natürlichen'"
+
+[[case]]
+name = "fp-solano2017optical"
+source = "real_papers:2607.06888v1"
+key = "solano2017optical"
+expect = []
+note = "was REF012: Crossref keeps only 'Optical Nanofibers' of 'Optical Nanofibers: A New Platform for Quantum Optics'"
+
+[[case]]
+name = "fp-pyriemann"
+source = "real_papers:2607.07047v3"
+key = "pyriemann"
+expect = ["REF011"]
+note = "was REF012 (and REF011, unclear): DataCite titles the release 'pyRiemann/pyRiemann: v0.10'"
