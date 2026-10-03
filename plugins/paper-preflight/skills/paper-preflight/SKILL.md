@@ -37,6 +37,10 @@ Fix errors first, then warnings. Re-run the check after editing.
 | REF017 identifier written incorrectly | Apply the suggested form; it is a safe fix. |
 | REF090 cannot determine | Do not guess. List these references for the user to confirm by hand, with the reason given. |
 
+Safe fixes (identifier formatting, missing DOIs) can be applied with
+`paper-preflight bib fix <path> --apply`. For authors, title, year or venue, show the user the
+diff from `paper-preflight bib fix <path> --level unsafe` before applying it.
+
 ## Never
 
 - Never write or complete a BibTeX entry from memory. Get it with the `preflight_bib_lookup`

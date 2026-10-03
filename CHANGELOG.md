@@ -40,3 +40,6 @@ All notable changes to this project are documented here. The format follows
   record (published versions of preprints keep their eprint; retracted works warn; ambiguous
   titles list candidates; `--format json` for agents).
 - MCP tool `preflight_bib_lookup`: `bib fetch` for agents.
+- `bib fix`: edits the .bib files from the verified records, as a diff or with `--apply`;
+  `--level safe` (identifier formatting, missing DOIs) or `unsafe` (also authors, title, year,
+  venue, wrong identifiers). Only the affected fields change. REF016 offers a missing DOI.

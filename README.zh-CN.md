@@ -20,7 +20,7 @@
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
 > **状态：早期版本。** 下面列出的检查现在就能用；在首个 PyPI 版本（v0.1，计划 2026 年 11 月）
-> 发布之前，请从 GitHub 安装。`bib fix` 是下一步。
+> 发布之前，请从 GitHub 安装。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
 （直连真实数据源）的完整输出：
@@ -155,6 +155,34 @@ paper-preflight bib fetch 1810.04805
 - **撤稿：** 已撤稿的作品会附带警告。
 - **给脚本和 AI 助手用：** 加 `--format json`。
 
+## 修复参考文献
+
+`bib fix` 把核查发现变成对 `.bib` 文件的修改，修改内容取自已核实的记录。它默认只输出 diff，加上
+`--apply` 才会写回文件：
+
+```bash
+paper-preflight bib fix path/to/paper --level unsafe
+```
+
+```diff
+--- a/refs.bib
++++ b/refs.bib
+@@ -48,7 +47,7 @@
+   title     = {Adam: A Method for Stochastic Optimization},
+   author    = {Kingma, Diederik P. and Ba, Jimmy},
+   booktitle = {International Conference on Learning Representations (ICLR)},
+-  year      = {2016},
++  year      = {2015},
+ }
+```
+
+- `--level safe`（默认）只修不会改变所引作品的问题：会让链接失效的标识符写法，以及登记机构有、
+  条目里却缺的 DOI。
+- `--level unsafe` 还会按记录改写作者、标题、年份和发表场所，并删除指向别的论文的标识符。请先看
+  diff 再应用。
+- 只改涉及的字段；注释、排版、换行符和编码都保持原样。查无此文的条目永远不会被"修好"：引用的到底
+  是什么，只有你能回答。
+
 ## 在编码助手里使用
 
 **Claude Code**：安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考
@@ -217,7 +245,6 @@ claude plugin install paper-preflight@paper-preflight
 
 ## 路线图
 
-- `bib fix`（按已核实记录生成可审阅的修复补丁）
 - GitHub Action，以及首个 PyPI 版本（v0.1）
 - 中文参考文献（v0.2）
 
