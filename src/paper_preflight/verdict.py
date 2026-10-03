@@ -46,6 +46,7 @@ from paper_preflight.sources.record import SourceRecord
 MIN_NOT_FOUND_WORDS = 5  # shorter titles are too generic to conclude "not found"
 MAX_YEAR_ONLY_GAP = 3  # same title and authors, year off by more than this: do not bind
 MIN_TITLE_ONLY_WORDS = 6  # a title this long names one work, even when the authors differ
+MIN_TITLE_ANY_YEAR_WORDS = 8  # ... and one this long does even in another year
 MIN_VENUE_TITLE_WORDS = 4  # ... and one this long does too, at the same venue in the same year
 MAX_REWORDED_WORDS = 2  # a title this many words off is the same work, given the same people
 MIN_REWORDED_SCORE = 0.85  # ... and this similar overall
@@ -295,6 +296,9 @@ def _bind_candidate(
         return min(reworded, key=_rank)
     # Same long title, same year, one work, but other authors: that is the cited work with wrong
     # authors (REF010/REF011: HALLMARK's placeholder and swapped authors), not a missing one.
+    # A title of eight words or more names one work even a few years off: "To Trust Or Not To
+    # Trust A Classifier" (NeurIPS 2018, Jiang, Kim, Guan, Gupta) cited as ICLR 2021 by five
+    # other people (Badalova & Mayr) is that paper with wrong authors, venue and year.
     # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap.
     # A shorter title ("Explanations for Monotonic Classifiers") names one work only together
     # with the same recognised venue in the same year.
@@ -307,7 +311,14 @@ def _bind_candidate(
         for m in evaluated
         if m.title.status == "match"
         and m.authors.status == "mismatch"
-        and m.year.status in {"match", "variant"}
+        and (
+            m.year.status in {"match", "variant"}
+            or (
+                words >= MIN_TITLE_ANY_YEAR_WORDS
+                and not m.title.changed  # word for word: not "... Opacities. VI" for "... II"
+                and _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP
+            )
+        )
         and m.suspicious is None
         and (words >= MIN_TITLE_ONLY_WORDS or m.venue.status == "match")
     ]

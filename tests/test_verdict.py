@@ -864,3 +864,34 @@ def test_the_published_version_is_the_one_by_the_preprints_authors() -> None:
         f for f in assess(entry, item, current_year=YEAR).findings if f.rule_id == "REF015"
     ]
     assert finding.data["published_id"] == "journals/tkde/x16"
+
+
+TRUST = """
+@inproceedings{jiang2021trust,
+  title = {To trust or not to trust a classifier},
+  author = {Jiang, Hao and Pang, Bo and Ding, Wei and Xu, Jian and Carin, Lawrence},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year = {2021},
+}
+"""
+
+
+@pytest.mark.parametrize(
+    ("found_title", "bound"),
+    [
+        # NeurIPS 2018 by Jiang, Kim, Guan and Gupta: the cited work with invented authors
+        ("To Trust Or Not To Trust A Classifier", True),
+        # one word off is another paper of a series, not a reason to accuse across years
+        ("To Trust Or Not To Trust A Regressor", False),
+    ],
+)
+def test_a_long_title_names_one_work_a_few_years_off(found_title: str, bound: bool) -> None:
+    entry = bib(TRUST)
+    authors = (Person("Jiang", "Heinrich"), Person("Kim", "Been"), Person("Guan", "Melody Y."),
+               Person("Gupta", "Maya R."))  # fmt: skip
+    found = record(found_title, authors, 2018, source="dblp", venue="NeurIPS")
+    result = assess(entry, search_result(entry, found), current_year=YEAR)
+    if bound:
+        assert {"REF011", "REF013"} <= rules(result)
+    else:
+        assert result.verdict is Verdict.CANNOT_DETERMINE

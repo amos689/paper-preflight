@@ -718,3 +718,17 @@ source = "real_papers:2607.07047v3"
 key = "pyriemann"
 expect = ["REF011"]
 note = "was REF012 (and REF011, unclear): DataCite titles the release 'pyRiemann/pyRiemann: v0.10'"
+
+[[case]]
+name = "real-bm-p3r19"
+source = "badalova_mayr"
+key = "p3r19"
+expect = ["REF011", "REF013", "REF014"]
+note = "real problem: 'To trust or not to trust a classifier' (NeurIPS 2018, Jiang, Kim, Guan, Gupta) cited as ICLR 2021 by five other people"
+
+[[case]]
+name = "fp-bressan1993-parsec"
+source = "real_papers:2607.00291v1"
+key = "bressan1993-parsec"
+expect = []
+note = "guard: paper II of a series (1993), not to be bound to paper VI (1996) of the same title"
