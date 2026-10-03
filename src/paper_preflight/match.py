@@ -526,7 +526,7 @@ def venue_words(text: str | None) -> set[str]:
     return {w for w in words if len(w) >= 3 and w not in _VENUE_FILLER}
 
 
-def _related(ours: set[str], theirs: set[str]) -> bool:
+def related_words(ours: set[str], theirs: set[str]) -> bool:
     """Some word of one name abbreviates or equals a word of the other ("recog"/"recognition")."""
     return any(a.startswith(b) or b.startswith(a) for a in ours for b in theirs)
 
@@ -538,7 +538,7 @@ def _abbreviates(word: str, known: set[str]) -> bool:
 
 # Series and publishers that stand in for a venue name ("Proceedings of Machine Learning
 # Research" for ICML); they say nothing about which venue it was.
-_VENUE_SERIES = re.compile(
+VENUE_SERIES = re.compile(
     r"proceedings of machine learning research|\bpmlr\b|"
     r"lecture notes in (computer science|artificial intelligence|bioinformatics)|\blncs\b|"
     r"\blnai\b|openreview(\.net)?|curran associates|\bceur\b|springer|elsevier|mit press|"
@@ -564,7 +564,7 @@ def check_venue(venue: str | None, record: SourceRecord, *, named: bool = True) 
             return FieldCheck("match")
         return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
     if mine is None and theirs is not None and named and venue:
-        ours = venue_words(_VENUE_SERIES.sub(" ", venue))
+        ours = venue_words(VENUE_SERIES.sub(" ", venue))
         # every word of the recorded name and its known forms, filler included ("adv", "proc")
         names = [record.venue or "", _VENUE_FULL_NAMES.get(theirs, "")]
         names += next(p for k, p in _VENUES if k == theirs)

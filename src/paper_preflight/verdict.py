@@ -27,12 +27,15 @@ from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
     NAMED_VENUE_FIELDS,
     VENUE_FIELDS,
+    VENUE_SERIES,
     EntryInfo,
     Match,
     best_candidate,
     canonical_venue,
     evaluate,
     is_preprint,
+    related_words,
+    venue_words,
     wrong_paper,
 )
 from paper_preflight.resolve import GREY_TYPES, Evidence, looks_cs
@@ -256,6 +259,7 @@ def _bind_candidate(
             or m.venue.status == "match"
             or _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP
         )
+        and not (m.year.status == "mismatch" and other_publication(info, m))
     ]
     if len({title_key(m.record.title) for m in strong}) == 1:
         return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
@@ -332,6 +336,25 @@ def _describe_changes(changes: tuple[tuple[str, str], ...], lang: str) -> str:
 
 def _changed_words(changes: tuple[tuple[str, str], ...]) -> int:
     return sum(max(len(mine.split()), len(recorded.split())) for mine, recorded in changes)
+
+
+def other_publication(info: EntryInfo, m: Match) -> bool:
+    """The record appeared somewhere else than the entry says: another publication of the title.
+
+    The same authors publish one title twice (Asplund, Grevesse & Sauval, "The Solar Chemical
+    Composition": ASP Conf. Ser. 336, 2005, and Nuclear Physics A, 2006). With the year off as
+    well and two venue names that share no word, the record is that other publication, not the
+    cited one with a wrong year. Recognised venues are left to the venue check (an invented
+    "IJCAI 2023" for a NeurIPS 2021 paper is a wrong venue, not another paper), and so are
+    preprints, which precede every publication.
+    """
+    if info.venue is None or info.venue_field not in NAMED_VENUE_FIELDS or not m.record.venue:
+        return False
+    if is_preprint(m.record) or canonical_venue(info.venue) or canonical_venue(m.record.venue):
+        return False
+    ours = venue_words(VENUE_SERIES.sub(" ", info.venue))
+    theirs = venue_words(VENUE_SERIES.sub(" ", m.record.venue))
+    return bool(ours) and bool(theirs) and not related_words(ours, theirs)
 
 
 def _year_gap(year: int | None, record: SourceRecord) -> int:

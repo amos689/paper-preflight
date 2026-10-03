@@ -723,3 +723,33 @@ def test_a_known_published_version_keeps_the_year_check() -> None:
     published = replace(record(source="dblp", year=2021, venue="NeurIPS"), source_id="conf/x")
     result = assess(entry, search_result(entry, preprint, published), current_year=YEAR)
     assert "REF013" in rules(result)
+
+
+SOLAR = """
+@inproceedings{asplund2005,
+  title = {The Solar Chemical Composition},
+  author = {Asplund, Martin and Grevesse, Nicolas and Sauval, A. Jacques},
+  booktitle = {Cosmic Abundances as Records of Stellar Evolution and Nucleosynthesis},
+  series = {Astronomical Society of the Pacific Conference Series},
+  volume = {336},
+  year = {2005},
+}
+"""
+
+
+@pytest.mark.parametrize(
+    ("venue", "year", "reported"),
+    [
+        ("Nuclear Physics A", 2006, False),  # the same authors' journal paper of the same title
+        ("Nuclear Physics A", 2005, False),  # same year: nothing to report either way
+        ("Cosmic Abundances as Records of Stellar Evolution", 2006, True),  # the cited one
+    ],
+)
+def test_another_publication_of_the_title_does_not_correct_the_year(
+    venue: str, year: int, reported: bool
+) -> None:
+    entry = bib(SOLAR)
+    authors = (Person("Asplund", "M."), Person("Grevesse", "N."), Person("Sauval", "A. J."))
+    found = record("The Solar Chemical Composition", authors, year, source="dblp", venue=venue)
+    result = assess(entry, search_result(entry, found), current_year=YEAR)
+    assert ("REF013" in rules(result)) is reported
