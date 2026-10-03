@@ -1,0 +1,60 @@
+# HALLMARK v1.2.3 dev_public entries labelled VALID that are not correct citations.
+#
+# Every entry was checked by hand against the registries on 2026-10-03. Results are always
+# reported as HALLMARK labels them; evals/run_hallmark.py adds a second summary that leaves these
+# entries out. Each reason can be checked with one lookup.
+
+[[entry]]
+key = "d0f7f9c72c33"
+title = "IBRNet: Learning Multi-View Image-Based Rendering"
+reason = "DOI 10.1109/CVPR46437.2021.00469 is 'Delving into Localization Errors for Monocular 3D Object Detection' (Crossref)."
+
+[[entry]]
+key = "ed071a6dfa34"
+title = "Improving Robustness using Generated Data"
+reason = "DOI 10.48550/arXiv.2104.09425 is 'Robust Learning Meets Generative Models: Can Proxy Distributions Improve Adversarial Robustness?' by Sehwag et al. (DataCite)."
+
+[[entry]]
+key = "f802800935ef"
+title = "ImageBind: One Embedding Space To Bind Them All"
+reason = "DOI 10.1109/CVPR52729.2023.02141 is 'Spatial-Frequency Mutual Learning for Face Super-Resolution' (Crossref)."
+
+[[entry]]
+key = "ff2931c3228f"
+title = "An Empirical Study of Training Self-Supervised Vision Transformers"
+reason = "DOI 10.1109/ICCV48922.2021.00952 is 'Do Image Classifiers Generalize Across Time?' (Crossref)."
+
+[[entry]]
+key = "ded9f5844e90"
+title = "TensoRF: Tensorial Radiance Fields"
+reason = "DOI 10.1007/978-3-031-19830-4_20 is 'ESS: Learning Event-Based Semantic Segmentation from Still Images' (Crossref)."
+
+[[entry]]
+key = "e9e08922a057"
+title = "PaLM: Scaling Language Modeling with Pathways"
+reason = "Lists Armand Joulin, Arman Cohan, Yiming Wang, Mostafa Dehghani, Yonghui Wu and Ed Chi, who are not PaLM authors, and Noam Shazeer twice (arXiv 2204.02311). HALLMARK's own note: 'Authors don't match CrossRef'."
+
+[[entry]]
+key = "a24129d1c5e5"
+title = "Flamingo: a Visual Language Model for Few-Shot Learning"
+reason = "Lists Skanda Koppula, Michal Valko, Ludovic Denoyer and Joao Carreira, who are not Flamingo authors (arXiv 2204.14198)."
+
+[[entry]]
+key = "c65faf378a95"
+title = "OPT: Open Pre-trained Transformer Language Models"
+reason = "Lists Emily Dinan and Zhiguo Du, who are not OPT authors, and 'Mona Dewan' for Christopher Dewan (arXiv 2205.01068)."
+
+[[entry]]
+key = "f36bff1b0e11"
+title = "Re2TAL: Rewiring Pretrained Video Backbones for Reversible Temporal Action Localization"
+reason = "HALLMARK's own note: 'Real paper cited with wrong venue CVPR and year shifted to 2022'."
+
+[[entry]]
+key = "fa77166308b0"
+title = "Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding"
+reason = "Lists the same author twice, as 'Raphael Gontijo-Lopes' and as 'Raphael Lopes' (arXiv 2205.11487)."
+
+[[entry]]
+key = "a687f76f3a21"
+title = "LatentOut: an unsupervised deep anomaly detection approach exploiting latent space distribution"
+reason = 'The title field is truncated to "${{\mathrm {Latent" (DOI 10.1007/s10994-022-06153-4 in Crossref has the full title).'

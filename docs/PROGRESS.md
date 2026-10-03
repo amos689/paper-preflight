@@ -69,16 +69,31 @@
 - 共 180 个测试；ruff、mypy strict 全过。测试从不联网：`tests/conftest.py` 把 `check` 指向录制的响应，并清空凭据变量
 - 2026-10-03 实跑示例论文（真实来源、空缓存、带 key）：20 秒，运行完整，11 条判定全部符合 `examples/demo-paper/EXPECTED.md`
 
+## W3：评测、集成与分发（2026-10-03，提前）
+
+| PR | 内容 |
+|---|---|
+| #13 | HALLMARK 评测框架（`evals/run_hallmark.py`）：flag / clean / abstain 三种结果，"仅伪造 / 任一问题"两种口径 |
+| #14–#18 | 评测发现的问题：带版本号的 arXiv DOI、转写姓氏、前缀未注册的 DOI、真 DOI 配编造标题、未来年份与被替换的作者 |
+| #19 | `doctor` 逐个检查数据源连通性 |
+| #20 | MCP 服务（`paper-preflight mcp`，`[mcp]` 附加依赖）：只读、限于工作区、分页 |
+| #21 | Claude Code 插件与市场（`plugins/paper-preflight`）：MCP + `paper-preflight` 技能 |
+| #22 | pre-commit 钩子（离线版与在线版） |
+| #23 | `explain` 命令 |
+| #24–#27 | 全量评测发现的问题：dblp 前缀以标点结尾、HTML 实体、复姓与来源错字、标题里的排版标记 |
+
+- 全量评测（dev_public 1119 条）结果见 `evals/results/hallmark-dev_public.md`；人工核实为标签错误的 VALID 条目列在 `evals/hallmark_disputed.toml`，结果另附剔除它们后的表
+- 规则：每个误报都要查到根因；是我们的 bug 就单独开 PR 修，是基准标签问题就写进争议清单并附可核查的理由
+
 ## 下一步
 
-- [ ] 评测框架：HALLMARK dev_public 首跑，标签映射，按"仅伪造 / 任一问题"两种口径算精确率、召回率与覆盖率
-- [ ] `doctor` 加入数据源连通性检查（不打印凭据）
+- [ ] README 演示与基准成绩（发布前），中英文
+- [ ] `bib fetch` / `bib fix`
+- [ ] 批量查询改为按条目缓存：现在按整批缓存，.bib 改动后离线模式会整批失效
 - [ ] Crossref 不可用时，用 S2 批量接口按 DOI/arXiv 兜底（需要客户端支持 POST）
 - [ ] REF016（可补充的标识符）、REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
 - [ ] 运行清单（run manifest）；`--refresh`、`--final`、`--record/--replay`
-- [ ] `bib fetch` / `bib fix`
-- [ ] Agent Skills、MCP 服务、插件清单、pre-commit 钩子
-- [ ] README 使用说明与演示（发布前）
+- [ ] GitHub Action；PyPI 0.0.1 占名（需要用户操作）
 
 ## 已知问题与备忘
 
@@ -87,6 +102,7 @@
 - 后台任务运行期间，提交只用显式路径 `git add <path>`，不要用 `git add -A`。
 - arXiv API 常限流（429 或超时）。#10 之后会自动改走 DataCite，但报告仍会注明 arXiv 不可用（撤回状态只有 arXiv 知道）。
 - S2 key 的条款：所有接口合计每秒不超过 1 次。适配器按 1.1 秒间隔单连接请求；同时开两个进程会共用 key，可能合计超限。
+- 叠放的 PR：合并父 PR 之前，先用 `gh pr edit <子PR> --base main` 转走，否则删分支会把子 PR 关掉且无法重开
 - 实跑验证时用临时缓存：设 `PAPER_PREFLIGHT_CACHE_DIR` 指向草稿目录，避免污染真实缓存；不要打印凭据的值。
 - 在 Claude 应用内运行时，平台缓存目录（`AppData\Local\paper-preflight`）也会被沙箱重定向；在你自己的终端里运行时位置不同，属正常现象。
 - 使用 uv 前，Git Bash 中需要：
