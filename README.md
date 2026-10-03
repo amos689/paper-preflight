@@ -89,8 +89,8 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 
 ## How accurate is it?
 
-Two measurements, both against the live sources: the bibliographies of real papers and a
-public benchmark.
+Three measurements, all against the live sources: the bibliographies of real papers, a
+head-to-head with published tools, and a public benchmark.
 
 ### On real papers
 
@@ -109,6 +109,27 @@ and error reviewed by hand:
   the 1950s and 60s) and records of a related publication of the same title.
 - **A first batch of 20 papers was used to find false positives:** on it, 0.1.0 had 4.5 per 100
   references, the fixed code 0.1. Details in [`evals/README.md`](evals/README.md#real-papers).
+
+### Next to other tools
+
+[Badalova & Mayr (2026)](https://doi.org/10.5281/zenodo.21457492) checked 104 references by hand
+and published what five tools flagged. On the same references, with their labels:
+
+| Tool | Precision [95% CI] | Recall | False flags per 100 correct references |
+|---|---|---|---|
+| CheckIfExist | 47.7% [36.0%, 59.6%] | 93.9% | 47.9 |
+| HalluCiteChecker | 47.4% [32.5%, 62.7%] | 54.5% | 28.2 |
+| Hallucinator | 50.9% [38.3%, 63.4%] | 87.9% | 39.4 |
+| HalRef | 31.2% [21.9%, 42.2%] | 72.7% | 74.6 |
+| RefChecker | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
+| **paper-preflight** | **69.2% [53.6%, 81.4%]** | 81.8% | **16.9** |
+
+The sample is small, so the intervals are wide. Some flags count as false here because the study
+labels a reference correct when the work exists: five of paper-preflight's flags on such
+references point at real errors (a wrong author, a broken DOI). Two causes of false flags found
+in this data were fixed, and four names the study's CSV garbled were restored, before the run
+above; the first run measured 62.8%. See
+[`evals/results/badalova-mayr.md`](evals/results/badalova-mayr.md).
 
 ### On a benchmark: HALLMARK
 
