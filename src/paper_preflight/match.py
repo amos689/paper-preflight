@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from difflib import SequenceMatcher
 from functools import cache
 from importlib import resources
@@ -152,15 +152,16 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
     return tuple(changes)
 
 
+EARLIER_VERSION = "matches an earlier version's title"
+
+
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
-    for candidate, note in [(record.title, "")] + [
-        (t, "matches an earlier version's title") for t in record.alt_titles
-    ]:
+    for candidate, note in [(record.title, "")] + [(t, EARLIER_VERSION) for t in record.alt_titles]:
         score = title_score(entry_title, candidate)
         if score > best:
             best, best_note = score, note
@@ -555,7 +556,12 @@ class Match:
 
 def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = False) -> Match:
     title = check_title(info.title, record)
-    authors = check_authors(info.authors, record)
+    # An entry citing an earlier arXiv version lists that version's authors, whose order a later
+    # version may have changed (arXiv 2508.03341 put its second author first in v4).
+    if title.note == EARLIER_VERSION:
+        authors = check_authors(info.authors, replace(record, authors_ordered=False))
+    else:
+        authors = check_authors(info.authors, record)
     year = check_year(info.year, record, preprint_pair=preprint_pair)
     venue = check_venue(info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS)
     suspicious = suspicious_reason(record, info.year)
