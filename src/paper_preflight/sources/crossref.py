@@ -22,7 +22,7 @@ SELECT = ",".join(
     [
         "DOI", "title", "subtitle", "type", "author", "issued", "published-print",
         "published-online", "container-title", "event", "updated-by", "relation", "volume",
-        "issue", "page", "publisher", "member", "prefix", "URL",
+        "issue", "page", "publisher", "member", "prefix", "URL", "created",
     ]
 )  # fmt: skip
 
@@ -65,6 +65,18 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     years = {
         y for y in (_year(item, k) for k in ("issued", "published-print", "published-online")) if y
     }
+    # Early access: IEEE and others put an article online a year or more before its issue but
+    # deposit no online date, only the DOI's creation (DOI 10.1109/tpami.2023.3330794: online
+    # November 2023, issue April 2024). Authors cite either year.
+    created = _year(item, "created")
+    if (
+        item.get("type") == "journal-article"
+        and not item.get("published-online")
+        and created
+        and years
+        and 0 < min(years) - created <= 2
+    ):
+        years.add(created)
     venue = None
     containers = item.get("container-title") or []
     if containers:
