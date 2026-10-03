@@ -131,6 +131,34 @@ def test_disjoint_authors(demo: dict[str, EntryInfo], cvpr: SourceRecord) -> Non
     assert check.disjoint
 
 
+def record_with(*families: str) -> SourceRecord:
+    return SourceRecord(
+        source="crossref", source_id="x", title="t", authors=tuple(Person(f) for f in families)
+    )
+
+
+def test_transcribed_surnames_match() -> None:
+    # HALLMARK VALID entry: the .bib has "Simon Reiß", Crossref has "Reis"
+    entry = parse_authors("Kailun Yang and Simon Reiß and Rainer Stiefelhagen")
+    assert check_authors(entry, record_with("Yang", "Reis", "Stiefelhagen")).status == "match"
+    umlaut = parse_authors("Jürgen Müller and Anna Schäfer")
+    assert check_authors(umlaut, record_with("Mueller", "Schaefer")).status == "match"
+
+
+def test_different_surnames_stay_different() -> None:
+    for written, recorded in (("Chen", "Cheng"), ("Lee", "Le"), ("Wang", "Wan")):
+        authors = parse_authors(f"Ann {written} and Bo Li")
+        check = check_authors(authors, record_with(recorded, "Li"))
+        assert not check.first_author_match, (written, recorded)
+        assert check.missing == (f"Ann {written}",)
+
+
+def test_an_exact_surname_is_not_taken_by_a_variant() -> None:
+    # "Reis" on the record must pair with the entry's "Reis", leaving "Reiss" to match "Reiss"
+    entry = parse_authors("Ana Reiss and Bo Reis")
+    assert check_authors(entry, record_with("Reiss", "Reis")).status == "match"
+
+
 def test_fabricated_coauthor_is_detected(cvpr: SourceRecord) -> None:
     authors = parse_authors("He, Kaiming and Lindqvist, Aurelio and Ren, Shaoqing and Sun, Jian")
     check = check_authors(authors, cvpr)
