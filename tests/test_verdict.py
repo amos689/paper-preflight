@@ -895,3 +895,21 @@ def test_a_long_title_names_one_work_a_few_years_off(found_title: str, bound: bo
         assert {"REF011", "REF013"} <= rules(result)
     else:
         assert result.verdict is Verdict.CANNOT_DETERMINE
+
+
+def test_no_control_characters_in_the_source() -> None:
+    # a "\b" written through a tool once became a backspace in a raw-string pattern (#60)
+    package = Path(__file__).parent.parent / "src" / "paper_preflight"
+    for path in package.rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        assert not [c for c in text if ord(c) < 32 and c not in "\n\t"], path
+
+
+@pytest.mark.parametrize("venue", ["CoRR abs/2101.00001", "corr"])
+def test_corr_names_a_preprint(venue: str) -> None:
+    entry = bib(
+        ARXIV_ENTRY.replace("  year = {2021},", f"  journal = {{{venue}}},\n  year = {{2021}},")
+    )
+    published = record(source="dblp", year=2022, venue="ACL")
+    item = evidence_for(entry, anchored=[arxiv_record()], published_versions=[published])
+    assert "REF015" in rules(assess(entry, item, current_year=YEAR))
