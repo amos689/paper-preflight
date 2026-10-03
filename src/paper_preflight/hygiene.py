@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,7 +12,7 @@ from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry, BibFile
 from paper_preflight.findings import Finding, Location
 from paper_preflight.identifier_lint import check_identifier_syntax
-from paper_preflight.rules import make_finding
+from paper_preflight.rules import RULES, make_finding
 from paper_preflight.tex.auxdata import AuxData
 from paper_preflight.tex.project import TexProject
 
@@ -46,6 +47,11 @@ def _entry_location(entry: BibEntry) -> Location:
 
 
 def check_hygiene(data: HygieneInput) -> list[Finding]:
+    return check_hygiene_tracked(data)[0]
+
+
+def check_hygiene_tracked(data: HygieneInput) -> tuple[list[Finding], set[tuple[str, str]]]:
+    """The hygiene findings, and the (key, rule) pairs whose suppression dropped one."""
     findings: list[Finding] = []
     entries: dict[str, BibEntry] = {}
     for bib in data.bib_files:
@@ -182,19 +188,52 @@ def _near_duplicates(entries: list[BibEntry]) -> list[Finding]:
     return findings
 
 
-def _apply_suppressions(findings: list[Finding], entries: dict[str, BibEntry]) -> list[Finding]:
+def _apply_suppressions(
+    findings: list[Finding], entries: dict[str, BibEntry]
+) -> tuple[list[Finding], set[tuple[str, str]]]:
     """Drop findings suppressed by ``% preflight: ignore[RULE]`` comments above their entry.
 
-    Reporting unused suppressions (CFG001) needs every rule to have run, so it lives in the
-    full pipeline rather than here.
+    Also returns the (key, rule) pairs that dropped something. Reporting unused suppressions
+    (CFG001) needs every rule to have run, so it happens in the full pipeline
+    (:func:`unused_suppressions`).
     """
     kept: list[Finding] = []
+    used: set[tuple[str, str]] = set()
     for finding in findings:
         entry = entries.get(finding.key) if finding.key else None
         if entry is not None and entry.suppressed(finding.rule_id):
+            used.add((entry.key, finding.rule_id))
             continue
         kept.append(finding)
-    return kept
+    return kept, used
+
+
+def unused_suppressions(
+    entries: Iterable[BibEntry],
+    used: set[tuple[str, str]],
+    judged: Callable[[BibEntry, str], bool],
+) -> list[Finding]:
+    """CFG001 for every suppressed rule that dropped nothing on its entry.
+
+    ``judged(entry, rule)`` says whether the rule actually ran on the entry: a rule that could
+    not run (no LaTeX project, an unverified reference) proves nothing. Unknown rule names are
+    always reported: they can never have an effect.
+    """
+    findings: list[Finding] = []
+    for entry in entries:
+        for suppression in entry.suppressions:
+            for rule in sorted(suppression.rules):
+                if rule == "CFG001" or (entry.key, rule) in used:
+                    continue
+                if rule in RULES and not judged(entry, rule):
+                    continue
+                findings.append(
+                    make_finding(
+                        "CFG001", Location(entry.file, suppression.line, 1), key=entry.key,
+                        rule=rule,
+                    )
+                )  # fmt: skip
+    return findings
 
 
 def bib_paths_for(project: TexProject, extra: list[Path]) -> list[Path]:

@@ -36,6 +36,8 @@ All notable changes to this project are documented here. The format follows
   only) and `paper-preflight` (full online verification).
 - `paper-preflight explain [RULE]`: what a rule detects, its severity, its message and whether a
   fix is safe; without an argument it lists every rule.
+- CFG001: a `% preflight: ignore[...]` comment that silenced nothing is reported (info), among
+  the rules that ran on its entry; unknown rule names always are. Documented in the README.
 - First full HALLMARK dev_public results (`evals/results/hallmark-dev_public.md`), with a second
   summary that leaves out labels checked by hand and found wrong (`evals/hallmark_disputed.toml`).
 - `bib fetch <DOI|arXiv ID>` or `bib fetch --title ...`: a BibTeX entry built from the registry

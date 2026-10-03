@@ -6,6 +6,7 @@ from typer.testing import CliRunner
 
 from paper_preflight.check import run_check
 from paper_preflight.cli import EXIT_FINDINGS, EXIT_OK, EXIT_USAGE, app
+from paper_preflight.findings import Finding
 
 runner = CliRunner()
 
@@ -145,3 +146,43 @@ def test_fingerprints_are_stable_when_lines_move(project: Path) -> None:
     refs.write_text("\n\n\n" + refs.read_text(encoding="utf-8"), encoding="utf-8")
     after = {f.fingerprint for f in run_check(project).findings if f.rule_id == "CIT003"}
     assert before == after
+
+
+def unused(findings: list[Finding]) -> list[tuple[str | None, str, int]]:
+    return sorted(
+        (f.key, f.data["rule"], f.location.line if f.location else 0)
+        for f in findings
+        if f.rule_id == "CFG001"
+    )
+
+
+SUPPRESSIONS = """% preflight: ignore[CIT006, CIT004] reason="sparse on purpose"
+@article{a, title = {Sparse}}
+
+% preflight: ignore[REF003, CIT0006]
+@article{b, author = {Doe, Jane}, title = {A Perfectly Fine Paper About Testing},
+  journal = {J}, year = {2020}}
+"""
+
+
+def test_unused_suppressions_are_reported(tmp_path: Path) -> None:
+    root = tmp_path / "paper"
+    root.mkdir()
+    (root / "main.tex").write_text(
+        r"\documentclass{article}\begin{document}\cite{a,b}\bibliography{refs}\end{document}",
+        encoding="utf-8",
+    )
+    (root / "refs.bib").write_text(SUPPRESSIONS, encoding="utf-8")
+    # CIT006 dropped a finding and CIT004 did not; REF003 never ran (nothing was verified);
+    # CIT0006 is no rule at all
+    assert unused(run_check(root).findings) == [("a", "CIT004", 1), ("b", "CIT0006", 4)]
+
+
+def test_project_rules_are_not_judged_on_a_bib_file_alone(tmp_path: Path) -> None:
+    bib = tmp_path / "refs.bib"
+    bib.write_text(
+        "% preflight: ignore[CIT003]\n"
+        "@article{a, author = {Doe, Jane}, title = {T}, journal = {J}, year = {2020}}\n",
+        encoding="utf-8",
+    )
+    assert unused(run_check(bib).findings) == []
