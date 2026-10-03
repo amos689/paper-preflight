@@ -34,3 +34,5 @@ All notable changes to this project are documented here. The format follows
   only) and `paper-preflight` (full online verification).
 - `paper-preflight explain [RULE]`: what a rule detects, its severity, its message and whether a
   fix is safe; without an argument it lists every rule.
+- First full HALLMARK dev_public results (`evals/results/hallmark-dev_public.md`), with a second
+  summary that leaves out labels checked by hand and found wrong (`evals/hallmark_disputed.toml`).

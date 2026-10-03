@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 from collections import Counter
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
@@ -201,17 +202,35 @@ def _rate(counts: Counts, outcome: Outcome) -> str:
     return _pct(getattr(counts, outcome) / counts.total) if counts.total else "–"
 
 
-def render_markdown(scores: Mapping[str, Scores], header: Mapping[str, str]) -> str:
-    out = ["# HALLMARK evaluation", ""]
-    out += [f"- **{name}:** {value}" for name, value in header.items()]
-    out += ["", "## Summary (main types; stress types reported separately)", ""]
-    out += ["| Mode | Precision | Recall | F1 | False-positive rate | Coverage |"]
+def summary_table(scores: Mapping[str, Scores]) -> list[str]:
+    out = ["| Mode | Precision | Recall | F1 | False-positive rate | Coverage |"]
     out += ["|---|---|---|---|---|---|"]
     for mode, s in scores.items():
         out.append(
             f"| {mode} | {_pct(s.precision)} | {_pct(s.recall)} | {_pct(s.f1)} "
             f"| {_pct(s.false_positive_rate)} | {_pct(s.coverage)} |"
         )
+    return out
+
+
+def render_markdown(
+    scores: Mapping[str, Scores],
+    header: Mapping[str, str],
+    undisputed: Mapping[str, Scores] | None = None,
+    disputed: int = 0,
+) -> str:
+    out = ["# HALLMARK evaluation", ""]
+    out += [f"- **{name}:** {value}" for name, value in header.items()]
+    out += ["", "## Summary (main types; stress types reported separately)", ""]
+    out += summary_table(scores)
+    if undisputed is not None and disputed:
+        out += ["", f"## Summary without the {disputed} disputed labels", ""]
+        out += [
+            f"The same run, leaving out {disputed} entries labelled VALID that are not correct "
+            "citations (each checked by hand; see `evals/hallmark_disputed.toml`).",
+            "",
+        ]
+        out += summary_table(undisputed)
     for mode, s in scores.items():
         out += ["", f"## {mode}: outcomes by hallucination type", ""]
         out += [
@@ -235,3 +254,11 @@ def render_markdown(scores: Mapping[str, Scores], header: Mapping[str, str]) -> 
 
 def summary_counts(outcomes: Mapping[str, Outcome]) -> dict[str, int]:
     return dict(Counter(outcomes.values()))
+
+
+def load_disputed(path: Path) -> dict[str, str]:
+    """Keys of entries whose label was checked by hand and found wrong, with the reason."""
+    if not path.exists():
+        return {}
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    return {str(item["key"]): str(item["reason"]) for item in data.get("entry", [])}
