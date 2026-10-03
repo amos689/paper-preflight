@@ -15,6 +15,9 @@ All notable changes to this project are documented here. The format follows
   reported for its author order when a later version reordered the authors (REF011).
 - A given name in another language's form ("Grigoris" for Gregory, "Giorgos" for George) or a
   Polish diminutive ("Tomek" for Tomasz) is the same person, not another author (REF011).
+- A name written family name first without a comma ("Zhang C.", which BibTeX reads as given
+  name Zhang) or filed that way by a registry ("Shwetha S") is matched as meant, instead of
+  being reported as other authors (REF010/REF011).
 
 ## [0.1.0] - 2026-10-03
 

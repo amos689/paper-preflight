@@ -343,10 +343,32 @@ class AuthorCheck(FieldCheck):
     renamed: tuple[tuple[str, str], ...] = field(default=())
 
 
+_INITIALS_ONLY = re.compile(r"^(?:[A-Z]\.?){1,3}$")
+
+
+def _as_meant(person: Person, other_keys: set[str]) -> Person:
+    """ "Zhang C." written without a comma reads as given name "Zhang", family name "C.".
+
+    When the other side has no such family name but has a Zhang, the name is taken as meant:
+    family name first, then initials (PubMed's form, seen in a real paper's .bib). Registries do
+    it too: Crossref files the single name and initial "Shwetha S" as given name Shwetha.
+    """
+    if person.literal or not _INITIALS_ONLY.match(person.family):
+        return person
+    if not re.fullmatch(r"[^\W\d_][\w'-]+", person.given):
+        return person
+    swapped = Person(family=person.given, given=person.family)
+    if surname_key(person) not in other_keys and surname_key(swapped) in other_keys:
+        return swapped
+    return person
+
+
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
-    entry = [(person, key) for person in authors.people if (key := surname_key(person))]
-    people = [person for person in record.authors if surname_key(person)]
+    written = {surname_key(person) for person in authors.people}
+    people = [_as_meant(p, written) for p in record.authors if surname_key(p)]
     record_keys = [surname_key(person) for person in people]
+    meant = [_as_meant(person, set(record_keys)) for person in authors.people]
+    entry = [(person, key) for person in meant if (key := surname_key(person))]
     if not entry or not people:
         return AuthorCheck("unknown")
     # exact surnames first, then spelling variants, so a variant never takes an exact match
