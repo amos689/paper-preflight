@@ -47,3 +47,5 @@ All notable changes to this project are documented here. The format follows
   caches answers per bibliography (`docs/github-action.md`).
 - Identifier lookups (doi.org, Crossref, DataCite, OpenAlex, arXiv) are cached per identifier, so
   adding an entry no longer makes its batch companions unverifiable in `--offline` runs.
+- REF014 also reports an invented venue on a paper whose venue is known: an unrecognised name
+  that shares no word or abbreviation with the recorded venue (abbreviations stay unknown).

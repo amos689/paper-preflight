@@ -12,6 +12,7 @@ from paper_preflight.match import (
     canonical_venue,
     check_authors,
     check_title,
+    check_venue,
     check_year,
     evaluate,
     suspicious_reason,
@@ -266,3 +267,30 @@ def test_a_one_letter_slip_in_a_source_needs_the_same_given_name() -> None:
     assert check_authors(parse_authors("Jiahui Hu and Kui Ren"), record).status == "match"
     other = check_authors(parse_authors("Wei Hu and Kui Ren"), record)
     assert other.missing == ("Wei Hu",)  # another given name: another person
+
+
+@pytest.mark.parametrize(
+    ("venue", "status"),
+    [
+        # invented venue names on CVPR papers (HALLMARK nonexistent_venue)
+        ("Annual Conference on Spatial Intelligence", "mismatch"),
+        ("Transactions on Autonomous Learning Systems", "mismatch"),
+        # the same venue written another way is never a mismatch
+        ("CVPR", "match"),
+        ("IEEE/CVF Conference on Computer Vision and Pattern Recognition", "match"),
+        ("Proc. IEEE Conf. Comp. Vis. Patt. Recog.", "unknown"),
+        # a real venue sharing words with the record: not enough evidence either way
+        ("Pattern Recognition", "unknown"),
+        # too little to judge
+        ("Spatial", "unknown"),
+        (None, "unknown"),
+    ],
+)
+def test_venues_nobody_recognises(venue: str | None, status: str) -> None:
+    cvpr = SourceRecord(source="dblp", source_id="x", title="t", venue="CVPR")
+    assert check_venue(venue, cvpr).status == status
+
+
+def test_an_unrecognised_record_venue_is_never_a_mismatch() -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="t", venue="J. Obscure Stud.")
+    assert check_venue("Annual Conference on Spatial Intelligence", record).status == "unknown"
