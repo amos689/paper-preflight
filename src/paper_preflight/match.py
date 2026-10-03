@@ -228,12 +228,14 @@ _APOSTROPHES = re.compile("['\u2018\u2019\u02bc\u0060\u00b4]")
 
 def _group_key(name: str) -> str:
     """A group's key: "Gemma Team" (arXiv) is the entry's "{Gemma}", "The LIGO Scientific
-    Collaboration" its "LIGO Scientific"."""
+    Collaboration" its "LIGO Scientific". Hyphens, footnote marks and word order do not count:
+    arXiv's "Xiaomi LLM-Core Team" is the entry's "{LLM-Core Xiaomi}", Crossref's "The Tabula
+    Sapiens Consortium*" the entry's "{The Tabula Sapiens Consortium}"."""
     words = re.findall(r"\w+", fold(_APOSTROPHES.sub("", name)))
     core = words[1:] if len(words) > 1 and words[0] == "the" else words
     while len(core) > 1 and core[-1] in COLLECTIVE_WORDS:
         core.pop()
-    return " ".join(core)
+    return " ".join(sorted(core))
 
 
 def surname_key(person: Person) -> str:
@@ -244,6 +246,9 @@ def surname_key(person: Person) -> str:
     if person.literal:
         return _group_key(person.literal)
     family = re.findall(r"\w+", fold(person.family))
+    if not person.given and len(family) > 1:
+        # a name of several words and no given name is a group's: "DeepSeek-AI", "Kimi-Team"
+        return _group_key(person.family)
     if person.given and family and all(word in COLLECTIVE_WORDS for word in family):
         # BibTeX reads "Team, Chameleon" and "Gemma Team" as a given name and the family name
         # "Team": the group the record calls "Chameleon Team"
@@ -288,9 +293,24 @@ def _first_given(person: Person) -> str:
     return words[0] if words else ""
 
 
+def _name_words(text: str) -> set[str]:
+    return {w for w in re.findall(r"\w+", fold(_APOSTROPHES.sub("", text))) if len(w) > 1}
+
+
+def _same_words(a: Person, b: Person) -> bool:
+    """One name split into given and family name another way, or with a name left out:
+    Crossref's given "Vijendra Shenoy", family "S" is Shenoy, Vijendra S.; its given "Do",
+    family "Long" is Do Xuan Long; arXiv's "De Luo" is the entry's "De Luo, Henry". Each
+    side's family name must be among the other's words."""
+    words_a, words_b = _name_words(a.display), _name_words(b.display)
+    if min(len(words_a), len(words_b)) < 2 or not (words_a <= words_b or words_b <= words_a):
+        return False
+    return _name_words(a.family) <= words_b and _name_words(b.family) <= words_a
+
+
 def same_person(a: Person, b: Person) -> bool:
     """One person written differently by two sources (checked after exact surnames pair up)."""
-    if surname_key(a) == surname_key(b) or _name_forms(a) & _name_forms(b):
+    if surname_key(a) == surname_key(b) or _name_forms(a) & _name_forms(b) or _same_words(a, b):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree.
@@ -431,6 +451,12 @@ def _organisation(person: Person) -> bool:
     return bool(person.literal) or (not person.given and len(person.family.split()) == 1)
 
 
+def _group(person: Person) -> bool:
+    """A group credited as an author: "{The Tabula Sapiens Consortium}", "Thinking Machines
+    Lab" (which BibTeX splits into given and family name)."""
+    return any(word in COLLECTIVE_WORDS for word in _name_words(person.display))
+
+
 def _pair_by_given_name(
     entry: list[tuple[Person, str]], pool: list[tuple[Person, str]]
 ) -> dict[int, int]:
@@ -444,7 +470,7 @@ def _pair_by_given_name(
         [
             i
             for i, (other, k) in enumerate(pool)
-            if k == key and not given_names_differ(person, other)
+            if k == key and (not given_names_differ(person, other) or _same_words(person, other))
         ]
         for person, key in entry
     ]
@@ -485,6 +511,8 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
             taken.add(index)
             renamed.append((person.display, people[index].display))
     missing: list[str] = []
+    groups: set[int] = set()  # groups credited where the record lists only people
+    people_only = not any(_organisation(p) for p in people)
     for j, (person, _) in enumerate(entry):
         if j in paired:
             continue
@@ -492,18 +520,26 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
             (i for i, other in enumerate(people) if i not in taken and same_person(person, other)),
             None,
         )
-        if index is None:
+        if index is None and people_only and _group(person):
+            groups.add(j)  # "Kevin Lu and Thinking Machines Lab": the lab is no missing person
+        elif index is None:
             missing.append(person.display)
         else:
             taken.add(index)
-    matched = len(entry) - len(missing)
-    overlap = matched / len(entry)
-    first_person = entry[0][0]
+    counted = len(entry) - len(groups)
+    matched = counted - len(missing)
+    if matched == 0 and (counted == 0 or all(_organisation(p) for p in people)):
+        # a consortium credited for the people the record lists (Cell's COMBAT Consortium), or a
+        # record naming only an organisation (dblp's "DeepSeek-AI" for the DeepSeek-R1 report)
+        return AuthorCheck("unknown")
+    overlap = matched / counted
+    first_person = next(p for j, (p, _) in enumerate(entry) if j not in groups)
     if record.authors_ordered:
         leads = [people[0]]
         # an organisation leading the record ("OpenAI" before Josh Achiam, arXiv 2303.08774) is
-        # no first author to compare with when the entry leaves it out
-        if _organisation(people[0]) and not any(same_person(p, people[0]) for p, _ in entry):
+        # no first author to compare with when the entry leaves it out or names it later
+        # ("Kevin Lu and Thinking Machines Lab", as the lab asks; Crossref has the lab first)
+        if _organisation(people[0]):
             leads += people[1:2]
         first = any(same_person(first_person, lead) for lead in leads)
     else:

@@ -767,3 +767,108 @@ source = "real_papers:2607.13343v1"
 key = "kerawala2001relocating"
 expect = []
 note = "guard: Wiley's SICI DOI 10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V was cut at '<' (REF002 and a broken REF017 suggestion)"
+
+[[case]]
+name = "fp-xiaomi2026mimo-group"
+source = "real_papers:2607.13396v2"
+key = "xiaomi2026mimo"
+expect = []
+note = "guard: '{LLM-Core Xiaomi}' is arXiv's 'Xiaomi LLM-Core Team' (REF010)"
+
+[[case]]
+name = "fp-deepseek2026v4-group"
+source = "real_papers:2607.13396v2"
+key = "deepseek2026v4"
+expect = []
+note = "guard: '{DeepSeek-AI}' is the first author of arXiv 2606.19348 (REF010)"
+
+[[case]]
+name = "fp-team2025kimi-group"
+source = "real_papers:2607.13394v1"
+key = "team2025kimi"
+expect = []
+note = "guard: 'Kimi-Team' is arXiv's 'Kimi Team' (REF011)"
+
+[[case]]
+name = "fp-guo2025deepseek-organisation-record"
+source = "real_papers:2607.13394v1"
+key = "guo2025deepseek"
+expect = []
+note = "guard: dblp names only 'DeepSeek-AI' for the DeepSeek-R1 report; the entry cites the Nature paper's people (REF010)"
+
+[[case]]
+name = "fp-tabulasapiens2022-footnote"
+source = "real_papers:2607.14163v1"
+key = "tabulasapiens2022"
+expect = []
+note = "guard: Crossref's 'The Tabula Sapiens Consortium*' carries a footnote mark (REF010)"
+
+[[case]]
+name = "fp-combat2022covid-consortium"
+source = "real_papers:2607.14163v1"
+key = "combat2022covid"
+expect = []
+note = "guard: Cell credits the COMBAT Consortium; Crossref lists its members (REF010)"
+
+[[case]]
+name = "fp-lu2025onpolicydistillation-lab"
+source = "real_papers:2607.13399v1"
+key = "lu2025onpolicydistillation"
+expect = []
+note = "guard: 'Kevin Lu and Thinking Machines Lab', as the lab asks; Crossref lists the lab first (REF011)"
+
+[[case]]
+name = "fp-kshithi2022formalin-name-split"
+source = "real_papers:2607.13343v1"
+key = "kshithi2022formalin"
+expect = []
+note = "guard: Crossref's given 'Vijendra Shenoy', family 'S' is Shenoy, Vijendra S. (REF011)"
+
+[[case]]
+name = "fp-chartqa-name-order"
+source = "real_papers:2609.13158v1"
+key = "chartqa"
+expect = []
+note = "guard: Crossref's given 'Do', family 'Long' is Do Xuan Long, the entry's 'Do, Xuan Long' (REF011)"
+
+[[case]]
+name = "fp-menon2026monolithic-given-name-added"
+source = "real_papers:2607.13342v1"
+key = "menon2026monolithic"
+expect = []
+note = "guard: arXiv's 'De Luo' is the entry's 'De Luo, Henry' (REF011)"
+
+[[case]]
+name = "fp-delatorre2024heartsteps-family-only"
+source = "real_papers:2607.13345v2"
+key = "delatorre2024heartsteps"
+expect = []
+note = "guard: 'De La Torre and others', which BibTeX splits into given name 'De La' (REF011)"
+
+[[case]]
+name = "fp-bioemu2025-no-comma"
+source = "real_papers:2607.15309v1"
+key = "bioemu2025"
+expect = []
+note = "guard: 'Stimper Vincent', family name first without a comma, like 'Zhang C.' (REF011)"
+
+[[case]]
+name = "real-sam3-organisation"
+source = "real_papers:2607.13361v1"
+key = "sam3"
+expect = ["REF010"]
+note = "real problem: SAM 3 has named authors; '{Meta AI}' is not on the byline"
+
+[[case]]
+name = "real-maniskill3-authors"
+source = "real_papers:2607.13361v1"
+key = "maniskill3"
+expect = ["REF011"]
+note = "real problem: Xander Hu, Michael Yuan, Tongzhou Xie and Xiao Liu are not authors of arXiv 2410.00425"
+
+[[case]]
+name = "real-1991rc3-corwin"
+source = "real_papers:2607.13739v1"
+key = "1991rc3..book.....D"
+expect = ["REF011"]
+note = "real problem: '{Corwin}, Herold G., Jr.' misspells Harold and puts 'Jr.' where BibTeX reads a given name"

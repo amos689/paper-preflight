@@ -1166,8 +1166,8 @@ verdict = "false_positive"
 note = "The article's byline is Hospital, Goñi, Orozco, Gelpí (PubMed); Crossref lists Gelpi first."
 
 [finding."2607.15309v1:bioemu2025:REF011"]
-verdict = "correct"
-note = "'Stimper Vincent' has no comma: BibTeX reads given name Stimper, family name Vincent. The author is Vincent Stimper."
+verdict = "false_positive"
+note = "'Stimper Vincent' is Vincent Stimper written family name first without a comma, which paper-preflight takes as meant since 0.1.1 ('Zhang C.'). First reviewed as correct; re-checked against that rule."
 
 [finding."2609.11941v1:elisseev_agentic_2025:REF003"]
 verdict = "unclear"

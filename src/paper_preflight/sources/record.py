@@ -10,7 +10,8 @@ _HOMONYM_SUFFIX_RE = re.compile(r"\s+\d{4}$")  # dblp: "Jian Sun 0001"
 _SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv"}
 # Last words that make a display name a group, not a person ("Gemma Team" on arXiv 2503.19786)
 COLLECTIVE_WORDS = frozenset(
-    "team collaboration consortium project committee community initiative group alliance".split()
+    "team collaboration consortium project committee community initiative group alliance lab "
+    "labs".split()
 )
 
 

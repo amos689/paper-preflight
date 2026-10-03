@@ -613,3 +613,88 @@ def test_a_shared_issn_is_the_same_journal() -> None:
     record = SourceRecord(source="crossref", source_id="x", title="t", venue="Frattura ed "
                           "Integrità Strutturale", issns=frozenset({"1971-8993"}))  # fmt: skip
     assert check_venue("Fracture", record, issns=frozenset({"1971-8993"})).status == "match"
+
+
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
+        # the group's words in another order, with a hyphen, or with a footnote mark (heldout2)
+        ("{LLM-Core Xiaomi} and Xiao, Bangjun", "Xiaomi LLM-Core Team"),
+        ("Kimi-Team and Du, Angang", "Kimi Team"),
+        ("{DeepSeek-AI} and Xiao, Bangjun", " DeepSeek-AI"),
+        ("{The Tabula Sapiens Consortium}", "The Tabula Sapiens Consortium*"),
+    ],
+)
+def test_a_group_written_another_way_is_the_group(written: str, recorded: str) -> None:
+    people = [Person.from_display(recorded), Person("Xiao", "Bangjun"), Person("Du", "Angang")]
+    if recorded.endswith("*"):  # Crossref: the whole name as a family name, no given name
+        people[0] = Person(recorded)
+    record = SourceRecord(source="x", source_id="x", title="t", authors=tuple(people))
+    check = check_authors(parse_authors(written), record)
+    assert (check.missing, check.first_author_match) == ((), True)
+
+
+def test_groups_and_people_are_not_compared() -> None:
+    members = SourceRecord(
+        source="crossref", source_id="10.1016/j.cell.2022.01.012", title="t",
+        authors=(Person("Ahern", "David J."), Person("Ai", "Zhichao")),
+    )  # fmt: skip
+    # Cell credits the COMBAT Consortium; Crossref lists its members
+    combat = r"{COvid-19 Multi-omics Blood ATlas (COMBAT) Consortium}"
+    assert check_authors(parse_authors(combat), members).status == "unknown"
+    # dblp names only "DeepSeek-AI" for the DeepSeek-R1 report, the Nature paper its people
+    organisation = SourceRecord(
+        source="dblp", source_id="x", title="t", authors=(Person("DeepSeek-AI"),)
+    )
+    assert check_authors(parse_authors("Guo, Daya and Yang, Dejian"), organisation).status == (
+        "unknown"
+    )
+    # an organisation that is no group is still another author: "Meta AI" for SAM 3's authors
+    assert check_authors(parse_authors("{Meta AI}"), members).disjoint
+
+
+def test_a_lab_credited_with_its_author() -> None:
+    # Crossref 10.64434/tml.20251026 lists the lab first; the lab asks for "Kevin Lu and
+    # Thinking Machines Lab"
+    record = SourceRecord(
+        source="crossref", source_id="x", title="On-Policy Distillation",
+        authors=(Person("Thinking Machines Lab", literal="Thinking Machines Lab"),
+                 Person("Lu", "Kevin")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Kevin Lu and Thinking Machines Lab"), record)
+    assert (check.status, check.missing, check.first_author_match) == ("match", (), True)
+    # where the record lists only people, a lab the entry adds is no missing person
+    alone = SourceRecord(source="x", source_id="x", title="t", authors=(Person("Lu", "Kevin"),))
+    check = check_authors(parse_authors("Kevin Lu and Thinking Machines Lab"), alone)
+    assert (check.status, check.missing) == ("match", ())
+
+
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
+        ("Shenoy, Vijendra S.", Person("S", "Vijendra Shenoy")),  # Crossref, heldout2
+        ("Do, Xuan Long", Person("Long", "Do")),  # Crossref: Do Xuan Long, family name Do
+        ("De Luo, Henry", Person.from_display("De Luo")),  # arXiv lists him as "De Luo"
+        ("De La Torre", Person("De La Torre", "Steven A.")),  # BibTeX: given name "De La"
+        ("Stimper Vincent", Person("Stimper", "Vincent")),  # family name first, no comma
+    ],
+)
+def test_one_name_split_another_way(written: str, recorded: Person) -> None:
+    record = SourceRecord(
+        source="x", source_id="x", title="t", authors=(recorded, Person("Rai", "Thripthi"))
+    )
+    check = check_authors(parse_authors(f"{written} and Rai, Thripthi"), record)
+    assert (check.missing, check.renamed, check.first_author_match) == ((), (), True)
+
+
+def test_other_names_stay_other_people() -> None:
+    record = SourceRecord(
+        source="arxiv", source_id="2410.00425", title="ManiSkill3",
+        authors=(Person("Tao", "Stone"), Person("Hinrichsen", "Xander"), Person("Yuan", "Xiaodi")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Tao, Stone and Hu, Xander and Yuan, Michael"), record)
+    assert check.missing == ("Xander Hu",)
+    assert check.renamed == (("Michael Yuan", "Xiaodi Yuan"),)
+    # a family name must be among the other's words: Wei Li is not Wei Li Zhang
+    other = SourceRecord(source="x", source_id="x", title="t", authors=(Person("Zhang", "Wei Li"),))
+    assert check_authors(parse_authors("Li, Wei"), other).disjoint
