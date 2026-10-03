@@ -19,6 +19,8 @@ htmlcov/
 # Spike scratch space and downloaded benchmark data (never committed)
 .spikes/
 evals/.data/
+evals/.cache/
+evals/results/*.jsonl
 
 # Editors / OS
 .vscode/
