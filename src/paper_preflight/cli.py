@@ -200,6 +200,36 @@ def check(
 
 
 @app.command()
+def explain(
+    rule_id: Annotated[
+        str | None, typer.Argument(help="Rule ID such as REF003; omit it to list every rule.")
+    ] = None,
+    lang: Annotated[Lang, typer.Option("--lang", help="Message language.")] = Lang.AUTO,
+) -> None:
+    """Explain a rule: what it detects, its severity, its message and whether a fix is safe."""
+    from paper_preflight.rules import RULES, describe
+
+    _safe_stdout()
+    language = resolve_lang(lang)
+    if rule_id is None:
+        for rule in sorted(RULES.values(), key=lambda r: r.id):
+            typer.echo(f"{rule.id}  {rule.severity.value:<8} {rule.summary.get(language)}")
+        return
+    described = describe(rule_id)
+    if described is None:
+        typer.echo(f"paper-preflight: unknown rule '{rule_id}'", err=True)
+        raise typer.Exit(EXIT_USAGE)
+    zh = language == "zh"
+    fix = described["fix"] or ("无" if zh else "none")
+    labels = ("严重度", "消息", "修复") if zh else ("severity", "message", "fix")
+    typer.echo(f"{described['rule']}  {described['name']}")
+    typer.echo(described["summary"][language])
+    typer.echo(f"{labels[0]}: {described['severity']}")
+    typer.echo(f"{labels[1]}: {described['message_template'][language]}")
+    typer.echo(f"{labels[2]}: {fix}")
+
+
+@app.command()
 def doctor(
     offline: Annotated[
         bool, typer.Option("--offline", help="Skip the connectivity check of each source.")
