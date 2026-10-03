@@ -15,6 +15,7 @@ Design rules:
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 from typing import Any, Literal
 
@@ -24,6 +25,7 @@ from mcp.types import ToolAnnotations
 
 from paper_preflight import __version__
 from paper_preflight.check import CheckResult, VerifyOptions, run_check
+from paper_preflight.fetch import identifier_query, lookup, title_query, to_dict
 from paper_preflight.findings import Severity
 from paper_preflight.rules import RULES, describe
 from paper_preflight.tex.project import ProjectError
@@ -33,6 +35,7 @@ paper-preflight checks the references of a LaTeX paper against real scholarly re
 (Crossref, dblp, arXiv, DataCite, OpenAlex). It never uses an LLM to judge and abstains when
 unsure. Run preflight_check before declaring a paper finished or ready to submit; fix every
 error, and ask the user about references reported as "cannot determine" instead of guessing.
+Never write a BibTeX entry from memory: get it with preflight_bib_lookup.
 """
 
 
@@ -130,5 +133,45 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         if described is None:
             raise ToolError(f"Unknown rule '{rule_id}'. Known rules: {', '.join(sorted(RULES))}.")
         return described
+
+    @server.tool(
+        annotations=ToolAnnotations(
+            title="Get verified BibTeX",
+            read_only_hint=True,
+            idempotent_hint=True,
+            open_world_hint=True,
+        )
+    )
+    def preflight_bib_lookup(
+        identifier: str | None = None,
+        title: str | None = None,
+        author: str | None = None,
+        year: int | None = None,
+        prefer: Literal["published", "preprint"] = "published",
+        offline: bool = False,
+    ) -> dict[str, Any]:
+        """Get a BibTeX entry for a DOI, an arXiv ID or a title, built from the registry record
+        instead of written from memory. Give `identifier`, or `title` (with `author` and `year`
+        when you know them).
+
+        `status` is "found" (use `bibtex` as is), "ambiguous" (several works match: pick from
+        `candidates` with the user, or retry with author/year), "not_found" (ask the user for
+        the source; do not invent one) or "unavailable" (a source did not answer; retry later).
+        A published preprint comes back as its published version with the eprint kept;
+        `status_flags` lists notices such as "retracted".
+        """
+        if (identifier is None) == (title is None):
+            raise ToolError("Give either `identifier` or `title`.")
+        if identifier is not None:
+            query = identifier_query(identifier)
+        else:
+            query = title_query(title or "", author, year)
+        if query is None:
+            raise ToolError(f"'{identifier}' is not a DOI or an arXiv ID.")
+        prefer_published = prefer == "published"
+        result = asyncio.run(
+            lookup(query, cache_path=cache_path, offline=offline, prefer_published=prefer_published)
+        )
+        return to_dict(result)
 
     return server
