@@ -2,40 +2,214 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-> **Status: pre-alpha, under active development.** Nothing here is ready for real use yet.
-> The first public release (v0.1) is planned for November 2026.
+[![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python 3.11–3.14](https://img.shields.io/badge/python-3.11%E2%80%933.14-blue.svg)
 
-**A pre-submission integrity gate for LaTeX papers — every reference verified against real
-scholarly records. No LLM guessing, no false accusations.**
+**Check every reference of a LaTeX paper against real scholarly records before you submit.
+No LLM guessing, no false accusations.**
 
-paper-preflight reads your LaTeX sources (`.tex`, `.aux`, `.bib`) and checks every reference
-against real scholarly sources (Crossref, DataCite, OpenAlex, arXiv, dblp, …):
+Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
+and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
+arXiv, DataCite and OpenAlex (and Semantic Scholar, if you have a key) about every cited work:
 
-- Does the cited work exist?
-- Is its metadata (title, authors, year, venue, DOI) correct?
-- Has it been retracted? Has the preprint you cite been formally published?
+- Does it exist?
+- Does it match what you wrote?
+- Has it been retracted?
+- Has the preprint you cite been published since?
 
-It proposes reviewable, deterministic BibTeX fixes, and it is built for coding agents
-(Claude Code, Codex, Gemini CLI, …), CI and humans alike.
+When it cannot tell, it says so instead of guessing.
+
+> **Status: early release.** The checks below work today; install from GitHub until the first
+> PyPI release (v0.1, planned for November 2026). `bib fetch` / `bib fix` are next.
+
+The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
+purpose. A real run, against the live sources:
+
+```text
+$ paper-preflight check examples/demo-paper
+paper-preflight 0.0.1.dev0 · main.tex · 12 entries, 12 cited keys
+
+error   CIT001 main.tex:31
+    Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
+error   REF001 refs.bib:43
+    The doi of 'devlin2019bert' (10.1109/cvpr.2016.90) resolves to a different work in Crossref: "Deep Residual Learning for Image Recognition" (He et al., 2016).
+error   REF003 refs.bib:66
+    'lindqvist2024quantum' was not found in Crossref, dblp and Semantic Scholar, and every source responded. Check that the work exists and that its title is correct.
+error   REF004 refs.bib:73
+    'wakefield1998ileal' has been retracted (reported by Crossref, OpenAlex). Cite it only if the text discusses the retraction.
+error   CIT002 refs.bib:127
+    Entry key 'kingma2015adam' is already defined at line 47; BibTeX ignores this one.
+warning REF015 refs.bib:31
+    'he2015residual' cites a preprint that has been published in CVPR (2016), DOI 10.1109/cvpr.2016.90. Cite the published version and keep the eprint field.
+warning CIT004 refs.bib:37
+    Entries 'devlin2019bert' and 'he2016deep' look like the same work (same DOI).
+warning REF013 refs.bib:51
+    'kingma2015adam' gives the year 2016, but dblp records 2015.
+warning REF017 refs.bib:111
+    The doi of 'tacl2019example' contains LaTeX escapes: '10.1162/tacl\_a\_00276'. Write it as: 10.1162/tacl_a_00276
+info    REF005 refs.bib:73
+    'wakefield1998ileal' has a published correction (reported by Crossref).
+info    REF090 refs.bib:86
+    'goodfellow2016deep' could not be verified: grey literature without an identifier (book, report, software, web page).
+info    REF090 refs.bib:94
+    'zhou2016ml' could not be verified: non-Latin titles are not supported yet; grey literature without an identifier (book, report, software, web page).
+info    CIT003 refs.bib:115
+    Entry 'lecun1998gradient' is never cited.
+
+References: 6 verified · 1 metadata mismatch · 1 identifier conflict · 1 not found · 2 cannot determine
+5 error(s) · 4 warning(s) · 4 info
+```
+
+Each finding is backed by a record (or by every source answering "no"). The correct NeurIPS
+paper is verified through dblp even though Crossref only holds fake copies of it, and the two
+books without identifiers are reported as "cannot determine" instead of "not found".
+
+## What it catches
+
+| Rule | Finding |
+|---|---|
+| REF001 | The DOI or arXiv ID points to a different paper |
+| REF002 | The DOI or arXiv ID does not exist |
+| REF003 | The work was not found in any source, and every source answered |
+| REF004 · REF005 | The work was retracted, or has an expression of concern or a correction |
+| REF010–REF014 | Authors, title, year or venue differ from the real record |
+| REF015 | A cited preprint has been formally published |
+| REF017 | An identifier is written so that links break (`10.1162/tacl\_a\_00276`, `…v1`) |
+| CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
+| REF090 | Cannot determine, always with the reason (source unavailable, grey literature, …) |
+
+`paper-preflight explain REF003` describes any rule.
+
+## How accurate is it?
+
+paper-preflight is measured on [HALLMARK](https://github.com/rpatrik96/hallmark), a public
+benchmark of real and hallucinated BibTeX entries, against the live sources.
+
+| Mode | Precision | Recall | False-positive rate | Coverage |
+|---|---|---|---|---|
+| Fabrication: wrong identifier, not found, no author in common | 98.0% | 49.9% | 1.0% | 96.6% |
+| Any issue: also wrong authors, title, year or venue | 97.0% | 72.9% | 2.1% | 96.6% |
+
+HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
+
+- **Every flag on an entry labelled VALID was checked by hand.** The 11 that remain are not
+  correct citations: DOIs that belong to other papers, author lists naming people who did not
+  write the paper, a shifted year and a truncated title.
+- **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
+  with a reason one lookup confirms, is in
+  [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
+- **Recall is the open front.** Invented venue names and near-miss titles are mostly missed
+  today. See [`evals/results/hallmark-dev_public.md`](evals/results/hallmark-dev_public.md) for
+  every hallucination type.
+
+Precision comes first: a reference is called fabricated only on positive evidence, and an
+unanswered or ambiguous lookup is reported as "cannot determine", never as "not found". The
+evaluation harness and every run's summary are in [`evals/`](evals/README.md).
+
+## Quick start
+
+You need [uv](https://docs.astral.sh/uv/).
+
+```bash
+uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check path/to/paper
+```
+
+`path/to/paper` is the project directory, its main `.tex` file, or a single `.bib` file.
+
+| Option | Effect |
+|---|---|
+| `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |
+| `--offline` | Never touch the network; use only answers already in the local cache |
+| `--fail-on warning` | Make warnings fail the run too (the default is errors) |
+| `--lang zh` | Chinese messages (also chosen automatically from your locale) |
+
+Exit codes:
+
+| Code | Meaning |
+|---|---|
+| 0 | Nothing at or above `--fail-on` was found |
+| 1 | Blocking findings |
+| 2 | No blocking findings, but a source was unavailable, so the paper cannot be called clean yet |
+| 3 | Usage error |
+
+## Use it from your coding agent
+
+**Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
+check the references before calling a paper finished, fix only what is proven wrong, and never
+invent a reference.
+
+```bash
+claude plugin marketplace add amos689/paper-preflight
+```
+
+```bash
+claude plugin install paper-preflight@paper-preflight
+```
+
+**Codex, Cursor, VS Code and other MCP clients** — run `paper-preflight mcp`. The tools are
+read-only and confined to your workspace; see [docs/mcp.md](docs/mcp.md).
+
+**pre-commit** — check citation keys and cached verdicts on every commit in seconds; see
+[docs/pre-commit.md](docs/pre-commit.md).
+
+## Better results with free credentials
+
+paper-preflight works without any account. These optional environment variables make it faster
+and more complete; their values are never printed or logged.
+
+| Variable | Effect |
+|---|---|
+| `PAPER_PREFLIGHT_EMAIL` | Crossref's polite pool: faster, more reliable lookups |
+| `OPENALEX_API_KEY` | A larger OpenAlex budget for retraction checks |
+| `S2_API_KEY` | Semantic Scholar as a rescue source for references nobody else found |
+
+`paper-preflight doctor` shows which are set and whether each source answers right now.
+
+## How it works
+
+1. **Source-first.** It reads the LaTeX project as LaTeX sees it: comments, `\iffalse` blocks and
+   `\includeonly` are respected, `.aux` files are used when they are fresh, and the first
+   definition of a duplicated key wins, as in BibTeX.
+2. **Identifier-first routing.** DOIs go to their registration agency (doi.org tells which:
+   Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback. Entries without
+   identifiers are searched by title in dblp and Crossref.
+3. **Field-by-field matching with guards.** It compares titles (including earlier arXiv version
+   titles), authors (tolerating transcriptions such as Reiß/Reis), year and venue. A search
+   result is used only when enough of these agree and no other work fits as well; known fake
+   DOI copies are skipped.
+4. **One verdict per reference:** verified, metadata mismatch, identifier conflict, not found,
+   or cannot determine with a reason. "Not found" needs every required source to answer "no".
+5. **No LLM anywhere in the verdict.** Answers are cached locally (SQLite), so re-runs are fast
+   and `--offline` works.
 
 ## Design principles
 
-- **Source-first.** Your `.tex`/`.bib` files are the ground truth; PDF extraction is only a
-  low-confidence fallback.
-- **Positive confirmation or abstain.** A reference is "verified" only when a real record
-  confirms it. When sources are rate-limited, down or simply do not index a work, the result
-  is "cannot determine" — never "not found".
-- **No LLM in the verdict path.** No field is ever generated by a language model.
-- **Neutral wording.** The tool reports observations ("not found in Crossref, OpenAlex, dblp,
-  arXiv — all responded"), not accusations.
-- **Local-first, zero telemetry.** Only metadata of the *cited* works (DOIs, titles, authors)
-  is sent to the public scholarly APIs listed above. Your manuscript text never leaves your
-  machine.
+- **Positive confirmation or abstain.** Rate limits, outages and unindexed works lead to "cannot
+  determine", never to "not found".
+- **Neutral wording.** Findings state observations ("not found in Crossref, dblp and Semantic
+  Scholar, and every source responded"), never accusations.
+- **Local-first, no telemetry.** Only the metadata of the cited works (DOIs, titles, authors) is
+  sent to the public scholarly APIs above. Your manuscript never leaves your machine.
 
 ## What it will never do
 
-Help evade plagiarism or AI-text detection, scrape paywalled or anti-bot-protected sites,
-recommend or "complete" references for you, or name and shame authors.
+Help evade plagiarism or AI-text detection, scrape paywalled or bot-protected sites, recommend
+or "complete" references from memory, or name and shame authors.
+
+## Roadmap
+
+- `bib fetch` (verified BibTeX for an identifier) and `bib fix` (reviewable patches)
+- A GitHub Action, and the first PyPI release (v0.1)
+- Chinese-language references (v0.2)
+
+Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
+[changelog](CHANGELOG.md).
+
+## Contributing
+
+Bug reports with a reproducible `.bib` entry are the most valuable contribution, especially
+false positives. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
