@@ -1,11 +1,13 @@
 name: CI
 
 on:
+  pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
   push:
     branches: [main]
     paths-ignore: ["docs/**", "**/*.md"]
-  pull_request:
-    paths-ignore: ["docs/**", "**/*.md"]
+  schedule:
+    - cron: "17 3 * * 1" # weekly full matrix, Mondays 03:17 UTC
   workflow_dispatch:
 
 permissions:
@@ -16,6 +18,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # While the repository is private, Actions minutes are limited (macOS counts 10x, Windows 2x).
+  # Pull requests run a light matrix, pushes to main a minimal smoke run (the merged code was
+  # already tested on the PR), and the weekly/manual run covers every OS and Python version.
+  # Switch pull_request back to the full matrix when the repository becomes public.
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - id: pick
+        shell: bash
+        run: |
+          case "${{ github.event_name }}" in
+            pull_request)
+              m='[{"os":"ubuntu-latest","python-version":"3.11"},{"os":"ubuntu-latest","python-version":"3.14"},{"os":"windows-latest","python-version":"3.12"}]' ;;
+            push)
+              m='[{"os":"ubuntu-latest","python-version":"3.12"}]' ;;
+            *)
+              m='[{"os":"ubuntu-latest","python-version":"3.11"},{"os":"ubuntu-latest","python-version":"3.12"},{"os":"ubuntu-latest","python-version":"3.13"},{"os":"ubuntu-latest","python-version":"3.14"},{"os":"windows-latest","python-version":"3.11"},{"os":"windows-latest","python-version":"3.14"},{"os":"macos-latest","python-version":"3.12"}]' ;;
+          esac
+          echo "matrix=$m" >> "$GITHUB_OUTPUT"
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -31,21 +55,12 @@ jobs:
 
   test:
     name: test (${{ matrix.os }}, py${{ matrix.python-version }})
+    needs: plan
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      # While the repository is private, Actions minutes are limited (macOS counts 10x,
-      # Windows 2x). Linux covers every Python version; Windows and macOS cover the extremes.
-      # Restore the full 3 x 4 matrix when the repository becomes public.
       matrix:
-        include:
-          - { os: ubuntu-latest, python-version: "3.11" }
-          - { os: ubuntu-latest, python-version: "3.12" }
-          - { os: ubuntu-latest, python-version: "3.13" }
-          - { os: ubuntu-latest, python-version: "3.14" }
-          - { os: windows-latest, python-version: "3.11" }
-          - { os: windows-latest, python-version: "3.14" }
-          - { os: macos-latest, python-version: "3.12" }
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
