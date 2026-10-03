@@ -25,7 +25,7 @@ from mcp.types import ToolAnnotations
 from paper_preflight import __version__
 from paper_preflight.check import CheckResult, VerifyOptions, run_check
 from paper_preflight.findings import Severity
-from paper_preflight.rules import RULES
+from paper_preflight.rules import RULES, describe
 from paper_preflight.tex.project import ProjectError
 
 INSTRUCTIONS = """\
@@ -34,8 +34,6 @@ paper-preflight checks the references of a LaTeX paper against real scholarly re
 unsure. Run preflight_check before declaring a paper finished or ready to submit; fix every
 error, and ask the user about references reported as "cannot determine" instead of guessing.
 """
-
-DOCS_URL = "https://github.com/amos689/paper-preflight"
 
 
 def _inside(root: Path, path: str) -> Path:
@@ -128,17 +126,9 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
     def preflight_explain(rule_id: str) -> dict[str, Any]:
         """Explain a paper-preflight rule (for example REF003 or CIT001): what it detects, its
         default severity, the message template and whether a fix can be applied safely."""
-        rule = RULES.get(rule_id.strip().upper())
-        if rule is None:
+        described = describe(rule_id)
+        if described is None:
             raise ToolError(f"Unknown rule '{rule_id}'. Known rules: {', '.join(sorted(RULES))}.")
-        return {
-            "rule": rule.id,
-            "name": rule.name,
-            "severity": rule.severity.value,
-            "summary": {"en": rule.summary.en, "zh": rule.summary.zh},
-            "message_template": {"en": rule.template.en, "zh": rule.template.zh},
-            "fix": rule.fix.value if rule.fix else None,
-            "docs": DOCS_URL,
-        }
+        return described
 
     return server

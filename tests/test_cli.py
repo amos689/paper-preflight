@@ -65,3 +65,24 @@ def test_doctor_probes_semantic_scholar_with_a_key_without_printing_it(
     assert "s2-secret-value" not in result.output
     (request,) = [r for r in recorded_web.requests if r.url.host == "api.semanticscholar.org"]
     assert request.headers["x-api-key"] == "s2-secret-value"
+
+
+def test_explain_a_rule_in_both_languages() -> None:
+    en = runner.invoke(app, ["explain", "ref003", "--lang", "en"])
+    assert en.exit_code == 0
+    assert "REF003  not-found" in en.output
+    assert "severity: error" in en.output
+    zh = runner.invoke(app, ["explain", "REF003", "--lang", "zh"])
+    assert "所有来源均未找到该文献" in zh.output
+    assert "{sources}" in zh.output
+    assert "_zh}" not in zh.output  # internal placeholder names stay internal
+
+
+def test_explain_lists_every_rule_and_rejects_unknown_ones() -> None:
+    from paper_preflight.rules import RULES
+
+    listing = runner.invoke(app, ["explain", "--lang", "en"])
+    assert listing.exit_code == 0
+    assert all(rule_id in listing.output for rule_id in RULES)
+    unknown = runner.invoke(app, ["explain", "XYZ999"])
+    assert unknown.exit_code == 3
