@@ -40,3 +40,12 @@ def test_bad_arxiv_eprint() -> None:
     assert findings("@misc{a, eprint = {1706.0376x}, archivePrefix = {arXiv}}") == [
         ("eprint", "a", "invalid-eprint")
     ]
+
+
+def test_versioned_arxiv_doi_gets_a_safe_fix() -> None:
+    entries = parse_bib_text("@misc{a, doi = {10.48550/arXiv.2602.12139v1}}", Path("refs.bib"))
+    (finding,) = check_identifier_syntax(entries.entries)
+    assert finding.rule_id == "REF017"
+    assert finding.data["suggestion"] == "10.48550/arxiv.2602.12139"
+    assert "version suffix" in finding.message.en
+    assert "版本号后缀" in finding.message.zh

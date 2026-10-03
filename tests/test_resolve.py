@@ -132,3 +132,16 @@ async def test_arxiv_outage_uses_datacite_records() -> None:
     assert sources_of(evidence["he2015residual"]) == {"datacite"}
     datacite_calls = [r for r in web.requests if r.url.host == "api.datacite.org"]
     assert len(datacite_calls) == 1  # both preprints in one batch
+
+
+@pytest.mark.anyio
+async def test_versioned_arxiv_doi_resolves_without_its_version() -> None:
+    # HALLMARK has VALID entries written like this; doi.org answers 404 for the versioned form
+    bib = "@misc{gelu, title={Gaussian Error Linear Units (GELUs)}, author={Hendrycks, Dan}, "
+    bib += "year={2016}, doi={10.48550/arXiv.1606.08415v3}}"
+    entries = parse_bib_text(bib, Path("refs.bib")).entries
+    async with httpx.AsyncClient(transport=httpx.MockTransport(FakeWeb())) as http:
+        evidence = await resolve(entries, Sources.create(http, Cache(None), environ={}))
+    gelu = evidence["gelu"]
+    assert gelu.doi_agency["10.48550/arxiv.1606.08415"].exists
+    assert "datacite" in sources_of(gelu)
