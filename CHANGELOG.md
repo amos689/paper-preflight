@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Early-access journal articles: when Crossref has no online date, the year the DOI was
+  created (up to two years before the issue) counts too, so an IEEE article cited with its
+  online year is no longer told to use the print year (REF013).
+- A journal issue printed in December counts for the next year too (MNRAS 500(4), cover date
+  January 2021, printed December 2020), so the issue's year is not reported (REF013).
 - An entry that names where the work appeared (booktitle or journal) cites that version even
   when the venue is not recognised and the entry keeps its arXiv eprint: no more REF015
   telling it to cite the published version it already cites.
