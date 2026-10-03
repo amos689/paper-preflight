@@ -10,13 +10,9 @@ import platform
 import sys
 from enum import StrEnum
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 import typer
-
-if TYPE_CHECKING:  # imported lazily at run time to keep the CLI fast
-    from paper_preflight.check import VerifyOptions
-    from paper_preflight.fetch import FetchResult
 from platformdirs import user_cache_dir
 from rich.console import Console
 
@@ -318,9 +314,8 @@ def bib_fetch(
     import asyncio
     import json
 
-    from paper_preflight.bibtex import SOURCE_NAMES, render
-    from paper_preflight.check import VerifyOptions
-    from paper_preflight.fetch import identifier_query, title_query
+    from paper_preflight.bibtex import SOURCE_NAMES
+    from paper_preflight.fetch import identifier_query, lookup, title_query, to_dict
 
     _safe_stdout()
     if (identifier is None) == (title is None) or prefer not in {"published", "preprint"}:
@@ -331,24 +326,15 @@ def bib_fetch(
         typer.echo(f"paper-preflight: '{identifier}' is not a DOI or an arXiv ID", err=True)
         raise typer.Exit(EXIT_USAGE)
 
-    options = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
-    result: FetchResult = asyncio.run(_run_fetch(query, options, prefer == "published"))
-    bibtex = render(result.record, key=key) if result.record is not None else None
+    cache_path = Path(cache_dir()) / "cache.sqlite3"
+    prefer_published = prefer == "published"
+    result = asyncio.run(
+        lookup(query, cache_path=cache_path, offline=offline, prefer_published=prefer_published)
+    )
+    payload = to_dict(result, key=key)
+    bibtex = payload["bibtex"]
 
     if output_format is OutputFormat.JSON:
-        payload = {
-            "status": result.status,
-            "bibtex": bibtex,
-            "source": result.record.source if result.record else None,
-            "source_id": result.record.source_id if result.record else None,
-            "published_version_of": result.preprint.source_id if result.preprint else None,
-            "status_flags": sorted(result.record.status) if result.record else [],
-            "candidates": [
-                {"title": c.title, "year": c.year, "source": c.source, "id": c.source_id}
-                for c in result.candidates
-            ],
-            "unavailable": result.unavailable,
-        }
         typer.echo(json.dumps(payload, ensure_ascii=False, indent=2))
     elif result.record is not None and bibtex is not None:
         typer.echo(bibtex, nl=False)
@@ -379,21 +365,3 @@ def bib_fetch(
     if result.status == "found":
         return
     raise typer.Exit(EXIT_INCOMPLETE if result.status == "unavailable" else EXIT_FINDINGS)
-
-
-async def _run_fetch(query: str, options: VerifyOptions, prefer_published: bool) -> FetchResult:
-    import httpx
-
-    from paper_preflight import check as check_module
-    from paper_preflight.cache import Cache
-    from paper_preflight.fetch import fetch
-    from paper_preflight.resolve import Sources
-
-    cache = Cache(options.cache_path)
-    try:
-        transport = check_module.make_transport()
-        async with httpx.AsyncClient(transport=transport, follow_redirects=True) as http:
-            sources = Sources.create(http, cache, offline=options.offline)
-            return await fetch(query, sources, prefer_published=prefer_published)
-    finally:
-        cache.close()

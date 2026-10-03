@@ -39,7 +39,7 @@ async def call(root: Path, tool: str, **arguments: Any) -> Any:
 async def test_tools_are_few_and_read_only(workspace: Path) -> None:
     async with Client(create_server(workspace)) as client:
         tools = {tool.name: tool for tool in await client.list_tools()}
-    assert set(tools) == {"preflight_check", "preflight_explain"}
+    assert set(tools) == {"preflight_check", "preflight_explain", "preflight_bib_lookup"}
     for tool in tools.values():
         assert tool.annotations is not None
         assert tool.annotations.read_only_hint is True
@@ -130,5 +130,32 @@ async def test_stdio_server_speaks_only_the_protocol(workspace: Path) -> None:
     async with Client(transport) as client:
         names = {tool.name for tool in await client.list_tools()}
         explained = await client.call_tool("preflight_explain", {"rule_id": "CIT001"})
-    assert names == {"preflight_check", "preflight_explain"}
+    assert names == {"preflight_check", "preflight_explain", "preflight_bib_lookup"}
     assert explained.data["rule"] == "CIT001"
+
+
+@pytest.mark.anyio
+async def test_bib_lookup_by_identifier_and_title(workspace: Path) -> None:
+    found = await call(workspace, "preflight_bib_lookup", identifier="10.1109/CVPR.2016.90")
+    assert found["status"] == "found"
+    assert found["bibtex"].startswith("% Verified with paper-preflight against Crossref")
+    assert "@inproceedings{he2016deep," in found["bibtex"]
+    published = await call(workspace, "preflight_bib_lookup", identifier="arXiv:1512.03385")
+    assert published["published_version_of"] == "1512.03385"
+    by_title = await call(
+        workspace, "preflight_bib_lookup", title="Attention Is All You Need", author="Vaswani"
+    )
+    assert "@inproceedings{vaswani2017attention," in by_title["bibtex"]
+    missing = await call(
+        workspace, "preflight_bib_lookup",
+        title="Quantum Gradient Folding for Sparse Mixture-of-Experts Transformers",
+    )  # fmt: skip
+    assert (missing["status"], missing["bibtex"]) == ("not_found", None)
+
+
+@pytest.mark.anyio
+async def test_bib_lookup_needs_exactly_one_query(workspace: Path) -> None:
+    with pytest.raises(ToolError, match="either"):
+        await call(workspace, "preflight_bib_lookup")
+    with pytest.raises(ToolError, match="not a DOI"):
+        await call(workspace, "preflight_bib_lookup", identifier="hello")
