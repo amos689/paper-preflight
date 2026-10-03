@@ -22,6 +22,7 @@ from enum import StrEnum
 from paper_preflight.bib.ids import Identifier
 from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry
+from paper_preflight.bibtex import escape, format_authors, protect_title
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
     EntryInfo,
@@ -291,6 +292,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
                 found_title=record.title, score=f"{m.title.score or 0.0:.2f}",
+                suggestion=protect_title(record.title),
             )
         )  # fmt: skip
     authors = m.authors
@@ -302,6 +304,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
             make_finding(
                 "REF010", _location(entry, author_field), key=key, field=author_field,
                 source=source, found_authors=_authors_text(record),
+                suggestion=format_authors(record),
             )
         )  # fmt: skip
     elif authors.status in {"mismatch", "variant"} and (
@@ -318,7 +321,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
-                source=source, missing=names,
+                source=source, missing=names, suggestion=format_authors(record),
                 detail="; ".join(d[0] for d in details), detail_zh="；".join(d[1] for d in details),
             )
         )  # fmt: skip
@@ -327,7 +330,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
-                severity=Severity.INFO, source=source,
+                severity=Severity.INFO, source=source, suggestion=format_authors(record),
                 detail=f"the entry lists {listed} of {total} authors without 'and others'",
                 detail_zh=f"条目只列出了 {total} 位作者中的 {listed} 位，且没有写 'and others'",
             )
@@ -337,7 +340,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
         out.append(
             make_finding(
                 "REF013", _location(entry, "year"), key=key, field="year", source=source,
-                year=info.year, found_years=years,
+                year=info.year, found_years=years, suggestion=str(record.year or ""),
             )
         )  # fmt: skip
     if m.venue.status == "mismatch" and not is_preprint(record):
@@ -346,6 +349,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
             make_finding(
                 "REF014", _location(entry, venue_field), key=key, field=venue_field,
                 source=source, venue=info.venue, found_venue=record.venue,
+                suggestion=escape(record.venue or ""),
             )
         )  # fmt: skip
     return out
@@ -508,6 +512,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
                 identifier=ident.value if ident else "identifier",
                 source=source_name(record.source), found_title=record.title,
                 found_authors=_authors_text(record), found_year=record.year or "n.d.",
+                remove=True,
             )
         )  # fmt: skip
     has_conflict = any(f.rule_id == "REF001" for f in findings)
