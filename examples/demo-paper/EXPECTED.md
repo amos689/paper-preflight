@@ -10,7 +10,7 @@ network access; "online" rows need reference verification (milestones W2–W3).
 | `lecun1998gradient` | never cited | CIT003 info | offline | ✅ |
 | `devlin2019bert` | shares its DOI with `he2016deep` | CIT004 warning | offline | ✅ |
 | `commented_out_key`, `inside_iffalse_key` | commented out / inside `\iffalse` | no finding | offline | ✅ |
-| `tacl2019example` | DOI written with LaTeX escapes (`\_`) | REF017 warning (safe fix) | offline | planned |
+| `tacl2019example` | DOI written with LaTeX escapes (`\_`) | REF017 warning (safe fix) | offline | ✅ |
 | `devlin2019bert` | DOI belongs to the ResNet paper | REF001 error | online | planned |
 | `kingma2015adam` | year 2016, published 2015 | REF013 warning | online | planned |
 | `he2015residual` | arXiv preprint published at CVPR 2016 | REF015 warning | online | planned |
