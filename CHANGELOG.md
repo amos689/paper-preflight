@@ -53,3 +53,5 @@ All notable changes to this project are documented here. The format follows
 - REF012 also reports a title that is close to the record's but has other words ("towards" for
   "for", "Hidden" for "Latent") and names them; spelling, hyphenation, "&", math and
   "RETRACTED:" notices do not count, nor do preprints whose earlier titles are unknown.
+- More venues are recognised for REF014: AISTATS, UAI, COLT, CoRL, TMLR, IJCV, WWW, WSDM, CIKM,
+  ICASSP, Interspeech, MICCAI, ICRA, IROS, WACV and BMVC. URLs in a venue field are ignored.
