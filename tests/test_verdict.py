@@ -490,3 +490,26 @@ def test_semantic_scholar_authors_never_raise_a_finding() -> None:
     assert result.record is not None
     assert result.record.source == "s2"
     assert not {"REF010", "REF011"} & rules(result)
+
+
+def test_a_doi_the_entry_lacks_is_offered_as_a_safe_fix() -> None:
+    entry = bib(NO_DOI)
+    result = assess(entry, search_result(entry, record()), current_year=YEAR)  # Crossref, has DOI
+    (finding,) = [f for f in result.findings if f.rule_id == "REF016"]
+    assert finding.severity is Severity.INFO
+    assert finding.data["suggestion"] == "10.1234/acl.2023.1"
+    assert result.verdict is Verdict.VERIFIED  # info findings never change the verdict
+
+
+def test_no_doi_offer_when_there_is_nothing_to_add() -> None:
+    with_doi = bib(CS_ENTRY)
+    assert "REF016" not in rules(
+        assess(with_doi, evidence_for(with_doi, anchored=[record()]), current_year=YEAR)
+    )
+    preprint = bib(ARXIV_ENTRY)
+    published = record(source="dblp", year=2022, venue="ACL")
+    item = evidence_for(preprint, anchored=[arxiv_record()], published_versions=[published])
+    assert "REF016" not in rules(assess(preprint, item, current_year=YEAR))  # REF015's job
+    arxiv_doi = replace(record(), identifiers={"doi": "10.48550/arxiv.2101.00001"})
+    entry = bib(NO_DOI)
+    assert "REF016" not in rules(assess(entry, search_result(entry, arxiv_doi), current_year=YEAR))
