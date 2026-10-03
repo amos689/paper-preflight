@@ -40,6 +40,7 @@ from paper_preflight.sources.record import SourceRecord
 MIN_NOT_FOUND_WORDS = 5  # shorter titles are too generic to conclude "not found"
 MAX_YEAR_ONLY_GAP = 3  # same title and authors, year off by more than this: do not bind
 MIN_TITLE_ONLY_WORDS = 6  # a title this long names one work, even when the authors differ
+MIN_VENUE_TITLE_WORDS = 4  # ... and one this long does too, at the same venue in the same year
 
 
 class Verdict(StrEnum):
@@ -241,7 +242,8 @@ def _bind_candidate(
         return min(pool or [best], key=_rank)
     # Same title and the very same authors, only the year differs: that is the cited work with a
     # wrong year (REF013), not a missing one. Bound only if all such records are one work. The
-    # gap limit guards against reprints; a year in the future cannot be one.
+    # gap limit guards against reprints; a year in the future cannot be one, nor can a paper at
+    # the same recognised venue (ICLR does not reprint its papers).
     future = info.year is not None and current_year is not None and info.year > current_year + 1
     strong = [
         m
@@ -250,15 +252,22 @@ def _bind_candidate(
         and m.authors.status == "match"
         and m.suspicious is None
         and not wrong_paper(info.authors, info.year, m.record)
-        and (future or _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP)
+        and (
+            future
+            or m.venue.status == "match"
+            or _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP
+        )
     ]
     if len({title_key(m.record.title) for m in strong}) == 1:
         return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
     # Same long title, same year, one work, but other authors: that is the cited work with wrong
     # authors (REF010/REF011: HALLMARK's placeholder and swapped authors), not a missing one.
     # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap.
+    # A shorter title ("Explanations for Monotonic Classifiers") names one work only together
+    # with the same recognised venue in the same year.
     named = sum(1 for person in info.authors.people if not person.literal)
-    if word_count(info.title) < MIN_TITLE_ONLY_WORDS or named < 2:
+    words = word_count(info.title)
+    if words < MIN_VENUE_TITLE_WORDS or named < 2:
         return None
     same_title = [
         m
@@ -267,6 +276,7 @@ def _bind_candidate(
         and m.authors.status == "mismatch"
         and m.year.status in {"match", "variant"}
         and m.suspicious is None
+        and (words >= MIN_TITLE_ONLY_WORDS or m.venue.status == "match")
     ]
     if len({title_key(m.record.title) for m in same_title}) != 1:
         return None

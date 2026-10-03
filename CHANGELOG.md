@@ -61,3 +61,7 @@ All notable changes to this project are documented here. The format follows
   ("International Conference on Quantum Machine Learning" for ICML). Abbreviations, ordinals,
   series and publishers (PMLR, LNCS, OpenReview) never count, only booktitle and journal are
   judged, and a workshop must share no word at all with the recorded venue.
+- The same recognised venue now counts as evidence when binding a search result: a four- or
+  five-word title at the same venue in the same year names one work (wrong authors become
+  REF010 instead of "cannot determine"), and a year more than three years off is no reprint
+  when the venue is the same (REF013).

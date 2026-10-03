@@ -563,6 +563,35 @@ def test_results_that_may_be_the_cited_work_stay_ambiguous(candidate: SourceReco
     assert result.reasons == (Reason.AMBIGUOUS_CANDIDATES,)
 
 
+SHORT_TITLE = "Sparse Attention Revisited Today"
+
+
+@pytest.mark.parametrize(("venue", "bound"), [("ACL", True), ("EMNLP", False), (None, False)])
+def test_a_short_title_names_one_work_at_the_same_venue_and_year(
+    venue: str | None, bound: bool
+) -> None:
+    # HALLMARK swapped authors on "Explanations for Monotonic Classifiers" (ICML 2021)
+    entry = bib(NO_DOI.replace(TITLE, SHORT_TITLE))
+    other_authors = record(
+        title=SHORT_TITLE, authors=(Person("Wu", "Dan"), Person("Ito", "Ken")), source="dblp",
+        venue=venue,
+    )  # fmt: skip
+    result = assess(entry, search_result(entry, other_authors), current_year=YEAR)
+    assert (result.record is not None) is bound
+    assert ("REF010" in rules(result)) is bound
+
+
+@pytest.mark.parametrize(("venue", "bound"), [("ACL", True), ("EMNLP", False)])
+def test_a_far_year_is_no_reprint_at_the_same_venue(venue: str, bound: bool) -> None:
+    # an ICLR 2017 paper cited as ICLR 2023: venues do not reprint their papers
+    entry = bib(NO_DOI)
+    far = record(source="dblp", year=2016, venue=venue)
+    result = assess(entry, search_result(entry, far), current_year=YEAR)
+    assert (result.record is not None) is bound
+    if bound:
+        assert rules(result) == {"REF013"}
+
+
 def test_semantic_scholar_authors_never_raise_a_finding() -> None:
     # S2 author lists mix initials, orders and duplicates: they confirm a work, never accuse
     entry = bib(NO_DOI)
