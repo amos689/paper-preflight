@@ -119,6 +119,8 @@ async def _guard(evidence: list[Evidence], call: Callable[[], Awaitable[T]]) -> 
 async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Evidence]:
     evidence: dict[str, Evidence] = {}
     for entry in entries:
+        if entry.key in evidence:
+            continue  # BibTeX uses the first definition of a duplicate key (CIT002 reports it)
         evidence[entry.key] = Evidence(
             key=entry.key, info=EntryInfo.from_entry(entry), identifiers=extract_identifiers(entry)
         )
