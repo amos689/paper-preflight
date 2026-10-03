@@ -589,7 +589,7 @@ def _status_findings(
 
 # Venue names that still mean "a preprint": servers, and drafts not yet published.
 _PREPRINT_VENUE = re.compile(
-    r"arxiv|corr|preprint|biorxiv|medrxiv|chemrxiv|ssrn|techrxiv|research square|"
+    r"arxiv|\bcorr\b|preprint|biorxiv|medrxiv|chemrxiv|ssrn|techrxiv|research square|"
     r"submitted|under review|in press|to appear",
     re.I,
 )
