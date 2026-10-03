@@ -1,0 +1,616 @@
+# The false-positive museum (evals/museum.py records, tests/test_museum.py replays).
+#
+# Each case is one reference from an evaluation and the warning and error rules it must produce
+# now. "fp-" cases were false positives once (the note says which); "team-" cases a regression;
+# "real-" cases are real problems, so that fixing false positives does not hide them. Adding a
+# case: append it here, then `uv run python evals/museum.py record`.
+
+[[case]]
+name = "fp-nan2025nemori"
+source = "real_papers:2607.00339v1"
+key = "nan2025nemori"
+expect = []
+note = "was REF011: The entry cites v1 of arXiv 2508.03341 (title 'Nemori: ...', author order Nan, Ma, Wu, Chen); a later version changed the title and put Wenquan Ma first. Authors were compared with the latest version."
+
+[[case]]
+name = "fp-green2007provenance"
+source = "real_papers:2607.00339v1"
+key = "green2007provenance"
+expect = []
+note = "was REF011: Grigoris Karvounarakis is the byline of PODS 2007 'Provenance semirings'; dblp's 'Gregory' is the English form of the same name."
+
+[[case]]
+name = "fp-shokri2017membership"
+source = "real_papers:2607.00325v1"
+key = "shokri2017membership"
+expect = []
+note = "was REF015: The entry already cites the published version (booktitle 2017 IEEE Symposium on Security and Privacy) and keeps the eprint; the venue was not recognised, so the entry was taken for a preprint citation."
+
+[[case]]
+name = "fp-piet2025markmywords"
+source = "real_papers:2607.00325v1"
+key = "piet2025markmywords"
+expect = []
+note = "was REF015: The entry already cites the published version (booktitle IEEE SaTML 2025); same cause as shokri2017membership."
+
+[[case]]
+name = "fp-hu2025memoryagentbench"
+source = "real_papers:2607.00368v1"
+key = "hu2025memoryagentbench"
+expect = []
+note = "was REF013: The entry cites the ICLR 2026 paper (OpenReview DT7JyQC3MR), year 2026 is right; dblp only holds the 2025 CoRR preprint so far, and a preprint's year was compared with the published version's."
+
+[[case]]
+name = "fp-zhang2025lact"
+source = "real_papers:2607.00368v1"
+key = "zhang2025lact"
+expect = []
+note = "was REF013: ICLR 2026 paper (OpenReview Tb9qAxT3xv) cited as 2026; dblp holds only the 2025 CoRR preprint; same cause as hu2025memoryagentbench."
+
+[[case]]
+name = "fp-sharma2024towards"
+source = "real_papers:2607.00415v1"
+key = "sharma2024towards"
+expect = []
+note = "was REF011: Tomek is the Polish diminutive of Tomasz: Tomasz Korbak is a coauthor of 'Towards Understanding Sycophancy in Language Models' (ICLR 2024)."
+
+[[case]]
+name = "fp-wang2023temporal"
+source = "real_papers:2607.00289v1"
+key = "wang2023temporal"
+expect = []
+note = "was REF013: IEEE early access: DOI 10.1109/tpami.2023.3330794 was published online in November 2023 (Crossref 'created' 2023-11-06) and in print in April 2024; 2023 is a legitimate year to cite."
+
+[[case]]
+name = "fp-shih2017survey"
+source = "real_papers:2607.00289v1"
+key = "shih2017survey"
+expect = []
+note = "was REF013: IEEE early access: DOI 10.1109/tcsvt.2017.2655624 was online in January 2017 (Crossref 'created' 2017-01-19), in print May 2018."
+
+[[case]]
+name = "fp-t2irisky"
+source = "real_papers:2607.02582v1"
+key = "t2irisky"
+expect = []
+note = "was REF010: The authors are the right people (Zhang C., Zhang T., ... of AAAI-26 T2I-RiskyPrompt) written 'Family I.' without a comma, which BibTeX reads as given name 'Zhang', family 'C.'; a formatting problem, not other authors."
+
+[[case]]
+name = "fp-achiam2023gpt"
+source = "real_papers:2607.00293v1"
+key = "achiam2023gpt"
+expect = []
+note = "was REF011: arXiv 2303.08774 lists the organisation 'OpenAI' before Josh Achiam and the others; 'Achiam et al.' names the right people in the right order."
+
+[[case]]
+name = "fp-li2017learning"
+source = "real_papers:2607.00293v1"
+key = "li2017learning"
+expect = []
+note = "was REF013: IEEE early access: Learning without Forgetting, DOI 10.1109/tpami.2017.2773081, was online in 2017 and in print in TPAMI 40(12), 2018."
+
+[[case]]
+name = "fp-mondal2024presentations"
+source = "real_papers:2607.00407v2"
+key = "mondal2024presentations"
+expect = []
+note = "was REF011: Crossref lists 'Shwetha S' (given Shwetha, family S) and the entry 'Shwetha, S': one person whose single name and initial were swapped by one of them."
+
+[[case]]
+name = "fp-myers-occam"
+source = "real_papers:2607.00291v1"
+key = "Myers_OCCAM"
+expect = []
+note = "was REF011: Julia O'Connell is on the record as O’Connell (curly apostrophe); the names were not normalised."
+
+[[case]]
+name = "fp-magrini2023-gradients-witheso-clusters"
+source = "real_papers:2607.00291v1"
+key = "magrini2023-gradients-withESO-clusters"
+expect = []
+note = "was REF011: V. D'Orazi is on the record as D’Orazi (curly apostrophe)."
+
+[[case]]
+name = "fp-occam-p4"
+source = "real_papers:2607.00291v1"
+key = "occam_p4"
+expect = []
+note = "was REF011: Julia E. O'Connell is on the record as O’Connell (curly apostrophe)."
+
+[[case]]
+name = "fp-donor-18"
+source = "real_papers:2607.00291v1"
+key = "donor_18"
+expect = []
+note = "was REF011: Julia O'Connell is on the record as O’Connell (curly apostrophe)."
+
+[[case]]
+name = "fp-spina-21"
+source = "real_papers:2607.00291v1"
+key = "spina_21"
+expect = []
+note = "was REF011: V. D'Orazi is on the record as D’Orazi (curly apostrophe)."
+
+[[case]]
+name = "fp-gaia-edrthree"
+source = "real_papers:2607.00291v1"
+key = "GAIA_EDRthree"
+expect = []
+note = "was REF011: A. Dell'Oro is on the record as Dell’Oro (curly apostrophe)."
+
+[[case]]
+name = "fp-hires"
+source = "real_papers:2607.00291v1"
+key = "hires"
+expect = []
+note = "was REF012: Crossref's title for 10.1117/12.176725 carries a literal '<title>...</title>' tag around the right title."
+
+[[case]]
+name = "fp-dr17"
+source = "real_papers:2607.00291v1"
+key = "dr17"
+expect = []
+note = "was REF011: SDSS DR17 (10.3847/1538-4365/ac4414): Abdurro'uf is on the record with a curly apostrophe, and the several Lins were paired greedily with the wrong given names."
+
+[[case]]
+name = "fp-wiggins-2025"
+source = "real_papers:2607.00291v1"
+key = "wiggins_2025"
+expect = []
+note = "was REF011: Elena D'Onghia is on the record as D’Onghia (curly apostrophe)."
+
+[[case]]
+name = "fp-solabu-a05"
+source = "real_papers:2607.00291v1"
+key = "solabu_A05"
+expect = []
+note = "was REF013: Two works with one title and the same authors: the entry cites Asplund, Grevesse & Sauval 2005, ASP Conf. Ser. 336; the title search bound it to their 2006 Nuclear Physics A paper (10.1016/j.nuclphysa.2005.06.010)."
+
+[[case]]
+name = "fp-girardi2000-parsec"
+source = "real_papers:2607.00291v1"
+key = "girardi2000-parsec"
+expect = []
+note = "was REF012: The entry's solar symbol (the AAS macro 'sun' in a subscript) became the word 'sun'; the record has 'M_⊙'."
+
+[[case]]
+name = "fp-sneden-2016"
+source = "real_papers:2607.00291v1"
+key = "Sneden_2016"
+expect = []
+note = "was REF012: A vspace command (0.5ex) in the entry's title became the words '0 5ex'; the record's title is the same otherwise."
+
+[[case]]
+name = "fp-dasilva-2023"
+source = "real_papers:2607.00291v1"
+key = "daSilva_2023"
+expect = []
+note = "was REF011: D'Orazi and Dall'Ora are on the record with curly apostrophes."
+
+[[case]]
+name = "fp-nunnari-2026"
+source = "real_papers:2607.00291v1"
+key = "Nunnari_2026"
+expect = []
+note = "was REF011: D'Orazi and Dall'Ora are on the record with curly apostrophes."
+
+[[case]]
+name = "fp-kelson2000"
+source = "real_papers:2607.00291v1"
+key = "kelson2000"
+expect = []
+note = "was REF012: Crossref's title for 10.1086/308445 contains the artefact 'empty 10976' (a lost symbol); the entry's title is right."
+
+[[case]]
+name = "fp-2004apj-613-794g"
+source = "real_papers:2607.00305v1"
+key = "2004ApJ...613..794G"
+expect = []
+note = "was REF011: Christopher P. O'Dea is on the record as O’Dea (curly apostrophe)."
+
+[[case]]
+name = "fp-2019a-a-632a-61g"
+source = "real_papers:2607.00305v1"
+key = "2019A&A...632A..61G"
+expect = []
+note = "was REF012: ADS markup '<ASTROBJ>NGC 1068</ASTROBJ>' in the entry's title was compared as words."
+
+[[case]]
+name = "fp-2021mnras-500-4749b"
+source = "real_papers:2607.00305v1"
+key = "2021MNRAS.500.4749B"
+expect = ["REF011"]
+note = "was REF013: MNRAS 500(4) is the January 2021 issue; Crossref's online and print dates are 2020, its journal-issue date 2021. The issue year is a legitimate year to cite."
+
+[[case]]
+name = "fp-2023mnras-519-1732n"
+source = "real_papers:2607.00305v1"
+key = "2023MNRAS.519.1732N"
+expect = ["REF001"]
+note = "was REF013: MNRAS 519(2) is a 2023 issue; online December 2022. Same as 2021MNRAS.500.4749B."
+
+[[case]]
+name = "fp-superconductingneldermead"
+source = "real_papers:2607.00284v1"
+key = "superconductingNelderMead"
+expect = []
+note = "was REF011: T. E. O'Brien is on the record as O’Brien (curly apostrophe)."
+
+[[case]]
+name = "fp-shahriari2015taking"
+source = "real_papers:2607.00284v1"
+key = "shahriari2015taking"
+expect = []
+note = "was REF013: Early access: Proceedings of the IEEE 104(1), 2016, was online in 2015 (DOI created 2015)."
+
+[[case]]
+name = "fp-2021mnras-503-1780j"
+source = "real_papers:2607.00305v1"
+key = "2021MNRAS.503.1780J"
+expect = []
+note = "was REF011: Crossref files 'Silpa S' as given name Silpa, family S; the entry's 'Silpa, S.' is the same person."
+
+[[case]]
+name = "fp-sese-2022"
+source = "real_papers:2607.00307v1"
+key = "Sese_2022"
+expect = []
+note = "was REF003: A real paper in the Proceedings of the Samahang Pisika ng Pilipinas (proceedings.spp-online.org, SPP-2022-1D-02), a venue no queried source indexes."
+
+[[case]]
+name = "fp-li2021multi"
+source = "real_papers:2607.00877v1"
+key = "li2021multi"
+expect = []
+note = "was REF013: Early access: IEEE Control Systems Letters 6 (2022), online in 2021."
+
+[[case]]
+name = "fp-buchnik2023latent"
+source = "real_papers:2607.00877v1"
+key = "buchnik2023latent"
+expect = []
+note = "was REF013: Early access: IEEE Transactions on Signal Processing 2024 article online in 2023."
+
+[[case]]
+name = "fp-chen2024normalizing"
+source = "real_papers:2607.00877v1"
+key = "chen2024normalizing"
+expect = []
+note = "was REF013: Early access: IEEE Transactions on Signal Processing 2025 article online in 2024."
+
+[[case]]
+name = "fp-laveryphysicsinformedneuralnetworks2026"
+source = "real_papers:2607.01749v1"
+key = "laveryPhysicsInformedNeuralNetworks2026"
+expect = []
+note = "was REF012: The arXiv record's title keeps its TeX ('$2mathrm{D}{+}t$'), compared word by word with the entry's converted '2D+t'."
+
+[[case]]
+name = "fp-chen2018sway"
+source = "real_papers:2607.02583v1"
+key = "chen2018sway"
+expect = []
+note = "was REF013: Early access: IEEE TSE 45 (2019) article online in 2018."
+
+[[case]]
+name = "fp-ghahramanifhmms"
+source = "real_papers:2607.07008v1"
+key = "ghahramanifhmms"
+expect = []
+note = "was REF013: The entry cites the NIPS 8 paper (proceedings.neurips.cc lists it under 1995); it was matched to a DTIC technical report of the same title, 10.21236/ada307097 (1996)."
+
+[[case]]
+name = "team-team2024chameleon"
+source = "real_papers:2607.00293v1"
+key = "team2024chameleon"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-team2023gemini"
+source = "real_papers:2607.00293v1"
+key = "team2023gemini"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-gemmateam2025gemma3technicalreport"
+source = "real_papers:2607.02582v1"
+key = "gemmateam2025gemma3technicalreport"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-team2025kimi"
+source = "real_papers:2607.19378v3"
+key = "team2025kimi"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-gopakumar2023fourier"
+source = "real_papers:2607.00320v1"
+key = "gopakumar2023fourier"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-collaboration-euclid-2025e"
+source = "real_papers:2607.06891v2"
+key = "collaboration_euclid_2025e"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "team-collaboration-data-2025"
+source = "real_papers:2607.06891v2"
+key = "collaboration_data_2025"
+expect = []
+note = "a team written as a name (#73 regression, fixed in #74)"
+
+[[case]]
+name = "real-xu2026mem"
+source = "real_papers:2607.00339v1"
+key = "xu2026mem"
+expect = ["REF013"]
+note = "real problem (REF013): NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-0593 is issued and published in print in 2025."
+
+[[case]]
+name = "real-wu2024longmemeval"
+source = "real_papers:2607.00339v1"
+key = "wu2024longmemeval"
+expect = ["REF015"]
+note = "real problem (REF015): LongMemEval (arXiv 2410.10813) appeared at ICLR 2025 (dblp)."
+
+[[case]]
+name = "real-peng2023rwkv"
+source = "real_papers:2607.19378v3"
+key = "peng2023rwkv"
+expect = ["REF011"]
+note = "real problem (REF011): RWKV (Findings of EMNLP 2023, DOI 10.18653/v1/2023.findings-emnlp.936) lists Huanqi Cao and Xin Cheng; there is no Stella Cao or Xuan Cheng on the paper."
+
+[[case]]
+name = "real-sun2023retentive"
+source = "real_papers:2607.19378v3"
+key = "sun2023retentive"
+expect = ["REF011"]
+note = "real problem (REF011): RetNet (arXiv 2307.08621) lists Yuqing Xia, not Tengchao Xia."
+
+[[case]]
+name = "real-wightman2021resnet"
+source = "real_papers:2607.19378v3"
+key = "wightman2021resnet"
+expect = ["REF012"]
+note = "real problem (REF012): arXiv 2110.00476 is titled 'ResNet strikes back: An improved training procedure in timm' in v1 and since; 'An improved baseline in 2.5 lines of code' is not its title."
+
+[[case]]
+name = "real-trelease2016chalkboard"
+source = "real_papers:2607.00407v2"
+key = "trelease2016chalkboard"
+expect = ["REF012"]
+note = "real problem (REF012): The entry's title lacks 'paper' ('slides, and  to e-learning'); DOI 10.1002/ase.1620 has 'From chalkboard, slides, and paper to e-learning'."
+
+[[case]]
+name = "real-2001apj-549l-167y"
+source = "real_papers:2607.00305v1"
+key = "2001ApJ...549L.167Y"
+expect = ["REF001"]
+note = "real problem (REF001): DOI 10.1086/319161 is Marshall et al. 2001 (3C 273 jet, ApJ 549 L167); the entry's title and authors are Yun, Reddy & Condon 2001, ApJ 554, 803."
+
+[[case]]
+name = "real-2003ara-a-41-117b"
+source = "real_papers:2607.00305v1"
+key = "2003ARA&A..41..117B"
+expect = ["REF002"]
+note = "real problem (REF002): doi.org and Crossref both answer 404 for 10.1146/annurev.astro.41.011802.094856."
+
+[[case]]
+name = "real-2016apj-826-59i"
+source = "real_papers:2607.00305v1"
+key = "2016ApJ...826...59I"
+expect = ["REF001"]
+note = "real problem (REF001): DOI 10.3847/0004-637X/826/1/59 is Watkins et al. 2016; the entry's Imanishi et al. paper is another article."
+
+[[case]]
+name = "real-tessieri-2002"
+source = "real_papers:2607.00307v1"
+key = "Tessieri_2002"
+expect = ["REF013"]
+note = "real problem (REF013): J. Phys. A 36(49) appeared online 26 November 2003 (Crossref: online 2003-11-26, DOI created 2004-01-14); the entry cites the journal with its arXiv preprint's year, 2002. Re-checked: first reviewed as early"
+
+[[case]]
+name = "real-yeyoganarasimhanzheng2025"
+source = "real_papers:2607.06879v1"
+key = "YeYoganarasimhanZheng2025"
+expect = ["REF002"]
+note = "real problem (REF002): doi.org has no handle 10.1287/mksc.2024.0990 (handle API: responseCode 100); the DOI as written does not exist."
+
+[[case]]
+name = "real-li2016pruning"
+source = "real_papers:2607.06922v1"
+key = "li2016pruning"
+expect = ["REF015"]
+note = "real problem (REF015): arXiv 1608.08710 (Pruning Filters for Efficient ConvNets) was published at ICLR 2017."
+
+[[case]]
+name = "real-xu2024infer"
+source = "real_papers:2607.06875v1"
+key = "xu2024infer"
+expect = ["REF011"]
+note = "real problem (REF011): NeurIPS 2024 (10.52202/079017-3295) lists Qi Jia and Baoyu Fan before Cong Xu; the entry starts at the third author."
+
+[[case]]
+name = "real-hu2022lora"
+source = "real_papers:2607.06875v1"
+key = "hu2022lora"
+expect = ["REF011"]
+note = "real problem (REF011): LoRA's seventh author is Lu Wang (ICLR 2022, arXiv 2106.09685); the entry says 'Liang Wang'."
+
+[[case]]
+name = "real-probmetaplast2024"
+source = "real_papers:2607.06924v1"
+key = "probmetaplast2024"
+expect = ["REF012"]
+note = "real problem (REF012): The Scientific Reports article the entry cites (DOI given) is titled '... with Memristors in Spiking Networks'; the entry has the arXiv preprint's shorter title."
+
+[[case]]
+name = "real-singer2006128"
+source = "real_papers:2607.07047v3"
+key = "SINGER2006128"
+expect = ["REF017"]
+note = "real problem (REF017): The doi field holds the URL 'https://doi.org/10.1016/j.acha.2006.03.004' instead of the DOI."
+
+[[case]]
+name = "real-frstner-2000"
+source = "real_papers:2607.07047v3"
+key = "frstner_2000"
+expect = ["REF011", "REF013"]
+note = "real problem (REF013): The DOI and ISBN the entry gives are the 2003 book chapter (Geodesy - The Challenge of the 3rd Millennium); the entry says 2000."
+
+[[case]]
+name = "real-evoengineer2025"
+source = "real_papers:2607.20518v1"
+key = "evoengineer2025"
+expect = ["REF001"]
+note = "real problem (REF001): arXiv 2509.18570 is 'HarmoniFuse' (Si et al.); the identifier the entry gives belongs to another paper."
+
+[[case]]
+name = "real-sobol1967"
+source = "real_papers:2608.04024v1"
+key = "Sobol1967"
+expect = ["REF017"]
+note = "real problem (REF017): The doi field holds a URL ('https://doi.org/10.1016/0041-5553(67)90144-9') instead of the DOI."
+
+[[case]]
+name = "real-sinousdrugqa2026"
+source = "real_papers:2608.28607v1"
+key = "sinousdrugqa2026"
+expect = ["REF010"]
+note = "real problem (REF010): The author field is the placeholder '{Sino-US-DrugQA authors}'; the medRxiv record (10.64898/2026.02.13.26346236) names the authors (Fu et al.)."
+
+[[case]]
+name = "real-petrosian-surface-1976"
+source = "real_papers:2607.06891v2"
+key = "petrosian_surface_1976"
+expect = ["REF002"]
+note = "real problem (REF002): The doi field runs two DOIs together ('10.1086/18230110.1086/182253'); no such DOI exists."
+
+[[case]]
+name = "real-giavalisco-morphology-1996"
+source = "real_papers:2607.06891v2"
+key = "giavalisco_morphology_1996"
+expect = ["REF001"]
+note = "real problem (REF001): 10.1086/177861 is Gould's 'Theory of Pixel Lensing' (Crossref); the DOI given is not Giavalisco et al.'s."
+
+[[case]]
+name = "real-adam-bayesian-2024"
+source = "real_papers:2607.06891v2"
+key = "adam_bayesian_2024"
+expect = ["REF010"]
+note = "real problem (REF010): arXiv 2411.19158 is by Spagnoletti et al. (DataCite); the entry credits it to Adam, Stone, Bottrell et al."
+
+[[case]]
+name = "real-haussler-gems-2007a"
+source = "real_papers:2607.06891v2"
+key = "haussler_gems_2007a"
+expect = ["REF012"]
+note = "real problem (REF012): The ApJS title ends '... Fitting Codes: GALFIT and GIM2D' (10.1086/518836); the entry drops the subtitle."
+
+[[case]]
+name = "fp-bm-p1r3"
+source = "badalova_mayr"
+key = "p1r3"
+expect = []
+note = "was REF013: BIR 2024 workshop that dblp files under 2025 (key conf/birws/AtanassovaB24)"
+
+[[case]]
+name = "fp-bm-p1r10"
+source = "badalova_mayr"
+key = "p1r10"
+expect = []
+note = "was REF011: arXiv lists 'Gemma Team' as first author; the reference writes 'Gemma'"
+
+[[case]]
+name = "fp-bm-p2r13"
+source = "badalova_mayr"
+key = "p2r13"
+expect = []
+note = "was REF011: Crossref lists an affiliation as first author; Marcińczuk's letters restored"
+
+[[case]]
+name = "fp-bm-p3r29"
+source = "badalova_mayr"
+key = "p3r29"
+expect = []
+note = "was REF011: Kamilė Lukošiūtė, letters restored from the document"
+
+[[case]]
+name = "real-bm-p2r7"
+source = "badalova_mayr"
+key = "p2r7"
+expect = ["REF011"]
+note = "real problem: 'Goran Duck' for Geraint Duck"
+
+[[case]]
+name = "real-bm-p3r33"
+source = "badalova_mayr"
+key = "p3r33"
+expect = ["REF017"]
+note = "real problem: DOI written '0.18653/...'"
+
+[[case]]
+name = "real-bm-p3r14"
+source = "badalova_mayr"
+key = "p3r14"
+expect = ["REF012"]
+note = "real problem: TriviaQA title drops 'Dataset'"
+
+[[case]]
+name = "real-bm-p3r51"
+source = "badalova_mayr"
+key = "p3r51"
+expect = ["REF011"]
+note = "real problem: 'Jeffrey Pennin' for Pennington"
+
+[[case]]
+name = "real-bm-p1r4"
+source = "badalova_mayr"
+key = "p1r4"
+expect = ["REF003"]
+note = "fabricated reference (study label: problematic)"
+
+[[case]]
+name = "real-bm-p3r9"
+source = "badalova_mayr"
+key = "p3r9"
+expect = ["REF003"]
+note = "fabricated reference (study label: problematic)"
+
+[[case]]
+name = "real-bm-p2r1"
+source = "badalova_mayr"
+key = "p2r1"
+expect = ["REF001"]
+note = "DOI of another work (study label: problematic)"
+
+[[case]]
+name = "real-bm-p3r25"
+source = "badalova_mayr"
+key = "p3r25"
+expect = ["REF001"]
+note = "DOI of another work (study label: problematic)"
+
+[[case]]
+name = "real-bm-p2r9"
+source = "badalova_mayr"
+key = "p2r9"
+expect = ["REF002", "REF003"]
+note = "invented DOI and title (study label: problematic)"
+
+[[case]]
+name = "real-bm-p3r55"
+source = "badalova_mayr"
+key = "p3r55"
+expect = ["REF011"]
+note = "wrong authors (study label: problematic)"
+
