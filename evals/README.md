@@ -64,3 +64,41 @@ against the registries; `evals/hallmark_disputed.toml` lists them with a reason 
 can confirm. Results are always reported as HALLMARK labels them, and every summary adds a
 second table without the disputed entries, so both numbers are visible. Reports of further
 label problems are welcome as issues.
+
+## Real papers
+
+Benchmarks perturb real entries; real `.bib` files are messier: books, theses, talks, software,
+workshop papers, odd fields. `evals/real_papers.py` checks the bibliographies of arXiv papers
+chosen mechanically: in each category, papers first submitted in one week, in submission order,
+kept when their source has a main `.tex` and a `.bib` with at least 20 entries. Every warning
+and error is then reviewed by hand and recorded in `evals/real_papers_review.toml` as
+*correct* (the entry really has the problem), *false positive* or *unclear*, with a reason one
+lookup can confirm.
+
+```bash
+uv run python evals/real_papers.py collect --batch heldout   # pick and download the papers
+uv run python evals/real_papers.py run --batch heldout       # check them against live sources
+uv run python evals/real_papers.py report --batch heldout    # combine with the manual review
+```
+
+There are two batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1):
+
+| Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
+|---|---|---|---|---|---|---|---|---|
+| `dev` | 2026-07-01..07 | its false positives were studied and fixed (#58–#69) | 924 | 72 | 65 | 1 | 6 | 0.1 |
+| `heldout` | 2026-07-08..14 | collected after those fixes, reported as it came out | 921 | 109 | 84 | 21 | 4 | 2.3 |
+
+- **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
+  per 100 references). The fixes removed false positives without losing a real problem.
+- **On `heldout`**, 56 of the 84 real problems are cited preprints that have since been
+  published (REF015, advice); the other 28 are errors in the entry: wrong or invented authors,
+  DOIs that do not exist or belong to another paper, wrong titles, a DOI written as a URL. Of
+  the 21 false positives, 7 are real works no source indexes (a talk, papers from the 1950s and
+  60s: REF003), and most others are records of a related publication of the same title (a thesis
+  abstract, a technical report, the arXiv order of authors: REF011-REF013). The first run of
+  this batch, before #72-#74, found 2.4 false positives per 100 references.
+- **The held-out flags were reviewed, not used to change a rule.** Fixing what they show would
+  make this batch a development batch; measuring those fixes will need a new week of papers.
+- The sources are not committed (arXiv's default licence does not allow redistribution); the
+  manifests `evals/real_papers.toml` and `evals/real_papers_heldout.toml` list the IDs.

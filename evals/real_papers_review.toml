@@ -1,0 +1,900 @@
+# Manual review of every warning and error that evals/real_papers.py raised on real papers.
+#
+# verdict: "correct"        the entry really has the problem the finding names
+#          "false_positive" the entry is right; the tool is wrong (a bug to fix)
+#          "unclear"        the registries disagree, or the citation is defensible either way
+# note: a reason one lookup can confirm.
+
+[finding."2607.00339v1:xu2026mem:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-0593 is issued and published in print in 2025."
+
+[finding."2607.00339v1:wu2024longmemeval:REF015"]
+verdict = "correct"
+note = "LongMemEval (arXiv 2410.10813) appeared at ICLR 2025 (dblp)."
+
+[finding."2607.00339v1:chhikara2025mem0:REF015"]
+verdict = "correct"
+note = "Mem0 (arXiv 2504.19413) is in ECAI 2025, DOI 10.3233/faia251160, same title and authors."
+
+[finding."2607.00339v1:nan2025nemori:REF011"]
+verdict = "false_positive"
+note = "The entry cites v1 of arXiv 2508.03341 (title 'Nemori: ...', author order Nan, Ma, Wu, Chen); a later version changed the title and put Wenquan Ma first. Authors were compared with the latest version."
+
+[finding."2607.00339v1:green2007provenance:REF011"]
+verdict = "false_positive"
+note = "Grigoris Karvounarakis is the byline of PODS 2007 'Provenance semirings'; dblp's 'Gregory' is the English form of the same name."
+
+[finding."2607.00301v1:lipman2022flow:REF015"]
+verdict = "correct"
+note = "Flow Matching (arXiv 2210.02747) appeared at ICLR 2023 (dblp conf/iclr)."
+
+[finding."2607.00301v1:kerrigan2023functional:REF015"]
+verdict = "correct"
+note = "Functional Flow Matching (arXiv 2305.17209) appeared at AISTATS 2024 (PMLR 238)."
+
+[finding."2607.00301v1:li2020fourier:REF015"]
+verdict = "correct"
+note = "Fourier Neural Operator (arXiv 2010.08895) appeared at ICLR 2021."
+
+[finding."2607.00301v1:song2020score:REF015"]
+verdict = "correct"
+note = "Score-Based Generative Modeling through SDEs (arXiv 2011.13456) appeared at ICLR 2021."
+
+[finding."2607.00325v1:shokri2017membership:REF015"]
+verdict = "false_positive"
+note = "The entry already cites the published version (booktitle 2017 IEEE Symposium on Security and Privacy) and keeps the eprint; the venue was not recognised, so the entry was taken for a preprint citation."
+
+[finding."2607.00325v1:park2023trak:REF015"]
+verdict = "correct"
+note = "TRAK (arXiv 2303.14186) appeared at ICML 2023 (PMLR 202)."
+
+[finding."2607.00325v1:liu2025language:REF015"]
+verdict = "correct"
+note = "arXiv 2503.17514 appeared at ICML 2025 (dblp conf/icml)."
+
+[finding."2607.00325v1:piet2025markmywords:REF015"]
+verdict = "false_positive"
+note = "The entry already cites the published version (booktitle IEEE SaTML 2025); same cause as shokri2017membership."
+
+[finding."2607.00368v1:hu2025memoryagentbench:REF013"]
+verdict = "false_positive"
+note = "The entry cites the ICLR 2026 paper (OpenReview DT7JyQC3MR), year 2026 is right; dblp only holds the 2025 CoRR preprint so far, and a preprint's year was compared with the published version's."
+
+[finding."2607.00368v1:shen2026mem2actbench:REF015"]
+verdict = "correct"
+note = "arXiv 2601.19935 appeared at ACL 2026 (long papers), DOI 10.18653/v1/2026.acl-long.370."
+
+[finding."2607.00368v1:zhang2025lact:REF013"]
+verdict = "false_positive"
+note = "ICLR 2026 paper (OpenReview Tb9qAxT3xv) cited as 2026; dblp holds only the 2025 CoRR preprint; same cause as hu2025memoryagentbench."
+
+[finding."2607.00368v1:behrouz2025titans:REF015"]
+verdict = "correct"
+note = "Titans (arXiv 2501.00663) appeared at NeurIPS 2025."
+
+[finding."2607.00368v1:chhikara2025mem0:REF015"]
+verdict = "correct"
+note = "Mem0 appeared in ECAI 2025, DOI 10.3233/faia251160."
+
+[finding."2607.00415v1:choi2026belief:REF015"]
+verdict = "correct"
+note = "arXiv 2601.04790 appeared in Findings of ACL 2026, DOI 10.18653/v1/2026.findings-acl.1071."
+
+[finding."2607.00415v1:sharma2024towards:REF011"]
+verdict = "false_positive"
+note = "Tomek is the Polish diminutive of Tomasz: Tomasz Korbak is a coauthor of 'Towards Understanding Sycophancy in Language Models' (ICLR 2024)."
+
+[finding."2607.00415v1:alain2016understanding:REF015"]
+verdict = "correct"
+note = "arXiv 1610.01644 appeared at the ICLR 2017 workshop track."
+
+[finding."2607.00289v1:wang2023temporal:REF013"]
+verdict = "false_positive"
+note = "IEEE early access: DOI 10.1109/tpami.2023.3330794 was published online in November 2023 (Crossref 'created' 2023-11-06) and in print in April 2024; 2023 is a legitimate year to cite."
+
+[finding."2607.00289v1:shih2017survey:REF013"]
+verdict = "false_positive"
+note = "IEEE early access: DOI 10.1109/tcsvt.2017.2655624 was online in January 2017 (Crossref 'created' 2017-01-19), in print May 2018."
+
+[finding."2607.02582v1:t2irisky:REF010"]
+verdict = "false_positive"
+note = "The authors are the right people (Zhang C., Zhang T., ... of AAAI-26 T2I-RiskyPrompt) written 'Family I.' without a comma, which BibTeX reads as given name 'Zhang', family 'C.'; a formatting problem, not other authors."
+
+[finding."2607.02582v1:wangFaceevoLVeCrossplatformLibrary2022:REF017"]
+verdict = "correct"
+note = "The doi field holds 'https://doi.org/10.1016/j.neucom.2022.04.118' instead of the bare DOI."
+
+[finding."2607.19378v3:peng2023rwkv:REF011"]
+verdict = "correct"
+note = "RWKV (Findings of EMNLP 2023, DOI 10.18653/v1/2023.findings-emnlp.936) lists Huanqi Cao and Xin Cheng; there is no Stella Cao or Xuan Cheng on the paper."
+
+[finding."2607.19378v3:sun2023retentive:REF011"]
+verdict = "correct"
+note = "RetNet (arXiv 2307.08621) lists Yuqing Xia, not Tengchao Xia."
+
+[finding."2607.19378v3:zhu2024vim:REF015"]
+verdict = "correct"
+note = "Vision Mamba (arXiv 2401.09417) appeared at ICML 2024."
+
+[finding."2607.19378v3:liu2024vmamba:REF015"]
+verdict = "correct"
+note = "VMamba (arXiv 2401.10166) appeared at NeurIPS 2024."
+
+[finding."2607.19378v3:wang2025patchification:REF015"]
+verdict = "correct"
+note = "arXiv 2502.03738 appeared at ICML 2025."
+
+[finding."2607.19378v3:wightman2021resnet:REF012"]
+verdict = "correct"
+note = "arXiv 2110.00476 is titled 'ResNet strikes back: An improved training procedure in timm' in v1 and since; 'An improved baseline in 2.5 lines of code' is not its title."
+
+[finding."2607.19378v3:darcet2023register:REF015"]
+verdict = "correct"
+note = "Vision Transformers Need Registers (arXiv 2309.16588) appeared at ICLR 2024."
+
+[finding."2607.19378v3:spravil2024hyenapixel:REF015"]
+verdict = "correct"
+note = "HyenaPixel (arXiv 2402.19305) appeared in ECAI 2024, DOI 10.3233/faia240529."
+
+[finding."2607.00293v1:zhou2024transfusion:REF015"]
+verdict = "correct"
+note = "Transfusion (arXiv 2408.11039) appeared at ICLR 2025."
+
+[finding."2607.00293v1:xie2024show:REF015"]
+verdict = "correct"
+note = "Show-o (arXiv 2408.12528) appeared at ICLR 2025."
+
+[finding."2607.00293v1:zhao2023pytorch:REF015"]
+verdict = "correct"
+note = "PyTorch FSDP (arXiv 2304.11277) appeared in PVLDB 16 (2023), DOI 10.14778/3611540.3611569."
+
+[finding."2607.00293v1:komatsuzaki2022sparse:REF015"]
+verdict = "correct"
+note = "Sparse Upcycling (arXiv 2212.05055) appeared at ICLR 2023."
+
+[finding."2607.00293v1:lipman2022flow:REF015"]
+verdict = "correct"
+note = "Flow Matching (arXiv 2210.02747) appeared at ICLR 2023."
+
+[finding."2607.00293v1:liu2022flow:REF015"]
+verdict = "correct"
+note = "Rectified Flow (arXiv 2209.03003) appeared at ICLR 2023."
+
+[finding."2607.00293v1:yu2022scaling:REF015"]
+verdict = "correct"
+note = "Parti (arXiv 2206.10789) appeared in TMLR (2022)."
+
+[finding."2607.00293v1:lepikhin2020gshard:REF015"]
+verdict = "correct"
+note = "GShard (arXiv 2006.16668) appeared at ICLR 2021."
+
+[finding."2607.00293v1:navon2022multi:REF015"]
+verdict = "correct"
+note = "Nash-MTL (arXiv 2202.01017) appeared at ICML 2022."
+
+[finding."2607.00407v2:zeng2025slidetailor:REF015"]
+verdict = "correct"
+note = "arXiv 2512.20292 appeared at AAAI 2026, DOI 10.1609/aaai.v40i41.40758."
+
+[finding."2607.00407v2:pang2025paper:REF015"]
+verdict = "correct"
+note = "Paper2Poster (arXiv 2505.21497) appeared at NeurIPS 2025."
+
+[finding."2607.00407v2:xu2025pregenie:REF015"]
+verdict = "correct"
+note = "arXiv 2505.21660 appeared in Findings of EMNLP 2025, DOI 10.18653/v1/2025.findings-emnlp.165."
+
+[finding."2607.00407v2:jang2026deckbench:REF015"]
+verdict = "correct"
+note = "arXiv 2602.13318 appeared at KDD 2026, DOI 10.1145/3770855.3817525."
+
+[finding."2607.00407v2:xie2025slidebot:REF015"]
+verdict = "correct"
+note = "arXiv 2511.09804 appeared at AAAI 2026, DOI 10.1609/aaai.v40i48.42124."
+
+[finding."2607.00407v2:ma2025talk2image:REF015"]
+verdict = "correct"
+note = "arXiv 2508.06916 appeared at AAAI 2026, DOI 10.1609/aaai.v40i38.40519."
+
+[finding."2607.00407v2:hahn2024proactive:REF015"]
+verdict = "correct"
+note = "arXiv 2412.06771 appeared at ICML 2025."
+
+[finding."2607.00407v2:chen2023instructzero:REF015"]
+verdict = "correct"
+note = "InstructZero (arXiv 2306.03082) appeared at ICML 2024."
+
+[finding."2607.00407v2:park2025zip:REF015"]
+verdict = "correct"
+note = "ZIP (arXiv 2504.06838) appeared at ICLR 2025."
+
+[finding."2607.00407v2:yu2025dapo:REF015"]
+verdict = "correct"
+note = "DAPO (arXiv 2503.14476) appeared at NeurIPS 2025."
+
+[finding."2607.00407v2:sheng2024hybridflow:REF015"]
+verdict = "correct"
+note = "HybridFlow (arXiv 2409.19256) appeared at EuroSys 2025, DOI 10.1145/3689031.3696075."
+
+[finding."2607.00454v1:islam2025codesim:REF015"]
+verdict = "correct"
+note = "CodeSim (arXiv 2502.05664) appeared in Findings of NAACL 2025, DOI 10.18653/v1/2025.findings-naacl.285."
+
+[finding."2607.00454v1:cantonjos2025agroaskai:REF015"]
+verdict = "correct"
+note = "arXiv 2512.14910 appeared at AAAI 2026, DOI 10.1609/aaai.v40i47.41458."
+
+[finding."2607.00293v1:achiam2023gpt:REF011"]
+verdict = "false_positive"
+note = "arXiv 2303.08774 lists the organisation 'OpenAI' before Josh Achiam and the others; 'Achiam et al.' names the right people in the right order."
+
+[finding."2607.00293v1:li2017learning:REF013"]
+verdict = "false_positive"
+note = "IEEE early access: Learning without Forgetting, DOI 10.1109/tpami.2017.2773081, was online in 2017 and in print in TPAMI 40(12), 2018."
+
+[finding."2607.00407v2:trelease2016chalkboard:REF012"]
+verdict = "correct"
+note = "The entry's title lacks 'paper' ('slides, and  to e-learning'); DOI 10.1002/ase.1620 has 'From chalkboard, slides, and paper to e-learning'."
+
+[finding."2607.00407v2:mondal2024presentations:REF011"]
+verdict = "false_positive"
+note = "Crossref lists 'Shwetha S' (given Shwetha, family S) and the entry 'Shwetha, S': one person whose single name and initial were swapped by one of them."
+
+[finding."2607.00454v1:KEATING2003267:REF017"]
+verdict = "correct"
+note = "The doi field holds 'https://doi.org/10.1016/S1161-0301(02)00108-9' instead of the bare DOI."
+
+[finding."2607.00291v1:Myers_OCCAM:REF011"]
+verdict = "false_positive"
+note = "Julia O'Connell is on the record as O’Connell (curly apostrophe); the names were not normalised."
+
+[finding."2607.00291v1:SZ78:REF012"]
+verdict = "unclear"
+note = "Crossref has 'Compositions of halo clusters ...', the entry (from ADS) 'Composition ...'; the two databases disagree on one letter."
+
+[finding."2607.00291v1:magrini2023-gradients-withESO-clusters:REF011"]
+verdict = "false_positive"
+note = "V. D'Orazi is on the record as D’Orazi (curly apostrophe)."
+
+[finding."2607.00291v1:occam_p4:REF011"]
+verdict = "false_positive"
+note = "Julia E. O'Connell is on the record as O’Connell (curly apostrophe)."
+
+[finding."2607.00291v1:donor_18:REF011"]
+verdict = "false_positive"
+note = "Julia O'Connell is on the record as O’Connell (curly apostrophe)."
+
+[finding."2607.00291v1:spina_21:REF011"]
+verdict = "false_positive"
+note = "V. D'Orazi is on the record as D’Orazi (curly apostrophe)."
+
+[finding."2607.00291v1:GAIA_EDRthree:REF011"]
+verdict = "false_positive"
+note = "A. Dell'Oro is on the record as Dell’Oro (curly apostrophe)."
+
+[finding."2607.00291v1:hires:REF012"]
+verdict = "false_positive"
+note = "Crossref's title for 10.1117/12.176725 carries a literal '<title>...</title>' tag around the right title."
+
+[finding."2607.00291v1:dr17:REF011"]
+verdict = "false_positive"
+note = "SDSS DR17 (10.3847/1538-4365/ac4414): Abdurro'uf is on the record with a curly apostrophe, and the several Lins were paired greedily with the wrong given names."
+
+[finding."2607.00291v1:wiggins_2025:REF011"]
+verdict = "false_positive"
+note = "Elena D'Onghia is on the record as D’Onghia (curly apostrophe)."
+
+[finding."2607.00291v1:solabu_A05:REF013"]
+verdict = "false_positive"
+note = "Two works with one title and the same authors: the entry cites Asplund, Grevesse & Sauval 2005, ASP Conf. Ser. 336; the title search bound it to their 2006 Nuclear Physics A paper (10.1016/j.nuclphysa.2005.06.010)."
+
+[finding."2607.00291v1:girardi2000-parsec:REF012"]
+verdict = "false_positive"
+note = "The entry's solar symbol (the AAS macro 'sun' in a subscript) became the word 'sun'; the record has 'M_⊙'."
+
+[finding."2607.00291v1:NOIRLAB-IRAF:REF013"]
+verdict = "unclear"
+note = "ASP Conference Series volume dated 2026 (10.26624/cetf5821) for a conference held in 2025; either year can be cited."
+
+[finding."2607.00291v1:Sneden_2016:REF012"]
+verdict = "false_positive"
+note = "A vspace command (0.5ex) in the entry's title became the words '0 5ex'; the record's title is the same otherwise."
+
+[finding."2607.00291v1:daSilva_2023:REF011"]
+verdict = "false_positive"
+note = "D'Orazi and Dall'Ora are on the record with curly apostrophes."
+
+[finding."2607.00291v1:Nunnari_2026:REF011"]
+verdict = "false_positive"
+note = "D'Orazi and Dall'Ora are on the record with curly apostrophes."
+
+[finding."2607.00291v1:Nstar_init:REF011"]
+verdict = "false_positive"
+note = "GW170817 multi-messenger paper (10.3847/2041-8213/aa91c9), thousands of authors and collaborations: apostrophe names (O'Dea, D'Antonio, ...), collaboration names and 'Jr.' differ in form only."
+
+[finding."2607.00291v1:kelson2000:REF012"]
+verdict = "false_positive"
+note = "Crossref's title for 10.1086/308445 contains the artefact 'empty 10976' (a lost symbol); the entry's title is right."
+
+[finding."2607.00305v1:2001ApJ...549L.167Y:REF001"]
+verdict = "correct"
+note = "DOI 10.1086/319161 is Marshall et al. 2001 (3C 273 jet, ApJ 549 L167); the entry's title and authors are Yun, Reddy & Condon 2001, ApJ 554, 803."
+
+[finding."2607.00305v1:2003ARA&A..41..117B:REF002"]
+verdict = "correct"
+note = "doi.org and Crossref both answer 404 for 10.1146/annurev.astro.41.011802.094856."
+
+[finding."2607.00305v1:2016ApJ...826...59I:REF001"]
+verdict = "correct"
+note = "DOI 10.3847/0004-637X/826/1/59 is Watkins et al. 2016; the entry's Imanishi et al. paper is another article."
+
+[finding."2607.00305v1:2023MNRAS.519.1732N:REF001"]
+verdict = "correct"
+note = "arXiv 2212.03177 is 'Privacy-Preserving Visual Localization with Event Cameras'; the entry's eprint is wrong (its DOI is right)."
+
+[finding."2607.00305v1:2004ApJ...613..794G:REF011"]
+verdict = "false_positive"
+note = "Christopher P. O'Dea is on the record as O’Dea (curly apostrophe)."
+
+[finding."2607.00305v1:2019A&A...632A..61G:REF012"]
+verdict = "false_positive"
+note = "ADS markup '<ASTROBJ>NGC 1068</ASTROBJ>' in the entry's title was compared as words."
+
+[finding."2607.00305v1:2023ApJ...952L..28R:REF012"]
+verdict = "unclear"
+note = "Entry 'from <100 Milliarcsecond-resolution ALMA Observations', Crossref 'from <100 mas Resolution ALMA Observations'; not settled which is the article's own title."
+
+[finding."2607.00305v1:2021MNRAS.500.4749B:REF013"]
+verdict = "false_positive"
+note = "MNRAS 500(4) is the January 2021 issue; Crossref's online and print dates are 2020, its journal-issue date 2021. The issue year is a legitimate year to cite."
+
+[finding."2607.00305v1:2023MNRAS.519.1732N:REF013"]
+verdict = "false_positive"
+note = "MNRAS 519(2) is a 2023 issue; online December 2022. Same as 2021MNRAS.500.4749B."
+
+[finding."2607.00284v1:superconductingNelderMead:REF011"]
+verdict = "false_positive"
+note = "T. E. O'Brien is on the record as O’Brien (curly apostrophe)."
+
+[finding."2607.00284v1:shahriari2015taking:REF013"]
+verdict = "false_positive"
+note = "Early access: Proceedings of the IEEE 104(1), 2016, was online in 2015 (DOI created 2015)."
+
+[finding."2607.00284v1:hirsh2022sparsifying:REF011"]
+verdict = "correct"
+note = "Royal Society Open Science 2022 'Sparsifying priors ...' is by Seth M. Hirsh, David A. Barajas-Solano and J. Nathan Kutz; 'Samuel' and 'Diego' are wrong."
+
+[finding."2607.00305v1:2021MNRAS.503.1780J:REF011"]
+verdict = "false_positive"
+note = "Crossref files 'Silpa S' as given name Silpa, family S; the entry's 'Silpa, S.' is the same person."
+
+[finding."2607.00305v1:2021MNRAS.500.4749B:REF011"]
+verdict = "unclear"
+note = "The entry (from ADS) lists five authors more than Crossref's 34 for LeMMINGs II (10.1093/mnras/staa3519); not settled which list is complete."
+
+[finding."2607.00307v1:Sese_2022:REF003"]
+verdict = "false_positive"
+note = "A real paper in the Proceedings of the Samahang Pisika ng Pilipinas (proceedings.spp-online.org, SPP-2022-1D-02), a venue no queried source indexes."
+
+[finding."2607.00307v1:Gedik_2006:REF017"]
+verdict = "correct"
+note = "The doi field holds 'https://doi.org/10.1016/j.ssc.2006.02.004' instead of the bare DOI."
+
+[finding."2607.00307v1:Manzano_2020:REF017"]
+verdict = "correct"
+note = "The doi field holds 'https://doi.org/10.1063/1.5115323' instead of the bare DOI."
+
+[finding."2607.00307v1:Tessieri_2002:REF013"]
+verdict = "correct"
+note = "J. Phys. A 36(49) appeared online 26 November 2003 (Crossref: online 2003-11-26, DOI created 2004-01-14); the entry cites the journal with its arXiv preprint's year, 2002. Re-checked: first reviewed as early access, which Crossref's dates rule out."
+
+[finding."2607.00307v1:Marchukov_2016:REF012"]
+verdict = "correct"
+note = "The entry spells 'Heisnberg'; Nature Communications 7, 12434 has 'Heisenberg'."
+
+[finding."2607.00307v1:Mahmoudi_2020:REF017"]
+verdict = "correct"
+note = "The doi field holds 'https://doi.org/10.1016/j.physa.2019.123707' instead of the bare DOI."
+
+[finding."2607.00307v1:Hill_1997:REF011"]
+verdict = "correct"
+note = "'Entanglement of a Pair of Quantum Bits' (PRL 78, 5022, 1997) is by Scott Hill and William K. Wootters, not 'Sam A. Hill'."
+
+[finding."2607.00877v1:a2:REF013"]
+verdict = "correct"
+note = "10.1109/tpami.2025.3601430 was created 21 August 2025 and printed December 2025 (Crossref); the entry cites TPAMI with its preprint's year, 2024. Re-checked: first reviewed as early access, which Crossref's dates rule out."
+
+[finding."2607.00877v1:a3:REF012"]
+verdict = "correct"
+note = "The entry's title starts with a stray 'REVIEW' ('REVIEW Review of the Ensemble Kalman Filter ...')."
+
+[finding."2607.00877v1:li2021multi:REF013"]
+verdict = "false_positive"
+note = "Early access: IEEE Control Systems Letters 6 (2022), online in 2021."
+
+[finding."2607.00877v1:a15:REF013"]
+verdict = "correct"
+note = "10.1016/j.automatica.2017.08.011 was created 7 September 2017, issue December 2017 (Crossref); the entry cites Automatica with its preprint's year, 2016. Re-checked: first reviewed as early access, which Crossref's dates rule out."
+
+[finding."2607.00877v1:a27:REF013"]
+verdict = "correct"
+note = "The entry names ICASSP 2024 (DOI 10.1109/icassp48485.2024.10447012) but gives the year 2023."
+
+[finding."2607.00877v1:buchnik2023latent:REF013"]
+verdict = "false_positive"
+note = "Early access: IEEE Transactions on Signal Processing 2024 article online in 2023."
+
+[finding."2607.00877v1:chen2024normalizing:REF013"]
+verdict = "false_positive"
+note = "Early access: IEEE Transactions on Signal Processing 2025 article online in 2024."
+
+[finding."2607.01749v1:laveryPhysicsInformedNeuralNetworks2026:REF012"]
+verdict = "false_positive"
+note = "The arXiv record's title keeps its TeX ('$2\\mathrm{D}{+}t$'), compared word by word with the entry's converted '2D+t'."
+
+[finding."2607.02103v1:kuijjer2019lioness:REF011"]
+verdict = "correct"
+note = "LIONESS (iScience 2019, 10.1016/j.isci.2019.03.021) lists Matthew George Tung, not 'Monique G Tung'."
+
+[finding."2607.02103v1:gelman1997weak:REF011"]
+verdict = "correct"
+note = "'Weak convergence and optimal scaling of random walk Metropolis algorithms' is Roberts, Gelman & Gilks (1997); the entry puts Gelman first."
+
+[finding."2607.02583v1:senthilkumar2024can:REF013"]
+verdict = "unclear"
+note = "dblp only has the 2025 CoRR preprint (arXiv 2501.00125); the TOSEM publication the entry claims could not be checked."
+
+[finding."2607.02583v1:awad2021dehb:REF012"]
+verdict = "unclear"
+note = "The registered IJCAI 2021 title itself has the typo 'Hyberband'; the entry spells the intended 'Hyperband'."
+
+[finding."2607.02583v1:brahmachary2025leo:REF011"]
+verdict = "correct"
+note = "LEO (Neurocomputing 2025) lists Kaushic Kalyanaraman, not 'Kannan Kalyanaraman'."
+
+[finding."2607.02583v1:chen2018sway:REF013"]
+verdict = "false_positive"
+note = "Early access: IEEE TSE 45 (2019) article online in 2018."
+
+# ---------------------------------------------------------------- heldout batch (2026-07-08..14)
+
+[finding."2607.06879v1:YeYoganarasimhanZheng2025:REF002"]
+verdict = "correct"
+note = "doi.org has no handle 10.1287/mksc.2024.0990 (handle API: responseCode 100); the DOI as written does not exist."
+
+[finding."2607.06922v1:migacz20178:REF003"]
+verdict = "false_positive"
+note = "Szymon Migacz, '8-bit Inference with TensorRT', a talk at NVIDIA's GPU Technology Conference 2017: real, and no queried source indexes talks."
+
+[finding."2607.06922v1:li2016pruning:REF015"]
+verdict = "correct"
+note = "arXiv 1608.08710 (Pruning Filters for Efficient ConvNets) was published at ICLR 2017."
+
+[finding."2607.06922v1:bp:REF013"]
+verdict = "false_positive"
+note = "Two publications of one title: Hecht-Nielsen's IJCNN 1989 paper (10.1109/ijcnn.1989.118638) and his chapter in Neural Networks for Perception (Academic Press, 1992, pp. 65-93), which the entry cites."
+
+[finding."2607.06922v1:nas:REF015"]
+verdict = "correct"
+note = "arXiv 1611.01578 (Neural Architecture Search with Reinforcement Learning) was published at ICLR 2017."
+
+[finding."2607.06922v1:DLSurvey:REF013"]
+verdict = "false_positive"
+note = "ACM Comput. Surv. 51(5), 10.1145/3234150: online September 2018, issue dated January 2019. The entry is ACM's own export (year 2018, issue_date January 2019); dblp files 2019."
+
+[finding."2607.06922v1:bjorck2018understanding:REF011"]
+verdict = "false_positive"
+note = "The NeurIPS 2018 paper is by Nils Bjorck (proceedings byline); dblp files the author as Johan Bjorck, another of his given names."
+
+[finding."2607.06922v1:wu2018training:REF015"]
+verdict = "correct"
+note = "arXiv 1802.04680 (Training and Inference with Integers in Deep Neural Networks) was published at ICLR 2018."
+
+[finding."2607.06922v1:zhou2017incremental:REF015"]
+verdict = "correct"
+note = "arXiv 1702.03044 (Incremental Network Quantization) was published at ICLR 2017."
+
+[finding."2607.06974v1:zelikman2024star:REF003"]
+verdict = "false_positive"
+note = "STaR (Zelikman, Wu, Mu, Goodman), NeurIPS 2022; the entry copies the ACM DL record of the NeurIPS 2022 proceedings (published 2024, article 1126), whose title reads 'STaR: Self-Taught Reasoner Bootstrapping Reasoning With Reasoning'."
+
+[finding."2607.06974v1:wang2023math:REF015"]
+verdict = "correct"
+note = "arXiv 2312.08935 (Math-Shepherd) was published at ACL 2024, 10.18653/v1/2024.acl-long.510."
+
+[finding."2607.06974v1:wang2022self:REF015"]
+verdict = "correct"
+note = "arXiv 2203.11171 (Self-Consistency Improves Chain of Thought Reasoning) was published at ICLR 2023."
+
+[finding."2607.06974v1:xie2021explanation:REF015"]
+verdict = "correct"
+note = "arXiv 2111.02080 (\"An Explanation of In-context Learning as Implicit Bayesian Inference\") was published in ICLR (2022) (dblp)."
+
+[finding."2607.06974v1:suzgun2025dynamic:REF015"]
+verdict = "correct"
+note = "arXiv 2504.07952 (\"Dynamic Cheatsheet: Test-Time Learning with Adaptive Memory\") was published in EACL (Volume 1: Long Papers) (2026), DOI 10.18653/v1/2026.eacl-long.333 (dblp)."
+
+[finding."2607.06974v1:qiu2024treebon:REF015"]
+verdict = "correct"
+note = "arXiv 2410.16033 (\"TreeBoN: Enhancing Inference-Time Alignment with Speculative Tree-Search and Best-of-N Sampling\") was published in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.1140 (dblp)."
+
+[finding."2607.06974v1:li2025policy:REF015"]
+verdict = "correct"
+note = "arXiv 2502.06813 (\"Policy Guided Tree Search for Enhanced LLM Reasoning\") was published in ICML (2025) (dblp)."
+
+[finding."2607.06974v1:zhang2025agentic:REF015"]
+verdict = "correct"
+note = "arXiv 2510.04618 (\"Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models\") was published in ICLR (2026) (dblp)."
+
+[finding."2607.06974v1:hu2025mctsrag:REF015"]
+verdict = "correct"
+note = "arXiv 2503.20757 (\"MCTS-RAG: Enhancing Retrieval-Augmented Generation with Monte Carlo Tree Search\") was published in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.672 (dblp)."
+
+[finding."2607.06974v1:zeng2024b:REF015"]
+verdict = "correct"
+note = "arXiv 2412.17256 (\"B-STaR: Monitoring and Balancing Exploration and Exploitation in Self-Taught Reasoners\") was published in ICLR (2025) (dblp)."
+
+[finding."2607.06974v1:teng2025atom:REF015"]
+verdict = "correct"
+note = "arXiv 2502.12018 (\"Atom of Thoughts for Markov LLM Test-Time Scaling\") was published in NeurIPS (2025) (dblp)."
+
+[finding."2607.06974v1:zhao2025dynaact:REF015"]
+verdict = "correct"
+note = "arXiv 2511.08043 (\"DynaAct: Large Language Model Reasoning with Dynamic Action Spaces\") was published in NeurIPS (2025) (dblp)."
+
+[finding."2607.06974v1:wang2025every:REF015"]
+verdict = "correct"
+note = "arXiv 2506.15707 (\"Every Rollout Counts: Optimal Resource Allocation for Efficient Test-Time Scaling\") was published in NeurIPS (2025) (dblp)."
+
+[finding."2607.06974v1:wan2025few:REF015"]
+verdict = "correct"
+note = "arXiv 2502.00330 (\"From Few to Many: Self-Improving Many-Shot Reasoners Through Iterative Optimization and Generation\") was published in ICLR (2025) (dblp)."
+
+[finding."2607.06974v1:hendrycks2021measuring:REF015"]
+verdict = "correct"
+note = "arXiv 2103.03874 (\"Measuring Mathematical Problem Solving With the MATH Dataset\") was published in NeurIPS Datasets and Benchmarks (2021) (dblp)."
+
+[finding."2607.07047v3:damirchi2026:REF015"]
+verdict = "correct"
+note = "arXiv 2603.01326 (\"Truth as a Trajectory: What Internal Representations Reveal About Large Language Model Reasoning\") was published in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.2073 (dblp)."
+
+[finding."2607.07047v3:warstadt2019neural:REF015"]
+verdict = "correct"
+note = "arXiv 1805.12471 (\"Neural Network Acceptability Judgments\") was published in Trans. Assoc. Comput. Linguistics (2019), DOI 10.1162/tacl_a_00290 (dblp)."
+
+[finding."2607.07047v3:li_curvature-aware_2017:REF015"]
+verdict = "correct"
+note = "arXiv 1706.07167 (\"Curvature-aware Manifold Learning\") was published in Pattern Recognit. (2018), DOI 10.1016/j.patcog.2018.06.007 (dblp)."
+
+[finding."2607.07050v6:xue2025simpletir:REF015"]
+verdict = "correct"
+note = "arXiv 2509.02479 (\"SimpleTIR: End-to-End Reinforcement Learning for Multi-Turn Tool-Integrated Reasoning\") was published in ICLR (2026) (dblp)."
+
+[finding."2607.07050v6:prabhakar2025apigenmt:REF015"]
+verdict = "correct"
+note = "arXiv 2504.03601 (\"APIGen-MT: Agentic Pipeline for Multi-Turn Data Generation via Simulated Agent-Human Interplay\") was published in NeurIPS (2025) (dblp)."
+
+[finding."2607.06871v1:geirhos2019:REF015"]
+verdict = "correct"
+note = "arXiv 1811.12231 (\"ImageNet-trained CNNs are biased towards texture; increasing shape bias improves accuracy and robustness\") was published in ICLR (2019) (dblp)."
+
+[finding."2607.06871v1:yang2024depth:REF015"]
+verdict = "correct"
+note = "arXiv 2401.10891 (\"Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data\") was published in CVPR (2024), DOI 10.1109/cvpr52733.2024.00987 (dblp)."
+
+[finding."2607.06871v1:ranftl2021vision:REF015"]
+verdict = "correct"
+note = "arXiv 2103.13413 (\"Vision Transformers for Dense Prediction\") was published in ICCV (2021), DOI 10.1109/iccv48922.2021.01196 (dblp)."
+
+[finding."2607.06871v1:ranftl2020towards:REF015"]
+verdict = "correct"
+note = "arXiv 1907.01341 (\"Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer\") was published in IEEE Trans. Pattern Anal. Mach. Intell. (2022), DOI 10.1109/tpami.2020.3019967 (dblp)."
+
+[finding."2607.06871v1:oquab2023dinov2:REF015"]
+verdict = "correct"
+note = "arXiv 2304.07193 (\"DINOv2: Learning Robust Visual Features without Supervision\") was published in Trans. Mach. Learn. Res. (2024) (dblp)."
+
+[finding."2607.06871v1:hendrycks2019benchmarking:REF015"]
+verdict = "correct"
+note = "arXiv 1903.12261 (\"Benchmarking Neural Network Robustness to Common Corruptions and Perturbations\") was published in ICLR (Poster) (2019) (dblp)."
+
+[finding."2607.06871v1:kirillov2023segment:REF015"]
+verdict = "correct"
+note = "arXiv 2304.02643 (\"Segment Anything\") was published in ICCV (2023), DOI 10.1109/iccv51070.2023.00371 (dblp)."
+
+[finding."2607.06871v1:mildenhall2021nerf:REF015"]
+verdict = "correct"
+note = "arXiv 2003.08934 (\"NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis\") was published in ECCV (1) (2020), DOI 10.1007/978-3-030-58452-8_24 (dblp)."
+
+[finding."2607.06871v1:he2022masked:REF015"]
+verdict = "correct"
+note = "arXiv 2111.06377 (\"Masked Autoencoders Are Scalable Vision Learners\") was published in CVPR (2022), DOI 10.1109/cvpr52688.2022.01553 (dblp)."
+
+[finding."2607.06871v1:delle2022robustness:REF015"]
+verdict = "correct"
+note = "arXiv 2507.00981 (\"Evaluating Robustness of Monocular Depth Estimation with Procedural Scene Perturbations\") was published in NeurIPS (2025) (dblp)."
+
+[finding."2607.06871v1:murez2018image:REF015"]
+verdict = "correct"
+note = "arXiv 1712.00479 (\"Image to Image Translation for Domain Adaptation\") was published in CVPR (2018), DOI 10.1109/cvpr.2018.00473 (dblp)."
+
+[finding."2607.06871v1:hu2019distributed:REF015"]
+verdict = "correct"
+note = "arXiv 1803.08673 (\"Revisiting Single Image Depth Estimation: Toward Higher Resolution Maps with Accurate Object Boundaries\") was published in WACV (2019), DOI 10.1109/wacv.2019.00116 (dblp)."
+
+[finding."2607.06872v2:chollet2017xception:REF015"]
+verdict = "correct"
+note = "arXiv 1610.02357 (\"Xception: Deep Learning with Depthwise Separable Convolutions\") was published in CVPR (2017), DOI 10.1109/cvpr.2017.195 (dblp)."
+
+[finding."2607.06875v1:demszky2020goemotions:REF015"]
+verdict = "correct"
+note = "arXiv 2005.00547 (\"GoEmotions: A Dataset of Fine-Grained Emotions\") was published in ACL (2020), DOI 10.18653/v1/2020.acl-main.372 (dblp)."
+
+[finding."2607.06875v1:poria2018meld:REF015"]
+verdict = "correct"
+note = "arXiv 1810.02508 (\"MELD: A Multimodal Multi-Party Dataset for Emotion Recognition in Conversations\") was published in ACL (1) (2019), DOI 10.18653/v1/p19-1050 (dblp)."
+
+[finding."2607.06875v1:bain2020condensed:REF015"]
+verdict = "correct"
+note = "arXiv 2005.04208 (\"Condensed Movies: Story Based Retrieval with Contextual Embeddings\") was published in ACCV (5) (2021), DOI 10.1007/978-3-030-69541-5_28 (dblp)."
+
+[finding."2607.06875v1:gengLabelDistributionLearning2016:REF015"]
+verdict = "false_positive"
+note = "Wrong published version: arXiv 1408.6027 (Xin Geng) is IEEE TKDE 28(7), 2016; the ICDM Workshops 2013 paper of that title is by Geng and Ji."
+
+[finding."2607.06875v1:meister2411benchmarking:REF015"]
+verdict = "correct"
+note = "arXiv 2411.05403 (\"Benchmarking Distributional Alignment of Large Language Models\") was published in NAACL (Long Papers) (2025), DOI 10.18653/v1/2025.naacl-long.2 (dblp)."
+
+[finding."2607.06875v1:hwang2023aligning:REF015"]
+verdict = "correct"
+note = "arXiv 2305.14929 (\"Aligning Language Models to User Opinions\") was published in EMNLP (Findings) (2023), DOI 10.18653/v1/2023.findings-emnlp.393 (dblp)."
+
+[finding."2607.06875v1:jiang2022communitylm:REF015"]
+verdict = "correct"
+note = "arXiv 2209.07065 (\"CommunityLM: Probing Partisan Worldviews from Language Models\") was published in COLING (2022) (dblp)."
+
+[finding."2607.06875v1:bert-base-uncased:REF015"]
+verdict = "correct"
+note = "arXiv 1810.04805 (\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\") was published in NAACL-HLT (1) (2019), DOI 10.18653/v1/n19-1423 (dblp)."
+
+[finding."2607.06875v1:hubert:REF015"]
+verdict = "correct"
+note = "arXiv 2106.07447 (\"HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction of Hidden Units\") was published in IEEE ACM Trans. Audio Speech Lang. Process. (2021), DOI 10.1109/taslp.2021.3122291 (dblp)."
+
+[finding."2607.06875v1:clap:REF015"]
+verdict = "correct"
+note = "arXiv 2211.06687 (\"Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation\") was published in ICASSP (2023), DOI 10.1109/icassp49357.2023.10095969 (dblp)."
+
+[finding."2607.20518v1:cheng2026conditionalmemoryscalablelookup:REF015"]
+verdict = "correct"
+note = "arXiv 2601.07372 (\"Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models\") was published in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.226 (dblp)."
+
+[finding."2607.20518v1:ouyang2025kernelbench:REF015"]
+verdict = "correct"
+note = "arXiv 2502.10517 (\"KernelBench: Can LLMs Write Efficient GPU Kernels?\") was published in ICML (2025) (dblp)."
+
+[finding."2607.20518v1:kevin2025:REF015"]
+verdict = "correct"
+note = "arXiv 2507.11948 (\"Kevin: Multi-Turn RL for Generating CUDA Kernels\") was published in ICLR (2026) (dblp)."
+
+[finding."2607.20518v1:tseng2025mxfp4:REF015"]
+verdict = "correct"
+note = "arXiv 2502.20586 (\"Training LLMs with MXFP4\") was published in AISTATS (2025) (dblp)."
+
+[finding."2607.07232v1:fishman2023constrained:REF015"]
+verdict = "correct"
+note = "arXiv 2304.05364 (\"Diffusion Models for Constrained Domains\") was published in Trans. Mach. Learn. Res. (2023) (dblp)."
+
+[finding."2608.04024v1:Owen2020:REF015"]
+verdict = "correct"
+note = "arXiv 2008.08051 (\"On dropping the first Sobol' point\") was published in MCQMC (2022), DOI 10.1007/978-3-030-98319-2_4 (dblp)."
+
+[finding."2607.07425v1:keskar2016large:REF015"]
+verdict = "correct"
+note = "arXiv 1609.04836 (\"On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima\") was published in ICLR (2017) (dblp)."
+
+[finding."2607.06891v2:liu_i2sb_2023:REF015"]
+verdict = "correct"
+note = "arXiv 2302.05872 (\"I^2SB: Image-to-Image Schrödinger Bridge\") was published in ICML (2023) (dblp)."
+
+[finding."2607.06891v2:zhang_asbridge_2026:REF015"]
+verdict = "correct"
+note = "arXiv 2603.11928 (\"AS-Bridge: A Bidirectional Generative Framework Bridging Next-Generation Astronomical Surveys\") was published in KDD (2) (2026), DOI 10.1145/3770855.3818953 (dblp)."
+
+[finding."2607.06873v1:sorokin2026stellar:REF015"]
+verdict = "correct"
+note = "arXiv 2601.00497 (\"STELLAR: A Search-Based Testing Framework for Large Language Model Applications\") was published in SANER (2026), DOI 10.1109/saner67736.2026.00093 (dblp)."
+
+[finding."2607.06873v1:stechly2024selfverification:REF015"]
+verdict = "correct"
+note = "arXiv 2402.08115 (\"On the Self-Verification Limitations of Large Language Models on Reasoning and Planning Tasks\") was published in ICLR (2025) (dblp)."
+
+[finding."2607.06872v2:ren2016ensemble:REF012"]
+verdict = "false_positive"
+note = "Crossref's title for 10.1109/mci.2015.2471235 ends with IEEE's section label '[Review Article]'; the entry has the article's title."
+
+[finding."2607.06872v2:aasist_repo:REF013"]
+verdict = "false_positive"
+note = "The entry cites the GitHub repository clovaai/aasist (2021), not the ICASSP 2022 paper it was matched to."
+
+[finding."2607.06875v1:xu2024infer:REF011"]
+verdict = "correct"
+note = "NeurIPS 2024 (10.52202/079017-3295) lists Qi Jia and Baoyu Fan before Cong Xu; the entry starts at the third author."
+
+[finding."2607.06875v1:hu2022lora:REF011"]
+verdict = "correct"
+note = "LoRA's seventh author is Lu Wang (ICLR 2022, arXiv 2106.09685); the entry says 'Liang Wang'."
+
+[finding."2607.06924v1:probmetaplast2024:REF012"]
+verdict = "correct"
+note = "The Scientific Reports article the entry cites (DOI given) is titled '... with Memristors in Spiking Networks'; the entry has the arXiv preprint's shorter title."
+
+[finding."2607.06924v1:reflectedsb2024:REF011"]
+verdict = "correct"
+note = "arXiv 2401.03228 is by Wei Deng, Yu Chen, Nicole Tianjiao Yang, Hengrong Du, Qi Feng and Ricky T. Q. Chen; the entry has 'Yi' for Yang and a 'Ye Yuan' who is not an author."
+
+[finding."2607.06924v1:weis2020:REF011"]
+verdict = "correct"
+note = "arXiv 2006.13177 lists Christian Mauch where the entry has 'Christian Weilbach'."
+
+[finding."2607.07047v3:sala2018representation:REF011"]
+verdict = "false_positive"
+note = "The entry cites ICML 2018, whose byline starts with Frederic Sala; the arXiv record it was compared with (1804.03329) lists Christopher De Sa first."
+
+[finding."2607.07047v3:SINGER2006128:REF017"]
+verdict = "correct"
+note = "The doi field holds the URL 'https://doi.org/10.1016/j.acha.2006.03.004' instead of the DOI."
+
+[finding."2607.07047v3:frstner_2000:REF011"]
+verdict = "correct"
+note = "'A Metric for Covariance Matrices' (10.1007/978-3-662-05296-9_31) is by Wolfgang Förstner and Boudewijn Moonen; 'Carl Gauss' is not an author."
+
+[finding."2607.07047v3:frstner_2000:REF013"]
+verdict = "correct"
+note = "The DOI and ISBN the entry gives are the 2003 book chapter (Geodesy - The Challenge of the 3rd Millennium); the entry says 2000."
+
+[finding."2607.07047v3:pyriemann:REF011"]
+verdict = "unclear"
+note = "Software: the Zenodo concept DOI resolves to release v0.10, whose DataCite creators lack four people the entry lists (likely from the project's citation file); not settled which list is right."
+
+[finding."2607.07047v3:pyriemann:REF012"]
+verdict = "false_positive"
+note = "DataCite titles GitHub releases 'pyRiemann/pyRiemann: v0.10'; the software is pyRiemann, as the entry says."
+
+[finding."2607.07008v1:ghahramanifhmms:REF013"]
+verdict = "false_positive"
+note = "The entry cites the NIPS 8 paper (proceedings.neurips.cc lists it under 1995); it was matched to a DTIC technical report of the same title, 10.21236/ada307097 (1996)."
+
+[finding."2607.07232v1:hyvarinen2005score:REF011"]
+verdict = "correct"
+note = "The JMLR 2005 paper is by Aapo Hyvärinen alone (Peter Dayan was its action editor)."
+
+[finding."2607.20518v1:evoengineer2025:REF001"]
+verdict = "correct"
+note = "arXiv 2509.18570 is 'HarmoniFuse' (Si et al.); the identifier the entry gives belongs to another paper."
+
+[finding."2607.20518v1:li2025tritonbench:REF011"]
+verdict = "correct"
+note = "arXiv 2502.14752 lists Jianling Li, Shangzhan Li, Zhenye Gao, ...; the entry has 'Wang, Shangzhan' and 'Zhang, Zhenye'."
+
+[finding."2608.04024v1:Putnam1961:REF003"]
+verdict = "false_positive"
+note = "Putnam, 'Integratable form of droplet drag coefficient', ARS Journal 31(10):1467-1468 (1961): a real paper no queried source indexes."
+
+[finding."2608.04024v1:Azzini2020:REF003"]
+verdict = "false_positive"
+note = "A real JRC report, 'Uncertainty and sensitivity analysis for policy decision making: An introductory guide' (European Commission, 2020); the entry puts its subtitle in the journal field."
+
+[finding."2608.04024v1:Sobol1967:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1016/0041-5553(67)90144-9') instead of the DOI."
+
+[finding."2608.04024v1:Owen1998:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1006/jcom.1998.0487') instead of the DOI."
+
+[finding."2608.04024v1:Homma1996:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1016/0951-8320(96)00002-6') instead of the DOI."
+
+[finding."2608.04024v1:Jansen1999:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1016/S0010-4655(98)00154-4') instead of the DOI."
+
+[finding."2608.04024v1:Gray1976:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1016/0017-9310(76)90168-X') instead of the DOI."
+
+[finding."2608.28607v1:sinousdrugqa2026:REF010"]
+verdict = "correct"
+note = "The author field is the placeholder '{Sino-US-DrugQA authors}'; the medRxiv record (10.64898/2026.02.13.26346236) names the authors (Fu et al.)."
+
+[finding."2608.28607v1:iche11a2024:REF012"]
+verdict = "false_positive"
+note = "The ICH guideline is 'E11A Guideline on Pediatric Extrapolation'; the Semantic Scholar record it was compared with carries a stray 'Step' (from 'Step 4')."
+
+[finding."2608.28607v1:gomezfernandez2026inhibitors:REF013"]
+verdict = "unclear"
+note = "10.1007/s12094-025-04066-x appeared online in 2025 (Crossref has no print date yet); the entry's 2026 may be its issue year."
+
+[finding."2608.28607v1:pvverse2026:REF012"]
+verdict = "unclear"
+note = "The entry titles the GitHub dataset PVverse/paper.PI but gives the DOI of the Drug Safety article it accompanies; the DOI does not identify the titled work."
+
+[finding."2607.06873v1:mialon2023gaia:REF011"]
+verdict = "false_positive"
+note = "Craig Swift is GAIA's third author (ICLR 2024, arXiv 2311.12983); the dblp record it was compared with lacks him under that name."
+
+[finding."2607.06873v1:vanzelst2021eventabstraction:REF011"]
+verdict = "correct"
+note = "The fourth author of 10.1007/s41066-020-00226-2 is Agnes Koschmider; the entry says 'Anne'."
+
+[finding."2607.06888v1:solano2017optical:REF012"]
+verdict = "false_positive"
+note = "The chapter (Adv. At. Mol. Opt. Phys. 66) is 'Optical Nanofibers: A New Platform for Quantum Optics'; Crossref's record keeps only the main title."
+
+[finding."2607.06888v1:ferreira2021:REF011"]
+verdict = "correct"
+note = "The first author of PRX 11, 041043 is Vinicius S. Ferreira; the entry says 'Víctor'."
+
+[finding."2607.06888v1:Weisskopf1930:REF012"]
+verdict = "false_positive"
+note = "Crossref's title for 10.1007/bf01336768 has a replacement character for the 'ü' of 'natürlichen'; the entry is right."
+
+[finding."2607.06888v1:BALENTS1997601:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL ('https://doi.org/10.1016/S0550-3213(96)00572-X') instead of the DOI."
+
+[finding."2607.06891v2:petrosian_surface_1976:REF002"]
+verdict = "correct"
+note = "The doi field runs two DOIs together ('10.1086/18230110.1086/182253'); no such DOI exists."
+
+[finding."2607.06891v2:giavalisco_morphology_1996:REF001"]
+verdict = "correct"
+note = "10.1086/177861 is Gould's 'Theory of Pixel Lensing' (Crossref); the DOI given is not Giavalisco et al.'s."
+
+[finding."2607.06891v2:adam_bayesian_2024:REF010"]
+verdict = "correct"
+note = "arXiv 2411.19158 is by Spagnoletti et al. (DataCite); the entry credits it to Adam, Stone, Bottrell et al."
+
+[finding."2607.06891v2:haussler_gems_2007a:REF012"]
+verdict = "correct"
+note = "The ApJS title ends '... Fitting Codes: GALFIT and GIM2D' (10.1086/518836); the entry drops the subtitle."
+
+[finding."2607.06891v2:rodriguez-gomez_optical_2019:REF012"]
+verdict = "correct"
+note = "The MNRAS title (10.1093/mnras/sty3345) reads 'a comparison to Pan-STARRS observations'; the entry has 'with'."
+
+[finding."2607.06891v2:geda_petrofit_2022:REF011"]
+verdict = "correct"
+note = "PetroFit (10.3847/1538-3881/ac5908) is by Geda, Crawford, Hunt, Bershady, Tollerud and Randriamampandry; the entry's last four authors (Loni, Pimbblet, Cannon, Scott) are not."
+
+[finding."2607.06891v2:ye_ebgs_2026:REF012"]
+verdict = "unclear"
+note = "The authors' own Zenodo deposit 10.5281/zenodo.21754600 is titled '... (Code)'; the entry names the software 'E-BGS: Training and Inference Software ...'."
+
+[finding."2607.06902v1:Corbett+00:REF013"]
+verdict = "false_positive"
+note = "MNRAS 319(3), December 2000 (the DOI itself says 2000); Crossref's 2002 is a later deposit date."
+
+[finding."2607.06902v1:Martel96:REF013"]
+verdict = "false_positive"
+note = "The entry cites Martel's 1996 UC Santa Cruz thesis; it was matched to the thesis abstract printed in PASP in 1997 (10.1086/133923)."
+
+[finding."2607.06902v1:Schmitt+97:REF011"]
+verdict = "correct"
+note = "The author field splits Robert Antonucci into two authors, '{Antonucci}' and '{Robert}'."
+
+[finding."2607.07425v1:barenblatt1952some:REF003"]
+verdict = "false_positive"
+note = "Barenblatt (1952), Prikl. Mat. Mekh. 16, 67-78 (the English title varies): a real paper no queried source indexes."
+
+[finding."2607.07425v1:zel1950towards:REF003"]
+verdict = "false_positive"
+note = "Zel'dovich & Kompaneets (1950), in the collection for A. F. Ioffe's 70th birthday: a real paper no queried source indexes."
+
+[finding."2607.07425v1:bluman1969general:REF003"]
+verdict = "false_positive"
+note = "Bluman & Cole, 'The general similarity solution of the heat equation', J. Math. Mech. 18 (1969) 1025-1042: real; not found by the queried sources."
