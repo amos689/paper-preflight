@@ -1,0 +1,66 @@
+from pathlib import Path
+
+import pytest
+
+from paper_preflight.bib.ids import extract_identifiers, normalize_doi
+from paper_preflight.bib.parse import parse_bib_text
+
+
+def ids(bib: str) -> list[str]:
+    (entry,) = parse_bib_text(bib, Path("x.bib")).entries
+    return [str(i) for i in extract_identifiers(entry)]
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("10.1109/CVPR.2016.90", "10.1109/cvpr.2016.90"),
+        ("https://doi.org/10.1109/CVPR.2016.90", "10.1109/cvpr.2016.90"),
+        ("http://dx.doi.org/10.1109/CVPR.2016.90.", "10.1109/cvpr.2016.90"),
+        ("doi:10.1016/S0140-6736(97)11096-0", "10.1016/s0140-6736(97)11096-0"),
+        ("not a doi", None),
+    ],
+)
+def test_normalize_doi(raw: str, expected: str | None) -> None:
+    assert normalize_doi(raw) == expected
+
+
+def test_escaped_doi_field() -> None:
+    assert ids(r"@article{a, doi = {10.1162/tacl\_a\_00276}}") == ["doi:10.1162/tacl_a_00276"]
+
+
+def test_arxiv_from_eprint_journal_url_and_datacite_doi() -> None:
+    assert ids("@misc{a, eprint={1706.03762v5}, archivePrefix={arXiv}}") == ["arxiv:1706.03762v5"]
+    assert ids("@article{a, journal={arXiv preprint arXiv:1810.04805}}") == ["arxiv:1810.04805"]
+    assert ids("@misc{a, url={https://arxiv.org/abs/2106.09685v2}}") == ["arxiv:2106.09685v2"]
+    assert ids("@misc{a, doi={10.48550/arXiv.1706.03762}}") == [
+        "doi:10.48550/arxiv.1706.03762",
+        "arxiv:1706.03762",
+    ]
+    assert ids("@misc{a, eprint={hep-th/9901001}}") == ["arxiv:hep-th/9901001"]
+
+
+def test_numbers_without_arxiv_context_are_not_arxiv_ids() -> None:
+    assert ids("@article{a, journal={Proceedings 2017}, note={pages 1234.5678}}") == []
+    assert ids("@misc{a, eprint={12345}, eprinttype={pubmed}}") == ["pmid:12345"]
+
+
+def test_doi_in_url_field() -> None:
+    assert ids("@misc{a, url={https://doi.org/10.18653/v1/N19-1423}}") == [
+        "doi:10.18653/v1/n19-1423"
+    ]
+
+
+def test_isbn_and_issn_checksums() -> None:
+    assert ids("@book{a, isbn={978-0-262-03561-3}}") == ["isbn:9780262035613"]
+    assert ids("@book{a, isbn={978-0-262-03561-4}}") == []  # bad checksum
+    assert ids("@book{a, isbn={0-262-03384-4}}") == ["isbn:0262033844"]
+    assert ids("@article{a, issn={0028-0836}}") == ["issn:0028-0836"]
+    assert ids("@article{a, issn={0028-0837}}") == []
+
+
+def test_pmid_and_pmcid() -> None:
+    assert ids("@article{a, pmid={9500320}, pmcid={pmc1234567}}") == [
+        "pmid:9500320",
+        "pmcid:PMC1234567",
+    ]
