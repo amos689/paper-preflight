@@ -5,7 +5,8 @@ network access; "online" rows need reference verification (milestones W2–W3).
 `paper-preflight check examples/demo-paper` verifies the references online (`--offline` answers
 from the cache only). `tests/test_verdict.py` and `tests/test_check_online.py` run the demo
 against recorded responses. A live run on 2026-10-03 matched every row, except that arXiv was
-refusing requests at the time, so `hendrycks2016gelu` came out as "cannot determine" (RUN001).
+refusing requests at the time, so `hendrycks2016gelu` came out as "cannot determine" (RUN001);
+since then arXiv IDs fall back to DataCite (`10.48550/arXiv.<id>`) when that happens.
 
 | Key | Planted problem | Expected rule | Mode | Status |
 |---|---|---|---|---|

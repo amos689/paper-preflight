@@ -57,7 +57,8 @@ def parse_doi(data: dict[str, Any]) -> SourceRecord:
         year=int(year) if year else None,
         years=frozenset(years),
         venue=publisher,
-        work_type=str(types.get("resourceTypeGeneral") or "") or None,
+        # lower-cased like the other sources ("Preprint" -> "preprint"), so preprint checks apply
+        work_type=str(types.get("resourceTypeGeneral") or "").lower() or None,
         identifiers=identifiers,
         publisher=publisher,
         url=attributes.get("url"),

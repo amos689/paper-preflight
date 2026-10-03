@@ -29,6 +29,8 @@ def _text(name: str) -> str:
 CROSSREF_ITEMS = {
     i["DOI"].lower(): i for i in _load("crossref/batch_filter_doi.json")["message"]["items"]
 }
+# the demo's two arXiv preprints as DataCite has them (10.48550/arXiv.<id>)
+DATACITE_ARXIV = _load("datacite/dc_arxiv_demo_batch.json")["data"]
 DBLP_ARXIV_CORR = {
     "10.48550/ARXIV.1512.03385": "https://dblp.org/rec/journals/corr/HeZRS15",
     "10.48550/ARXIV.1606.08415": "https://dblp.org/rec/journals/corr/HendrycksG16",
@@ -72,7 +74,7 @@ class FakeWeb:
         if host == "api.crossref.org":
             return self._crossref(request)
         if host == "api.datacite.org":
-            return httpx.Response(200, json={"data": []})
+            return self._datacite(request)
         if host == "api.openalex.org":
             return httpx.Response(200, json=_load("openalex/batch_or_doi.json"))
         if host == "export.arxiv.org":
@@ -95,6 +97,11 @@ class FakeWeb:
             else:
                 answers.append({"DOI": doi, "status": "DOI does not exist"})
         return httpx.Response(200, json=answers)
+
+    def _datacite(self, request: httpx.Request) -> httpx.Response:
+        wanted = set(request.url.params.get("ids", "").lower().split(","))
+        items = [i for i in DATACITE_ARXIV if str(i["attributes"]["doi"]).lower() in wanted]
+        return httpx.Response(200, json={"data": items})
 
     def _crossref(self, request: httpx.Request) -> httpx.Response:
         params = request.url.params
