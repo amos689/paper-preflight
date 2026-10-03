@@ -106,6 +106,7 @@ class SourceClient:
         self._pace_lock = asyncio.Lock()
         self._next_start = 0.0
         self._cooldown_until = 0.0
+        self._cooldown_reason = UnavailableReason.COOLDOWN
 
     @property
     def name(self) -> str:
@@ -118,12 +119,18 @@ class SourceClient:
     def _unavailable(
         self, reason: UnavailableReason, detail: str = "", cool: float | None = None
     ) -> SourceUnavailable:
+        """Record unavailability and start a cooldown (except for offline mode)."""
         self.stats.mark_unavailable(reason)
         if reason is not UnavailableReason.OFFLINE:
-            self._cooldown_until = time.monotonic() + (
-                cool if cool is not None else self.policy.cooldown
-            )
+            duration = cool if cool is not None else self.policy.cooldown
+            self._cooldown_until = max(self._cooldown_until, time.monotonic() + duration)
+            self._cooldown_reason = reason
         return SourceUnavailable(self.name, reason, detail)
+
+    def _cooling_down(self) -> SourceUnavailable:
+        """Refuse a request during cooldown, reporting the reason the cooldown started."""
+        self.stats.mark_unavailable(UnavailableReason.COOLDOWN)
+        return SourceUnavailable(self.name, self._cooldown_reason, "cooling down")
 
     async def _pace(self) -> None:
         async with self._pace_lock:
@@ -189,7 +196,7 @@ class SourceClient:
         if self.offline:
             raise self._unavailable(UnavailableReason.OFFLINE)
         if time.monotonic() < self._cooldown_until:
-            raise self._unavailable(UnavailableReason.COOLDOWN, cool=0)
+            raise self._cooling_down()
 
         accept = "application/json" if expect_json else "application/atom+xml, application/xml"
         merged_headers = {"User-Agent": USER_AGENT, "Accept": accept}
