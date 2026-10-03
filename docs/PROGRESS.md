@@ -97,13 +97,15 @@
 | #35 | MCP 工具 `preflight_bib_fix`（只返回 diff，不写文件） |
 | #36 | GitHub Action（`action.yml`）：任务摘要、SARIF、按 .bib 缓存；自测工作流在 Linux 和 Windows 上实跑演示论文 |
 | #37 | 标识符查询按条目缓存：加一条文献后，离线模式下其余条目的判定不再丢失 |
+| #39 | REF014 识别编造的会议名（会议名无人认识、且与记录的会议没有共同的词或缩写）：HALLMARK nonexistent_venue 检出率 0% → 61.5%，any_issue 召回率 72.9% → 77.8%，VALID 误报不变 |
+| #40 | dblp 的三个批量查询也按条目缓存，离线时新加的预印本不再让其余条目丢失 REF015 |
+| #41 | 重新实跑 HALLMARK dev_public，发布新结果（any_issue 精确率 97.2%、召回率 77.8%、F1 86.4%） |
 
 - 2026-10-03 用户最终决定：提交信息不再带 Claude 的 Co-Authored-By 署名，`main` 的历史已由用户改写并强制推送
 
 ## 下一步
 
-- [ ] dblp 的批量查询也改为按条目缓存（离线时目前只会少显示 REF015 建议，不会误报）
-- [ ] 召回率：编造的会议名（需要会议名录）、只改一两个词的标题、"预印本冒充正式发表"
+- [ ] 召回率：只改一两个词的标题（near_miss_title 46% 漏检）、错误的会议（wrong_venue 51% 漏检）、"预印本冒充正式发表"
 - [ ] Crossref 不可用时，用 S2 批量接口按 DOI/arXiv 兜底（需要客户端支持 POST）
 - [ ] REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
 - [ ] 运行清单（run manifest）；`--refresh`、`--final`、`--record/--replay`
