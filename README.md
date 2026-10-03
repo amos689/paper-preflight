@@ -89,8 +89,8 @@ benchmark of real and hallucinated BibTeX entries, against the live sources.
 
 | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|
-| Fabrication: wrong identifier, not found, no author in common | 98.0% | 49.9% | 1.0% | 96.6% |
-| Any issue: also wrong authors, title, year or venue | 97.2% | 77.8% | 2.1% | 96.6% |
+| Fabrication: wrong identifier, not found, no author in common | 98.1% | 52.5% | 1.0% | 98.3% |
+| Any issue: also wrong authors, title, year or venue | 97.6% | 90.5% | 2.1% | 98.3% |
 
 HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
 
@@ -100,9 +100,10 @@ HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
 - **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
   with a reason one lookup confirms, is in
   [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
-- **Recall is the open front.** Invented venue names and near-miss titles are mostly missed
-  today. See [`evals/results/hallmark-dev_public.md`](evals/results/hallmark-dev_public.md) for
-  every hallucination type.
+- **What is still missed:** invented venues on papers known only as preprints (an arXiv record
+  cannot contradict a venue) and author lists that merely leave people out. See
+  [`evals/results/hallmark-dev_public.md`](evals/results/hallmark-dev_public.md) for every
+  hallucination type.
 
 Precision comes first: a reference is called fabricated only on positive evidence, and an
 unanswered or ambiguous lookup is reported as "cannot determine", never as "not found". The
