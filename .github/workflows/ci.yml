@@ -18,10 +18,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # While the repository is private, Actions minutes are limited (macOS counts 10x, Windows 2x).
-  # Pull requests run a light matrix, pushes to main a minimal smoke run (the merged code was
-  # already tested on the PR), and the weekly/manual run covers every OS and Python version.
-  # Switch pull_request back to the full matrix when the repository becomes public.
+  # Public repositories get unlimited Actions minutes on GitHub-hosted runners, so pull requests,
+  # the weekly schedule and manual runs use the full 3 OS x 4 Python matrix. Pushes to main only
+  # run a smoke test because the merged code was already tested on its pull request.
   plan:
     runs-on: ubuntu-latest
     outputs:
@@ -30,14 +29,17 @@ jobs:
       - id: pick
         shell: bash
         run: |
-          case "${{ github.event_name }}" in
-            pull_request)
-              m='[{"os":"ubuntu-latest","python-version":"3.11"},{"os":"ubuntu-latest","python-version":"3.14"},{"os":"windows-latest","python-version":"3.12"}]' ;;
-            push)
-              m='[{"os":"ubuntu-latest","python-version":"3.12"}]' ;;
-            *)
-              m='[{"os":"ubuntu-latest","python-version":"3.11"},{"os":"ubuntu-latest","python-version":"3.12"},{"os":"ubuntu-latest","python-version":"3.13"},{"os":"ubuntu-latest","python-version":"3.14"},{"os":"windows-latest","python-version":"3.11"},{"os":"windows-latest","python-version":"3.14"},{"os":"macos-latest","python-version":"3.12"}]' ;;
-          esac
+          if [ "${{ github.event_name }}" = "push" ]; then
+            m='[{"os":"ubuntu-latest","python-version":"3.12"}]'
+          else
+            m='['
+            for os in ubuntu-latest windows-latest macos-latest; do
+              for py in 3.11 3.12 3.13 3.14; do
+                m="$m{\"os\":\"$os\",\"python-version\":\"$py\"},"
+              done
+            done
+            m="${m%,}]"
+          fi
           echo "matrix=$m" >> "$GITHUB_OUTPUT"
 
   lint:
