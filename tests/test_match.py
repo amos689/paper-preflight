@@ -245,3 +245,24 @@ def test_wrong_paper_guard() -> None:
         authors=(Person(family="Jones"),), year=2005,
     )  # fmt: skip
     assert not evaluate(info, record).acceptable
+
+
+def test_compound_surnames_written_differently_match() -> None:
+    # Crossref: "RichardWebster, Brandon"; the entry: "Brandon Richard Webster"
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t",
+        authors=(Person("RichardWebster", "Brandon"), Person("Sánchez-Fernández", "Luis")),
+    )  # fmt: skip
+    entry = parse_authors("Brandon Richard Webster and Luis Sánchez Fernández")
+    assert check_authors(entry, record).status == "match"
+
+
+def test_a_one_letter_slip_in_a_source_needs_the_same_given_name() -> None:
+    # a Crossref record with "Hut" for Jiahui Hu and "Rent" for Kui Ren
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t",
+        authors=(Person("Hut", "Jiahui"), Person("Rent", "Kui")),
+    )  # fmt: skip
+    assert check_authors(parse_authors("Jiahui Hu and Kui Ren"), record).status == "match"
+    other = check_authors(parse_authors("Wei Hu and Kui Ren"), record)
+    assert other.missing == ("Wei Hu",)  # another given name: another person
