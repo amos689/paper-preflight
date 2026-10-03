@@ -479,3 +479,14 @@ def test_title_only_binding_stays_narrow(change: tuple[str, str], why: str) -> N
     )
     assert result.record is None, why
     assert "REF010" not in rules(result), why
+
+
+def test_semantic_scholar_authors_never_raise_a_finding() -> None:
+    # S2 author lists mix initials, orders and duplicates: they confirm a work, never accuse
+    entry = bib(NO_DOI)
+    s2 = replace(record(source="s2", authors=(ANN, Person("Tran", "Tho"), CAROL)), year=None)
+    s2 = replace(s2, years=frozenset())
+    result = assess(entry, search_result(entry, s2), current_year=YEAR)
+    assert result.record is not None
+    assert result.record.source == "s2"
+    assert not {"REF010", "REF011"} & rules(result)
