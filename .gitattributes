@@ -1,0 +1,11 @@
+# Normalize text files to LF in the repository.
+* text=auto eol=lf
+
+# Test fixtures must keep their exact bytes (CRLF, BOM, GB18030, etc.).
+tests/fixtures/** -text
+evals/cassettes/** -text
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.gif binary

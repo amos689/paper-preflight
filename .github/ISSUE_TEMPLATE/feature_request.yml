@@ -1,0 +1,19 @@
+name: Feature request / 功能建议
+description: Suggest a new check, data source, venue rule pack or integration. / 建议新的检查、数据源、会议规则包或集成。
+labels: ["enhancement", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / 要解决的问题
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal / 建议方案
+  - type: textarea
+    id: sources
+    attributes:
+      label: Official sources / 官方依据
+      description: For venue rules, link the official call for papers or author guidelines. / 会议规则请附官方 CFP 或作者指南链接。

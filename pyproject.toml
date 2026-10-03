@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "paper-preflight"
+dynamic = ["version"]
+description = "Pre-submission integrity gate for LaTeX papers: every reference verified against real scholarly records. No LLM guessing, no false accusations."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "paper-preflight contributors" }]
+keywords = [
+    "latex", "bibtex", "citations", "references", "hallucinated-citations",
+    "academic-writing", "research-integrity", "agent-skills", "mcp",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Text Processing :: Markup :: LaTeX",
+    "Typing :: Typed",
+]
+dependencies = [
+    "bibtexparser>=2.0,<3",
+    "pylatexenc>=2.10,<3",
+    "httpx>=0.28,<1",
+    "rapidfuzz>=3.9,<4",
+    "pydantic>=2.7,<3",
+    "typer>=0.12",
+    "rich>=13",
+    "platformdirs>=4",
+]
+
+[project.scripts]
+paper-preflight = "paper_preflight.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/paper-preflight/paper-preflight"
+Issues = "https://github.com/paper-preflight/paper-preflight/issues"
+Changelog = "https://github.com/paper-preflight/paper-preflight/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "respx>=0.21",
+    "hypothesis>=6",
+    "jsonschema>=4",
+    "ruff>=0.16",
+    "mypy>=1.15",
+    "pre-commit>=4",
+]
+
+[tool.hatch.version]
+path = "src/paper_preflight/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/paper_preflight"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/.spikes", "/evals/.data", "/.github"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+extend-exclude = [".spikes", "evals/.data", "tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "C4", "PT"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "live: performs real network requests (run weekly, not on every PR)",
+]

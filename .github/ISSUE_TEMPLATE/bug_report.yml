@@ -1,0 +1,33 @@
+name: Bug report / 缺陷报告
+description: Crash, wrong output or unexpected behaviour (for wrongly flagged references, use "False positive"). / 崩溃、输出错误或异常行为（误报请用"误报"模板）。
+labels: ["bug", "triage"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: paper-preflight version / 版本
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran / 运行的命令
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened / 实际结果
+      description: Include the error output. Remove any API keys or emails. / 附错误输出，请删除密钥与邮箱。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected / 预期结果
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `paper-preflight doctor` / doctor 输出
+      render: text
