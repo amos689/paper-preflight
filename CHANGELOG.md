@@ -39,3 +39,4 @@ All notable changes to this project are documented here. The format follows
 - `bib fetch <DOI|arXiv ID>` or `bib fetch --title ...`: a BibTeX entry built from the registry
   record (published versions of preprints keep their eprint; retracted works warn; ambiguous
   titles list candidates; `--format json` for agents).
+- MCP tool `preflight_bib_lookup`: `bib fetch` for agents.

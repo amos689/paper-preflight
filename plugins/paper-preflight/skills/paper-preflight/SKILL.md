@@ -39,9 +39,9 @@ Fix errors first, then warnings. Re-run the check after editing.
 
 ## Never
 
-- Never write or complete a BibTeX entry from memory. Get it with
-  `paper-preflight bib fetch <DOI or arXiv ID>` (or `--title "..." --author "..."`), which prints
-  an entry built from the registry record; if it finds nothing, ask the user for the source.
+- Never write or complete a BibTeX entry from memory. Get it with the `preflight_bib_lookup`
+  MCP tool, or `paper-preflight bib fetch <DOI or arXiv ID>` (or `--title "..." --author "..."`),
+  which build the entry from the registry record; if nothing is found, ask the user for the source.
 - Never delete a reference the paper relies on without telling the user.
 - Never declare the paper clean while errors remain or the run was incomplete
   (`complete: false`, exit code 2); say which sources were unavailable and re-run later.
