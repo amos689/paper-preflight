@@ -116,3 +116,19 @@ async def test_rate_limited_doi_routing_falls_back_to_crossref() -> None:
     resnet = evidence["he2016deep"]
     assert resnet.unavailable == {"doiorg": "rate_limited"}
     assert resnet.anchored[0].doi == "10.1109/cvpr.2016.90"  # Crossref was asked directly
+
+
+@pytest.mark.anyio
+async def test_arxiv_outage_uses_datacite_records() -> None:
+    web = FakeWeb()
+    web.fail("export.arxiv.org", "429")
+    evidence = await run(web)
+    gelu = evidence["hendrycks2016gelu"]
+    assert sources_of(gelu) == {"datacite"}
+    assert gelu.anchored[0].work_type == "preprint"
+    assert gelu.unavailable == {"arxiv": "rate_limited"}  # still reported: no withdrawal check
+    assert gelu.arxiv_missing == []  # an outage never makes an ID "missing"
+    assert gelu.candidates == []  # anchored, so not searched by title
+    assert sources_of(evidence["he2015residual"]) == {"datacite"}
+    datacite_calls = [r for r in web.requests if r.url.host == "api.datacite.org"]
+    assert len(datacite_calls) == 1  # both preprints in one batch

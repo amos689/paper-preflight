@@ -182,6 +182,8 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
             by_arxiv.setdefault(arxiv_id, []).append(item)
     arxiv_owners = [e for items in by_arxiv.values() for e in items]
     ax_records = await _guard(arxiv_owners, lambda: arxiv.by_ids(sources.arxiv, list(by_arxiv)))
+    if ax_records is None and by_arxiv:
+        await _arxiv_via_datacite(by_arxiv, sources)
     if ax_records is not None:
         for arxiv_id, items in by_arxiv.items():
             arxiv_record = ax_records.get(arxiv_id)
@@ -200,6 +202,21 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
     await asyncio.gather(*(_title_search(item, sources) for item in unanchored))
     return evidence
+
+
+async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sources) -> None:
+    """The arXiv API refused or timed out: DataCite registers every arXiv paper as
+    10.48550/arXiv.<id>, so existence and metadata can still be checked. arXiv stays recorded as
+    unavailable (withdrawals and earlier version titles are only known to arXiv), and an ID
+    DataCite does not return is not treated as missing.
+    """
+    wanted = {f"10.48550/arxiv.{arxiv_id}".lower(): arxiv_id for arxiv_id in by_arxiv}
+    owners = [e for items in by_arxiv.values() for e in items]
+    records = await _guard(owners, lambda: datacite.dois(sources.datacite, list(wanted))) or {}
+    for doi, record in records.items():
+        for item in by_arxiv.get(wanted.get(doi, ""), []):
+            if all(r.source_id != record.source_id for r in item.anchored):
+                item.anchored.append(record)
 
 
 async def _content_negotiation(
