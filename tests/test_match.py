@@ -239,8 +239,19 @@ def test_year_has_no_blanket_tolerance(demo: dict[str, EntryInfo]) -> None:
         ("Transactions of the Association for Computational Linguistics", "tacl"),
         ("CoRR", "arxiv"),
         ("The Lancet", None),
+        ("UAI", "uai"),
+        ("Proceedings of the Thirty-Seventh Conference on Uncertainty in Artificial Intelligence",
+         "uai"),
+        ("International Conference on Artificial Intelligence and Statistics", "aistats"),
+        ("Proceedings of Thirty Fifth Conference on Learning Theory", "colt"),
+        ("WWW '22: Proceedings of the ACM Web Conference 2022", "www"),
+        ("ICASSP 2023 - IEEE International Conference on Acoustics, Speech and Signal Processing",
+         "icassp"),
+        ("Medical Image Computing and Computer-Assisted Intervention", "miccai"),
+        ("Transactions on Machine Learning Research", "tmlr"),
+        ("\\url{https://www.tensorflow.org/}", None),  # a URL is not the Web Conference
     ],
-)
+)  # fmt: skip
 def test_canonical_venue(text: str, key: str | None) -> None:
     assert canonical_venue(text) == key
 

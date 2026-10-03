@@ -332,14 +332,31 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
     ("sigir", ("sigir",)),
     ("jmlr", ("jmlr", "journal of machine learning research")),
     ("tpami", ("tpami", "pattern analysis and machine intelligence")),
+    ("ijcv", ("ijcv", "international journal of computer vision")),
+    ("tmlr", ("tmlr", "transactions on machine learning research")),
+    ("aistats", ("aistats", "artificial intelligence and statistics")),
+    ("uai", ("uai", "uncertainty in artificial intelligence")),
+    ("colt", ("colt", "conference on learning theory", "computational learning theory")),
+    ("corl", ("corl", "conference on robot learning")),
+    ("www", ("www", "web conference", "world wide web")),
+    ("wsdm", ("wsdm", "web search and data mining")),
+    ("cikm", ("cikm", "information and knowledge management")),
+    ("icassp", ("icassp", "acoustics speech and signal processing")),
+    ("interspeech", ("interspeech",)),
+    ("miccai", ("miccai", "medical image computing")),
+    ("icra", ("icra", "international conference on robotics and automation")),
+    ("iros", ("iros", "intelligent robots and systems")),
+    ("wacv", ("wacv", "winter conference on applications of computer vision")),
+    ("bmvc", ("bmvc", "british machine vision conference")),
     ("arxiv", ("arxiv", "corr")),
 ]
+_URL = re.compile(r"(?:https?://|www\.)\S+", re.I)
 
 
 def canonical_venue(text: str | None) -> str | None:
     if not text:
         return None
-    folded = " ".join(re.findall(r"[\w-]+", fold(text)))
+    folded = " ".join(re.findall(r"[\w-]+", fold(_URL.sub(" ", text))))
     for key, patterns in _VENUES:
         for pattern in patterns:
             if re.search(rf"(?<!\w){re.escape(pattern)}(?!\w)", folded):
