@@ -14,6 +14,7 @@ import re
 from collections.abc import Iterable
 from typing import Any
 
+from paper_preflight.bib.normalize import fold
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse
@@ -31,10 +32,20 @@ def _escape(value: str) -> str:
 
 
 def prefix_range(title: str, length: int = 40) -> tuple[str, str]:
-    """Lower-cased, whitespace-collapsed prefix and its successor for a range filter."""
-    low = collapse(title).lower()[:length].rstrip()
-    high = low[:-1] + chr(ord(low[-1]) + 1) if low else "￿"
-    return low, high
+    """A folded prefix of the title and its successor, for a range filter on dblp:title.
+
+    dblp's SPARQL engine compares strings with a collation that ignores punctuation and
+    accents, so the two bounds must differ in a letter it does not ignore. A prefix that ended
+    in ":" gave the empty range "...control:" to "...control;" and lost a real ICML paper (a
+    HALLMARK VALID entry reported as not found). The prefix therefore ends in an ASCII letter
+    below "z", and the upper bound is that letter's successor.
+    """
+    low = fold(collapse(title))[:length]
+    while low and not ("a" <= low[-1] <= "y"):
+        low = low[:-1]
+    if not low:
+        return "", "￿"
+    return low, low[:-1] + chr(ord(low[-1]) + 1)
 
 
 def title_prefix_query(title: str) -> str:

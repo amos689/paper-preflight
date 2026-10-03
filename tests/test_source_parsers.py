@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from paper_preflight.sources import arxiv, crossref, datacite, dblp, doiorg, openalex
 from paper_preflight.sources.record import Person
 
@@ -127,6 +129,35 @@ def test_dblp_prefix_range() -> None:
     )
     query = dblp.title_prefix_query('A "quoted" title')
     assert '\\"quoted\\"' in query
+
+
+@pytest.mark.parametrize(
+    ("title", "low", "high"),
+    [
+        # cut at a colon: the collation ignores punctuation, so ":" to ";" was an empty range
+        (
+            "On Pre-Training for Visuo-Motor Control: Revisiting a Learning-from-Scratch Baseline",
+            "on pre-training for visuo-motor control",
+            "on pre-training for visuo-motor controm",
+        ),
+        (
+            "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+            "llama 2: open foundation and fine-tuned",
+            "llama 2: open foundation and fine-tunee",
+        ),
+        (
+            "YOLOv3: An Incremental Improvement",
+            "yolov3: an incremental improvement",
+            "yolov3: an incremental improvemenu",
+        ),
+        ("ResNet 50", "resnet", "resneu"),  # trailing digits cannot be incremented
+        ("Learning to Quiz", "learning to qui", "learning to quj"),  # nor can "z"
+        ("Étude des réseaux", "etude des reseaux", "etude des reseauy"),  # accents are folded
+        ("2024", "", "￿"),
+    ],
+)
+def test_dblp_prefix_range_ends_in_a_letter(title: str, low: str, high: str) -> None:
+    assert dblp.prefix_range(title) == (low, high)
 
 
 def test_openalex_retraction_and_pollution() -> None:
