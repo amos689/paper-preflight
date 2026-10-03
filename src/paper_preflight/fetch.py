@@ -14,9 +14,15 @@ import re
 from dataclasses import dataclass, field, replace
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
+import httpx
+
+from paper_preflight import check
 from paper_preflight.bib.ids import normalize_doi
 from paper_preflight.bib.parse import parse_bib_text
+from paper_preflight.bibtex import render
+from paper_preflight.cache import Cache
 from paper_preflight.match import title_score
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.sources.record import SourceRecord
@@ -106,3 +112,36 @@ async def fetch(query: str, sources: Sources, *, prefer_published: bool = True) 
         if published is not None:
             return FetchResult("found", record=published, preprint=best, unavailable=unavailable)
     return FetchResult("found", record=best, unavailable=unavailable)
+
+
+async def lookup(
+    query: str, *, cache_path: Path | None, offline: bool = False, prefer_published: bool = True
+) -> FetchResult:
+    """`fetch` with its own HTTP client and cache, as the CLI and the MCP server use it."""
+    cache = Cache(cache_path)
+    try:
+        transport = check.make_transport()
+        async with httpx.AsyncClient(transport=transport, follow_redirects=True) as http:
+            sources = Sources.create(http, cache, offline=offline)
+            return await fetch(query, sources, prefer_published=prefer_published)
+    finally:
+        cache.close()
+
+
+def to_dict(result: FetchResult, key: str | None = None) -> dict[str, Any]:
+    """The result as plain data: the BibTeX, where it came from, or why there is none."""
+    record = result.record
+    return {
+        "status": result.status,
+        "bibtex": render(record, key=key) if record is not None else None,
+        "source": record.source if record else None,
+        "source_id": record.source_id if record else None,
+        "published_version_of": result.preprint.source_id if result.preprint else None,
+        "status_flags": sorted(record.status) if record else [],
+        "candidates": [
+            {"title": c.title, "year": c.year, "source": c.source, "id": c.source_id}
+            for c in result.candidates
+        ],
+        "unavailable": result.unavailable,
+        "detail": result.detail,
+    }

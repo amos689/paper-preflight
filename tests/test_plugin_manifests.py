@@ -74,4 +74,4 @@ def test_skill_frontmatter_and_references(skill: Path) -> None:
     mentioned = set(re.findall(r"\b(?:CIT|TEX|REF|RUN|CFG)\d{3}\b", text))
     assert mentioned <= set(RULES), mentioned - set(RULES)
     for tool in re.findall(r"`(preflight_\w+)`", text):
-        assert tool in {"preflight_check", "preflight_explain"}, tool
+        assert tool in {"preflight_check", "preflight_explain", "preflight_bib_lookup"}, tool
