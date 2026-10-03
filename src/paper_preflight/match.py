@@ -237,12 +237,63 @@ def same_person(a: Person, b: Person) -> bool:
     return min(len(key_a), len(key_b)) >= 2 and Levenshtein.distance(key_a, key_b) <= 1
 
 
+# Short forms that are not prefixes of the name they stand for.
+_NICKNAMES = {
+    frozenset(pair.split("/"))
+    for pair in (
+        "bill/william bob/robert rob/robert bobby/robert dick/richard rick/richard jim/james "
+        "jimmy/james mike/michael mick/michael tony/anthony andy/andrew drew/andrew dave/david "
+        "steve/stephen steve/steven joe/joseph jack/john johnny/john ted/edward ned/edward "
+        "ed/edward ted/theodore harry/henry hank/henry larry/lawrence chuck/charles "
+        "charlie/charles peggy/margaret maggie/margaret meg/margaret kate/katherine "
+        "kathy/katherine katie/katherine liz/elizabeth beth/elizabeth betty/elizabeth "
+        "jenny/jennifer jen/jennifer sandy/alexandra sasha/alexander sasha/alexandra "
+        "bert/albert bert/herbert nate/nathan nate/nathaniel jake/jacob tom/thomas "
+        "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
+        "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
+        "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
+        "yura/yuri"
+    ).split()
+}
+
+
+def _given_words(person: Person) -> list[str]:
+    # "ks" and "x" are one sound in transcriptions (Aleksandar, Alexander)
+    return re.findall(r"[a-z]+", fold(person.given).replace("ks", "x"))
+
+
+def given_names_differ(a: Person, b: Person) -> bool:
+    """Two people with one surname whose written given names cannot be the same person's.
+
+    Only full names count: an initial ("J."), a prefix ("Alex", "Chris"), a middle name used
+    as the first ("Alp" for Durmus Alp Emre), hyphenation ("Jun-Yan", "Junyan"), a typo or a
+    transcription ("Aleksandr") and common nicknames ("Bill") all agree.
+    """
+    if a.literal or b.literal:
+        return False
+    words_a, words_b = _given_words(a), _given_words(b)
+    if not words_a or not words_b or len(words_a[0]) == 1 or len(words_b[0]) == 1:
+        return False  # no given name, or an initial first: nothing to compare
+    if "".join(words_a) == "".join(words_b):
+        return False
+    if {w for w in words_a if len(w) >= 2} & {w for w in words_b if len(w) >= 2}:
+        return False
+    first_a, first_b = words_a[0], words_b[0]
+    if first_a.startswith(first_b) or first_b.startswith(first_a):
+        return False
+    if frozenset((first_a, first_b)) in _NICKNAMES:
+        return False
+    return fuzz.ratio(first_a, first_b) < 75 and Levenshtein.distance(first_a, first_b) > 1
+
+
 @dataclass(frozen=True)
 class AuthorCheck(FieldCheck):
     overlap: float = 0.0
     first_author_match: bool = False
     disjoint: bool = False
     missing: tuple[str, ...] = field(default=())  # entry authors not found in the record
+    # surnames that pair up with another person's given name: (entry's name, record's name)
+    renamed: tuple[tuple[str, str], ...] = field(default=())
 
 
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
@@ -254,8 +305,14 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     # exact surnames first, then spelling variants, so a variant never takes an exact match
     pool = list(zip(people, record_keys, strict=True))
     unmatched: list[Person] = []
+    renamed: list[tuple[str, str]] = []
     for person, key in entry:
-        index = next((i for i, (_, k) in enumerate(pool) if k == key), None)
+        same = [i for i, (_, k) in enumerate(pool) if k == key]
+        # co-authors sharing a surname (Yang Song, Jiaming Song) pair up by given name first
+        index = next((i for i in same if not given_names_differ(person, pool[i][0])), None)
+        if index is None and same:
+            index = same[0]
+            renamed.append((person.display, pool[index][0].display))
         if index is None:
             unmatched.append(person)
         else:
@@ -279,7 +336,7 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     def result(status: Status, note: str = "", *, disjoint: bool = False) -> AuthorCheck:
         return AuthorCheck(
             status, overlap, note, overlap=overlap, first_author_match=first,
-            disjoint=disjoint, missing=missing_names,
+            disjoint=disjoint, missing=missing_names, renamed=tuple(renamed),
         )  # fmt: skip
 
     if matched == 0:

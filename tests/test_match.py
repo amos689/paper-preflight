@@ -16,6 +16,7 @@ from paper_preflight.match import (
     check_venue,
     check_year,
     evaluate,
+    given_names_differ,
     suspicious_reason,
     title_score,
 )
@@ -373,6 +374,41 @@ def test_only_venue_names_are_judged() -> None:
         Path("refs.bib"),
     ).entries[0]
     assert EntryInfo.from_entry(entry).venue_field == "publisher"
+
+
+@pytest.mark.parametrize(
+    ("ours", "theirs", "differ"),
+    [
+        # HALLMARK swapped authors: the surname stays, the person changes
+        ("Sharma, Aviral", "Sharma, Archit", True),
+        ("Feng, Sheng", "Feng, Shi", True),
+        ("Suriana, Pratham", "Suriana, Patricia", True),
+        # one person written differently
+        ("Smith, J.", "Smith, John", False),
+        ("Smith, Alex", "Smith, Alexander", False),
+        ("Acar, Durmus", "Acar, Durmus Alp Emre", False),
+        ("Zhu, Jun-Yan", "Zhu, Junyan", False),
+        ("Gates, Bill", "Gates, William", False),
+        ("Belkin, Mikhail", "Belkin, Misha", False),
+        ("Spiridonov, Aleksandar", "Spiridonov, Alexander", False),
+        ("Levine, Sergey", "Levine, Sergei", False),
+        ("{OpenAI}", "{OpenAI}", False),
+    ],
+)  # fmt: skip
+def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
+    (a,), (b,) = parse_authors(ours).people, parse_authors(theirs).people
+    assert given_names_differ(a, b) is differ
+
+
+def test_co_authors_sharing_a_surname_pair_up_by_given_name() -> None:
+    record = SourceRecord(
+        source="dblp", source_id="x", title="t",
+        authors=(Person("Song", "Yang"), Person("Song", "Jiaming")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Jiaming Song and Yang Song"), record)
+    assert check.renamed == ()
+    other = check_authors(parse_authors("Yang Song and Aviral Song"), record)
+    assert other.renamed == (("Aviral Song", "Jiaming Song"),)
 
 
 def test_an_unrecognised_record_venue_is_never_a_mismatch() -> None:

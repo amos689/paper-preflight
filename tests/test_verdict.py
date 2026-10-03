@@ -592,6 +592,15 @@ def test_a_far_year_is_no_reprint_at_the_same_venue(venue: str, bound: bool) -> 
         assert rules(result) == {"REF013"}
 
 
+def test_a_coauthor_with_another_given_name_is_reported() -> None:
+    entry = bib(CS_ENTRY)
+    real = record(authors=(ANN, Person("Jones", "Ben"), CAROL))
+    result = assess(entry, evidence_for(entry, anchored=[real]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF011"})
+    (finding,) = result.findings
+    assert "other given names: Bob Jones (recorded: Ben Jones)" in finding.message.en
+
+
 def test_semantic_scholar_authors_never_raise_a_finding() -> None:
     # S2 author lists mix initials, orders and duplicates: they confirm a work, never accuse
     entry = bib(NO_DOI)

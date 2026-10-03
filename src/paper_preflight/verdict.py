@@ -354,9 +354,10 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
                 suggestion=format_authors(record),
             )
         )  # fmt: skip
-    elif authors.status in {"mismatch", "variant"} and (
-        authors.missing or not authors.first_author_match
-    ):
+    elif (
+        authors.status in {"mismatch", "variant"}
+        and (authors.missing or not authors.first_author_match)
+    ) or authors.renamed:
         names = list(authors.missing)
         details: list[tuple[str, str]] = []
         if names:
@@ -365,6 +366,11 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
         if not authors.first_author_match and record.authors:
             first = record.authors[0].display
             details.append((f"the first author is {first}", f"第一作者应为 {first}"))
+        if authors.renamed:
+            # the surname is right, the person is not (HALLMARK's "Aviral" for Archit Sharma)
+            en = ", ".join(f"{ours} (recorded: {theirs})" for ours, theirs in authors.renamed)
+            zh = "、".join(f"{ours}（记录为 {theirs}）" for ours, theirs in authors.renamed)
+            details.append((f"other given names: {en}", f"名字不同：{zh}"))
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
