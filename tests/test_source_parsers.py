@@ -131,6 +131,23 @@ def test_dblp_prefix_candidates_and_full_records() -> None:
     assert dblp.parse_title_candidates(load("dblp/prefix_t8.json")) == []
 
 
+@pytest.mark.parametrize(
+    ("key", "year", "expected"),
+    [
+        ("conf/birws/AtanassovaB24", 2025, 2024),  # BIR 2024, proceedings published 2025
+        ("conf/cvpr/HeZRS16", 2016, None),  # the same year adds nothing
+        ("journals/corr/abs-1706-03762", 2017, None),  # no year in the key
+        ("conf/nips/Smith99", 2000, 1999),
+        ("conf/nips/Smith00a", 1999, 2000),
+        ("conf/nips/Smith12", 2016, None),  # four years apart: not this record's year
+    ],
+)
+def test_dblp_key_year(key: str, year: int, expected: int | None) -> None:
+    assert dblp.key_year(key, year) == expected
+    rows = [{"pub": dblp.REC + key, "title": "T", "year": str(year)}]
+    assert dblp.records_from_rows(rows)[key].years == {year} | ({expected} if expected else set())
+
+
 def test_dblp_prefix_range() -> None:
     assert dblp.prefix_range("Attention Is   All You Need") == (
         "attention is all you need",

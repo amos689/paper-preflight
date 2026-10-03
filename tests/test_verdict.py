@@ -103,7 +103,7 @@ async def test_wrong_year_found_by_title_search(demo: dict[str, Assessment]) -> 
     (finding,) = adam.findings
     assert finding.severity is Severity.WARNING
     assert finding.data["year"] == 2016
-    assert finding.data["found_years"] == "2015"
+    assert finding.data["found_years"] == "2014, 2015"  # dblp key conf/iclr/KingmaB14
 
 
 @pytest.mark.anyio
