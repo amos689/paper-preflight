@@ -20,7 +20,7 @@ from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.rules import RULES
 
 SARIF_SCHEMA = "https://json.schemastore.org/sarif-2.1.0.json"
-INFORMATION_URI = "https://github.com/paper-preflight/paper-preflight"
+INFORMATION_URI = "https://github.com/amos689/paper-preflight"
 _LEVEL = {Severity.ERROR: "error", Severity.WARNING: "warning", Severity.INFO: "note"}
 
 

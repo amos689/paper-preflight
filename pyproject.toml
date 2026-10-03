@@ -45,9 +45,9 @@ dependencies = [
 paper-preflight = "paper_preflight.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/paper-preflight/paper-preflight"
-Issues = "https://github.com/paper-preflight/paper-preflight/issues"
-Changelog = "https://github.com/paper-preflight/paper-preflight/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/amos689/paper-preflight"
+Issues = "https://github.com/amos689/paper-preflight/issues"
+Changelog = "https://github.com/amos689/paper-preflight/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
