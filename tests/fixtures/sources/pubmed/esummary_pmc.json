@@ -1,0 +1,39 @@
+{
+ "header": {
+  "type": "esummary",
+  "version": "0.3"
+ },
+ "result": {
+  "uids": [
+   "3531190",
+   "99999999"
+  ],
+  "3531190": {
+   "uid": "3531190",
+   "pubdate": "2013 Jan",
+   "title": "GenBank.",
+   "articleids": [
+    {
+     "idtype": "pmid",
+     "value": "23193287"
+    },
+    {
+     "idtype": "pmcid",
+     "value": "PMC3531190"
+    },
+    {
+     "idtype": "doi",
+     "value": "10.1093/nar/gks1195"
+    },
+    {
+     "idtype": "pii",
+     "value": "gks1195"
+    }
+   ]
+  },
+  "99999999": {
+   "uid": "99999999",
+   "error": "cannot get document summary"
+  }
+ }
+}

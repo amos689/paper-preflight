@@ -70,6 +70,7 @@ class Evidence:
     optional_unavailable: dict[str, str] = field(default_factory=dict)
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
+    pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
 
     def mark_unavailable(self, error: SourceUnavailable) -> None:
         self.unavailable.setdefault(error.source, error.reason.value)
@@ -293,10 +294,29 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
 
 async def _pubmed(evidence: dict[str, Evidence], sources: Sources) -> None:
     by_pmid: dict[str, list[Evidence]] = {}
+    by_pmcid: dict[str, list[Evidence]] = {}
     for item in evidence.values():
         for ident in item.identifiers:
             if ident.scheme == "pmid":
                 by_pmid.setdefault(ident.value, []).append(item)
+            elif ident.scheme == "pmcid":
+                by_pmcid.setdefault(ident.value, []).append(item)
+    if by_pmcid:
+        # PubMed Central knows the PMID of its articles; their PubMed records anchor the entry
+        mapped = await _guard(
+            [e for items in by_pmcid.values() for e in items],
+            lambda: pubmed.pmids_for_pmcids(sources.pubmed, list(by_pmcid), email=sources.mailto),
+            owners_of=lambda pmcid: by_pmcid.get(pmcid, []),
+        )
+        for pmcid, items in by_pmcid.items() if mapped is not None else ():
+            pmid = mapped.get(pmcid) if mapped is not None else None
+            for item in items:
+                if pmid is not None:
+                    owners = by_pmid.setdefault(pmid, [])
+                    if item not in owners:
+                        owners.append(item)
+                elif pmcid not in (mapped or {}) and "pubmed" not in item.unavailable:
+                    item.pmcid_missing.append(pmcid)
     if not by_pmid:
         return
     records = await _guard(

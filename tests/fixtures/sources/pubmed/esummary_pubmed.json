@@ -7,7 +7,8 @@
   "uids": [
    "9500320",
    "31452104",
-   "99999999"
+   "99999999",
+   "23193287"
   ],
   "9500320": {
    "uid": "9500320",
@@ -221,6 +222,121 @@
   "99999999": {
    "uid": "99999999",
    "error": "cannot get document summary"
+  },
+  "23193287": {
+   "uid": "23193287",
+   "pubdate": "2013 Jan",
+   "epubdate": "2012 Nov 27",
+   "source": "Nucleic Acids Res",
+   "authors": [
+    {
+     "name": "Benson DA",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Cavanaugh M",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Clark K",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Karsch-Mizrachi I",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Lipman DJ",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Ostell J",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Sayers EW",
+     "authtype": "Author",
+     "clusterid": ""
+    }
+   ],
+   "lastauthor": "Sayers EW",
+   "title": "GenBank.",
+   "sorttitle": "genbank",
+   "volume": "41",
+   "issue": "Database issue",
+   "pages": "D36-42",
+   "lang": [
+    "eng"
+   ],
+   "nlmuniqueid": "0411011",
+   "issn": "0305-1048",
+   "essn": "1362-4962",
+   "pubtype": [
+    "Journal Article",
+    "Research Support, N.I.H., Extramural",
+    "Research Support, N.I.H., Intramural"
+   ],
+   "recordstatus": "PubMed - indexed for MEDLINE",
+   "pubstatus": "256",
+   "articleids": [
+    {
+     "idtype": "pubmed",
+     "idtypen": 1,
+     "value": "23193287"
+    },
+    {
+     "idtype": "pmc",
+     "idtypen": 8,
+     "value": "PMC3531190"
+    },
+    {
+     "idtype": "pmcid",
+     "idtypen": 5,
+     "value": "pmc-id: PMC3531190;"
+    },
+    {
+     "idtype": "doi",
+     "idtypen": 3,
+     "value": "10.1093/nar/gks1195"
+    },
+    {
+     "idtype": "pii",
+     "idtypen": 4,
+     "value": "gks1195"
+    }
+   ],
+   "history": [],
+   "references": [],
+   "attributes": [
+    "Has Abstract"
+   ],
+   "pmcrefcount": 13,
+   "fulljournalname": "Nucleic acids research",
+   "elocationid": "doi: 10.1093/nar/gks1195",
+   "doctype": "citation",
+   "srccontriblist": [],
+   "booktitle": "",
+   "medium": "",
+   "edition": "",
+   "publisherlocation": "",
+   "publishername": "",
+   "srcdate": "",
+   "reportnumber": "",
+   "availablefromurl": "",
+   "locationlabel": "",
+   "doccontriblist": [],
+   "docdate": "",
+   "bookname": "",
+   "chapter": "",
+   "sortpubdate": "2013/01/01 00:00",
+   "sortfirstauthor": "Benson DA",
+   "vernaculartitle": ""
   }
  }
 }

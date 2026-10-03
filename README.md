@@ -252,8 +252,8 @@ and more complete; their values are never printed or logged.
    `\includeonly` are respected, `.aux` files are used when they are fresh, and the first
    definition of a duplicated key wins, as in BibTeX.
 2. **Identifier-first routing.** DOIs go to their registration agency (doi.org tells which:
-   Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback, and PMIDs to
-   PubMed (which also marks retracted articles). Entries without identifiers are searched by
+   Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback, and PMIDs and
+   PMCIDs to PubMed (which also marks retracted articles). Entries without identifiers are searched by
    title in dblp and Crossref.
 3. **Field-by-field matching with guards.** It compares titles (including earlier arXiv version
    titles), authors (tolerating transcriptions such as Reiß/Reis), year and venue. A search
