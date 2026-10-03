@@ -11,6 +11,7 @@ A cited preprint that has been published is returned as the published version wi
 from __future__ import annotations
 
 import re
+import time
 from dataclasses import dataclass, field, replace
 from datetime import datetime
 from pathlib import Path
@@ -115,14 +116,20 @@ async def fetch(query: str, sources: Sources, *, prefer_published: bool = True) 
 
 
 async def lookup(
-    query: str, *, cache_path: Path | None, offline: bool = False, prefer_published: bool = True
+    query: str,
+    *,
+    cache_path: Path | None,
+    offline: bool = False,
+    prefer_published: bool = True,
+    refresh: bool = False,
 ) -> FetchResult:
     """`fetch` with its own HTTP client and cache, as the CLI and the MCP server use it."""
     cache = Cache(cache_path)
     try:
         transport = check.make_transport()
         async with httpx.AsyncClient(transport=transport, follow_redirects=True) as http:
-            sources = Sources.create(http, cache, offline=offline)
+            fresh_after = time.time() if refresh else None
+            sources = Sources.create(http, cache, offline=offline, fresh_after=fresh_after)
             return await fetch(query, sources, prefer_published=prefer_published)
     finally:
         cache.close()

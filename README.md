@@ -122,6 +122,7 @@ uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check 
 |---|---|
 | `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |
 | `--offline` | Never touch the network; use only answers already in the local cache |
+| `--refresh` | Ask every source again instead of using cached answers (after a correction, say) |
 | `--fail-on warning` | Make warnings fail the run too (the default is errors) |
 | `--lang zh` | Chinese messages (also chosen automatically from your locale) |
 

@@ -35,6 +35,7 @@ class VerifyOptions:
     """How to verify references against scholarly sources (online by default)."""
 
     offline: bool = False  # answer from the cache only; never touch the network
+    refresh: bool = False  # ask every source again instead of answering from the cache
     cache_path: Path | None = None  # None = an in-memory cache for this run only
     environ: Mapping[str, str] | None = None  # credentials; defaults to os.environ
     current_year: int | None = None
@@ -196,7 +197,10 @@ async def verify_entries(
         # doi.org answers content negotiation with a redirect to the registration agency
         async with httpx.AsyncClient(transport=make_transport(), follow_redirects=True) as http:
             environ = dict(options.environ) if options.environ is not None else None
-            sources = Sources.create(http, cache, offline=options.offline, environ=environ)
+            sources = Sources.create(
+                http, cache, offline=options.offline, environ=environ,
+                fresh_after=time.time() if options.refresh else None,
+            )  # fmt: skip
             evidence = await resolve(entries, sources)
     finally:
         cache.close()

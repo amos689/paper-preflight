@@ -24,7 +24,7 @@ from typing import Any
 import httpx
 
 from paper_preflight import __version__
-from paper_preflight.cache import Cache, EntryKind, request_key
+from paper_preflight.cache import Cache, CachedItem, EntryKind, request_key
 
 USER_AGENT = f"paper-preflight/{__version__} (+https://github.com/amos689/paper-preflight)"
 
@@ -126,11 +126,14 @@ class SourceClient:
         cache: Cache,
         *,
         offline: bool = False,
+        fresh_after: float | None = None,
     ) -> None:
         self.policy = policy
         self.http = http
         self.cache = cache
         self.offline = offline
+        # --refresh: answers stored before this time are ignored (asked again and replaced)
+        self.fresh_after = fresh_after
         self.stats = SourceStats()
         self._semaphore = asyncio.Semaphore(policy.max_concurrency)
         self._pace_lock = asyncio.Lock()
@@ -141,6 +144,12 @@ class SourceClient:
     @property
     def name(self) -> str:
         return self.policy.name
+
+    def _cached(self, key: str) -> CachedItem | None:
+        item = self.cache.get(self.name, key, allow_stale=self.offline)
+        if item is not None and self.fresh_after is not None and item.stored_at < self.fresh_after:
+            return None
+        return item
 
     def slow_down(self, min_interval: float) -> None:
         """Adapters call this when response headers announce a stricter limit."""
@@ -222,9 +231,7 @@ class SourceClient:
         found: dict[str, Any] = {}
         missing: list[str] = []
         for item_id in dict.fromkeys(ids):
-            cached = self.cache.get(
-                self.name, f"item:{namespace}:{item_id}", allow_stale=self.offline
-            )
+            cached = self._cached(f"item:{namespace}:{item_id}")
             if cached is None:
                 missing.append(item_id)
                 continue
@@ -268,7 +275,7 @@ class SourceClient:
         expect_json: bool,
     ) -> Fetched:
         key = cache_key or request_key(url, params)
-        cached = self.cache.get(self.name, key, allow_stale=self.offline)
+        cached = self._cached(key)
         if cached is not None:
             if cached.stale:
                 self.stats.stale_hits += 1

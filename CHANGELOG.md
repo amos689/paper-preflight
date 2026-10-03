@@ -16,6 +16,8 @@ All notable changes to this project are documented here. The format follows
 - `check` verifies the cited references online by default; `--offline` answers from the local
   cache only. Text output adds a verdict summary line; JSON adds `verification` and `references`.
   Exit code 2 when a source was unavailable and nothing blocking was found.
+- `--refresh` (`check`, `bib fetch`, `bib fix`) asks every source again instead of using cached
+  answers; within the run each answer is still asked for once. It contradicts `--offline`.
 - When the arXiv API refuses requests or times out, arXiv IDs are verified through DataCite
   (`10.48550/arXiv.<id>`); the run still reports arXiv as unavailable.
 - Semantic Scholar as an optional rescue source, used only when `S2_API_KEY` is set: it is asked

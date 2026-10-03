@@ -116,6 +116,7 @@ uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check 
 |---|---|
 | `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描） |
 | `--offline` | 完全不联网，只用本地缓存里已有的结果 |
+| `--refresh` | 不用缓存，向所有来源重新查询（例如记录刚被更正之后） |
 | `--fail-on warning` | 警告也算失败（默认只有错误算失败） |
 | `--lang zh` | 中文输出（也会按系统语言自动选择） |
 

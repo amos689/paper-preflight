@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 from typer.testing import CliRunner, Result
 
-from paper_preflight.cli import EXIT_FINDINGS, EXIT_INCOMPLETE, EXIT_OK, app
+from paper_preflight.cli import EXIT_FINDINGS, EXIT_INCOMPLETE, EXIT_OK, EXIT_USAGE, app
 
 from .fake_web import FakeWeb
 
@@ -169,3 +169,19 @@ def test_unused_reference_suppressions_need_a_complete_online_run(tmp_path: Path
     assert ("REF013", "kingma2015adam") not in found
     _, offline = check_json(tmp_path, str(bib), "--offline")
     assert "CFG001" not in [f["rule"] for f in offline["findings"]]
+
+
+def test_refresh_asks_the_sources_again(tmp_path: Path, recorded_web: FakeWeb) -> None:
+    check_json(tmp_path, str(DEMO))
+    first = len(recorded_web.requests)
+    check_json(tmp_path, str(DEMO))
+    cached = len(recorded_web.requests) - first
+    _, refreshed = check_json(tmp_path, str(DEMO), "--refresh")
+    asked_again = len(recorded_web.requests) - first - cached
+    assert cached == 0  # a second run answers from the cache...
+    assert asked_again == first  # ...a --refresh run asks exactly what the first run asked
+    assert refreshed["verification"]["verdicts"]["verified"] == 6
+
+
+def test_refresh_contradicts_offline() -> None:
+    assert check(str(DEMO), "--refresh", "--offline").exit_code == EXIT_USAGE
