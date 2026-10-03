@@ -25,6 +25,7 @@ from paper_preflight.bib.parse import BibEntry
 from paper_preflight.bibtex import escape, format_authors, protect_title
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
+    VENUE_FIELDS,
     EntryInfo,
     Match,
     best_candidate,
@@ -94,7 +95,6 @@ SOURCE_NAMES = {
     "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar",
 }  # fmt: skip
 SOURCE_PRIORITY = {"crossref": 0, "datacite": 1, "doiorg": 2, "dblp": 3, "openalex": 4, "arxiv": 5}
-VENUE_FIELDS = ("booktitle", "journal", "journaltitle", "howpublished", "publisher")
 # Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
 # entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
 AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2"})
