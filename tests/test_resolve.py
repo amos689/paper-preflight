@@ -145,3 +145,27 @@ async def test_versioned_arxiv_doi_resolves_without_its_version() -> None:
     gelu = evidence["gelu"]
     assert gelu.doi_agency["10.48550/arxiv.1606.08415"].exists
     assert "datacite" in sources_of(gelu)
+
+
+@pytest.mark.anyio
+async def test_version_titles_are_fetched_only_when_the_latest_title_disagrees() -> None:
+    # GELU's v1 and v2 were titled differently; an entry may cite either
+    v1_title = (
+        "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units"
+    )
+    bib = f"@misc{{old, title={{{v1_title}}}, author={{Hendrycks, Dan and Gimpel, Kevin}}, "
+    bib += "year={2016}, eprint={1606.08415}, archivePrefix={arXiv}}"
+    web = FakeWeb()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(web)) as http:
+        evidence = await resolve(
+            parse_bib_text(bib, Path("refs.bib")).entries,
+            Sources.create(http, Cache(None), environ={}),
+        )
+    (record,) = [r for r in evidence["old"].anchored if r.source == "arxiv"]
+    assert v1_title in record.alt_titles
+    arxiv_calls = [r for r in web.requests if r.url.host == "export.arxiv.org"]
+    assert len(arxiv_calls) == 2  # the batch, then the versions of this one paper
+
+    current = await run(FakeWeb())  # the demo cites GELU by its current title
+    (gelu,) = [r for r in current["hendrycks2016gelu"].anchored if r.source == "arxiv"]
+    assert gelu.alt_titles == ()  # no extra request when the latest title matches

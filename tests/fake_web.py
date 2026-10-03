@@ -81,10 +81,12 @@ class FakeWeb:
         if host == "api.openalex.org":
             return httpx.Response(200, json=_load("openalex/batch_or_doi.json"))
         if host == "export.arxiv.org":
+            # explicit versions (v1,v2,...) ask for every title GELU has had
+            versions = "1606.08415v1" in request.url.params.get("id_list", "")
+            feed = "arxiv/idlist_gelu_versions.xml" if versions else "arxiv/idlist_multi.xml"
             return httpx.Response(
-                200, text=_text("arxiv/idlist_multi.xml"),
-                headers={"content-type": "application/atom+xml"},
-            )  # fmt: skip
+                200, text=_text(feed), headers={"content-type": "application/atom+xml"}
+            )
         if host == "sparql.dblp.org":
             return self._dblp(request)
         if host == "api.semanticscholar.org" and request.url.path.endswith("/search/match"):
