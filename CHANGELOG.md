@@ -36,3 +36,6 @@ All notable changes to this project are documented here. The format follows
   fix is safe; without an argument it lists every rule.
 - First full HALLMARK dev_public results (`evals/results/hallmark-dev_public.md`), with a second
   summary that leaves out labels checked by hand and found wrong (`evals/hallmark_disputed.toml`).
+- `bib fetch <DOI|arXiv ID>` or `bib fetch --title ...`: a BibTeX entry built from the registry
+  record (published versions of preprints keep their eprint; retracted works warn; ambiguous
+  titles list candidates; `--format json` for agents).

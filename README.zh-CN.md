@@ -20,7 +20,7 @@
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
 > **状态：早期版本。** 下面列出的检查现在就能用；在首个 PyPI 版本（v0.1，计划 2026 年 11 月）
-> 发布之前，请从 GitHub 安装。`bib fetch` / `bib fix` 是下一步。
+> 发布之前，请从 GitHub 安装。`bib fix` 是下一步。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
 （直连真实数据源）的完整输出：
@@ -127,6 +127,34 @@ uvx --from git+https://github.com/amos689/paper-preflight paper-preflight check 
 | 2 | 没有阻塞性发现，但有数据源不可用，暂时不能宣称"没问题" |
 | 3 | 用法错误 |
 
+## 获取已核实的 BibTeX
+
+不要凭记忆写条目，按 DOI、arXiv 编号或标题直接取。每个字段都来自登记机构的记录，条目上方的注释写明了出处：
+
+```bash
+paper-preflight bib fetch 1810.04805
+```
+
+```bibtex
+% Verified with paper-preflight against dblp (conf/naacl/DevlinCLT19), 2026-10-03
+@inproceedings{devlin2019bert,
+  title         = {{BERT:} Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author        = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle     = {NAACL-HLT (1)},
+  year          = {2019},
+  doi           = {10.18653/v1/n19-1423},
+  eprint        = {1810.04805},
+  archivePrefix = {arXiv},
+}
+```
+
+- **预印本：** 已经正式发表的 arXiv 预印本会返回正式版本，并保留 `eprint`；要预印本本身请加
+  `--prefer preprint`。
+- **按标题查：** `--title`（需要时配合 `--author`/`--year`）遇到多篇作品都吻合时会列出候选，而不是
+  替你挑一篇。
+- **撤稿：** 已撤稿的作品会附带警告。
+- **给脚本和 AI 助手用：** 加 `--format json`。
+
 ## 在编码助手里使用
 
 **Claude Code**：安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考
@@ -189,7 +217,7 @@ claude plugin install paper-preflight@paper-preflight
 
 ## 路线图
 
-- `bib fetch`（根据标识符取回已核实的 BibTeX）和 `bib fix`（可审阅的修复补丁）
+- `bib fix`（按已核实记录生成可审阅的修复补丁）
 - GitHub Action，以及首个 PyPI 版本（v0.1）
 - 中文参考文献（v0.2）
 
