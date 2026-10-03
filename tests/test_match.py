@@ -378,6 +378,10 @@ def test_venues_nobody_recognises(venue: str | None, status: str) -> None:
         # a workshop's name rarely contains its venue's: it must share no word at all
         ("Workshop on Machine Learning for Creativity", "ICML", "unknown"),
         ("ACM Workshop on Spatial Intelligence", "ICML", "mismatch"),
+        # a workshop at another meeting is the work's workshop version (2607.13394v1, Pavlova)
+        ("ICLR 2025 Workshop on Building Trust in Language Models and Applications", "ICML",
+         "unknown"),
+        ("ICLR", "ICML", "mismatch"),
     ],
 )  # fmt: skip
 def test_unrecognised_venues_naming_something_else(venue: str, recorded: str, status: str) -> None:

@@ -26,6 +26,7 @@ from paper_preflight.bibtex import SOURCE_NAMES, escape, format_authors, protect
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
     NAMED_VENUE_FIELDS,
+    TITLE_VARIANT,
     VENUE_FIELDS,
     VENUE_SERIES,
     EntryInfo,
@@ -35,7 +36,9 @@ from paper_preflight.match import (
     evaluate,
     is_preprint,
     related_words,
+    subtitle_variant,
     surname_key,
+    title_score,
     venue_words,
     wrong_paper,
 )
@@ -68,6 +71,8 @@ class Reason(StrEnum):
     NON_LATIN_UNSUPPORTED = "NON_LATIN_UNSUPPORTED"
     GREY_LITERATURE = "GREY_LITERATURE"
     UNINDEXED_LINK = "UNINDEXED_LINK"
+    UNINDEXED_VENUE = "UNINDEXED_VENUE"
+    ANONYMOUS = "ANONYMOUS"
     TOO_NEW = "TOO_NEW"
     OLD_WORK = "OLD_WORK"
     IDENTIFIER_EXISTS_NO_METADATA = "IDENTIFIER_EXISTS_NO_METADATA"
@@ -90,6 +95,15 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
     Reason.UNINDEXED_LINK: (
         "it links to a site no queried source indexes; check the link",
         "条目链接的网站不在任何已查询来源的收录范围内，请人工核对该链接",
+    ),
+    Reason.UNINDEXED_VENUE: (
+        "a workshop paper or an older book chapter, which the indexes often leave out; check it"
+        " by hand",
+        "研讨会论文或较早的图书章节，索引常未收录，请人工核对",
+    ),
+    Reason.ANONYMOUS: (
+        "an anonymous submission under review, which no index lists",
+        "匿名评审中的投稿，任何索引都不收录",
     ),
     Reason.TOO_NEW: ("too recent to be indexed yet", "过新，可能尚未被收录"),
     Reason.OLD_WORK: (
@@ -726,6 +740,20 @@ def _dead_identifiers(entry: BibEntry, evidence: Evidence) -> tuple[list[Finding
 # ---------------------------------------------------------------- the verdict
 
 
+_BOOK_TYPES = frozenset({"book", "edited-book", "monograph", "reference-book", "book-set"})
+
+
+def _container(info: EntryInfo, record: SourceRecord) -> bool:
+    """The record is the book the cited chapter is in, not another work: Thompson, Zanna &
+    Griffin (1995) is cited with 10.4324/9781315807041, Routledge's edition of the volume
+    "Attitude Strength" that the entry's booktitle names."""
+    if record.work_type not in _BOOK_TYPES or info.venue_field != "booktitle" or not info.venue:
+        return False
+    return title_score(info.venue, record.title) >= TITLE_VARIANT or subtitle_variant(
+        info.venue, record.title
+    )
+
+
 def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessment:
     info = evidence.info
     findings, dead = _dead_identifiers(entry, evidence)
@@ -735,7 +763,8 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     same: list[Match] = []
     conflicts: list[tuple[Match, Identifier | None]] = []
     corrupted = False
-    for record in evidence.anchored:
+    anchored = [r for r in evidence.anchored if not _container(info, r)]
+    for record in anchored:
         m = evaluate(info, record, preprint_pair=preprint)
         relation = _relation(m)
         if relation in {"same", "retitled"}:
@@ -763,7 +792,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
 
     # 2. Bind: the best record reached by identifier, else one unambiguous search candidate.
     bound = min(same, key=_rank) if same else None
-    if bound is None and not evidence.anchored:
+    if bound is None and not anchored:
         bound = _bind_candidate(
             info, evidence.candidates, preprint_pair=preprint, current_year=current_year
         )
@@ -875,6 +904,27 @@ def _answered_no(evidence: Evidence) -> set[str]:
     return evidence.negative | {record.source for record in others}
 
 
+ANONYMOUS = re.compile(r"anon(?:ymous|\.)?(?:\s+authors?)?", re.IGNORECASE)
+_UNDER_REVIEW = re.compile(r"openreview|under review|submitted|submission", re.IGNORECASE)
+UNINDEXED_CHAPTER_YEAR = 2000  # book chapters before this are seldom in the indexes
+
+
+def _under_review(info: EntryInfo) -> bool:
+    """An anonymous submission under review: "Anonymous Authors", booktitle "OpenReview". An
+    anonymous paper at a venue that has published (NeurIPS 2021, arXiv) is no such thing."""
+    people = info.authors.people
+    if not people or not all(ANONYMOUS.fullmatch(person.display) for person in people):
+        return False
+    return bool(_UNDER_REVIEW.search(info.venue or "")) or "openreview.net" in info.link_hosts
+
+
+def _unindexed_venue(info: EntryInfo) -> bool:
+    if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
+        return True
+    chapter = info.entry_type in {"incollection", "inbook"}
+    return chapter and info.year is not None and info.year < UNINDEXED_CHAPTER_YEAR
+
+
 def _abstention_reasons(
     evidence: Evidence, dead: set[str], corrupted: bool, current_year: int
 ) -> list[Reason]:
@@ -908,6 +958,12 @@ def _abstention_reasons(
     # mechanics and physics (Barenblatt 1952, Bluman & Cole 1969) are known to none of them
     if not live_ids and info.year is not None and info.year < OLD_WORK_YEAR:
         reasons.append(Reason.OLD_WORK)
+    # venues the indexes often leave out: an ICLR 2025 workshop paper on OpenReview, a chapter
+    # in a 1996 Dekker volume of Lecture Notes in Pure and Applied Mathematics
+    elif not live_ids and _unindexed_venue(info):
+        reasons.append(Reason.UNINDEXED_VENUE)
+    if not live_ids and _under_review(info):
+        reasons.append(Reason.ANONYMOUS)
     # this year's and next year's papers may not be indexed yet; a later year is just wrong
     if not live_ids and info.year is not None and current_year <= info.year <= current_year + 1:
         reasons.append(Reason.TOO_NEW)

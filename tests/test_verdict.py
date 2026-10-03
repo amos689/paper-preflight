@@ -913,3 +913,55 @@ def test_corr_names_a_preprint(venue: str) -> None:
     published = record(source="dblp", year=2022, venue="ACL")
     item = evidence_for(entry, anchored=[arxiv_record()], published_versions=[published])
     assert "REF015" in rules(assess(entry, item, current_year=YEAR))
+
+
+@pytest.mark.parametrize(
+    ("changes", "reasons"),
+    [
+        # an ICLR 2025 workshop paper on OpenReview (2607.13380v1, qi2025training)
+        ({"Proceedings of ACL": "New Frontiers in Associative Memories Workshop, ICLR"},
+         (Reason.UNINDEXED_VENUE,)),
+        # a chapter in a 1996 Dekker volume (2607.13414v1, baillon_bruck_1996)
+        ({"@inproceedings": "@incollection", "2023": "1996"}, (Reason.UNINDEXED_VENUE,)),
+        ({"@inproceedings": "@incollection"}, ()),  # a recent chapter is indexed
+        # an anonymous submission under review (2607.13389v1, genrm2025)
+        ({"Smith, Ann and Jones, Bob and Lee, Carol": "Anonymous Authors",
+          "Proceedings of ACL": "OpenReview"}, (Reason.ANONYMOUS,)),
+        # an anonymous paper at a venue that has published is invented (HALLMARK)
+        ({"Smith, Ann and Jones, Bob and Lee, Carol": "Anonymous"}, ()),
+    ],
+)  # fmt: skip
+def test_works_the_indexes_leave_out(changes: dict[str, str], reasons: tuple[Reason, ...]) -> None:
+    text = NO_DOI
+    for old, new in changes.items():
+        text = text.replace(old, new)
+    entry = bib(text)
+    item = evidence_for(entry, searched={"dblp", "crossref"}, negative={"dblp", "crossref"})
+    result = assess(entry, item, current_year=YEAR)
+    assert result.reasons == reasons
+    assert result.verdict is (Verdict.CANNOT_DETERMINE if reasons else Verdict.NOT_FOUND)
+
+
+def test_a_books_doi_on_a_chapter_is_its_container() -> None:
+    # 2607.13345v2, thompson1995: the chapter cited with Routledge's DOI of the whole volume
+    entry = bib(
+        NO_DOI.replace("@inproceedings", "@incollection")
+        .replace("Proceedings of ACL", "Attitude Strength: Antecedents and Consequences")
+        .replace("  year = {2023},", "  year = {2023}, doi = {10.4324/9781315807041},")
+    )
+    book = SourceRecord(
+        source="crossref", source_id="10.4324/9781315807041", title="Attitude Strength",
+        year=2014, years=frozenset({2014}), work_type="book",
+        identifiers={"doi": "10.4324/9781315807041"},
+    )  # fmt: skip
+    item = evidence_for(
+        entry, anchored=[book], candidates=[record(source="dblp")],
+        searched={"dblp", "crossref"}, negative={"crossref"},
+    )  # fmt: skip
+    result = assess(entry, item, current_year=YEAR)
+    assert "REF001" not in {f.rule_id for f in result.findings}
+    assert result.verdict is Verdict.VERIFIED  # the chapter itself, found by its title
+    # another book is another work
+    other = replace(book, title="Handbook of Social Psychology")
+    item = evidence_for(entry, anchored=[other], searched={"crossref"}, negative={"crossref"})
+    assert "REF001" in {f.rule_id for f in assess(entry, item, current_year=YEAR).findings}

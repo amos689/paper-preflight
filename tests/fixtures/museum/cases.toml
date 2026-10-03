@@ -928,3 +928,38 @@ source = "real_papers:2607.13414v1"
 key = "konda_tsitsiklis_2004"
 expect = ["REF013"]
 note = "real problem: SIAM J. Control Optim. 42(4) is the 2003 volume, cited as 2004"
+
+[[case]]
+name = "fp-qi2025training-workshop"
+source = "real_papers:2607.13380v1"
+key = "qi2025training"
+expect = []
+note = "guard: a real ICLR 2025 workshop paper (New Frontiers in Associative Memories) no source indexes (REF003)"
+
+[[case]]
+name = "fp-genrm2025-anonymous"
+source = "real_papers:2607.13389v1"
+key = "genrm2025"
+expect = []
+note = "guard: an anonymous OpenReview submission, 'Anonymous Authors' (REF003)"
+
+[[case]]
+name = "fp-baillon-bruck-1996-chapter"
+source = "real_papers:2607.13414v1"
+key = "baillon_bruck_1996"
+expect = []
+note = "guard: a real chapter in a 1996 Dekker volume no source indexes (REF003)"
+
+[[case]]
+name = "fp-thompson1995-book-doi"
+source = "real_papers:2607.13345v2"
+key = "thompson1995"
+expect = ["REF017"]
+note = "guard: the chapter cited with the DOI of the book it is in (REF001); its DOI is still written as a URL (REF017)"
+
+[[case]]
+name = "fp-pavlova-workshop-version"
+source = "real_papers:2607.13394v1"
+key = "pavlova2024automatedredteaminggoat"
+expect = []
+note = "guard: the ICLR 2025 workshop version of a paper dblp records at ICML 2025 (REF014)"

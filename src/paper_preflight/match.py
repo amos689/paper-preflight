@@ -106,7 +106,7 @@ def title_score(a: str, b: str) -> float:
     return float(fuzz.ratio(ka, kb)) / 100.0
 
 
-def _subtitle_variant(a: str, b: str) -> bool:
+def subtitle_variant(a: str, b: str) -> bool:
     """One title is the other without its subtitle (``Title: Subtitle``).
 
     ``a`` is the entry's title, ``b`` the record's. A record title shorter than usual counts when
@@ -215,7 +215,7 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
         score = title_score(entry_title, candidate)
         if score > best:
             best, best_note = score, note
-        subtitle = _subtitle_variant(entry_title, candidate)
+        subtitle = subtitle_variant(entry_title, candidate)
         if subtitle and best < TITLE_SAME:
             best, best_note = TITLE_SAME, "subtitle omitted"
         diff = () if subtitle else changed_words(entry_title, candidate)
@@ -748,6 +748,10 @@ def check_venue(
     if mine is not None and theirs is not None:
         if mine == theirs:
             return FieldCheck("match")
+        if "workshop" in fold(venue or "") and "workshop" not in fold(record.venue or ""):
+            # a workshop at another meeting: the work's workshop version (Pavlova et al., the
+            # ICLR 2025 BuildingTrust workshop, then ICML 2025)
+            return FieldCheck("unknown")
         return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
     if mine is None and theirs is not None and named and venue:
         ours = venue_words(VENUE_SERIES.sub(" ", venue))
