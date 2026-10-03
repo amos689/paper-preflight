@@ -457,6 +457,10 @@ note = "LEO (Neurocomputing 2025) lists Kaushic Kalyanaraman, not 'Kannan Kalyan
 verdict = "false_positive"
 note = "Early access: IEEE TSE 45 (2019) article online in 2018."
 
+[finding."2607.02103v1:kuijjer2019lioness:REF014"]
+verdict = "correct"
+note = "'Estimating sample-specific regulatory networks' (Kuijjer et al.) is iScience 14:226-240 (2019); the entry puts it in Nature Communications 10:857. Raised by the journal check (0.1.2)."
+
 # ---------------------------------------------------------------- heldout batch (2026-07-08..14)
 
 [finding."2607.06879v1:YeYoganarasimhanZheng2025:REF002"]

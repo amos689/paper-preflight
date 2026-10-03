@@ -339,3 +339,17 @@ def test_datacite_github_release_title_is_the_repository() -> None:
         {"data": {"id": "x", "attributes": {"titles": [{"title": "Data for: A Study: v2"}]}}}
     )
     assert other.title == "Data for: A Study: v2"
+
+
+def test_crossref_venue_names_and_issns() -> None:
+    item = {
+        "DOI": "10.1007/978-3-642-04346-8_62", "type": "book-chapter", "title": ["GROBID"],
+        "container-title": ["Lecture Notes in Computer Science",
+                            "Research and Advanced Technology for Digital Libraries"],
+        "short-container-title": [], "ISSN": ["0302-9743", "1611-3349"],
+    }  # fmt: skip
+    record = crossref.parse_work(item)
+    assert record.venue == "Lecture Notes in Computer Science"
+    assert record.venue_aliases == ("Research and Advanced Technology for Digital Libraries",)
+    assert record.issns == {"0302-9743", "1611-3349"}
+    assert {"short-container-title", "ISSN"} <= set(crossref.SELECT.split(","))

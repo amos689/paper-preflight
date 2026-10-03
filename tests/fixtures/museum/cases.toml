@@ -732,3 +732,31 @@ source = "real_papers:2607.00291v1"
 key = "bressan1993-parsec"
 expect = []
 note = "guard: paper II of a series (1993), not to be bound to paper VI (1996) of the same title"
+
+[[case]]
+name = "real-kuijjer2019lioness"
+source = "real_papers:2607.02103v1"
+key = "kuijjer2019lioness"
+expect = ["REF011", "REF014"]
+note = "real problems: LIONESS (Kuijjer et al.) is iScience 14 (2019), not Nature Communications, and lists Matthew George Tung, not Monique"
+
+[[case]]
+name = "real-bm-p1r16"
+source = "badalova_mayr"
+key = "p1r16"
+expect = ["REF014"]
+note = "real problem: GROBID (Lopez, ECDL 2009) cited in the International Journal on Document Analysis and Recognition"
+
+[[case]]
+name = "fp-green2007provenance-venue"
+source = "real_papers:2607.00339v1"
+key = "green2007provenance"
+expect = []
+note = "guard: the full PODS 2007 proceedings title against dblp's acronym 'PODS'"
+
+[[case]]
+name = "fp-bib36-venue"
+source = "real_papers:2607.16271v1"
+key = "bib36"
+expect = []
+note = "guard: 'Fracture and Structural Integrity' against Crossref's 'Frattura ed Integrità Strutturale'"

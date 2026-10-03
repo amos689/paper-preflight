@@ -580,3 +580,36 @@ def test_a_lost_letter_matches_only_its_place() -> None:
     record = SourceRecord(source="crossref", source_id="x", title="Ein nat\ufffdrlicher Fall")
     assert check_title("Ein natürlicher Fall", record).changed == ()
     assert check_title("Ein künstlicher Fall", record).changed
+
+
+@pytest.mark.parametrize(
+    ("journal", "recorded", "aliases", "status"),
+    [
+        # LIONESS is iScience 14 (2019); the entry says Nature Communications
+        ("Nature Communications", "iScience", (), "mismatch"),
+        # abbreviations are the same journal
+        ("IEEE Transactions on Pattern Analysis and Machine Intelligence",
+         "IEEE Trans. Pattern Anal. Mach. Intell.", (), "unknown"),
+        ("J. Mach. Learn. Res.", "Journal of Machine Learning Research", (), "unknown"),
+        # Crossref's short title counts as a name of the journal
+        ("Phys. Rev. Lett.", "Physical Review Letters", ("Phys. Rev. Lett.",), "unknown"),
+        # a meeting's name in the journal field is not compared (dblp names meetings by acronym)
+        ("Proceedings of the 26th Symposium on Principles of Database Systems", "PODS", (),
+         "unknown"),
+        # nor a name in another language
+        ("Fracture and Structural Integrity", "Frattura ed Integrità Strutturale", (), "unknown"),
+    ],
+)  # fmt: skip
+def test_journal_names_are_compared_word_by_word(
+    journal: str, recorded: str, aliases: tuple[str, ...], status: str
+) -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="t", venue=recorded,
+                          venue_aliases=aliases)  # fmt: skip
+    assert check_venue(journal, record, journal=True).status == status
+    assert check_venue(journal, record, journal=False).status == "unknown"  # a booktitle
+
+
+def test_a_shared_issn_is_the_same_journal() -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="t", venue="Frattura ed "
+                          "Integrità Strutturale", issns=frozenset({"1971-8993"}))  # fmt: skip
+    assert check_venue("Fracture", record, issns=frozenset({"1971-8993"})).status == "match"

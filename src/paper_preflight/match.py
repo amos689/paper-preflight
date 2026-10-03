@@ -49,6 +49,7 @@ VENUE_FIELDS = ("booktitle", "journal", "journaltitle", "howpublished", "publish
 NAMED_VENUE_FIELDS = frozenset(VENUE_FIELDS[:3])
 
 
+_ISSN_RE = re.compile(r"\b\d{4}-\d{3}[\dX]\b")
 _LINK_RE = re.compile(r"https?://[^\s{}<>\"]+", re.IGNORECASE)
 
 
@@ -64,6 +65,7 @@ class EntryInfo:
     entry_type: str
     venue_field: str | None = None  # where ``venue`` came from (booktitle, journal, publisher ...)
     link_hosts: tuple[str, ...] = ()  # hosts of the web pages the entry links to
+    issns: frozenset[str] = frozenset()
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
@@ -83,6 +85,7 @@ class EntryInfo:
             entry_type=entry.entry_type,
             venue_field=venue_field,
             link_hosts=tuple(dict.fromkeys(h.removeprefix("www.") for h in hosts if h)),
+            issns=frozenset(_ISSN_RE.findall((entry.text("issn") or "").upper())),
         )
 
 
@@ -652,7 +655,17 @@ VENUE_SERIES = re.compile(
 )
 
 
-def check_venue(venue: str | None, record: SourceRecord, *, named: bool = True) -> FieldCheck:
+_MEETING = re.compile(r"proceedings|conference|symposium|workshop|congress|meeting|assembly", re.I)
+
+
+def check_venue(
+    venue: str | None,
+    record: SourceRecord,
+    *,
+    named: bool = True,
+    journal: bool = False,
+    issns: frozenset[str] = frozenset(),
+) -> FieldCheck:
     """A mismatch needs positive evidence: two recognised, different venues, or a venue nobody
     recognises next to a recognised recorded one, naming something the recorded one does not.
 
@@ -678,6 +691,25 @@ def check_venue(venue: str | None, record: SourceRecord, *, named: bool = True) 
         workshop = "workshop" in fold(venue)
         if len(ours) >= 2 and foreign and (foreign == ours or not workshop):
             return FieldCheck("mismatch", None, f"unrecognised venue vs {theirs}")
+    if issns & record.issns:
+        return FieldCheck("match")
+    if (
+        journal and mine is None and theirs is None and venue
+        and record.source in {"crossref", "dblp"}
+        and not _MEETING.search(venue)
+        and venue.isascii() and (record.venue or "").isascii()
+    ):  # fmt: skip
+        # A journal nobody recognises, and the name of where the work appeared: another venue
+        # only if the names share no word or abbreviation. LIONESS (Kuijjer et al., iScience
+        # 2019) cited in Nature Communications; GROBID (Lopez, ECDL 2009) cited in the
+        # "International Journal on Document Analysis and Recognition" (Badalova & Mayr). Not a
+        # meeting's name, even in the journal field: dblp names it by acronym ("PODS"), and the
+        # entry may cite a talk or abstract of the same title. Not a name in another language.
+        ours = venue_words(VENUE_SERIES.sub(" ", venue))
+        names = [record.venue or "", *record.venue_aliases]
+        recorded = {w for name in names for w in venue_words(VENUE_SERIES.sub(" ", name))}
+        if len(ours) >= 2 and recorded and not related_words(ours, recorded):
+            return FieldCheck("mismatch", None, "venues share no word")
     return FieldCheck("unknown")
 
 
@@ -744,7 +776,10 @@ def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = Fal
     else:
         authors = check_authors(info.authors, record)
     year = check_year(info.year, record, preprint_pair=preprint_pair)
-    venue = check_venue(info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS)
+    venue = check_venue(
+        info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS,
+        journal=info.venue_field in {"journal", "journaltitle"}, issns=info.issns,
+    )  # fmt: skip
     suspicious = suspicious_reason(record, info.year)
     short_title = word_count(info.title) < 5
     acceptable = (
