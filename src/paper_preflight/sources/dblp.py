@@ -16,7 +16,7 @@ from typing import Any
 
 from paper_preflight.bib.normalize import fold
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse
 
 SPARQL_URL = "https://sparql.dblp.org/sparql"
@@ -25,6 +25,7 @@ REC = "https://dblp.org/rec/"
 
 POLICY = SourcePolicy(name="dblp", min_interval=1.0, max_concurrency=1, timeout=30.0)
 SPARQL_ACCEPT = {"Accept": "application/sparql-results+json"}
+CHUNK = 50  # IRIs or DOIs per batch query; keeps the GET request short
 
 
 def _escape(value: str) -> str:
@@ -111,8 +112,12 @@ def parse_title_candidates(payload: Any) -> list[tuple[str, str]]:
 
 
 def parse_full_records(payload: Any) -> dict[str, SourceRecord]:
+    return records_from_rows(_bindings(payload))
+
+
+def records_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, SourceRecord]:
     grouped: dict[str, dict[str, Any]] = {}
-    for row in _bindings(payload):
+    for row in rows:
         pub = row["pub"]
         entry = grouped.setdefault(pub, {"row": row, "authors": {}})
         if row.get("ord") and row.get("name"):
@@ -163,37 +168,62 @@ async def title_candidates(client: SourceClient, title: str) -> list[tuple[str, 
     return parse_title_candidates(await _select(client, title_prefix_query(title)))
 
 
+# The batch lookups below are cached per IRI or DOI (SourceClient.batch), so a later run whose
+# batch has other companions, or an --offline run, reuses every answer it already has.
+
+
 async def full_records(client: SourceClient, pubs: Iterable[str]) -> dict[str, SourceRecord]:
-    pub_list = list(dict.fromkeys(pubs))
-    if not pub_list:
-        return {}
-    return parse_full_records(await _select(client, full_records_query(pub_list)))
+    """Full records keyed by dblp key (the IRI without its prefix)."""
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        rows: dict[str, list[dict[str, str]]] = {}
+        for row in _bindings(await _select(client, full_records_query(chunk))):
+            rows.setdefault(row["pub"], []).append(row)
+        return rows
+
+    def records(found: dict[str, Any]) -> dict[str, SourceRecord]:
+        return records_from_rows(row for rows in found.values() for row in rows)
+
+    try:
+        found = await client.batch("rec", pubs, fetch_chunk, chunk_size=CHUNK)
+    except PartialUnavailable as partial:
+        raise partial.with_found(records(partial.found)) from None
+    return records(found)
 
 
 async def by_dois(client: SourceClient, dois: Iterable[str]) -> dict[str, str]:
     """Map lower-cased DOIs (incl. arXiv DOIs) to dblp record IRIs."""
-    doi_list = list(dict.fromkeys(d.lower() for d in dois))
-    if not doi_list:
-        return {}
-    result: dict[str, str] = {}
-    for row in _bindings(await _select(client, doi_query(doi_list))):
-        doi = re.sub(r"^https?://doi\.org/", "", row["doi"]).lower()
-        result[doi] = row["pub"]
-    return result
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        result: dict[str, str] = {}
+        for row in _bindings(await _select(client, doi_query(chunk))):
+            doi = re.sub(r"^https?://doi\.org/", "", row["doi"]).lower()
+            result[doi] = row["pub"]
+        return result
+
+    return await client.batch("doi", (d.lower() for d in dois), fetch_chunk, chunk_size=CHUNK)
 
 
 async def published_versions(
     client: SourceClient, corr_pubs: Iterable[str]
 ) -> dict[str, list[tuple[str, str, int | None]]]:
     """For CoRR records, the non-CoRR records by the same first author with the same title."""
-    pubs = list(dict.fromkeys(corr_pubs))
-    if not pubs:
-        return {}
-    links: dict[str, list[tuple[str, str, int | None]]] = {}
-    for row in _bindings(await _select(client, corr_link_query(pubs))):
-        venue = row.get("venue", "")
-        if venue == "CoRR":
-            continue
-        year = int(row["year"]) if row.get("year", "").isdigit() else None
-        links.setdefault(row["corr"], []).append((row["other"], venue, year))
-    return links
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        links: dict[str, list[list[Any]]] = {}
+        for row in _bindings(await _select(client, corr_link_query(chunk))):
+            venue = row.get("venue", "")
+            if venue == "CoRR":
+                continue
+            year = int(row["year"]) if row.get("year", "").isdigit() else None
+            links.setdefault(row["corr"], []).append([row["other"], venue, year])
+        return links
+
+    def as_tuples(found: dict[str, Any]) -> dict[str, list[tuple[str, str, int | None]]]:
+        return {corr: [(o, v, y) for o, v, y in rows] for corr, rows in found.items()}
+
+    try:
+        found = await client.batch("corr", corr_pubs, fetch_chunk, chunk_size=CHUNK)
+    except PartialUnavailable as partial:
+        raise partial.with_found(as_tuples(partial.found)) from None
+    return as_tuples(found)
