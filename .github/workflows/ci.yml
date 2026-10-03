@@ -3,7 +3,10 @@ name: CI
 on:
   push:
     branches: [main]
+    paths-ignore: ["docs/**", "**/*.md"]
   pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -31,9 +34,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      # While the repository is private, Actions minutes are limited (macOS counts 10x,
+      # Windows 2x). Linux covers every Python version; Windows and macOS cover the extremes.
+      # Restore the full 3 x 4 matrix when the repository becomes public.
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          - { os: ubuntu-latest, python-version: "3.11" }
+          - { os: ubuntu-latest, python-version: "3.12" }
+          - { os: ubuntu-latest, python-version: "3.13" }
+          - { os: ubuntu-latest, python-version: "3.14" }
+          - { os: windows-latest, python-version: "3.11" }
+          - { os: windows-latest, python-version: "3.14" }
+          - { os: macos-latest, python-version: "3.12" }
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10

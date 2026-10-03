@@ -26,7 +26,7 @@ import httpx
 from paper_preflight import __version__
 from paper_preflight.cache import Cache, EntryKind, request_key
 
-USER_AGENT = f"paper-preflight/{__version__} (+https://github.com/paper-preflight/paper-preflight)"
+USER_AGENT = f"paper-preflight/{__version__} (+https://github.com/amos689/paper-preflight)"
 
 
 class UnavailableReason(StrEnum):
