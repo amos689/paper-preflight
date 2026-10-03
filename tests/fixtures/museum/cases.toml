@@ -676,3 +676,10 @@ source = "real_papers:2607.07047v3"
 key = "cheng2025emergence"
 expect = []
 note = "guard: an ICLR 2025 entry naming 'Jade Yu' as arXiv 2405.15471 does, where ICLR has 'Lei Yu'"
+
+[[case]]
+name = "fp-dlsurvey"
+source = "real_papers:2607.06922v1"
+key = "DLSurvey"
+expect = []
+note = "was REF013: ACM Comput. Surv. 51(5) is in dblp as 2019 (its issue) and online in 2018, the year ACM's own export gives"

@@ -304,6 +304,7 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
     await asyncio.gather(*(_title_search(item, sources) for item in unanchored))
+    await _registered_years(unanchored, sources)
 
     # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
     if sources.s2 is not None and sources.s2_key:
@@ -467,6 +468,42 @@ async def _title_search(item: Evidence, sources: Sources) -> None:
         tasks.append(_search_dblp(item, sources))
     tasks.append(_search_crossref(item, sources))
     await asyncio.gather(*tasks)
+
+
+async def _registered_years(items: list[Evidence], sources: Sources) -> None:
+    """Crossref's record for candidates whose year is a year or two off the entry's.
+
+    dblp files a journal article under its issue's year; Crossref also knows when it appeared
+    online (ACM Comput. Surv. 51(5), 10.1145/3234150: online 2018, issue 2019, dblp 2019), and
+    authors cite either. One batched request for all such DOIs; if Crossref cannot answer, the
+    entries are judged on what was found, and nothing is marked unavailable.
+    """
+    wanted: dict[str, list[Evidence]] = {}
+    for item in items:
+        year = item.info.year
+        if year is None:
+            continue
+        known = {r.doi for r in item.candidates if r.source == "crossref"}
+        for record in item.candidates:
+            doi, years = record.doi, record.all_years
+            if (
+                record.source != "crossref" and doi and doi not in known and years
+                and year not in years and min(abs(year - y) for y in years) <= 2
+            ):  # fmt: skip
+                owners = wanted.setdefault(doi, [])
+                if all(owner is not item for owner in owners):
+                    owners.append(item)
+    if not wanted:
+        return
+    try:
+        found = await crossref.works_by_doi(sources.crossref, list(wanted), mailto=sources.mailto)
+    except PartialUnavailable as partial:
+        found = cast(dict[str, SourceRecord], partial.found)
+    except SourceUnavailable:
+        return
+    for doi, record in found.items():
+        for item in wanted.get(doi, []):
+            item.candidates.append(record)
 
 
 async def _search_dblp(item: Evidence, sources: Sources) -> None:
