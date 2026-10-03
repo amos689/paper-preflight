@@ -25,6 +25,7 @@ from paper_preflight.bib.parse import BibEntry
 from paper_preflight.bibtex import SOURCE_NAMES, escape, format_authors, protect_title
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
+    NAMED_VENUE_FIELDS,
     VENUE_FIELDS,
     EntryInfo,
     Match,
@@ -489,13 +490,32 @@ def _status_findings(
     return findings, flags
 
 
+# Venue names that still mean "a preprint": servers, and drafts not yet published.
+_PREPRINT_VENUE = re.compile(
+    r"arxiv|corr|preprint|biorxiv|medrxiv|chemrxiv|ssrn|techrxiv|research square|"
+    r"submitted|under review|in press|to appear",
+    re.I,
+)
+
+
 def cites_preprint(evidence: Evidence) -> bool:
-    """The entry cites an arXiv preprint, not a published version that keeps its eprint."""
+    """The entry cites an arXiv preprint, not a published version that keeps its eprint.
+
+    An entry that names where the work appeared (booktitle or journal: "2017 IEEE Symposium on
+    Security and Privacy (SP)") cites that version, recognised venue or not.
+    """
     ids = evidence.identifiers
+    info = evidence.info
+    names_venue = (
+        info.venue is not None
+        and info.venue_field in NAMED_VENUE_FIELDS
+        and not _PREPRINT_VENUE.search(info.venue)
+        and canonical_venue(info.venue) != "arxiv"
+    )
     return (
         any(i.scheme == "arxiv" for i in ids)
         and not any(i.scheme == "doi" and not i.value.startswith("10.48550/") for i in ids)
-        and canonical_venue(evidence.info.venue) in {None, "arxiv"}
+        and not names_venue
     )
 
 

@@ -382,6 +382,29 @@ def test_citing_the_published_version_with_an_eprint_is_fine() -> None:
     assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
 
 
+@pytest.mark.parametrize(
+    ("field", "venue", "rules_expected"),
+    [
+        # a venue nobody recognises is still where the work appeared (seen on a real paper)
+        ("booktitle", "2017 IEEE Symposium on Security and Privacy (SP)", set()),
+        ("booktitle", "IEEE Conference on Secure and Trustworthy Machine Learning", set()),
+        # these still name a preprint
+        ("journal", "arXiv preprint arXiv:2101.00001", {"REF015"}),
+        ("journal", "CoRR", {"REF015"}),
+        ("journal", "Submitted to Nature", {"REF015"}),
+    ],
+)
+def test_a_named_venue_cites_the_published_version(
+    field: str, venue: str, rules_expected: set[str]
+) -> None:
+    entry = bib(
+        ARXIV_ENTRY.replace("  year = {2021},", f"  {field} = {{{venue}}},\n  year = {{2021}},")
+    )
+    published = record(source="dblp", year=2022, venue="ACL")
+    item = evidence_for(entry, anchored=[arxiv_record()], published_versions=[published])
+    assert rules(assess(entry, item, current_year=YEAR)) == rules_expected
+
+
 def test_invented_title_on_a_real_doi_is_reported() -> None:
     # HALLMARK "chimeric title": the DOI and the authors are real, the title is invented
     entry = bib(CS_ENTRY)

@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- An entry that names where the work appeared (booktitle or journal) cites that version even
+  when the venue is not recognised and the entry keeps its arXiv eprint: no more REF015
+  telling it to cite the published version it already cites.
 - An entry citing an earlier arXiv version (matched through that version's title) is no longer
   reported for its author order when a later version reordered the authors (REF011).
 - A given name in another language's form ("Grigoris" for Gregory, "Giorgos" for George) or a
