@@ -627,6 +627,32 @@ def _published_version(
     return None
 
 
+def _cited_version(info: EntryInfo, evidence: Evidence, preprint: Match) -> Match:
+    """The version to compare an entry with that names its venue but reached the preprint.
+
+    Both are the work, and authors write either: an ICML 2018 entry whose URL is arXiv 1804.03329
+    lists Frederic Sala first, as ICML does, while arXiv lists Christopher De Sa first; an ICLR
+    2025 entry names "Jade Yu" as arXiv does, while ICLR has "Lei Yu". The published version at
+    the venue and in the year the entry names counts as well, and the one that fits the entry
+    best is compared.
+    """
+    versions = [
+        m
+        for m in (evaluate(info, r) for r in evidence.published_versions)
+        if m.title.status in {"match", "variant"}
+        and m.authors.status != "mismatch"
+        and m.venue.status == "match"  # the version at the venue and in the year the entry names
+        and m.year.status == "match"
+    ]
+
+    def fit(m: Match) -> tuple[int, int, int]:
+        # the preprint's venue is arXiv by nature: only title, authors and year count
+        mismatches = sum(c.status == "mismatch" for c in (m.title, m.authors, m.year))
+        return mismatches, len(m.authors.renamed), int(is_preprint(m.record))
+
+    return min([preprint, *versions], key=fit)
+
+
 def _addable_doi(entry: BibEntry, evidence: Evidence, record: SourceRecord) -> Finding | None:
     """REF016 when the entry has no DOI and the record it is bound to has one.
 
@@ -715,6 +741,9 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         bound = _bind_candidate(
             info, evidence.candidates, preprint_pair=preprint, current_year=current_year
         )
+
+    if bound is not None and not preprint and is_preprint(bound.record):
+        bound = _cited_version(info, evidence, bound)
 
     flags: set[str] = set()
     reasons: list[Reason] = []

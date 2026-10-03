@@ -1,0 +1,110 @@
+{
+ "bib": "@inproceedings{cheng2025emergence,\n  author = {Cheng, Emily and Doimo, Diego and Kervadec, Corentin and Macocco, Iuri and Yu, Jade and Laio, Alessandro and Baroni, Marco},\n  title = {Emergence of a High-Dimensional Abstraction Phase in Language Transformers},\n  booktitle = {International Conference on Learning Representations (ICLR)},\n  year = {2025},\n  url = {https://arxiv.org/abs/2405.15471}\n}\n",
+ "cache": [
+  {
+   "source": "arxiv",
+   "key": "item:abs:2405.15471",
+   "kind": "positive",
+   "payload": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><ns0:entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:ns1=\"http://arxiv.org/schemas/atom\">\n    <ns0:id>http://arxiv.org/abs/2405.15471v4</ns0:id>\n    <ns0:title>Emergence of a High-Dimensional Abstraction Phase in Language Transformers</ns0:title>\n    <ns0:updated>2025-04-30T16:06:00Z</ns0:updated>\n    <ns0:link href=\"https://arxiv.org/abs/2405.15471v4\" rel=\"alternate\" type=\"text/html\" />\n    <ns0:link href=\"https://arxiv.org/pdf/2405.15471v4\" rel=\"related\" type=\"application/pdf\" title=\"pdf\" />\n    <ns0:summary>A language model (LM) is a mapping from a linguistic context to an output token. However, much remains to be known about this mapping, including how its geometric properties relate to its function. We take a high-level geometric approach to its analysis, observing, across five pre-trained transformer-based LMs and three input datasets, a distinct phase characterized by high intrinsic dimensionality. During this phase, representations (1) correspond to the first full linguistic abstraction of the input; (2) are the first to viably transfer to downstream tasks; (3) predict each other across different LMs. Moreover, we find that an earlier onset of the phase strongly predicts better language modelling performance. In short, our results suggest that a central high-dimensionality phase underlies core linguistic processing in many common LM architectures.</ns0:summary>\n    <ns0:category term=\"cs.CL\" scheme=\"http://arxiv.org/schemas/atom\" />\n    <ns0:published>2024-05-24T11:49:07Z</ns0:published>\n    <ns1:comment>Published as conference paper at ICLR 2025</ns1:comment>\n    <ns1:primary_category term=\"cs.CL\" />\n    <ns0:author>\n      <ns0:name>Emily Cheng</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Diego Doimo</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Corentin Kervadec</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Iuri Macocco</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Jade Yu</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Alessandro Laio</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Marco Baroni</ns0:name>\n    </ns0:author>\n  </ns0:entry>\n  </feed>"
+  },
+  {
+   "source": "dblp",
+   "key": "item:doi:10.48550/arxiv.2405.15471",
+   "kind": "positive",
+   "payload": "https://dblp.org/rec/journals/corr/abs-2405-15471"
+  },
+  {
+   "source": "dblp",
+   "key": "item:corr:https://dblp.org/rec/journals/corr/abs-2405-15471",
+   "kind": "positive",
+   "payload": [
+    [
+     "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "ICLR",
+     2025
+    ]
+   ]
+  },
+  {
+   "source": "dblp",
+   "key": "item:rec:https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+   "kind": "positive",
+   "payload": [
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "1",
+     "name": "Emily Cheng"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "2",
+     "name": "Diego Doimo"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "3",
+     "name": "Corentin Kervadec"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "4",
+     "name": "Iuri Macocco"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "5",
+     "name": "Lei Yu"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "6",
+     "name": "Alessandro Laio"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/iclr/ChengDKMYLB25",
+     "title": "Emergence of a High-Dimensional Abstraction Phase in Language Transformers.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICLR",
+     "year": "2025",
+     "primary": "https://openreview.net/forum?id=0fD3iIBhlV",
+     "ord": "7",
+     "name": "Marco Baroni"
+    }
+   ]
+  }
+ ],
+ "recorded": {
+  "rules": [],
+  "verdict": "verified"
+ }
+}
