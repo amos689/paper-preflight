@@ -412,6 +412,36 @@ def test_co_authors_sharing_a_surname_pair_up_by_given_name() -> None:
     assert check.renamed == ()
     other = check_authors(parse_authors("Yang Song and Aviral Song"), record)
     assert other.renamed == (("Aviral Song", "Jiaming Song"),)
+    # an initial agrees with both: it must not take the one only the full name can have
+    lins = SourceRecord(
+        source="dblp", source_id="y", title="t",
+        authors=(Person("Lin", "Yen-Ting"), Person("Lin", "Yuan")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Lin, Y. and Lin, Yen-Ting"), lins)
+    assert (check.status, check.renamed, check.missing) == ("match", (), ())
+
+
+def test_a_name_in_two_scripts_and_a_suffix_are_one_person() -> None:
+    # SDSS DR17 on Crossref (10.3847/1538-4365/ac4414): "Lin 林, Lihwai 俐 暉", "Davidson Jr."
+    record = crossref.parse_work(
+        {
+            "DOI": "10.3847/1538-4365/ac4414",
+            "title": ["The Seventeenth Data Release of the Sloan Digital Sky Surveys"],
+            "author": [
+                {"given": "Y. Sophia 昱", "family": "Dai 戴"},
+                {"given": "James W.", "family": "Davidson Jr."},
+                {"given": "Lihwai 俐 暉", "family": "Lin 林"},
+                {"given": "Yen-Ting", "family": "Lin"},
+                {"given": "Sicheng", "family": "Lin"},
+            ],
+        }
+    )
+    written = (
+        "Dai, Y. Sophia and Davidson, Jr., James W. and Lin, Lihwai and Lin, Yen-Ting and "
+        "Lin, Sicheng"
+    )
+    check = check_authors(parse_authors(written), record)
+    assert (check.status, check.renamed, check.missing) == ("match", (), ())
 
 
 def test_an_unrecognised_record_venue_is_never_a_mismatch() -> None:

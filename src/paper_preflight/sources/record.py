@@ -14,6 +14,18 @@ def collapse(text: str) -> str:
     return " ".join(text.split())
 
 
+# Han, kana and Hangul: names some registries add after the romanised one ("Lin 林, Lihwai 俐 暉")
+_CJK_RE = re.compile("[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uf900-\ufaff]+")
+_LATIN_RE = re.compile("[a-z]", re.IGNORECASE)  # ASCII only: Han letters are \w too
+
+
+def _romanised(name: str) -> str:
+    """The romanised part of a name that also carries the original script, else the name."""
+    if _CJK_RE.search(name) and _LATIN_RE.search(name):
+        return collapse(_CJK_RE.sub(" ", name))
+    return name
+
+
 _TAG_RE = re.compile(r"<[^<>]+>")
 # Markup tags by name, for text where a bare "<" may be a less-than sign: JATS and MathML from
 # registries, ADS's <ASTROBJ> in exported BibTeX.
@@ -52,7 +64,14 @@ class Person:
 
     @classmethod
     def from_parts(cls, given: str | None, family: str | None) -> Person:
-        return cls(family=collapse(family or ""), given=collapse(given or ""))
+        """A registry's given and family name. A generational suffix in the family name
+        ("Davidson Jr.", Crossref) and a name repeated in its original script are dropped.
+        """
+        given, family = _romanised(collapse(given or "")), _romanised(collapse(family or ""))
+        parts = family.split(" ")
+        while len(parts) > 1 and parts[-1].lower().strip(",") in _SUFFIXES:
+            parts.pop()
+        return cls(family=" ".join(parts).rstrip(","), given=given)
 
     @classmethod
     def from_display(cls, name: str) -> Person:
