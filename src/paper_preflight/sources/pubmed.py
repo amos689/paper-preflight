@@ -108,3 +108,50 @@ async def by_pmids(
     except PartialUnavailable as partial:
         raise partial.with_found({k: parse_summary(v) for k, v in partial.found.items()}) from None
     return {pmid: parse_summary(item) for pmid, item in items.items()}
+
+
+async def pmids_for_pmcids(
+    client: SourceClient, pmcids: Iterable[str], *, email: str | None = None
+) -> dict[str, str | None]:
+    """The PMID of each PMCID ("PMC3531190"), from PubMed Central's summaries.
+
+    A PMCID PubMed Central has no summary for does not exist and is left out; one whose article
+    has no PMID maps to None.
+    """
+    unique = list(dict.fromkeys(p.upper() for p in pmcids if re.fullmatch(r"PMC\d+", p.upper())))
+
+    def classify(payload: Any) -> EntryKind:
+        uids = ((payload or {}).get("result") or {}).get("uids")
+        return EntryKind.META if uids else EntryKind.NEGATIVE
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        params = {
+            "db": "pmc",
+            "id": ",".join(c.removeprefix("PMC") for c in chunk),
+            "retmode": "json",
+            "tool": TOOL,
+        }
+        if email:
+            params["email"] = email
+        fetched = await client.get_json(ESUMMARY_URL, params=params, classify=classify)
+        result = (fetched.data or {}).get("result") or {}
+        return {
+            f"PMC{uid}": result[uid]
+            for uid in result.get("uids") or []
+            if isinstance(result.get(uid), dict) and "error" not in result[uid]
+        }
+
+    def pmid_of(item: dict[str, Any]) -> str | None:
+        for article_id in item.get("articleids") or []:
+            value = str(article_id.get("value") or "")
+            if article_id.get("idtype") == "pmid" and value.isdigit() and value != "0":
+                return value
+        return None
+
+    try:
+        items = await client.batch(
+            "pmc", unique, fetch_chunk, chunk_size=BATCH, kind=EntryKind.META
+        )
+    except PartialUnavailable as partial:
+        raise partial.with_found({k: pmid_of(v) for k, v in partial.found.items()}) from None
+    return {pmcid: pmid_of(item) for pmcid, item in items.items()}

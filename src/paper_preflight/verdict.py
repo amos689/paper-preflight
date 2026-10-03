@@ -168,7 +168,9 @@ def _anchor(record: SourceRecord, identifiers: Iterable[Identifier]) -> Identifi
             return ident
         if ident.scheme == "arxiv" and arxiv_id and ident.value == arxiv_id:
             return ident
-        if ident.scheme == "pmid" and ident.value == record.identifiers.get("pmid"):
+        if ident.scheme in {"pmid", "pmcid"} and ident.value == record.identifiers.get(
+            ident.scheme
+        ):
             return ident
         if ident.scheme == "doi" and arxiv_id and ident.value == f"10.48550/arxiv.{arxiv_id}":
             return ident
@@ -550,6 +552,8 @@ def _dead_identifiers(entry: BibEntry, evidence: Evidence) -> tuple[list[Finding
             authority = "arXiv"
         elif ident.scheme == "pmid" and ident.value in evidence.pmid_missing:
             authority = "PubMed"
+        elif ident.scheme == "pmcid" and ident.value in evidence.pmcid_missing:
+            authority = "PubMed Central"
         else:
             continue
         dead.add(ident.value)
@@ -727,7 +731,7 @@ def _abstention_reasons(
     live_ids = [
         i
         for i in evidence.identifiers
-        if i.scheme in {"doi", "arxiv", "pmid"} and i.value not in dead
+        if i.scheme in {"doi", "arxiv", "pmid", "pmcid"} and i.value not in dead
     ]
     if info.entry_type in GREY_TYPES and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)

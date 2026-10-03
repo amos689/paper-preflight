@@ -12,7 +12,7 @@ from paper_preflight.sources.pubmed import parse_summary
 
 from .fake_web import FakeWeb
 
-FIXTURE = Path(__file__).parent / "fixtures" / "sources" / "pubmed" / "esummary_three.json"
+FIXTURE = Path(__file__).parent / "fixtures" / "sources" / "pubmed" / "esummary_pubmed.json"
 WAKEFIELD = (
     "Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental "
     "disorder in children"
@@ -72,3 +72,31 @@ def test_pmids_are_checked_against_pubmed(tmp_path: Path, recorded_web: FakeWeb)
     assert ("REF002", "invented") in found  # PubMed has no such PMID
     asked = [r for r in recorded_web.requests if r.url.host == "eutils.ncbi.nlm.nih.gov"]
     assert len(asked) == 1  # both PMIDs in one request
+
+
+PMC_BIB = """@article{genbank,
+  title = {GenBank}, author = {Benson, Dennis A. and Cavanaugh, Mark and Clark, Karen},
+  journal = {Nucleic Acids Research}, year = {2013}, pmcid = {PMC3531190},
+}
+
+@article{nopmc,
+  title = {A Study That Never Appeared in Any Journal at All},
+  author = {Doe, Jane and Roe, Richard}, journal = {PLoS One}, year = {2018},
+  pmcid = {PMC99999999},
+}
+"""
+
+
+def test_pmcids_are_checked_through_pubmed_central(tmp_path: Path) -> None:
+    bib = tmp_path / "refs.bib"
+    bib.write_text(PMC_BIB, encoding="utf-8")
+    out = tmp_path / "report.json"
+    runner.invoke(app, ["check", str(bib), "--format", "json", "--output", str(out)])
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    refs = {r["key"]: r for r in payload["references"]}
+    # PMC3531190 is PMID 23193287, whose PubMed record anchors the entry
+    assert refs["genbank"]["verdict"] == "verified"
+    assert refs["genbank"]["matched"]["id"] == "23193287"
+    dead = [f for f in payload["findings"] if f["rule"] == "REF002"]
+    assert [f["key"] for f in dead] == ["nopmc"]
+    assert "PubMed Central has no record of it" in dead[0]["message"]["en"]

@@ -111,8 +111,10 @@ class FakeWeb:
         return httpx.Response(200, json=answers)
 
     def _pubmed(self, request: httpx.Request) -> httpx.Response:
-        # recorded summaries of 9500320 (retracted) and 31452104; any other PMID is unknown
-        recorded = _load("pubmed/esummary_three.json")
+        # recorded PubMed summaries of 9500320 (retracted), 31452104 and 23193287, and the PMC
+        # summary of PMC3531190 (GenBank, PMID 23193287); any other ID is unknown
+        database = request.url.params.get("db", "pubmed")
+        recorded = _load(f"pubmed/esummary_{database}.json")
         uids = request.url.params.get("id", "").split(",")
         result: dict[str, Any] = {"uids": uids}
         for uid in uids:

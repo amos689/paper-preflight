@@ -28,6 +28,8 @@ All notable changes to this project are documented here. The format follows
   locally but never exported (licence).
 - PubMed (NCBI E-utilities) verifies PMIDs: its record anchors the entry, a PMID it does not
   know is REF002, and articles it marks as retracted get REF004. `doctor` checks it too.
+- PMCIDs are verified too: PubMed Central gives their PMID, whose PubMed record anchors the
+  entry; a PMCID it does not know is REF002.
 - Evaluation harness for the HALLMARK benchmark (`evals/run_hallmark.py`): flag / clean / abstain
   outcomes, fabrication-only and any-issue modes, precision, conservative recall, false-positive
   rate and coverage, broken down by hallucination type.
