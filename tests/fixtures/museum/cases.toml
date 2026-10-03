@@ -641,3 +641,24 @@ source = "real_papers:2608.04024v1"
 key = "Putnam1961"
 expect = []
 note = "was REF003: Putnam, ARS Journal 31 (1961) (OLD_WORK)"
+
+[[case]]
+name = "fp-bp"
+source = "real_papers:2607.06922v1"
+key = "bp"
+expect = []
+note = "was REF013: Hecht-Nielsen's chapter in Neural Networks for Perception (1992), bound to his IJCNN 1989 paper of the same title"
+
+[[case]]
+name = "fp-martel96"
+source = "real_papers:2607.06902v1"
+key = "Martel96"
+expect = []
+note = "was REF013: a 1996 PhD thesis, bound to its abstract printed in PASP in 1997"
+
+[[case]]
+name = "fp-aasist-repo"
+source = "real_papers:2607.06872v2"
+key = "aasist_repo"
+expect = []
+note = "was REF013: the GitHub repository (2021), bound to the ICASSP 2022 paper"

@@ -786,3 +786,33 @@ def test_another_publication_of_the_title_does_not_correct_the_year(
     found = record("The Solar Chemical Composition", authors, year, source="dblp", venue=venue)
     result = assess(entry, search_result(entry, found), current_year=YEAR)
     assert ("REF013" in rules(result)) is reported
+
+
+THESIS = r"""
+@phdthesis{martel1996,
+  title = {Spectropolarimetry of High-Polarization Seyfert 1 Galaxies},
+  author = {Martel, Andr{\'e} R. and Miller, Joseph S.},
+  school = {University of California, Santa Cruz},
+  year = {1996},
+}
+"""
+
+
+@pytest.mark.parametrize(
+    ("work_type", "reported"),
+    [
+        ("journal-article", False),  # the thesis abstract in PASP (1997), not the thesis
+        ("dissertation", True),  # the thesis itself, with a wrong year
+    ],
+)
+def test_another_kind_of_publication_does_not_correct_the_year(
+    work_type: str, reported: bool
+) -> None:
+    entry = bib(THESIS)
+    authors = (Person("Martel", "André R."), Person("Miller", "Joseph S."))
+    found = record(
+        "Spectropolarimetry of High-Polarization Seyfert 1 Galaxies", authors, 1997,
+        work_type=work_type,
+    )  # fmt: skip
+    result = assess(entry, search_result(entry, found), current_year=YEAR)
+    assert ("REF013" in rules(result)) is reported
