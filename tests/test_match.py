@@ -441,3 +441,18 @@ def test_family_name_then_initials_without_a_comma() -> None:
     )  # fmt: skip
     swapped = check_authors(parse_authors("Mondal, Ishani and Shwetha, S"), crossref)
     assert (swapped.status, swapped.missing) == ("match", ())
+
+
+def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
+    # arXiv 2303.08774 (GPT-4 Technical Report) lists "OpenAI", then Josh Achiam, ...
+    record = SourceRecord(
+        source="arxiv", source_id="2303.08774", title="GPT-4 Technical Report",
+        authors=(Person("OpenAI"), Person("Achiam", "Josh"), Person("Adler", "Steven")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Achiam, Josh and Adler, Steven"), record)
+    assert check.first_author_match
+    assert check_authors(parse_authors("{OpenAI}"), record).first_author_match
+    # anyone else first is still not the first author
+    assert not check_authors(
+        parse_authors("Adler, Steven and Achiam, Josh"), record
+    ).first_author_match
