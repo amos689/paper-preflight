@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import SourceClient, SourcePolicy
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 WORKS_URL = "https://api.openalex.org/works"
 SELECT = "id,doi,title,publication_year,type,is_retracted,authorships,primary_location,ids"
@@ -48,7 +48,7 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     ids = item.get("ids") or {}
     if ids.get("pmid"):
         identifiers["pmid"] = str(ids["pmid"]).rsplit("/", 1)[-1]
-    title = collapse(str(item.get("title") or item.get("display_name") or ""))
+    title = plain_title(str(item.get("title") or item.get("display_name") or ""))
     status: set[str] = set()
     sources: list[str] = []
     if item.get("is_retracted"):
