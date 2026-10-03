@@ -22,7 +22,7 @@ SELECT = ",".join(
     [
         "DOI", "title", "subtitle", "type", "author", "issued", "published-print",
         "published-online", "container-title", "event", "updated-by", "relation", "volume",
-        "issue", "page", "publisher", "member", "prefix", "URL", "created",
+        "issue", "page", "publisher", "member", "prefix", "URL", "created", "journal-issue",
     ]
 )  # fmt: skip
 
@@ -77,6 +77,14 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         and 0 < min(years) - created <= 2
     ):
         years.add(created)
+    # A December print date is often next year's first issue (MNRAS 500(4), cover date January
+    # 2021, printed 10 December 2020); the issue's year is cited too.
+    for key in ("published-print", "journal-issue"):
+        source = item.get(key) or {}
+        dates = (source.get("published-print") or {}) if key == "journal-issue" else source
+        parts = (dates.get("date-parts") or [[None]])[0]
+        if len(parts) >= 2 and parts[0] and parts[1] == 12:
+            years.add(int(parts[0]) + 1)
     venue = None
     containers = item.get("container-title") or []
     if containers:

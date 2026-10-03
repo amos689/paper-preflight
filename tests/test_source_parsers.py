@@ -238,3 +238,19 @@ def test_crossref_early_access_year(changes: dict[str, Any], years: set[int]) ->
     record = crossref.parse_work(early_access(**changes))
     assert record.years == years
     assert record.year == 2024
+
+
+def test_crossref_december_print_counts_the_next_year() -> None:
+    # MNRAS 500(4): cover date January 2021, printed 10 December 2020 (10.1093/mnras/staa3519)
+    item = {
+        "DOI": "10.1093/mnras/staa3519", "type": "journal-article", "title": ["LeMMINGs II"],
+        "issued": {"date-parts": [[2020, 11, 17]]},
+        "published-online": {"date-parts": [[2020, 11, 17]]},
+        "published-print": {"date-parts": [[2020, 12, 10]]},
+        "journal-issue": {"issue": "4", "published-print": {"date-parts": [[2020, 12, 10]]}},
+    }  # fmt: skip
+    assert crossref.parse_work(item).years == {2020, 2021}
+    item["published-print"] = item["journal-issue"]["published-print"] = {
+        "date-parts": [[2020, 11]]
+    }
+    assert crossref.parse_work(item).years == {2020}
