@@ -132,6 +132,10 @@ def test_earlier_version_title_is_a_variant() -> None:
         ("RETRACTED: Ileal-lymphoid-nodular hyperplasia", "Ileal-lymphoid-nodular hyperplasia", ()),
         ("Augmenting Online Algorithms with ε-Accurate Predictions",
          "Augmenting Online Algorithms with e-Accurate Predictions", ()),
+        # an article one side starts with (Semantic Scholar for A&A 14, 226), not one elsewhere
+        ("An improved method for computing membership probabilities",
+         "IMPROVED METHOD FOR COMPUTING MEMBERSHIP PROBABILITIES", ()),
+        ("A method for the cluster", "A method for an cluster", (("the", "an"),)),
     ],
 )  # fmt: skip
 def test_changed_words(ours: str, theirs: str, changes: tuple[tuple[str, str], ...]) -> None:
@@ -698,3 +702,35 @@ def test_other_names_stay_other_people() -> None:
     # a family name must be among the other's words: Wei Li is not Wei Li Zhang
     other = SourceRecord(source="x", source_id="x", title="t", authors=(Person("Zhang", "Wei Li"),))
     assert check_authors(parse_authors("Li, Wei"), other).disjoint
+
+
+def test_a_registry_label_after_the_title() -> None:
+    # Semantic Scholar's title of Holmberg (1937) ends in the plates section ADS lists apart
+    record = SourceRecord(
+        source="s2", source_id="x",
+        title="A Study of Double and Multiple Galaxies Together with Inquiries into some General"
+        " Metagalactic Problems. Plates.",
+    )  # fmt: skip
+    title = (
+        "A Study of Double and Multiple Galaxies Together with Inquiries into some General"
+        " Metagalactic Problems"
+    )
+    assert check_title(title, record).changed == ()
+
+
+def test_a_chapter_in_springers_inbook_export() -> None:
+    entry = parse_bib_text(
+        "@Inbook{b, author={Bartholomew, Michael and Lee, Joohyung},"
+        " chapter={System aspmt2smt: Computing ASPMT Theories by SMT Solvers},"
+        " title={Logics in Artificial Intelligence: 14th European Conference, JELIA 2014},"
+        " publisher={Springer}, year={2014}}",
+        Path("x.bib"),
+    ).entries[0]
+    info = EntryInfo.from_entry(entry)
+    assert info.title == "System aspmt2smt: Computing ASPMT Theories by SMT Solvers"
+    assert (info.venue_field, info.venue) == (
+        "booktitle",
+        "Logics in Artificial Intelligence: 14th European Conference, JELIA 2014",
+    )
+    numbered = parse_bib_text("@inbook{c, chapter={7}, title={A Book}}", Path("x.bib")).entries[0]
+    assert EntryInfo.from_entry(numbered).title == "A Book"

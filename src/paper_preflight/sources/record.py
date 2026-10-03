@@ -44,6 +44,16 @@ MARKUP_TAG_RE = re.compile(
 _EMBEDDED_DOCUMENT_RE = re.compile(
     r"\\documentclass.*?\\begin\{document\}(.*?)\\end\{document\}", re.DOTALL
 )
+# The AAS journals' old markup in Crossref titles (10.1086/301140): "[ITAL]HUBBLE SPACE
+# TELESCOPE[/ITAL][ITAL]Hubble Space Telescope[/ITAL] Observations of the C[CLC]f[/CLC]A ...",
+# where a phrase in capitals is followed by the same phrase in its usual case.
+_AAS_REPEAT_RE = re.compile(r"\[(ITAL|BOLD|SC)\]([^\[\]]+)\[/\1\]\s*\[\1\]([^\[\]]+)\[/\1\]")
+_AAS_TAG_RE = re.compile(r"\[/?(?:ITAL|BOLD|ROM|CLC|SC|SUP|SUB|TT)\]")
+
+
+def _aas_repeat(match: re.Match[str]) -> str:
+    same = collapse(match.group(2)).lower() == collapse(match.group(3)).lower()
+    return match.group(3) if same else f"{match.group(2)} {match.group(3)}"
 
 
 def plain_title(text: str) -> str:
@@ -54,6 +64,7 @@ def plain_title(text: str) -> str:
     # tags may also arrive escaped ("&lt;title&gt;HIRES ...&lt;/title&gt;", 10.1117/12.176725)
     text = MARKUP_TAG_RE.sub("", html.unescape(_TAG_RE.sub("", text)))
     text = _EMBEDDED_DOCUMENT_RE.sub(r" \1 ", text)
+    text = _AAS_TAG_RE.sub("", _AAS_REPEAT_RE.sub(_aas_repeat, text))
     if "$" in text or "\\" in text:
         from paper_preflight.bib.parse import latex_to_text
 

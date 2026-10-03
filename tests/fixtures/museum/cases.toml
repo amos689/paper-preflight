@@ -872,3 +872,38 @@ source = "real_papers:2607.13739v1"
 key = "1991rc3..book.....D"
 expect = ["REF011"]
 note = "real problem: '{Corwin}, Herold G., Jr.' misspells Harold and puts 'Jr.' where BibTeX reads a given name"
+
+[[case]]
+name = "fp-1999AJ-aas-markup"
+source = "real_papers:2607.13739v1"
+key = "1999AJ....118.2646M"
+expect = []
+note = "guard: Crossref's title of 10.1086/301140 is in AAS markup ([ITAL]...[/ITAL], [CLC]); the entry has the journal title (REF012)"
+
+[[case]]
+name = "fp-1937AnLun-plates"
+source = "real_papers:2607.13739v1"
+key = "1937AnLun...6....1H"
+expect = []
+note = "guard: Semantic Scholar's title ends in '. Plates.' (REF012)"
+
+[[case]]
+name = "fp-sanders1971-article"
+source = "real_papers:2607.13711v2"
+key = "sanders1971"
+expect = []
+note = "guard: Semantic Scholar drops the title's first word, 'An' (REF012)"
+
+[[case]]
+name = "fp-Bartholomew2014-inbook-chapter"
+source = "real_papers:2607.13344v1"
+key = "Bartholomew2014"
+expect = []
+note = "guard: Springer's @Inbook export, the paper's title in 'chapter' (REF012)"
+
+[[case]]
+name = "real-exams-title-typo"
+source = "real_papers:2609.13158v1"
+key = "exams"
+expect = ["REF012"]
+note = "real problem: 'Fmahmultilingual' for 'Multilingual'"

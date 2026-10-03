@@ -234,6 +234,13 @@ def test_csl_parsing() -> None:
             "from &lt;100 mas Resolution ALMA Observations",
             "from <100 mas Resolution ALMA Observations",
         ),
+        # the AAS journals' old markup (10.1086/301140): a phrase in capitals, then as written
+        (
+            "[ITAL]HUBBLE SPACE TELESCOPE[/ITAL][ITAL]Hubble Space Telescope[/ITAL] Observations"
+            " of the C[CLC]f[/CLC]A Seyfert 2 Galaxies",
+            "Hubble Space Telescope Observations of the CfA Seyfert 2 Galaxies",
+        ),
+        ("[ITAL]A[/ITAL][ITAL]B[/ITAL] and M[SUB]sun[/SUB]", "A B and Msun"),
     ],
 )
 def test_plain_title(raw: str, plain: str) -> None:
