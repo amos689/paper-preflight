@@ -19,6 +19,9 @@ def ids(bib: str) -> list[str]:
         ("http://dx.doi.org/10.1109/CVPR.2016.90.", "10.1109/cvpr.2016.90"),
         ("doi:10.1016/S0140-6736(97)11096-0", "10.1016/s0140-6736(97)11096-0"),
         ("not a doi", None),
+        # arXiv DOIs carry no version: doi.org answers 404 for the versioned form
+        ("10.48550/arXiv.2602.12139v1", "10.48550/arxiv.2602.12139"),
+        ("10.1234/sample.v2", "10.1234/sample.v2"),  # other DOIs are left alone
     ],
 )
 def test_normalize_doi(raw: str, expected: str | None) -> None:
@@ -63,4 +66,11 @@ def test_pmid_and_pmcid() -> None:
     assert ids("@article{a, pmid={9500320}, pmcid={pmc1234567}}") == [
         "pmid:9500320",
         "pmcid:PMC1234567",
+    ]
+
+
+def test_versioned_arxiv_doi_keeps_the_version_on_the_arxiv_id() -> None:
+    assert ids("@misc{a, doi={10.48550/arXiv.2602.12139v1}}") == [
+        "doi:10.48550/arxiv.2602.12139",
+        "arxiv:2602.12139v1",
     ]

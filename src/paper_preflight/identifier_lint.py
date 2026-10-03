@@ -16,6 +16,7 @@ from paper_preflight.findings import Finding, Location
 from paper_preflight.rules import make_finding
 
 _ESCAPE_RE = re.compile(r"\\[_%&#$]|[{}]")
+_VERSIONED_ARXIV_DOI_RE = re.compile(r"10\.48550/arxiv\.\S+v\d+$", re.IGNORECASE)
 _ARXIV_ID_RE = re.compile(
     r"^(?:arxiv:)?(\d{4}\.\d{4,5}|[a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7})(v\d+)?$", re.I
 )
@@ -85,4 +86,9 @@ def _describe(raw: str) -> tuple[str, str]:
         return "contains braces", "包含花括号"
     if raw.lower().startswith(("http", "doi:")):
         return "contains a URL or 'doi:' prefix", "带有网址或 'doi:' 前缀"
+    if _VERSIONED_ARXIV_DOI_RE.search(raw.strip()):
+        return (
+            "has an arXiv version suffix, which doi.org does not resolve",
+            "带有 arXiv 版本号后缀，doi.org 无法解析",
+        )
     return "is not in canonical form", "不是规范写法"
