@@ -25,7 +25,7 @@ from paper_preflight.bib.ids import Identifier, extract_identifiers
 from paper_preflight.bib.normalize import word_count
 from paper_preflight.bib.parse import BibEntry
 from paper_preflight.cache import Cache
-from paper_preflight.match import EntryInfo, title_score
+from paper_preflight.match import TITLE_VARIANT, EntryInfo, title_score
 from paper_preflight.sources import (
     arxiv,
     crossref,
@@ -203,6 +203,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     if ax_records is not None:
         for arxiv_id, items in by_arxiv.items():
             arxiv_record = ax_records.get(arxiv_id)
+            if arxiv_record is not None:
+                arxiv_record = await _with_version_titles(arxiv_record, items, sources)
+                ax_records[arxiv_id] = arxiv_record
             for item in items:
                 if arxiv_record is not None:
                     item.anchored.append(arxiv_record)
@@ -224,6 +227,27 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         lost = [i for i in unanchored if not i.candidates and word_count(i.info.title) >= 3]
         await asyncio.gather(*(_search_s2(item, s2, key) for item in lost))
     return evidence
+
+
+async def _with_version_titles(
+    record: SourceRecord, owners: list[Evidence], sources: Sources
+) -> SourceRecord:
+    """Add every version's title when an entry's title does not match the latest one.
+
+    arXiv titles change between versions (GELU's v1 and v2 had another title), and an entry may
+    cite any version. Only papers with several versions whose latest title disagrees with an
+    entry cost the extra request. The titles end up in ``alt_titles``; a record with alt titles
+    (or with a single version) is one whose every title is known.
+    """
+    version = record.identifiers.get("arxiv_version") or "v1"
+    latest = int(version[1:]) if version[1:].isdigit() else 1
+    if latest <= 1:
+        return record
+    if all(title_score(item.info.title, record.title) >= TITLE_VARIANT for item in owners):
+        return record
+    base_id = record.identifiers.get("arxiv", record.source_id)
+    titles = await _guard(owners, lambda: arxiv.version_titles(sources.arxiv, base_id, latest))
+    return replace(record, alt_titles=tuple(titles)) if titles else record
 
 
 async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sources) -> None:
