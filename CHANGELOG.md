@@ -43,3 +43,5 @@ All notable changes to this project are documented here. The format follows
 - `bib fix`: edits the .bib files from the verified records, as a diff or with `--apply`;
   `--level safe` (identifier formatting, missing DOIs) or `unsafe` (also authors, title, year,
   venue, wrong identifiers). Only the affected fields change. REF016 offers a missing DOI.
+- GitHub Action (`action.yml`): runs the check, writes the job summary and a SARIF report,
+  caches answers per bibliography (`docs/github-action.md`).

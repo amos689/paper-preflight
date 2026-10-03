@@ -1,0 +1,80 @@
+name: paper-preflight
+description: Check every reference of a LaTeX paper against real scholarly records before submission.
+author: paper-preflight contributors
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  path:
+    description: Project directory, main .tex file, or a .bib file.
+    default: "."
+  fail-on:
+    description: Lowest severity that fails the step (error, warning or never).
+    default: error
+  offline:
+    description: Use only answers already in the cache ("true" or "false").
+    default: "false"
+  sarif:
+    description: Where to write the SARIF report (for GitHub code scanning); empty to skip.
+    default: paper-preflight.sarif
+  lang:
+    description: Message language (en or zh).
+    default: en
+
+outputs:
+  sarif:
+    description: Path of the SARIF report, if one was written.
+    value: ${{ steps.check.outputs.sarif }}
+  exit-code:
+    description: 0 clean, 1 blocking findings, 2 incomplete run (a source was unavailable), 3 usage error.
+    value: ${{ steps.check.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+
+    # Answers are cached per bibliography, so re-runs are fast and the sources see fewer requests.
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ runner.temp }}/paper-preflight-cache
+        key: paper-preflight-${{ runner.os }}-${{ hashFiles('**/*.bib') }}
+        restore-keys: paper-preflight-${{ runner.os }}-
+
+    - id: check
+      shell: bash
+      env:
+        PAPER_PREFLIGHT_CACHE_DIR: ${{ runner.temp }}/paper-preflight-cache
+        # Windows runners default to a legacy code page: the log and summary would show '?'
+        PYTHONUTF8: "1"
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_OFFLINE: ${{ inputs.offline }}
+        INPUT_SARIF: ${{ inputs.sarif }}
+        INPUT_LANG: ${{ inputs.lang }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        # The action's own checkout is the whole package: build it from there, not from PyPI.
+        run() { uvx --quiet --from "$ACTION_PATH" paper-preflight "$@"; }
+        args=(check "$INPUT_PATH" --lang "$INPUT_LANG")
+        if [ "$INPUT_OFFLINE" = "true" ]; then args+=(--offline); fi
+
+        set +e
+        run "${args[@]}" --fail-on "$INPUT_FAIL_ON"
+        code=$?
+        set -e
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+
+        # The SARIF report and the job summary replay the same answers from the cache.
+        if [ -n "$INPUT_SARIF" ]; then
+          run "${args[@]}" --offline --fail-on never --format sarif --output "$INPUT_SARIF" || true
+          echo "sarif=$INPUT_SARIF" >> "$GITHUB_OUTPUT"
+        fi
+        {
+          echo '### paper-preflight'
+          echo '```text'
+          COLUMNS=120 run "${args[@]}" --offline --fail-on never || true
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+        exit "$code"

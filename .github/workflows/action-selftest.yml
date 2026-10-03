@@ -1,0 +1,41 @@
+name: Action self-test
+
+# Runs the composite action in this repository (action.yml) on the demo paper whenever the action
+# changes, against the live sources, on Linux and Windows.
+on:
+  pull_request:
+    paths: ["action.yml", ".github/workflows/action-selftest.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  demo:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: refs
+        uses: ./
+        with:
+          path: examples/demo-paper
+          fail-on: never
+      - name: The planted problems are in the SARIF report
+        shell: bash
+        env:
+          EXIT_CODE: ${{ steps.refs.outputs.exit-code }}
+          SARIF: ${{ steps.refs.outputs.sarif }}
+        run: |
+          # 0 = clean at --fail-on never; 2 = a live source was unavailable on this runner
+          case "$EXIT_CODE" in 0|2) ;; *) echo "unexpected exit code $EXIT_CODE"; exit 1 ;; esac
+          python - "$SARIF" <<'PY'
+          import json, sys
+          rules = {r["ruleId"] for r in json.load(open(sys.argv[1], encoding="utf-8"))["runs"][0]["results"]}
+          missing = {"CIT001", "CIT002", "REF017"} - rules  # found without the network
+          assert not missing, f"missing from the SARIF report: {missing}"
+          print("rules reported:", ", ".join(sorted(rules)))
+          PY
