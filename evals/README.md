@@ -50,6 +50,12 @@ hallucinations, so they do not count either.
 `evals/results/hallmark-<split>[-sample<N>].md` holds the summary of a run (committed); the
 `.jsonl` next to it has one line per entry (git-ignored).
 
+### Held-out split
+
+Rules are developed and their misses studied on `dev_public` only. `test_public` is run to
+check that the numbers generalise, and its individual entries are not inspected to change a
+rule, so that it stays a fair estimate. (HALLMARK's `test_hidden` split is not public.)
+
 ### Disputed labels
 
 Some entries HALLMARK labels VALID are not correct citations: their DOI points to another paper,
