@@ -46,6 +46,8 @@ runs:
       shell: bash
       env:
         PAPER_PREFLIGHT_CACHE_DIR: ${{ runner.temp }}/paper-preflight-cache
+        # Windows runners default to a legacy code page: the log and summary would show '?'
+        PYTHONUTF8: "1"
         INPUT_PATH: ${{ inputs.path }}
         INPUT_FAIL_ON: ${{ inputs.fail-on }}
         INPUT_OFFLINE: ${{ inputs.offline }}
