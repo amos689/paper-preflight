@@ -26,6 +26,7 @@ _NEW_ARXIV_RE = re.compile(r"(?<![\d.])(\d{4}\.\d{4,5})(v\d+)?(?![\d])")
 _OLD_ARXIV_RE = re.compile(r"\b([a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7})(v\d+)?\b")
 _ARXIV_CONTEXT_RE = re.compile(r"arxiv", re.IGNORECASE)
 _ARXIV_DOI_RE = re.compile(r"^10\.48550/arxiv\.(.+)$", re.IGNORECASE)
+_ARXIV_DOI_VERSION_RE = re.compile(r"v\d+$", re.IGNORECASE)
 _PMCID_RE = re.compile(r"\bPMC\d{4,9}\b", re.IGNORECASE)
 _TRAILING_PUNCTUATION = ".,;:)]}"
 
@@ -48,8 +49,12 @@ def normalize_doi(value: str) -> str | None:
     match = _DOI_RE.search(candidate)
     if not match:
         return None
-    doi = match.group(1).rstrip(_TRAILING_PUNCTUATION)
-    return doi.lower()
+    doi = match.group(1).rstrip(_TRAILING_PUNCTUATION).lower()
+    # arXiv DOIs are registered without a version: doi.org answers 404 for "...2602.12139v1"
+    # (seen in HALLMARK's VALID entries), so the version suffix is not part of the DOI.
+    if _ARXIV_DOI_RE.match(doi):
+        doi = _ARXIV_DOI_VERSION_RE.sub("", doi)
+    return doi
 
 
 def is_valid_doi_syntax(value: str) -> bool:
@@ -102,7 +107,9 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         add(Identifier("doi", doi, field, raw=text))
         arxiv_doi = _ARXIV_DOI_RE.match(doi)
         if arxiv_doi:
-            arxiv = _arxiv_in(arxiv_doi.group(1), require_context=False)
+            # read the arXiv ID from the text as written, so a version suffix is kept
+            written = re.search(r"10\.48550/arxiv\.(\S+)", text, re.IGNORECASE)
+            arxiv = _arxiv_in((written or arxiv_doi).group(1), require_context=False)
             if arxiv:
                 add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=text))
 
