@@ -85,15 +85,30 @@
 - 全量评测（dev_public 1119 条）结果见 `evals/results/hallmark-dev_public.md`；人工核实为标签错误的 VALID 条目列在 `evals/hallmark_disputed.toml`，结果另附剔除它们后的表
 - 规则：每个误报都要查到根因；是我们的 bug 就单独开 PR 修，是基准标签问题就写进争议清单并附可核查的理由
 
+## W4：取回与修复参考文献、CI 集成（2026-10-03，提前）
+
+| PR | 内容 |
+|---|---|
+| #30 | 把已核实的记录渲染成 BibTeX（每个字段都来自记录，附出处注释） |
+| #31 | `bib fetch`：按 DOI、arXiv 编号或标题取回已核实的 BibTeX；预印本返回正式版并保留 eprint；撤稿警告 |
+| #32 | REF016：条目缺 DOI 而记录有时，提示补上（安全修复） |
+| #33 | MCP 工具 `preflight_bib_lookup` |
+| #34 | `bib fix`：按记录生成修复补丁（safe / unsafe 两级），默认只输出 diff，`--apply` 才写回 |
+| #35 | MCP 工具 `preflight_bib_fix`（只返回 diff，不写文件） |
+| #36 | GitHub Action（`action.yml`）：任务摘要、SARIF、按 .bib 缓存；自测工作流在 Linux 和 Windows 上实跑演示论文 |
+| #37 | 标识符查询按条目缓存：加一条文献后，离线模式下其余条目的判定不再丢失 |
+
+- 2026-10-03 用户最终决定：提交信息不再带 Claude 的 Co-Authored-By 署名，`main` 的历史已由用户改写并强制推送
+
 ## 下一步
 
-- [ ] README 演示与基准成绩（发布前），中英文
-- [ ] `bib fetch` / `bib fix`
-- [ ] 批量查询改为按条目缓存：现在按整批缓存，.bib 改动后离线模式会整批失效
+- [ ] dblp 的批量查询也改为按条目缓存（离线时目前只会少显示 REF015 建议，不会误报）
+- [ ] 召回率：编造的会议名（需要会议名录）、只改一两个词的标题、"预印本冒充正式发表"
 - [ ] Crossref 不可用时，用 S2 批量接口按 DOI/arXiv 兜底（需要客户端支持 POST）
-- [ ] REF016（可补充的标识符）、REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
+- [ ] REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
 - [ ] 运行清单（run manifest）；`--refresh`、`--final`、`--record/--replay`
-- [ ] GitHub Action；PyPI 0.0.1 占名（需要用户操作）
+- [ ] CI 里用 `claude plugin validate --strict` 校验插件清单
+- [ ] 需要用户操作：PyPI 发布 v0.1；投稿 awesome 列表、MCP Registry 等对外发布
 
 ## 已知问题与备忘
 
