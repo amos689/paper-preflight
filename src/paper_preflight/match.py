@@ -174,7 +174,7 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
         return FieldCheck("variant" if best_note else "match", best, best_note, changed or ())
     if best >= TITLE_VARIANT:
         return FieldCheck("variant", best, best_note or "minor title difference", changed or ())
-    return FieldCheck("mismatch", best)
+    return FieldCheck("mismatch", best, "", changed or ())
 
 
 # ---------------------------------------------------------------- authors

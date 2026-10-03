@@ -72,3 +72,5 @@ All notable changes to this project are documented here. The format follows
   five-word title at the same venue in the same year names one work (wrong authors become
   REF010 instead of "cannot determine"), and a year more than three years off is no reprint
   when the venue is the same (REF013).
+- A search result by the same people at the same venue in the same year binds when its title
+  is one or two words off, even below the usual similarity threshold; REF012 names the words.

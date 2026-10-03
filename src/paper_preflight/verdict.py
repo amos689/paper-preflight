@@ -41,6 +41,8 @@ MIN_NOT_FOUND_WORDS = 5  # shorter titles are too generic to conclude "not found
 MAX_YEAR_ONLY_GAP = 3  # same title and authors, year off by more than this: do not bind
 MIN_TITLE_ONLY_WORDS = 6  # a title this long names one work, even when the authors differ
 MIN_VENUE_TITLE_WORDS = 4  # ... and one this long does too, at the same venue in the same year
+MAX_REWORDED_WORDS = 2  # a title this many words off is the same work, given the same people
+MIN_REWORDED_SCORE = 0.85  # ... and this similar overall
 
 
 class Verdict(StrEnum):
@@ -261,6 +263,21 @@ def _bind_candidate(
     ]
     if len({title_key(m.record.title) for m in strong}) == 1:
         return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
+    # The same people at the same recognised venue in the same year, with a title one or two
+    # words off ("Inference" for "Reasoning"): the cited work with a reworded title (REF012
+    # names the words). The venue guards against a sibling paper the search did not find.
+    reworded = [
+        m
+        for m in evaluated
+        if m.authors.status == "match"
+        and m.year.status == "match"
+        and m.venue.status == "match"
+        and m.suspicious is None
+        and (m.title.score or 0.0) >= MIN_REWORDED_SCORE
+        and 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
+    ]
+    if len({title_key(m.record.title) for m in reworded}) == 1:
+        return min(reworded, key=_rank)
     # Same long title, same year, one work, but other authors: that is the cited work with wrong
     # authors (REF010/REF011: HALLMARK's placeholder and swapped authors), not a missing one.
     # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap.
@@ -306,6 +323,10 @@ def _describe_changes(changes: tuple[tuple[str, str], ...], lang: str) -> str:
     return ("；" if lang == "zh" else "; ").join(parts)
 
 
+def _changed_words(changes: tuple[tuple[str, str], ...]) -> int:
+    return sum(max(len(mine.split()), len(recorded.split())) for mine, recorded in changes)
+
+
 def _year_gap(year: int | None, record: SourceRecord) -> int:
     years = record.all_years
     if year is None or not years:
@@ -322,11 +343,18 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
     out: list[Finding] = []
     score = f"{m.title.score or 0.0:.2f}"
     if m.title.status == "mismatch":
+        few = 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                found_title=record.title, score=score, difference=f"similarity {score}",
-                difference_zh=f"相似度 {score}", suggestion=protect_title(record.title),
+                found_title=record.title, score=score,
+                difference=(
+                    _describe_changes(m.title.changed, "en") if few else f"similarity {score}"
+                ),
+                difference_zh=(
+                    _describe_changes(m.title.changed, "zh") if few else f"相似度 {score}"
+                ),
+                suggestion=protect_title(record.title),
             )
         )  # fmt: skip
     elif m.title.changed and versions_known(record):
