@@ -20,7 +20,7 @@ Each reference gets exactly one **verdict**:
 | `metadata_mismatch` | The work exists, but some fields are wrong. |
 | `identifier_conflict` | The DOI/arXiv ID resolves to a different work. |
 | `not_found` | Every *required* source for this reference type answered "no such work", the query was of adequate quality, and the entry is not grey literature, not too new and not accepted by the user. |
-| `cannot_determine` | Anything else; always carries one or more reason codes (`SOURCES_UNAVAILABLE`, `GREY_LITERATURE`, `AMBIGUOUS_CANDIDATES`, `TOO_NEW`, `INSUFFICIENT_METADATA`, `NON_LATIN_UNSUPPORTED`, `IDENTIFIER_EXISTS_NO_METADATA`, `CORRUPTED_SOURCE_RECORD`, `BUDGET_EXHAUSTED`, `OFFLINE_MODE`). |
+| `cannot_determine` | Anything else; always carries one or more reason codes (`SOURCES_UNAVAILABLE`, `GREY_LITERATURE`, `UNINDEXED_LINK`, `AMBIGUOUS_CANDIDATES`, `TOO_NEW`, `INSUFFICIENT_METADATA`, `NON_LATIN_UNSUPPORTED`, `IDENTIFIER_EXISTS_NO_METADATA`, `CORRUPTED_SOURCE_RECORD`, `BUDGET_EXHAUSTED`, `OFFLINE_MODE`). |
 
 Independent **flags**: `retracted`, `expression_of_concern`, `corrected`, `withdrawn`,
 `preprint_published`.

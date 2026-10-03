@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import os
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Iterable
 from dataclasses import dataclass, field, replace
 from typing import TypeVar, cast
 
@@ -51,6 +51,27 @@ CS_ENTRY_TYPES = {"inproceedings", "conference", "proceedings"}
 GREY_TYPES = {"book", "booklet", "manual", "misc", "online", "software", "techreport", "report",
               "phdthesis", "mastersthesis", "thesis", "unpublished", "electronic", "standard",
               "patent", "dataset"}  # fmt: skip
+# Sites whose papers the sources index: a work linked there that no source knows is missing.
+# A link anywhere else (a society's own proceedings site, a lab page) may be the only copy.
+INDEXED_HOSTS = (
+    "doi.org", "arxiv.org", "openreview.net", "proceedings.mlr.press", "jmlr.org", "nips.cc",
+    "neurips.cc", "aclanthology.org", "aclweb.org", "thecvf.com", "ecva.net", "aaai.org",
+    "ijcai.org", "usenix.org", "ieee.org", "acm.org", "springer.com", "sciencedirect.com",
+    "elsevier.com", "wiley.com", "nature.com", "science.org", "tandfonline.com", "sagepub.com",
+    "oup.com", "cambridge.org", "iop.org", "aps.org", "aip.org", "mdpi.com", "frontiersin.org",
+    "plos.org", "biorxiv.org", "medrxiv.org", "nih.gov", "europepmc.org", "adsabs.harvard.edu",
+    "semanticscholar.org", "dblp.org", "openalex.org", "crossref.org", "datacite.org",
+    "zenodo.org", "pnas.org", "cell.com", "jstor.org", "aanda.org",
+)  # fmt: skip
+
+
+def unindexed_hosts(hosts: Iterable[str]) -> list[str]:
+    """The hosts no source indexes (``proceedings.spp-online.org``, not ``dl.acm.org``)."""
+    return [
+        host
+        for host in hosts
+        if not any(host == known or host.endswith(f".{known}") for known in INDEXED_HOSTS)
+    ]
 
 
 @dataclass
