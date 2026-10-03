@@ -32,3 +32,5 @@ All notable changes to this project are documented here. The format follows
   `paper-preflight` skill that runs the check before a paper is called finished.
 - pre-commit hooks (`docs/pre-commit.md`): `paper-preflight-offline` (seconds, cached verdicts
   only) and `paper-preflight` (full online verification).
+- `paper-preflight explain [RULE]`: what a rule detects, its severity, its message and whether a
+  fix is safe; without an argument it lists every rule.

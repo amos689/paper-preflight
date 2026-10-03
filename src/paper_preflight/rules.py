@@ -7,6 +7,7 @@ REF = reference verification (see docs/adr/0002), RUN = run-level conditions, CF
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -231,6 +232,29 @@ RULES: dict[str, Rule] = {
         ),
     ]
 }  # fmt: skip
+
+
+DOCS_URL = "https://github.com/amos689/paper-preflight"
+
+
+def describe(rule_id: str) -> dict[str, Any] | None:
+    """A rule as data, for `explain` and the MCP server; None when the ID is unknown."""
+    rule = RULES.get(rule_id.strip().upper())
+    if rule is None:
+        return None
+    return {
+        "rule": rule.id,
+        "name": rule.name,
+        "severity": rule.severity.value,
+        "summary": {"en": rule.summary.en, "zh": rule.summary.zh},
+        # placeholders read the same in both languages ({sources}, not the internal {sources_zh})
+        "message_template": {
+            "en": rule.template.en,
+            "zh": re.sub(r"\{(\w+?)_zh\}", r"{\1}", rule.template.zh),
+        },
+        "fix": rule.fix.value if rule.fix else None,
+        "docs": DOCS_URL,
+    }
 
 
 class _SafeDict(dict[str, Any]):
