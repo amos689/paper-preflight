@@ -10,6 +10,24 @@ will do.
 uvx --from "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight" paper-preflight mcp
 ```
 
+## Claude Code plugin
+
+The repository is also a Claude Code plugin marketplace. The plugin bundles this MCP server
+(confined to the open project) and a `paper-preflight` skill that tells Claude to run the check
+before calling a paper finished, fix what it proves wrong and never invent a reference. It needs
+[uv](https://docs.astral.sh/uv/) for `uvx`.
+
+```bash
+claude plugin marketplace add amos689/paper-preflight
+```
+
+```bash
+claude plugin install paper-preflight@paper-preflight
+```
+
+Inside Claude Code the same commands are `/plugin marketplace add amos689/paper-preflight` and
+`/plugin install paper-preflight@paper-preflight`.
+
 ## Tools
 
 | Tool | What it does | Annotations |

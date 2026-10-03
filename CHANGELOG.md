@@ -28,3 +28,5 @@ All notable changes to this project are documented here. The format follows
 - MCP server (`paper-preflight mcp`, needs the `mcp` extra): read-only `preflight_check` with
   paged findings and `preflight_explain`; paths are confined to the workspace root
   (`docs/mcp.md`).
+- Claude Code plugin and marketplace (`plugins/paper-preflight`): the MCP server plus a
+  `paper-preflight` skill that runs the check before a paper is called finished.

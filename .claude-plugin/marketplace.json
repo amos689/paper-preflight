@@ -1,0 +1,17 @@
+{
+  "name": "paper-preflight",
+  "owner": {
+    "name": "amos689",
+    "url": "https://github.com/amos689"
+  },
+  "description": "paper-preflight: pre-submission reference checks for LaTeX papers.",
+  "plugins": [
+    {
+      "name": "paper-preflight",
+      "source": "./plugins/paper-preflight",
+      "description": "Verify every reference of a LaTeX paper against real scholarly records before submission: an MCP server plus a skill that runs the check and fixes what it proves wrong.",
+      "category": "productivity",
+      "tags": ["latex", "bibtex", "citations", "research"]
+    }
+  ]
+}
