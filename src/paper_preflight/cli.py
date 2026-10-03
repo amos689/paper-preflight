@@ -200,8 +200,12 @@ def check(
 
 
 @app.command()
-def doctor() -> None:
-    """Show environment information useful for bug reports (never prints secrets)."""
+def doctor(
+    offline: Annotated[
+        bool, typer.Option("--offline", help="Skip the connectivity check of each source.")
+    ] = False,
+) -> None:
+    """Show the environment and whether each source answers (never prints secrets)."""
     rows = [
         ("paper-preflight", __version__),
         ("python", f"{sys.version.split()[0]} ({platform.python_implementation()})"),
@@ -212,3 +216,16 @@ def doctor() -> None:
     width = max(len(label) for label, _ in rows)
     for label, value in rows:
         typer.echo(f"{label:<{width}}  {value}")
+    if offline:
+        return
+
+    import asyncio
+
+    from paper_preflight.connectivity import probe_sources
+    from paper_preflight.verdict import source_name
+
+    _safe_stdout()
+    typer.echo("\nsources (one request each)")
+    for probe in asyncio.run(probe_sources()):
+        took = f"{probe.seconds:5.2f} s" if probe.seconds is not None else " " * 7
+        typer.echo(f"  {source_name(probe.source):<17} {probe.status:<12} {took}  {probe.detail}")
