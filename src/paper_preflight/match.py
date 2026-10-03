@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 import tomllib
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 from functools import cache
 from importlib import resources
 from typing import Literal
@@ -37,6 +38,8 @@ class FieldCheck:
     status: Status
     score: float | None = None
     note: str = ""
+    # titles: the words that differ from the closest recorded title, (entry's, record's) per place
+    changed: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -95,23 +98,79 @@ def _subtitle_variant(a: str, b: str) -> bool:
     )
 
 
+# British spellings and their American forms ("optimisation", "modelling", "behaviour").
+_SPELLING = (
+    (re.compile(r"is(e|es|ed|ing|er|ers|ation|ations)$"), r"iz\1"),
+    (re.compile(r"ys(e|es|ed|ing)$"), r"yz\1"),
+    (re.compile(r"(?<=\w{3})our(s|ed|ing|al|ite|able)?$"), r"or\1"),
+    (re.compile(r"ll(ed|ing|er|ers)$"), r"l\1"),
+    (re.compile(r"tre(s?)$"), r"ter\1"),
+    (re.compile(r"ogue(s?)$"), r"og\1"),
+)
+
+
+def _american(word: str) -> str:
+    for pattern, replacement in _SPELLING:
+        word = pattern.sub(replacement, word)
+    return word
+
+
+# Notices registries put before a title ("RETRACTED: ..."); REF004 reports the retraction itself.
+_EDITORIAL_PREFIX = re.compile(
+    r"^\W*(retracted|withdrawn|retraction|expression of concern)( article)?\W*[:.]\s*", re.I
+)
+
+
+def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
+    """Where two titles differ word for word: (entry's words, record's words) per place.
+
+    Case, punctuation, spacing and hyphenation ("Chain of-Thought", "Pre-training"), "&" for
+    "and", British spellings and a registry's "RETRACTED:" are not differences.
+    """
+    record_title = _EDITORIAL_PREFIX.sub("", record_title)
+    ours = title_key(entry_title.replace("&", " and ")).split()
+    theirs = title_key(record_title.replace("&", " and ")).split()
+    changes: list[tuple[str, str]] = []
+    for op, i1, i2, j1, j2 in SequenceMatcher(a=ours, b=theirs, autojunk=False).get_opcodes():
+        if op == "equal":
+            continue
+        mine, recorded = " ".join(ours[i1:i2]), " ".join(theirs[j1:j2])
+        if mine.replace(" ", "") == recorded.replace(" ", "") or (
+            i2 - i1 == j2 - j1
+            and all(
+                _american(a) == _american(b)
+                for a, b in zip(ours[i1:i2], theirs[j1:j2], strict=True)
+            )
+        ):
+            continue
+        if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
+            continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
+        changes.append((mine, recorded))
+    return tuple(changes)
+
+
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
     best = 0.0
     best_note = ""
+    changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
     for candidate, note in [(record.title, "")] + [
         (t, "matches an earlier version's title") for t in record.alt_titles
     ]:
         score = title_score(entry_title, candidate)
         if score > best:
             best, best_note = score, note
-        if _subtitle_variant(entry_title, candidate) and best < TITLE_SAME:
+        subtitle = _subtitle_variant(entry_title, candidate)
+        if subtitle and best < TITLE_SAME:
             best, best_note = TITLE_SAME, "subtitle omitted"
+        diff = () if subtitle else changed_words(entry_title, candidate)
+        if changed is None or len(diff) < len(changed):
+            changed = diff
     if best >= TITLE_SAME:
-        return FieldCheck("variant" if best_note else "match", best, best_note)
+        return FieldCheck("variant" if best_note else "match", best, best_note, changed or ())
     if best >= TITLE_VARIANT:
-        return FieldCheck("variant", best, best_note or "minor title difference")
+        return FieldCheck("variant", best, best_note or "minor title difference", changed or ())
     return FieldCheck("mismatch", best)
 
 

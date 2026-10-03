@@ -182,9 +182,8 @@ RULES: dict[str, Rule] = {
         _rule(
             "REF012", "title-differs", W,
             ("Title differs from the record", "标题与记录不符"),
-            ("The title of '{key}' differs from {source}: \"{found_title}\" "
-             "(similarity {score}).",
-             "条目 '{key}' 的标题与 {source} 的记录不符：\"{found_title}\"（相似度 {score}）。"),
+            ("The title of '{key}' differs from {source}: \"{found_title}\" ({difference}).",
+             "条目 '{key}' 的标题与 {source} 的记录不符：\"{found_title}\"（{difference_zh}）。"),
             FixLevel.UNSAFE,
         ),
         _rule(

@@ -392,6 +392,53 @@ def test_invented_title_on_a_real_doi_is_reported() -> None:
     assert finding.data["found_title"] == real.title
 
 
+def test_a_reworded_title_is_reported_with_the_words_that_differ() -> None:
+    # HALLMARK "near-miss title": one word swapped, still 0.9+ similar character by character
+    entry = bib(CS_ENTRY)
+    real = record("Robust Dense Attention for Long Document Summarization")
+    result = assess(entry, evidence_for(entry, anchored=[real]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF012"})
+    (finding,) = result.findings
+    assert finding.data["suggestion"] == real.title
+    assert '"sparse" where the record has "dense"' in finding.message.en
+    assert "“sparse”应为“dense”" in finding.message.zh
+
+
+def test_a_reworded_title_is_reported_on_a_search_result_too() -> None:
+    entry = bib(NO_DOI)
+    real = record("Robust Sparse Attention towards Long Document Summarization")
+    result = assess(entry, search_result(entry, real), current_year=YEAR)
+    assert result.record == real
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF012", "REF016"})
+
+
+@pytest.mark.parametrize(
+    "recorded",
+    [
+        "Robust Sparse Attention for Long Document Summarisation",  # British spelling
+        "Robust Sparse-Attention for Long-Document Summarization",  # hyphenation
+        "RETRACTED: Robust Sparse Attention for Long Document Summarization",  # registry notice
+    ],
+)
+def test_spelling_hyphens_and_notices_are_not_rewording(recorded: str) -> None:
+    entry = bib(CS_ENTRY)
+    result = assess(entry, evidence_for(entry, anchored=[record(recorded)]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
+
+
+def test_a_reworded_preprint_title_is_not_judged_without_its_version_titles() -> None:
+    # DataCite holds only the latest arXiv title: an earlier version may have had this wording
+    entry = bib(ARXIV_ENTRY)
+    latest_only = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2101.00001",
+        title=TITLE.replace("Sparse", "Dense"), authors=(ANN, BOB, CAROL), year=2021,
+        years=frozenset({2021}), venue="arXiv", work_type="preprint",
+        identifiers={"doi": "10.48550/arxiv.2101.00001", "arxiv": "2101.00001"},
+    )  # fmt: skip
+    result = assess(entry, evidence_for(entry, anchored=[latest_only]), current_year=YEAR)
+    assert "REF012" not in rules(result)
+
+
 def test_preprint_with_unknown_version_titles_is_not_judged_on_its_title() -> None:
     # DataCite holds only the latest arXiv title; the entry may cite an earlier version
     entry = bib(ARXIV_ENTRY)

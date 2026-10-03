@@ -10,6 +10,7 @@ from paper_preflight.match import (
     EntryInfo,
     best_candidate,
     canonical_venue,
+    changed_words,
     check_authors,
     check_title,
     check_venue,
@@ -109,6 +110,44 @@ def test_earlier_version_title_is_a_variant() -> None:
     )
     assert check.status == "variant"
     assert "earlier version" in check.note
+    assert check.changed == ()  # it is exactly the earlier title
+
+
+@pytest.mark.parametrize(
+    ("ours", "theirs", "changes"),
+    [
+        ("FSDR: Domain Randomization towards Domain Generalization",
+         "FSDR: Domain Randomization for Domain Generalization", (("towards", "for"),)),
+        ("Subspace Differential Privacys", "Subspace Differential Privacy",
+         (("privacys", "privacy"),)),
+        ("SCAFFOLD: Controlled Averaging for On-Device Federated Learning",
+         "SCAFFOLD: Controlled Averaging for Federated Learning", (("on device", ""),)),
+        ("UniT: Unified Multimodal Chain of-Thought Scaling",
+         "UniT: Unified Multimodal Chain-of-Thought Scaling", ()),
+        ("Self-Supervised Pretraining at Scale", "Self Supervised Pre-training at Scale", ()),
+        ("Behaviour Modelling and Optimisation", "Behavior Modeling and Optimization", ()),
+        ("Graphs & Networks", "Graphs and Networks", ()),
+        ("RETRACTED: Ileal-lymphoid-nodular hyperplasia", "Ileal-lymphoid-nodular hyperplasia", ()),
+        ("Augmenting Online Algorithms with ε-Accurate Predictions",
+         "Augmenting Online Algorithms with e-Accurate Predictions", ()),
+    ],
+)  # fmt: skip
+def test_changed_words(ours: str, theirs: str, changes: tuple[tuple[str, str], ...]) -> None:
+    if ours.startswith("RETRACTED"):  # the notice sits on the record's side
+        ours, theirs = theirs, ours
+    assert changed_words(ours, theirs) == changes
+
+
+def test_a_reworded_title_keeps_its_status_but_names_the_words() -> None:
+    record = SourceRecord(
+        source="crossref", source_id="10.1109/cvpr46437.2021.00682",
+        title="FSDR: Frequency Space Domain Randomization for Domain Generalization",
+    )  # fmt: skip
+    check = check_title(
+        "FSDR: Frequency Space Domain Randomization towards Domain Generalization", record
+    )
+    assert check.status == "match"  # still the same work: binding is unchanged
+    assert check.changed == (("towards", "for"),)
 
 
 # ------------------------------------------------------------------ authors
