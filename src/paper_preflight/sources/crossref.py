@@ -14,7 +14,7 @@ from typing import Any
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import SourceClient, SourcePolicy
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 WORKS_URL = "https://api.crossref.org/works"
 BATCH = 20
@@ -50,8 +50,8 @@ def _year(item: dict[str, Any], key: str) -> int | None:
 def parse_work(item: dict[str, Any]) -> SourceRecord:
     doi = str(item.get("DOI", "")).lower()
     titles = item.get("title") or [""]
-    title = collapse(str(titles[0]))
-    subtitles = [collapse(str(s)) for s in item.get("subtitle") or [] if s]
+    title = plain_title(str(titles[0]))
+    subtitles = [plain_title(str(s)) for s in item.get("subtitle") or [] if s]
     alt_titles = tuple(f"{title}: {s}" for s in subtitles)
 
     authors: list[Person] = []
