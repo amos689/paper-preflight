@@ -13,6 +13,7 @@ The resolver collects; this module decides. It follows three rules:
 
 from __future__ import annotations
 
+import re
 import unicodedata
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -165,6 +166,27 @@ def _anchor(record: SourceRecord, identifiers: Iterable[Identifier]) -> Identifi
     return None
 
 
+PLACEHOLDER_TITLE = re.compile(
+    r"\b(front matter|back matter|table of contents|title page|editorial board|masthead|"
+    r"author index|subject index|session details|untitled)\b|^(contents|index|preface|foreword)$",
+    re.IGNORECASE,
+)
+
+
+def versions_known(record: SourceRecord) -> bool:
+    """Whether every title a preprint has had is known (titles change between versions).
+
+    arXiv records are complete when the paper has one version or when the resolver fetched the
+    version titles (``alt_titles``). Other preprint records (DataCite's arXiv DOIs, dblp CoRR
+    entries, posted content) carry one title only.
+    """
+    if not is_preprint(record):
+        return True
+    if record.source == "arxiv":
+        return record.identifiers.get("arxiv_version", "v1") == "v1" or bool(record.alt_titles)
+    return False
+
+
 def _relation(m: Match) -> str:
     """How a record reached through an identifier relates to the entry."""
     agree = m.authors.status in {"match", "variant"}
@@ -172,9 +194,14 @@ def _relation(m: Match) -> str:
         return "same"  # author problems become field findings (REF010/REF011)
     if m.title.status == "unknown":
         return "same" if agree else "unclear"
-    if agree:  # same authors, different title
-        # the plan's corrupted-record rule: identifier and authors agree, title is unrelated
-        return "corrupted" if (m.title.score or 0.0) < 0.5 else "retitled"
+    if agree:  # same identifier and authors, different title
+        if PLACEHOLDER_TITLE.search(m.record.title):
+            return "corrupted"  # "Front Matter" and the like: the record itself is wrong
+        if not versions_known(m.record):
+            return "unclear"  # the entry may cite an earlier version with another title
+        # Usually the entry's title is wrong (HALLMARK's "chimeric titles": a real DOI and real
+        # authors under an invented title). The finding names the recorded title (REF012).
+        return "retitled"
     if m.authors.status == "unknown" and (m.title.score or 0.0) >= 0.6:
         return "unclear"  # no authors to tell, and the titles are not far apart
     return "conflict"
