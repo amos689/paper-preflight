@@ -1,0 +1,673 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {},
+  "total-results": 4,
+  "items": [
+   {
+    "DOI": "10.1109/cvpr.2016.90",
+    "title": [
+     "Deep Residual Learning for Image Recognition"
+    ],
+    "type": "proceedings-article",
+    "author": [
+     {
+      "given": "Kaiming",
+      "family": "He",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Xiangyu",
+      "family": "Zhang",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Shaoqing",
+      "family": "Ren",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jian",
+      "family": "Sun",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2016,
+       6
+      ]
+     ]
+    },
+    "container-title": [
+     "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)"
+    ]
+   },
+   {
+    "DOI": "10.18653/v1/n19-1423",
+    "title": [
+     "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+    ],
+    "type": "proceedings-article",
+    "author": [
+     {
+      "given": "Jacob",
+      "family": "Devlin",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ming-Wei",
+      "family": "Chang",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Kenton",
+      "family": "Lee",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Kristina",
+      "family": "Toutanova",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2019
+      ]
+     ]
+    },
+    "container-title": [
+     "Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)"
+    ]
+   },
+   {
+    "DOI": "10.1016/s0140-6736(97)11096-0",
+    "title": [
+     "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+    ],
+    "type": "journal-article",
+    "author": [
+     {
+      "given": "AJ",
+      "family": "Wakefield",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "SH",
+      "family": "Murch",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "A",
+      "family": "Anthony",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "J",
+      "family": "Linnell",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "DM",
+      "family": "Casson",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "M",
+      "family": "Malik",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "M",
+      "family": "Berelowitz",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "AP",
+      "family": "Dhillon",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "MA",
+      "family": "Thomson",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "P",
+      "family": "Harvey",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "A",
+      "family": "Valentine",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "SE",
+      "family": "Davies",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "JA",
+      "family": "Walker-Smith",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       1998,
+       2
+      ]
+     ]
+    },
+    "container-title": [
+     "The Lancet"
+    ],
+    "updated-by": [
+     {
+      "DOI": "10.1016/s0140-6736(04)15715-2",
+      "type": "correction",
+      "label": "Correction",
+      "source": "retraction-watch",
+      "updated": {
+       "date-parts": [
+        [
+         2004,
+         3,
+         6
+        ]
+       ],
+       "date-time": "2004-03-06T00:00:00Z",
+       "timestamp": 1078531200000
+      },
+      "record-id": "17269"
+     },
+     {
+      "DOI": "10.1016/s0140-6736(10)60175-4",
+      "type": "retraction",
+      "label": "Retraction",
+      "source": "retraction-watch",
+      "updated": {
+       "date-parts": [
+        [
+         2010,
+         2,
+         6
+        ]
+       ],
+       "date-time": "2010-02-06T00:00:00Z",
+       "timestamp": 1265414400000
+      },
+      "record-id": "4036"
+     }
+    ]
+   },
+   {
+    "DOI": "10.1162/tacl_a_00276",
+    "title": [
+     "Natural Questions: A Benchmark for Question Answering                     Research"
+    ],
+    "type": "journal-article",
+    "author": [
+     {
+      "given": "Tom",
+      "family": "Kwiatkowski",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Research."
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jennimaria",
+      "family": "Palomaki",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Olivia",
+      "family": "Redfield",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Michael",
+      "family": "Collins",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ankur",
+      "family": "Parikh",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Chris",
+      "family": "Alberti",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Danielle",
+      "family": "Epstein",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jacob",
+      "family": "Devlin",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Kenton",
+      "family": "Lee",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Kristina",
+      "family": "Toutanova",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Matthew",
+      "family": "Kelcey",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ming-Wei",
+      "family": "Chang",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Andrew M.",
+      "family": "Dai",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Quoc",
+      "family": "Le",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Slav",
+      "family": "Petrov",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2019,
+       11
+      ]
+     ]
+    },
+    "container-title": [
+     "Transactions of the Association for Computational Linguistics"
+    ]
+   }
+  ],
+  "items-per-page": 20,
+  "query": {
+   "start-index": 0,
+   "search-terms": null
+  }
+ }
+}

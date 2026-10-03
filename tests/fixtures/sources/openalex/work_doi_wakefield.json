@@ -1,0 +1,1523 @@
+{
+ "id": "https://openalex.org/W2117847125",
+ "doi": "https://doi.org/10.1016/s0140-6736(97)11096-0",
+ "title": "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children",
+ "display_name": "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children",
+ "publication_year": 1998,
+ "publication_date": "1998-02-01",
+ "ids": {
+  "openalex": "https://openalex.org/W2117847125",
+  "doi": "https://doi.org/10.1016/s0140-6736(97)11096-0",
+  "mag": "2117847125",
+  "pmid": "https://pubmed.ncbi.nlm.nih.gov/9500320"
+ },
+ "language": "en",
+ "primary_location": {
+  "id": "doi:10.1016/s0140-6736(97)11096-0",
+  "is_oa": false,
+  "landing_page_url": "https://doi.org/10.1016/s0140-6736(97)11096-0",
+  "pdf_url": null,
+  "source": {
+   "id": "https://openalex.org/S49861241",
+   "display_name": "The Lancet",
+   "issn_l": "0099-5355",
+   "issn": [
+    "0099-5355",
+    "0140-6736",
+    "1474-547X"
+   ],
+   "is_oa": false,
+   "is_in_doaj": false,
+   "is_core": true,
+   "listed_in": [
+    "cwts-core",
+    "doyens",
+    "jufo-3",
+    "ki-jl-3",
+    "medline",
+    "norway-2"
+   ],
+   "host_organization": "https://openalex.org/P4310320990",
+   "host_organization_name": "Elsevier BV",
+   "host_organization_lineage": [
+    "https://openalex.org/P4310320990"
+   ],
+   "host_organization_lineage_names": [
+    "Elsevier BV"
+   ],
+   "type": "journal"
+  },
+  "license": null,
+  "license_id": null,
+  "version": "publishedVersion",
+  "is_accepted": true,
+  "is_published": true,
+  "raw_source_name": "The Lancet",
+  "raw_type": "journal-article"
+ },
+ "type": "article",
+ "indexed_in": [
+  "crossref",
+  "pubmed"
+ ],
+ "open_access": {
+  "is_oa": false,
+  "oa_status": "closed",
+  "oa_url": null,
+  "any_repository_has_fulltext": false
+ },
+ "authorships": [
+  {
+   "author_position": "first",
+   "author": {
+    "id": "https://openalex.org/A5110570568",
+    "display_name": "A J Wakefield",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "AJ Wakefield",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Department of Medicine, Royal Free Hospital and School of Medicine, London, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Department of Medicine, Royal Free Hospital and School of Medicine, London, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5082281633",
+    "display_name": "SIMON H MURCH",
+    "orcid": "https://orcid.org/0000-0002-3870-8229",
+    "observed_orcids": [
+     "https://orcid.org/0000-0002-3870-8229"
+    ]
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "SH Murch",
+   "raw_affiliation_strings": [
+    "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": null,
+    "display_name": "A Anthony",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "A Anthony",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5113668959",
+    "display_name": "J. C. Linnell",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "J Linnell",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5111912041",
+    "display_name": "D M Casson",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "DM Casson",
+   "raw_affiliation_strings": [
+    "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5113048994",
+    "display_name": "Muhammad Moiz Malik",
+    "orcid": "https://orcid.org/0000-0003-2865-5773",
+    "observed_orcids": [
+     "https://orcid.org/0000-0003-2865-5773"
+    ]
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "M Malik",
+   "raw_affiliation_strings": [
+    "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5037267967",
+    "display_name": "Mark Berelowitz",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "M Berelowitz",
+   "raw_affiliation_strings": [
+    "Child and Adolescent Psychiatry, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Child and Adolescent Psychiatry, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5109964604",
+    "display_name": "AP Dhillon",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "AP Dhillon",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5110215081",
+    "display_name": "M.L. Thomson",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "MA Thomson",
+   "raw_affiliation_strings": [
+    "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "University Departments of Paediatric Gastroenterology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": null,
+    "display_name": "P Harvey",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "P Harvey",
+   "raw_affiliation_strings": [
+    "Neurology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Neurology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5001067656",
+    "display_name": "A. R. Valentine",
+    "orcid": "https://orcid.org/0009-0002-4748-3735",
+    "observed_orcids": [
+     "https://orcid.org/0009-0002-4748-3735"
+    ]
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "A Valentine",
+   "raw_affiliation_strings": [
+    "Radiology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Radiology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "middle",
+   "author": {
+    "id": "https://openalex.org/A5102148556",
+    "display_name": "SE Davies",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "SE Davies",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  },
+  {
+   "author_position": "last",
+   "author": {
+    "id": "https://openalex.org/A5113673820",
+    "display_name": "JA Walker-Smith",
+    "orcid": null,
+    "observed_orcids": []
+   },
+   "institutions": [
+    {
+     "id": "https://openalex.org/I2801138448",
+     "display_name": "The Royal Free Hospital",
+     "ror": "https://ror.org/01ge67z96",
+     "country_code": "GB",
+     "type": "healthcare",
+     "lineage": [
+      "https://openalex.org/I169248724",
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ],
+   "countries": [
+    "GB"
+   ],
+   "is_corresponding": false,
+   "raw_author_name": "JA Walker-Smith",
+   "raw_affiliation_strings": [
+    "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK"
+   ],
+   "raw_orcid": null,
+   "affiliations": [
+    {
+     "raw_affiliation_string": "Inflammatory Bowel Disease Study Group, University Departments of Medicine and Histopathology, Royal Free Hospital and School of Medicine, London NW3 2QG, UK",
+     "institution_ids": [
+      "https://openalex.org/I2801138448"
+     ]
+    }
+   ]
+  }
+ ],
+ "institutions": [],
+ "countries_distinct_count": 1,
+ "institutions_distinct_count": 1,
+ "corresponding_author_ids": [],
+ "corresponding_institution_ids": [
+  "https://openalex.org/I2801138448"
+ ],
+ "apc_list": {
+  "value": 7890,
+  "currency": "USD",
+  "value_usd": 7890
+ },
+ "apc_paid": null,
+ "fwci": 65.6881,
+ "has_fulltext": false,
+ "cited_by_count": 3025,
+ "citation_normalized_percentile": {
+  "value": 0.99971421,
+  "is_in_top_1_percent": true,
+  "is_in_top_10_percent": true
+ },
+ "cited_by_percentile_year": {
+  "min": 99,
+  "max": 100
+ },
+ "biblio": {
+  "volume": "351",
+  "issue": "9103",
+  "first_page": "637",
+  "last_page": "641"
+ },
+ "is_retracted": true,
+ "is_paratext": false,
+ "is_xpac": false,
+ "primary_topic": {
+  "id": "https://openalex.org/T12237",
+  "display_name": "Congenital gastrointestinal and neural anomalies",
+  "score": 0.24320000410079956,
+  "subfield": {
+   "id": "https://openalex.org/subfields/2746",
+   "display_name": "Surgery"
+  },
+  "field": {
+   "id": "https://openalex.org/fields/27",
+   "display_name": "Medicine"
+  },
+  "domain": {
+   "id": "https://openalex.org/domains/4",
+   "display_name": "Health Sciences"
+  }
+ },
+ "topics": [
+  {
+   "id": "https://openalex.org/T12237",
+   "display_name": "Congenital gastrointestinal and neural anomalies",
+   "score": 0.24320000410079956,
+   "subfield": {
+    "id": "https://openalex.org/subfields/2746",
+    "display_name": "Surgery"
+   },
+   "field": {
+    "id": "https://openalex.org/fields/27",
+    "display_name": "Medicine"
+   },
+   "domain": {
+    "id": "https://openalex.org/domains/4",
+    "display_name": "Health Sciences"
+   }
+  },
+  {
+   "id": "https://openalex.org/T10134",
+   "display_name": "Inflammatory Bowel Disease",
+   "score": 0.2393999993801117,
+   "subfield": {
+    "id": "https://openalex.org/subfields/1311",
+    "display_name": "Genetics"
+   },
+   "field": {
+    "id": "https://openalex.org/fields/13",
+    "display_name": "Biochemistry, Genetics and Molecular Biology"
+   },
+   "domain": {
+    "id": "https://openalex.org/domains/1",
+    "display_name": "Life Sciences"
+   }
+  },
+  {
+   "id": "https://openalex.org/T10365",
+   "display_name": "Gastrointestinal motility and disorders",
+   "score": 0.04650000110268593,
+   "subfield": {
+    "id": "https://openalex.org/subfields/2715",
+    "display_name": "Gastroenterology"
+   },
+   "field": {
+    "id": "https://openalex.org/fields/27",
+    "display_name": "Medicine"
+   },
+   "domain": {
+    "id": "https://openalex.org/domains/4",
+    "display_name": "Health Sciences"
+   }
+  }
+ ],
+ "keywords": [
+  {
+   "id": "https://openalex.org/keywords/non-specific-colitis",
+   "display_name": "non-specific colitis",
+   "score": 0.9879999756813049
+  },
+  {
+   "id": "https://openalex.org/keywords/pervasive-developmental-disorders",
+   "display_name": "pervasive developmental disorders",
+   "score": 0.9559999704360962
+  },
+  {
+   "id": "https://openalex.org/keywords/autism-spectrum-disorder",
+   "display_name": "autism spectrum disorder",
+   "score": 0.8579999804496765
+  },
+  {
+   "id": "https://openalex.org/keywords/chronic-enterocolitis",
+   "display_name": "chronic enterocolitis",
+   "score": 0.7910000085830688
+  },
+  {
+   "id": "https://openalex.org/keywords/measles-mumps-rubella-vaccination",
+   "display_name": "measles-mumps-rubella vaccination",
+   "score": 0.7300000190734863
+  },
+  {
+   "id": "https://openalex.org/keywords/urinary-methylmalonic-acid",
+   "display_name": "urinary methylmalonic acid",
+   "score": 0.8849999904632568
+  },
+  {
+   "id": "https://openalex.org/keywords/developmental-regression",
+   "display_name": "developmental regression",
+   "score": 0.5220000147819519
+  }
+ ],
+ "concepts": [
+  {
+   "id": "https://openalex.org/C71924100",
+   "wikidata": "https://www.wikidata.org/wiki/Q11190",
+   "display_name": "Medicine",
+   "level": 0,
+   "score": 0.8178350925445557
+  },
+  {
+   "id": "https://openalex.org/C2780117679",
+   "wikidata": "https://www.wikidata.org/wiki/Q17131724",
+   "display_name": "Lymphoid hyperplasia",
+   "level": 3,
+   "score": 0.5629274845123291
+  },
+  {
+   "id": "https://openalex.org/C2776831707",
+   "wikidata": "https://www.wikidata.org/wiki/Q6691991",
+   "display_name": "Pervasive developmental disorder",
+   "level": 4,
+   "score": 0.5135436058044434
+  },
+  {
+   "id": "https://openalex.org/C205778803",
+   "wikidata": "https://www.wikidata.org/wiki/Q38404",
+   "display_name": "Autism",
+   "level": 2,
+   "score": 0.48727619647979736
+  },
+  {
+   "id": "https://openalex.org/C142724271",
+   "wikidata": "https://www.wikidata.org/wiki/Q7208",
+   "display_name": "Pathology",
+   "level": 1,
+   "score": 0.46715277433395386
+  },
+  {
+   "id": "https://openalex.org/C187212893",
+   "wikidata": "https://www.wikidata.org/wiki/Q123028",
+   "display_name": "Pediatrics",
+   "level": 1,
+   "score": 0.4462345242500305
+  },
+  {
+   "id": "https://openalex.org/C90924648",
+   "wikidata": "https://www.wikidata.org/wiki/Q120569",
+   "display_name": "Gastroenterology",
+   "level": 1,
+   "score": 0.4156651496887207
+  },
+  {
+   "id": "https://openalex.org/C2778594975",
+   "wikidata": "https://www.wikidata.org/wiki/Q3087172",
+   "display_name": "Developmental disorder",
+   "level": 3,
+   "score": 0.34298619627952576
+  },
+  {
+   "id": "https://openalex.org/C126322002",
+   "wikidata": "https://www.wikidata.org/wiki/Q11180",
+   "display_name": "Internal medicine",
+   "level": 1,
+   "score": 0.33215174078941345
+  },
+  {
+   "id": "https://openalex.org/C2779338263",
+   "wikidata": "https://www.wikidata.org/wiki/Q208414",
+   "display_name": "Lymphoma",
+   "level": 2,
+   "score": 0.16836991906166077
+  },
+  {
+   "id": "https://openalex.org/C118552586",
+   "wikidata": "https://www.wikidata.org/wiki/Q7867",
+   "display_name": "Psychiatry",
+   "level": 1,
+   "score": 0.0
+  }
+ ],
+ "mesh": [
+  {
+   "descriptor_ui": "D002648",
+   "descriptor_name": "Child",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002648",
+   "descriptor_name": "Child",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002648",
+   "descriptor_name": "Child",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002648",
+   "descriptor_name": "Child",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002658",
+   "descriptor_name": "Developmental Disabilities",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002658",
+   "descriptor_name": "Developmental Disabilities",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002658",
+   "descriptor_name": "Developmental Disabilities",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002658",
+   "descriptor_name": "Developmental Disabilities",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002675",
+   "descriptor_name": "Child, Preschool",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002675",
+   "descriptor_name": "Child, Preschool",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002675",
+   "descriptor_name": "Child, Preschool",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D002675",
+   "descriptor_name": "Child, Preschool",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D004760",
+   "descriptor_name": "Enterocolitis",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D004760",
+   "descriptor_name": "Enterocolitis",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D004760",
+   "descriptor_name": "Enterocolitis",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D004760",
+   "descriptor_name": "Enterocolitis",
+   "qualifier_ui": "Q000209",
+   "qualifier_name": "etiology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D005260",
+   "descriptor_name": "Female",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D005260",
+   "descriptor_name": "Female",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D005260",
+   "descriptor_name": "Female",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D005260",
+   "descriptor_name": "Female",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006801",
+   "descriptor_name": "Humans",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006801",
+   "descriptor_name": "Humans",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006801",
+   "descriptor_name": "Humans",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006801",
+   "descriptor_name": "Humans",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006965",
+   "descriptor_name": "Hyperplasia",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006965",
+   "descriptor_name": "Hyperplasia",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006965",
+   "descriptor_name": "Hyperplasia",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D006965",
+   "descriptor_name": "Hyperplasia",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D007082",
+   "descriptor_name": "Ileum",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D007082",
+   "descriptor_name": "Ileum",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D007082",
+   "descriptor_name": "Ileum",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D007082",
+   "descriptor_name": "Ileum",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008221",
+   "descriptor_name": "Lymphoid Tissue",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008221",
+   "descriptor_name": "Lymphoid Tissue",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008221",
+   "descriptor_name": "Lymphoid Tissue",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008221",
+   "descriptor_name": "Lymphoid Tissue",
+   "qualifier_ui": "Q000473",
+   "qualifier_name": "pathology",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008297",
+   "descriptor_name": "Male",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008297",
+   "descriptor_name": "Male",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008297",
+   "descriptor_name": "Male",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008297",
+   "descriptor_name": "Male",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008457",
+   "descriptor_name": "Measles",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008457",
+   "descriptor_name": "Measles",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008457",
+   "descriptor_name": "Measles",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008457",
+   "descriptor_name": "Measles",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008458",
+   "descriptor_name": "Measles Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008458",
+   "descriptor_name": "Measles Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008458",
+   "descriptor_name": "Measles Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D008458",
+   "descriptor_name": "Measles Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D009108",
+   "descriptor_name": "Mumps Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D009108",
+   "descriptor_name": "Mumps Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D009108",
+   "descriptor_name": "Mumps Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D009108",
+   "descriptor_name": "Mumps Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D010033",
+   "descriptor_name": "Otitis Media",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D010033",
+   "descriptor_name": "Otitis Media",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D010033",
+   "descriptor_name": "Otitis Media",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D010033",
+   "descriptor_name": "Otitis Media",
+   "qualifier_ui": "Q000150",
+   "qualifier_name": "complications",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D012411",
+   "descriptor_name": "Rubella Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D012411",
+   "descriptor_name": "Rubella Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D012411",
+   "descriptor_name": "Rubella Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D012411",
+   "descriptor_name": "Rubella Vaccine",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D017778",
+   "descriptor_name": "Vaccines, Combined",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D017778",
+   "descriptor_name": "Vaccines, Combined",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D017778",
+   "descriptor_name": "Vaccines, Combined",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D017778",
+   "descriptor_name": "Vaccines, Combined",
+   "qualifier_ui": "Q000009",
+   "qualifier_name": "adverse effects",
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D022542",
+   "descriptor_name": "Measles-Mumps-Rubella Vaccine",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D022542",
+   "descriptor_name": "Measles-Mumps-Rubella Vaccine",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D022542",
+   "descriptor_name": "Measles-Mumps-Rubella Vaccine",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  },
+  {
+   "descriptor_ui": "D022542",
+   "descriptor_name": "Measles-Mumps-Rubella Vaccine",
+   "qualifier_ui": null,
+   "qualifier_name": null,
+   "is_major_topic": false
+  }
+ ],
+ "locations_count": 3,
+ "locations": [
+  {
+   "id": "doi:10.1016/s0140-6736(97)11096-0",
+   "is_oa": false,
+   "landing_page_url": "https://doi.org/10.1016/s0140-6736(97)11096-0",
+   "pdf_url": null,
+   "source": {
+    "id": "https://openalex.org/S49861241",
+    "display_name": "The Lancet",
+    "issn_l": "0099-5355",
+    "issn": [
+     "0099-5355",
+     "0140-6736",
+     "1474-547X"
+    ],
+    "is_oa": false,
+    "is_in_doaj": false,
+    "is_core": true,
+    "listed_in": [
+     "cwts-core",
+     "doyens",
+     "jufo-3",
+     "ki-jl-3",
+     "medline",
+     "norway-2"
+    ],
+    "host_organization": "https://openalex.org/P4310320990",
+    "host_organization_name": "Elsevier BV",
+    "host_organization_lineage": [
+     "https://openalex.org/P4310320990"
+    ],
+    "host_organization_lineage_names": [
+     "Elsevier BV"
+    ],
+    "type": "journal"
+   },
+   "license": null,
+   "license_id": null,
+   "version": "publishedVersion",
+   "is_accepted": true,
+   "is_published": true,
+   "raw_source_name": "The Lancet",
+   "raw_type": "journal-article"
+  },
+  {
+   "id": "pmid:9500320",
+   "is_oa": false,
+   "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/9500320",
+   "pdf_url": null,
+   "source": {
+    "id": "https://openalex.org/S4306525036",
+    "display_name": "PubMed",
+    "issn_l": null,
+    "issn": null,
+    "is_oa": false,
+    "is_in_doaj": false,
+    "is_core": false,
+    "listed_in": [],
+    "host_organization": "https://openalex.org/I1299303238",
+    "host_organization_name": "National Institutes of Health",
+    "host_organization_lineage": [
+     "https://openalex.org/I1299303238"
+    ],
+    "host_organization_lineage_names": [],
+    "type": "repository"
+   },
+   "license": null,
+   "license_id": null,
+   "version": "publishedVersion",
+   "is_accepted": true,
+   "is_published": true,
+   "raw_source_name": "Lancet (London, England)",
+   "raw_type": "Journal Article"
+  },
+  {
+   "id": "pmh:oai:eprints.ucl.ac.uk.OAI2:1057925",
+   "is_oa": false,
+   "landing_page_url": "http://discovery.ucl.ac.uk/1057925/",
+   "pdf_url": null,
+   "source": {
+    "id": "https://openalex.org/S4306400024",
+    "display_name": "UCL Discovery (University College London)",
+    "issn_l": null,
+    "issn": null,
+    "is_oa": false,
+    "is_in_doaj": false,
+    "is_core": false,
+    "listed_in": [],
+    "host_organization": "https://openalex.org/I45129253",
+    "host_organization_name": "University College London",
+    "host_organization_lineage": [
+     "https://openalex.org/I45129253"
+    ],
+    "host_organization_lineage_names": [],
+    "type": "repository"
+   },
+   "license": null,
+   "license_id": null,
+   "version": "submittedVersion",
+   "is_accepted": false,
+   "is_published": false,
+   "raw_source_name": "Lancet , 351 (9103) pp. 637-641. (1998)",
+   "raw_type": "Article"
+  }
+ ],
+ "best_oa_location": null,
+ "sustainable_development_goals": [
+  {
+   "id": "https://metadata.un.org/sdg/3",
+   "score": 0.4399999976158142,
+   "display_name": "Good health and well-being"
+  }
+ ],
+ "x_sdgs": [],
+ "study_designs": [
+  {
+   "id": "https://openalex.org/study-designs/observational-study",
+   "display_name": "Observational Study"
+  }
+ ],
+ "awards": [],
+ "funders": [
+  {
+   "id": "https://openalex.org/F4320315702",
+   "display_name": "Royal Free London NHS Foundation Trust",
+   "ror": "https://ror.org/04rtdp853"
+  }
+ ],
+ "has_content": {
+  "grobid_xml": false,
+  "pdf": false
+ },
+ "content_urls": null,
+ "referenced_works_count": 27,
+ "referenced_works": [
+  "https://openalex.org/W19804704",
+  "https://openalex.org/W40430408",
+  "https://openalex.org/W141317774",
+  "https://openalex.org/W1966535127",
+  "https://openalex.org/W1967035877",
+  "https://openalex.org/W1978222253",
+  "https://openalex.org/W1979047426",
+  "https://openalex.org/W1992308980",
+  "https://openalex.org/W1998420106",
+  "https://openalex.org/W1999722248",
+  "https://openalex.org/W2005383370",
+  "https://openalex.org/W2015151182",
+  "https://openalex.org/W2024571744",
+  "https://openalex.org/W2047024130",
+  "https://openalex.org/W2052072164",
+  "https://openalex.org/W2060419140",
+  "https://openalex.org/W2077238261",
+  "https://openalex.org/W2106182761",
+  "https://openalex.org/W2136857670",
+  "https://openalex.org/W2151181921",
+  "https://openalex.org/W2159011576",
+  "https://openalex.org/W2276306589",
+  "https://openalex.org/W3033949515",
+  "https://openalex.org/W4205253110",
+  "https://openalex.org/W6600804475",
+  "https://openalex.org/W6601647549",
+  "https://openalex.org/W6605749883"
+ ],
+ "related_works": [
+  "https://openalex.org/W4242086627",
+  "https://openalex.org/W4280602684",
+  "https://openalex.org/W2037790826",
+  "https://openalex.org/W2078273246",
+  "https://openalex.org/W2017221278",
+  "https://openalex.org/W2069605278",
+  "https://openalex.org/W1997714374",
+  "https://openalex.org/W2068892162",
+  "https://openalex.org/W2071639186",
+  "https://openalex.org/W2144446993"
+ ],
+ "abstract_inverted_index": null,
+ "counts_by_year": [
+  {
+   "year": 2026,
+   "cited_by_count": 42
+  },
+  {
+   "year": 2025,
+   "cited_by_count": 79
+  },
+  {
+   "year": 2024,
+   "cited_by_count": 93
+  },
+  {
+   "year": 2023,
+   "cited_by_count": 113
+  },
+  {
+   "year": 2022,
+   "cited_by_count": 129
+  },
+  {
+   "year": 2021,
+   "cited_by_count": 177
+  },
+  {
+   "year": 2020,
+   "cited_by_count": 135
+  },
+  {
+   "year": 2019,
+   "cited_by_count": 145
+  },
+  {
+   "year": 2018,
+   "cited_by_count": 158
+  },
+  {
+   "year": 2017,
+   "cited_by_count": 115
+  },
+  {
+   "year": 2016,
+   "cited_by_count": 103
+  },
+  {
+   "year": 2015,
+   "cited_by_count": 136
+  },
+  {
+   "year": 2014,
+   "cited_by_count": 149
+  },
+  {
+   "year": 2013,
+   "cited_by_count": 127
+  },
+  {
+   "year": 2012,
+   "cited_by_count": 146
+  }
+ ],
+ "updated_date": "2026-10-01T08:54:57.152042",
+ "created_date": "2016-06-24T00:00:00"
+}

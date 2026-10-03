@@ -1,0 +1,336 @@
+{
+ "status": "ok",
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "message": {
+  "indexed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     1
+    ]
+   ],
+   "date-time": "2026-10-01T18:03:09Z",
+   "timestamp": 1790877789652,
+   "version": "4.1.0"
+  },
+  "reference-count": 26,
+  "publisher": "Elsevier BV",
+  "issue": "9103",
+  "license": [
+   {
+    "start": {
+     "date-parts": [
+      [
+       1998,
+       2,
+       1
+      ]
+     ],
+     "date-time": "1998-02-01T00:00:00Z",
+     "timestamp": 886291200000
+    },
+    "content-version": "tdm",
+    "delay-in-days": 0,
+    "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+   }
+  ],
+  "short-container-title": [
+   "The Lancet"
+  ],
+  "published-print": {
+   "date-parts": [
+    [
+     1998,
+     2
+    ]
+   ]
+  },
+  "DOI": "10.1016/s0140-6736(97)11096-0",
+  "type": "journal-article",
+  "created": {
+   "date-parts": [
+    [
+     2002,
+     7,
+     25
+    ]
+   ],
+   "date-time": "2002-07-25T12:19:56Z",
+   "timestamp": 1027599596000
+  },
+  "page": "637-641",
+  "source": "Crossref",
+  "is-referenced-by-count": 2028,
+  "title": [
+   "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children"
+  ],
+  "prefix": "10.1016",
+  "volume": "351",
+  "author": [
+   {
+    "given": "AJ",
+    "family": "Wakefield",
+    "sequence": "first",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "SH",
+    "family": "Murch",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "A",
+    "family": "Anthony",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "J",
+    "family": "Linnell",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "DM",
+    "family": "Casson",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "M",
+    "family": "Malik",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "M",
+    "family": "Berelowitz",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "AP",
+    "family": "Dhillon",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "MA",
+    "family": "Thomson",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "P",
+    "family": "Harvey",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "A",
+    "family": "Valentine",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "SE",
+    "family": "Davies",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "JA",
+    "family": "Walker-Smith",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   }
+  ],
+  "member": "78",
+  "updated-by": [
+   {
+    "DOI": "10.1016/s0140-6736(04)15715-2",
+    "type": "correction",
+    "label": "Correction",
+    "source": "retraction-watch",
+    "updated": {
+     "date-parts": [
+      [
+       2004,
+       3,
+       6
+      ]
+     ],
+     "date-time": "2004-03-06T00:00:00Z",
+     "timestamp": 1078531200000
+    },
+    "record-id": "17269"
+   },
+   {
+    "DOI": "10.1016/s0140-6736(10)60175-4",
+    "type": "retraction",
+    "label": "Retraction",
+    "source": "retraction-watch",
+    "updated": {
+     "date-parts": [
+      [
+       2010,
+       2,
+       6
+      ]
+     ],
+     "date-time": "2010-02-06T00:00:00Z",
+     "timestamp": 1265414400000
+    },
+    "record-id": "4036"
+   }
+  ],
+  "container-title": [
+   "The Lancet"
+  ],
+  "original-title": [],
+  "language": "en",
+  "deposited": {
+   "date-parts": [
+    [
+     2019,
+     5,
+     1
+    ]
+   ],
+   "date-time": "2019-05-01T12:43:25Z",
+   "timestamp": 1556714605000
+  },
+  "score": 1,
+  "resource": {
+   "primary": {
+    "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0140673697110960"
+   }
+  },
+  "subtitle": [],
+  "short-title": [],
+  "issued": {
+   "date-parts": [
+    [
+     1998,
+     2
+    ]
+   ]
+  },
+  "references-count": 26,
+  "journal-issue": {
+   "issue": "9103",
+   "published-print": {
+    "date-parts": [
+     [
+      1998,
+      2
+     ]
+    ]
+   }
+  },
+  "alternative-id": [
+   "S0140673697110960"
+  ],
+  "URL": "https://doi.org/10.1016/s0140-6736(97)11096-0",
+  "relation": {},
+  "ISSN": [
+   "0140-6736"
+  ],
+  "issn-type": [
+   {
+    "value": "0140-6736",
+    "type": "print"
+   }
+  ],
+  "subject": [],
+  "published": {
+   "date-parts": [
+    [
+     1998,
+     2
+    ]
+   ]
+  }
+ }
+}

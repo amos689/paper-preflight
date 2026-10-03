@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/p4ELiruTj8zNxB6C2tQ1OUmIBN4</id>
+  <title>arXiv Query: search_query=ti:"Attention Is All You Need"&amp;id_list=&amp;start=0&amp;max_results=5</title>
+  <updated>2026-10-03T01:58:59Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:%22Attention+Is+All+You+Need%22&amp;start=0&amp;max_results=5&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>5</opensearch:itemsPerPage>
+  <opensearch:totalResults>36</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1706.03762v7</id>
+    <title>Attention Is All You Need</title>
+    <updated>2023-08-02T00:41:18Z</updated>
+    <link href="https://arxiv.org/abs/1706.03762v7" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1706.03762v7" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-06-12T17:57:34Z</published>
+    <arxiv:comment>15 pages, 5 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ashish Vaswani</name>
+    </author>
+    <author>
+      <name>Noam Shazeer</name>
+    </author>
+    <author>
+      <name>Niki Parmar</name>
+    </author>
+    <author>
+      <name>Jakob Uszkoreit</name>
+    </author>
+    <author>
+      <name>Llion Jones</name>
+    </author>
+    <author>
+      <name>Aidan N. Gomez</name>
+    </author>
+    <author>
+      <name>Lukasz Kaiser</name>
+    </author>
+    <author>
+      <name>Illia Polosukhin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2104.04692v3</id>
+    <title>Not All Attention Is All You Need</title>
+    <updated>2021-06-01T03:09:39Z</updated>
+    <link href="https://arxiv.org/abs/2104.04692v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2104.04692v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Beyond the success story of pre-trained language models (PrLMs) in recent natural language processing, they are susceptible to over-fitting due to unusual large model size. To this end, dropout serves as a therapy. However, existing methods like random-based, knowledge-based and search-based dropout are more general but less effective onto self-attention based models, which are broadly chosen as the fundamental architecture of PrLMs. In this paper, we propose a novel dropout method named AttendOut to let self-attention empowered PrLMs capable of more robust task-specific tuning. We demonstrate that state-of-the-art models with elaborate training design may achieve much stronger results. We verify the universality of our approach on extensive natural language processing tasks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-04-10T06:24:52Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hongqiu Wu</name>
+    </author>
+    <author>
+      <name>Hai Zhao</name>
+    </author>
+    <author>
+      <name>Min Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.06425v7</id>
+    <title>Tensor Product Attention Is All You Need</title>
+    <updated>2026-01-11T23:01:33Z</updated>
+    <link href="https://arxiv.org/abs/2501.06425v7" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.06425v7" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Scaling language models to handle longer input sequences typically necessitates large key-value (KV) caches, resulting in substantial memory overhead during inference. In this paper, we propose Tensor Product Attention (TPA), a novel attention mechanism that uses tensor decompositions to represent queries, keys, and values compactly, substantially shrinking the KV cache size at inference time. By factorizing these representations into contextual low-rank components and seamlessly integrating with Rotary Position Embedding (RoPE), TPA achieves improved model quality alongside memory efficiency. Based on TPA, we introduce the Tensor ProducT ATTenTion Transformer (T6), a new model architecture for sequence modeling. Through extensive empirical evaluation on language modeling tasks, we demonstrate that T6 surpasses or matches the performance of standard Transformer baselines including Multi-Head Attention (MHA), Multi-Query Attention (MQA), Grouped-Query Attention (GQA), and Multi-Head Latent Attention (MLA) across various metrics, including perplexity and a range of established evaluation benchmarks. Notably, TPA's memory efficiency and computational efficiency at decoding stage enables processing longer sequences under fixed resource constraints, addressing a critical scalability challenge in modern language models. Project Page: https://github.com/tensorgi/TPA.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-11T03:37:10Z</published>
+    <arxiv:comment>Published in NeurIPS 2025 (Spotlight); Project Page: https://github.com/tensorgi/TPA</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yifan Zhang</name>
+    </author>
+    <author>
+      <name>Yifeng Liu</name>
+    </author>
+    <author>
+      <name>Huizhuo Yuan</name>
+    </author>
+    <author>
+      <name>Zhen Qin</name>
+    </author>
+    <author>
+      <name>Yang Yuan</name>
+    </author>
+    <author>
+      <name>Quanquan Gu</name>
+    </author>
+    <author>
+      <name>Andrew Chi-Chih Yao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.05730v1</id>
+    <title>Element-wise Attention Is All You Need</title>
+    <updated>2025-01-10T05:54:04Z</updated>
+    <link href="https://arxiv.org/abs/2501.05730v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.05730v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The self-attention (SA) mechanism has demonstrated superior performance across various domains, yet it suffers from substantial complexity during both training and inference. The next-generation architecture, aiming at retaining the competitive performance of SA while achieving low-cost inference and efficient long-sequence training, primarily focuses on three approaches: linear attention, linear RNNs, and state space models. Although these approaches achieve reduced complexity than SA, they all have built-in performance degradation factors, such as diminished âspikinessâ and compression of historical information. In contrast to these approaches, we propose a novel element-wise attention mechanism, which uses the element-wise squared Euclidean distance, instead of the dot product operation, to compute similarity and approximates the quadratic complexity term $\exp(q_{ic}k_{jc})$ with a Taylor polynomial. This design achieves remarkable efficiency: during training, the element-wise attention has a complexity of $\mathcal{O}(tLD)$, making long-sequence training both computationally and memory efficient, where $L$ is the sequence length, $D$ is the feature dimension, and $t$ is the highest order of the polynomial; during inference, it can be reformulated as recurrent neural networks, achieving a inference complexity of $\mathcal{O}(tD)$. Furthermore, the element-wise attention circumvents the performance degradation factors present in these approaches and achieves performance comparable to SA in both causal and non-causal forms.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-10T05:54:04Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Guoxin Feng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2010.13154v2</id>
+    <title>Attention is All You Need in Speech Separation</title>
+    <updated>2021-03-08T21:24:43Z</updated>
+    <link href="https://arxiv.org/abs/2010.13154v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2010.13154v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recurrent Neural Networks (RNNs) have long been the dominant architecture in sequence-to-sequence learning. RNNs, however, are inherently sequential models that do not allow parallelization of their computations. Transformers are emerging as a natural alternative to standard RNNs, replacing recurrent computations with a multi-head attention mechanism. In this paper, we propose the SepFormer, a novel RNN-free Transformer-based neural network for speech separation. The SepFormer learns short and long-term dependencies with a multi-scale approach that employs transformers. The proposed model achieves state-of-the-art (SOTA) performance on the standard WSJ0-2/3mix datasets. It reaches an SI-SNRi of 22.3 dB on WSJ0-2mix and an SI-SNRi of 19.5 dB on WSJ0-3mix. The SepFormer inherits the parallelization advantages of Transformers and achieves a competitive performance even when downsampling the encoded representation by a factor of 8. It is thus significantly faster and it is less memory-demanding than the latest speech separation systems with comparable performance.</summary>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SP" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-10-25T16:28:54Z</published>
+    <arxiv:comment>Accepted to ICASSP 2021</arxiv:comment>
+    <arxiv:primary_category term="eess.AS"/>
+    <author>
+      <name>Cem Subakan</name>
+    </author>
+    <author>
+      <name>Mirco Ravanelli</name>
+    </author>
+    <author>
+      <name>Samuele Cornell</name>
+    </author>
+    <author>
+      <name>Mirko Bronzi</name>
+    </author>
+    <author>
+      <name>Jianyuan Zhong</name>
+    </author>
+  </entry>
+</feed>

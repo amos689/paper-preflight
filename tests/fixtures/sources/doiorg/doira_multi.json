@@ -1,0 +1,26 @@
+[
+ {
+  "DOI": "10.1109/CVPR.2016.90",
+  "RA": "Crossref"
+ },
+ {
+  "DOI": "10.48550/arXiv.1706.03762",
+  "RA": "DataCite"
+ },
+ {
+  "DOI": "10.1162/tacl_a_00276",
+  "RA": "Crossref"
+ },
+ {
+  "DOI": "10.1162/tacl\\_a\\_00276",
+  "status": "DOI does not exist"
+ },
+ {
+  "DOI": "10.1109/CVPR.2016.999999",
+  "status": "DOI does not exist"
+ },
+ {
+  "DOI": "10.99999/nonexistent-prefix",
+  "status": "DOI does not exist"
+ }
+]

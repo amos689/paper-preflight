@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/p4BkwVgh0vKDAqWoXih5NJX/3jM</id>
+  <title>arXiv Query: search_query=&amp;id_list=1606.08415v1,1606.08415v2,1606.08415v3,1606.08415v4,1606.08415v5&amp;start=0&amp;max_results=10</title>
+  <updated>2026-10-03T01:58:46Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1606.08415v1,1606.08415v2,1606.08415v3,1606.08415v4,1606.08415v5" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>5</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1606.08415v1</id>
+    <title>Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units</title>
+    <updated>2016-06-27T19:20:40Z</updated>
+    <link href="https://arxiv.org/abs/1606.08415v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1606.08415v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU nonlinearity is the expected transformation of a stochastic process which randomly applies the identity or zero map, combining the intuitions of dropout and zoneout while respecting neuron values. This connection suggests a new probabilistic understanding of nonlinearities. We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all tasks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2016-06-27T19:20:40Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan Hendrycks</name>
+    </author>
+    <author>
+      <name>Kevin Gimpel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1606.08415v2</id>
+    <title>Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units</title>
+    <updated>2016-07-08T18:32:46Z</updated>
+    <link href="https://arxiv.org/abs/1606.08415v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1606.08415v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU nonlinearity is the expected transformation of a stochastic regularizer which randomly applies the identity or zero map, combining the intuitions of dropout and zoneout while respecting neuron values. This connection suggests a new probabilistic understanding of nonlinearities. We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all tasks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2016-06-27T19:20:40Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan Hendrycks</name>
+    </author>
+    <author>
+      <name>Kevin Gimpel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1606.08415v3</id>
+    <title>Gaussian Error Linear Units (GELUs)</title>
+    <updated>2018-11-11T07:40:32Z</updated>
+    <link href="https://arxiv.org/abs/1606.08415v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1606.08415v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU nonlinearity is the expected transformation of a stochastic regularizer which randomly applies the identity or zero map to a neuron's input. The GELU nonlinearity weights inputs by their magnitude, rather than gates inputs by their sign as in ReLUs. We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all considered computer vision, natural language processing, and speech tasks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2016-06-27T19:20:40Z</published>
+    <arxiv:comment>Trimmed version of 2016 draft</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan Hendrycks</name>
+    </author>
+    <author>
+      <name>Kevin Gimpel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1606.08415v4</id>
+    <title>Gaussian Error Linear Units (GELUs)</title>
+    <updated>2020-07-08T16:41:42Z</updated>
+    <link href="https://arxiv.org/abs/1606.08415v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1606.08415v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU activation function is $xΦ(x)$, where $Φ(x)$ the standard Gaussian cumulative distribution function. The GELU nonlinearity weights inputs by their value, rather than gates inputs by their sign as in ReLUs ($x\mathbf{1}_{x&gt;0}$). We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all considered computer vision, natural language processing, and speech tasks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2016-06-27T19:20:40Z</published>
+    <arxiv:comment>Trimmed version of 2016 draft; add exact formula</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan Hendrycks</name>
+    </author>
+    <author>
+      <name>Kevin Gimpel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1606.08415v5</id>
+    <title>Gaussian Error Linear Units (GELUs)</title>
+    <updated>2023-06-06T01:53:32Z</updated>
+    <link href="https://arxiv.org/abs/1606.08415v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1606.08415v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU activation function is $xΦ(x)$, where $Φ(x)$ the standard Gaussian cumulative distribution function. The GELU nonlinearity weights inputs by their value, rather than gates inputs by their sign as in ReLUs ($x\mathbf{1}_{x&gt;0}$). We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all considered computer vision, natural language processing, and speech tasks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2016-06-27T19:20:40Z</published>
+    <arxiv:comment>Trimmed version of 2016 draft</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Dan Hendrycks</name>
+    </author>
+    <author>
+      <name>Kevin Gimpel</name>
+    </author>
+  </entry>
+</feed>

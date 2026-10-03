@@ -1,0 +1,409 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {},
+  "total-results": 1214842,
+  "items": [
+   {
+    "publisher": "Elsevier BV",
+    "DOI": "10.1016/j.procs.2026.01.105",
+    "type": "journal-article",
+    "title": [
+     "Sparse Mixture-of-Experts Transformers for Efficient Scaling of Large Language Models"
+    ],
+    "prefix": "10.1016",
+    "author": [
+     {
+      "given": "Taher M.",
+      "family": "Ghazal",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "78",
+    "container-title": [
+     "Procedia Computer Science"
+    ],
+    "score": 34.31005,
+    "issued": {
+     "date-parts": [
+      [
+       2026
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "PeerJ",
+    "DOI": "10.7717/peerj-cs.3607/supp-2",
+    "type": "component",
+    "title": [
+     "Supplemental Information 2: Code Implementation for the Heuristic Sparse Mixture-of-Experts Framework."
+    ],
+    "prefix": "10.7717",
+    "member": "4443",
+    "score": 31.11015,
+    "issued": {
+     "date-parts": [
+      [
+       null
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "American Chemical Society (ACS)",
+    "DOI": "10.26434/chemrxiv-2025-mrgzj-v2",
+    "type": "posted-content",
+    "title": [
+     "Mixture-of-Experts Transformers for Faithfully Deorbitalized Meta-GGA Density Functionals"
+    ],
+    "prefix": "10.26434",
+    "author": [
+     {
+      "ORCID": "https://orcid.org/0009-0003-9782-9332",
+      "authenticated-orcid": false,
+      "given": "Amit",
+      "family": "Chaudhari",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "id": [
+         {
+          "id": "https://ror.org/03kk7td41",
+          "id-type": "ROR",
+          "asserted-by": "publisher"
+         }
+        ],
+        "name": "Cardiff University",
+        "place": [
+         "United Kingdom"
+        ]
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Andrew",
+      "family": "Logsdail",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "id": [
+         {
+          "id": "https://ror.org/03kk7td41",
+          "id-type": "ROR",
+          "asserted-by": "publisher"
+         }
+        ],
+        "name": "Cardiff University",
+        "place": [
+         "United Kingdom"
+        ]
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "316",
+    "score": 31.094679,
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       11,
+       26
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "Qeios Ltd",
+    "DOI": "10.32388/k5bs42",
+    "type": "peer-review",
+    "title": [
+     "Review of: \"Superposition in Transformers: A Novel Way of Building Mixture of Experts\""
+    ],
+    "prefix": "10.32388",
+    "author": [
+     {
+      "ORCID": "https://orcid.org/0000-0002-9120-7298",
+      "authenticated-orcid": true,
+      "given": "Evgenii",
+      "family": "Arsentev",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "17262",
+    "score": 31.01679,
+    "issued": {
+     "date-parts": [
+      [
+       2026,
+       9,
+       30
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "American Chemical Society (ACS)",
+    "DOI": "10.26434/chemrxiv-2025-mrgzj",
+    "type": "posted-content",
+    "title": [
+     "Mixture-of-Experts Transformers for Faithfully Deorbitalized Meta-GGA Density Functionals"
+    ],
+    "prefix": "10.26434",
+    "author": [
+     {
+      "ORCID": "https://orcid.org/0009-0003-9782-9332",
+      "authenticated-orcid": false,
+      "given": "Amit",
+      "family": "Chaudhari",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "id": [
+         {
+          "id": "https://ror.org/03kk7td41",
+          "id-type": "ROR",
+          "asserted-by": "publisher"
+         }
+        ],
+        "name": "Cardiff University",
+        "place": [
+         "United Kingdom"
+        ]
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Andrew",
+      "family": "Logsdail",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "id": [
+         {
+          "id": "https://ror.org/03kk7td41",
+          "id-type": "ROR",
+          "asserted-by": "publisher"
+         }
+        ],
+        "name": "Cardiff University",
+        "place": [
+         "United Kingdom"
+        ]
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "316",
+    "score": 30.98911,
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       11,
+       21
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "Qeios Ltd",
+    "DOI": "10.32388/e1uid5",
+    "type": "peer-review",
+    "title": [
+     "Review of: \"Superposition in Transformers: A Novel Way of Building Mixture of Experts\""
+    ],
+    "prefix": "10.32388",
+    "author": [
+     {
+      "given": "Yijie",
+      "family": "Bei",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "17262",
+    "score": 30.921974,
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       3,
+       17
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "IEEE",
+    "DOI": "10.1109/icip.2018.8451823",
+    "type": "proceedings-article",
+    "title": [
+     "Regularized Gradient Descent Training of Steered Mixture of Experts for Sparse Image Representation"
+    ],
+    "prefix": "10.1109",
+    "author": [
+     {
+      "given": "Erik",
+      "family": "Bochinski",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Rolf",
+      "family": "Jongebloed",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Michael",
+      "family": "Tok",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Thomas",
+      "family": "Sikora",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "263",
+    "container-title": [
+     "2018 25th IEEE International Conference on Image Processing (ICIP)"
+    ],
+    "score": 30.524387,
+    "issued": {
+     "date-parts": [
+      [
+       2018,
+       10
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "Qeios Ltd",
+    "DOI": "10.32388/ogj9k5",
+    "type": "posted-content",
+    "title": [
+     "Superposition in Transformers: A Novel Way of Building Mixture of Experts"
+    ],
+    "prefix": "10.32388",
+    "author": [
+     {
+      "given": "Ayoub",
+      "family": "Ben Chaliah",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Hela",
+      "family": "Dellagi",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "17262",
+    "score": 30.508892,
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       1,
+       24
+      ]
+     ]
+    }
+   }
+  ],
+  "items-per-page": 8,
+  "query": {
+   "start-index": 0,
+   "search-terms": null
+  }
+ }
+}

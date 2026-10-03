@@ -1,0 +1,134 @@
+{
+ "head": {
+  "vars": [
+   "doi",
+   "pub",
+   "t",
+   "venue",
+   "year"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    }
+   },
+   {
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "t": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    }
+   },
+   {
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.2106.09685"
+    },
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2106-09685"
+    },
+    "t": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2021"
+    }
+   },
+   {
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1606.08415"
+    },
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/HendrycksG16"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    }
+   },
+   {
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1162/TACL_A_00276"
+    },
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/tacl/KwiatkowskiPRCP19"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Natural Questions: a Benchmark for Question Answering Research."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "Trans. Assoc. Comput. Linguistics"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 22,
+  "result-size-total": 5
+ }
+}

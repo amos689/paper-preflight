@@ -1,0 +1,246 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "t"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2407-15516"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need But You Don't Need All Of It For Inference of Large Language Models."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2408-02692"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is all you need for an improved CNN-based flash flood susceptibility modeling. The case of the ungauged Rheraya watershed, Morocco."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/icassp/WangJLB024"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need For Blind Room Volume Estimation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2309-13504"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need For Blind Room Volume Estimation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2403-15419"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is all you need for boosting graph convolutional neural network."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/emnlp/DuanZ20"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for Chinese Word Segmentation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-1910-14537"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for Chinese Word Segmentation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/Nguyen-TriRS26"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for KV Cache in Diffusion LLMs."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2510-14973"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for KV Cache in Diffusion LLMs."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2410-15288"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for LLM-based Code Vulnerability Localization."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/tifs/LiLWZCLXZ26"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need for LLM-Based Code Vulnerability Localization."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2412-20875"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need For Mixture-of-Depths Routing."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-1906-02792"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is all you need for Videos: Self-attention based Video Summarization using Universal Transformers."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2010-13154"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All You Need in Speech Separation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/icassp/SubakanRCBZ21"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need In Speech Separation."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/ndss/ZhongMCDCX26"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All You Need to Defend Against Indirect Prompt Injection Attacks in LLMs."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2512-08417"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All You Need to Defend Against Indirect Prompt Injection Attacks in LLMs."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2410-24052"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All You Need to Optimize Wind Farm Operations and Maintenance."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2501-09166"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All You Need Until You Need Retention."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/bib/ZhangLLLLHN24"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is all you need: utilizing attention in AI-enabled drug discovery."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/ais/Sezgin26"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is all you need? When responsiveness short-circuits responsibility."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 1,
+  "result-size-total": 23
+ }
+}

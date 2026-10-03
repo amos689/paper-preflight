@@ -1,0 +1,101 @@
+{
+ "head": {
+  "vars": [
+   "s",
+   "p",
+   "o"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/dblp.nt"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://purl.org/dc/terms/license"
+    },
+    "o": {
+     "type": "uri",
+     "value": "https://creativecommons.org/publicdomain/zero/1.0/"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/dblp.nt"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://purl.org/dc/terms/modified"
+    },
+    "o": {
+     "type": "literal",
+     "value": "2026-10-01T19:24:40+0200"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://purl.org/dc/terms/title"
+    },
+    "o": {
+     "type": "literal",
+     "value": "dblp RDF schema"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://www.w3.org/2002/07/owl#priorVersion"
+    },
+    "o": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema-2024-06-14"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://www.w3.org/2002/07/owl#versionInfo"
+    },
+    "o": {
+     "type": "literal",
+     "value": "Mon 07 Sep 2026"
+    }
+   },
+   {
+    "s": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema"
+    },
+    "p": {
+     "type": "uri",
+     "value": "http://www.w3.org/2002/07/owl#versionIRI"
+    },
+    "o": {
+     "type": "uri",
+     "value": "https://dblp.org/rdf/schema-2026-09-07"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 2,
+  "result-size-total": 6
+ }
+}

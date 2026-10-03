@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/OdQvYMOPfaREKdDlkQaK/lQmca8</id>
+  <title>arXiv Query: search_query=&amp;id_list=2609.32356v1,2609.32356v3,1207.7214&amp;start=0&amp;max_results=5</title>
+  <updated>2026-10-03T01:59:20Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=5&amp;id_list=2609.32356v1,2609.32356v3,1207.7214" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>5</opensearch:itemsPerPage>
+  <opensearch:totalResults>3</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.32356v3</id>
+    <title>The finite basis problem for $2\times 2$ triangular Boolean matrix semirings and incidence semirings</title>
+    <updated>2026-09-30T02:41:11Z</updated>
+    <link href="https://arxiv.org/abs/2609.32356v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.32356v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>An explicit finite identity basis is given for the eight-element semiring of upper triangular Boolean \(2\times2\) matrices in the signature \((+,\cdot)\). The basis consists of a known multiplicative basis, the ai-semiring laws, and 30 mixed identities, each using at most eight variables. The proof combines a finite basis for the multiplicative reduct with finite rules for shuffling words, duplicating a marked occurrence, and interchanging adjacent occurrences while adding prescribed witnesses. This converts the one-letter gap criterion into a derivation of every valid semiring identity. We also study the band subvariety, a distinguished 156-element interval of the subvariety lattice, congruences, flat members, and finite representations of free algebras. Every \(m\)-letter word has an equivalent subword of length at most \(m^2\) for \(m\geq2\), and the free algebras have doubly exponential rank growth. For arbitrary partially ordered sets, we determine the equational theory of Boolean relation semirings and of finite-support incidence semirings over nontrivial bounded distributive lattices: finite height \(h\) gives the theory of \(T_h\), while unbounded height gives precisely the identities of all additively idempotent semirings.</summary>
+    <category term="math.GR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-26T08:24:36Z</published>
+    <arxiv:comment>This paper is withdrawn. The manuscript is incomplete and requires further work</arxiv:comment>
+    <arxiv:primary_category term="math.GR"/>
+    <author>
+      <name>Jun Jiao</name>
+    </author>
+    <author>
+      <name>Xiaolei Shao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1207.7214v2</id>
+    <title>Observation of a new particle in the search for the Standard Model Higgs boson with the ATLAS detector at the LHC</title>
+    <updated>2012-08-31T19:29:54Z</updated>
+    <link href="https://arxiv.org/abs/1207.7214v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1207.7214v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A search for the Standard Model Higgs boson in proton-proton collisions with the ATLAS detector at the LHC is presented. The datasets used correspond to integrated luminosities of approximately 4.8 fb^-1 collected at sqrt(s) = 7 TeV in 2011 and 5.8 fb^-1 at sqrt(s) = 8 TeV in 2012. Individual searches in the channels H-&gt;ZZ^(*)-&gt;llll, H-&gt;gamma gamma and H-&gt;WW-&gt;e nu mu nu in the 8 TeV data are combined with previously published results of searches for H-&gt;ZZ^(*), WW^(*), bbbar and tau^+tau^- in the 7 TeV data and results from improved analyses of the H-&gt;ZZ^(*)-&gt;llll and H-&gt;gamma gamma channels in the 7 TeV data. Clear evidence for the production of a neutral boson with a measured mass of 126.0 +/- 0.4(stat) +/- 0.4(sys) GeV is presented. This observation, which has a significance of 5.9 standard deviations, corresponding to a background fluctuation probability of 1.7x10^-9, is compatible with the production and decay of the Standard Model Higgs boson.</summary>
+    <category term="hep-ex" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2012-07-31T11:59:59Z</published>
+    <arxiv:comment>24 pages plus author list (38 pages total), 12 figures, 7 tables, revised author list, matches version to appear in Physics Letters B</arxiv:comment>
+    <arxiv:primary_category term="hep-ex"/>
+    <arxiv:journal_ref>Phys.Lett. B716 (2012) 1-29</arxiv:journal_ref>
+    <author>
+      <name> The ATLAS Collaboration</name>
+    </author>
+    <arxiv:doi>10.1016/j.physletb.2012.08.020</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.physletb.2012.08.020" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.32356v1</id>
+    <title>The finite basis problem for $2\times 2$ triangular Boolean matrix semirings and incidence semirings</title>
+    <updated>2026-09-26T08:24:36Z</updated>
+    <link href="https://arxiv.org/abs/2609.32356v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.32356v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>An explicit finite identity basis is given for the eight-element semiring of upper triangular Boolean \(2\times2\) matrices in the signature \((+,\cdot)\). The basis consists of a known multiplicative basis, the ai-semiring laws, and 30 mixed identities, each using at most eight variables. The proof combines a finite basis for the multiplicative reduct with finite rules for shuffling words, duplicating a marked occurrence, and interchanging adjacent occurrences while adding prescribed witnesses. This converts the one-letter gap criterion into a derivation of every valid semiring identity. We also study the band subvariety, a distinguished 156-element interval of the subvariety lattice, congruences, flat members, and finite representations of free algebras. Every \(m\)-letter word has an equivalent subword of length at most \(m^2\) for \(m\geq2\), and the free algebras have doubly exponential rank growth. For arbitrary partially ordered sets, we determine the equational theory of Boolean relation semirings and of finite-support incidence semirings over nontrivial bounded distributive lattices: finite height \(h\) gives the theory of \(T_h\), while unbounded height gives precisely the identities of all additively idempotent semirings.</summary>
+    <category term="math.GR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-26T08:24:36Z</published>
+    <arxiv:primary_category term="math.GR"/>
+    <author>
+      <name>Jun Jiao</name>
+    </author>
+    <author>
+      <name>Xiaolei Shao</name>
+    </author>
+  </entry>
+</feed>
