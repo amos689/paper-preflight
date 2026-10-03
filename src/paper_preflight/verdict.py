@@ -191,12 +191,14 @@ def _rank(m: Match) -> tuple[int, int, float, float, int]:
     )
 
 
-def _bind_candidate(info: EntryInfo, candidates: list[SourceRecord]) -> Match | None:
+def _bind_candidate(
+    info: EntryInfo, candidates: list[SourceRecord], *, preprint_pair: bool = False
+) -> Match | None:
     """Bind an unanchored entry to one search candidate, or to none when in doubt."""
     if not candidates:
         return None
-    evaluated = [evaluate(info, r) for r in candidates]
-    best = best_candidate(info, candidates)
+    evaluated = [evaluate(info, r, preprint_pair=preprint_pair) for r in candidates]
+    best = best_candidate(info, candidates, preprint_pair=preprint_pair)
     if best is not None:
         same_work = title_key(best.record.title)
         pool = [m for m in evaluated if m.acceptable and title_key(m.record.title) == same_work]
@@ -345,17 +347,26 @@ def _status_findings(
     return findings, flags
 
 
-def _published_version(entry: BibEntry, evidence: Evidence) -> Finding | None:
-    """REF015 when the entry cites a preprint whose published version is known."""
+def cites_preprint(evidence: Evidence) -> bool:
+    """The entry cites an arXiv preprint, not a published version that keeps its eprint."""
     ids = evidence.identifiers
-    cites_preprint = (
+    return (
         any(i.scheme == "arxiv" for i in ids)
         and not any(i.scheme == "doi" and not i.value.startswith("10.48550/") for i in ids)
         and canonical_venue(evidence.info.venue) in {None, "arxiv"}
     )
-    if not cites_preprint:
+
+
+def _published_version(
+    entry: BibEntry, evidence: Evidence, bound: SourceRecord | None
+) -> Finding | None:
+    """REF015 when the entry cites a preprint whose published version is known."""
+    if not cites_preprint(evidence):
         return None
-    for version in evidence.published_versions:
+    versions = list(evidence.published_versions)
+    if bound is not None and not is_preprint(bound):
+        versions.append(bound)  # the title search found the published version itself
+    for version in versions:
         m = evaluate(evidence.info, version, preprint_pair=True)
         if m.title.status == "mismatch" or m.authors.status in {"mismatch", "unknown"}:
             continue
@@ -398,13 +409,14 @@ def _dead_identifiers(entry: BibEntry, evidence: Evidence) -> tuple[list[Finding
 def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessment:
     info = evidence.info
     findings, dead = _dead_identifiers(entry, evidence)
+    preprint = cites_preprint(evidence)  # a published version may then be a year or two later
 
     # 1. Records reached through the entry's own identifiers.
     same: list[Match] = []
     conflicts: list[tuple[Match, Identifier | None]] = []
     corrupted = False
     for record in evidence.anchored:
-        m = evaluate(info, record)
+        m = evaluate(info, record, preprint_pair=preprint)
         relation = _relation(m)
         if relation in {"same", "retitled"}:
             same.append(m)
@@ -431,7 +443,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     # 2. Bind: the best record reached by identifier, else one unambiguous search candidate.
     bound = min(same, key=_rank) if same else None
     if bound is None and not evidence.anchored:
-        bound = _bind_candidate(info, evidence.candidates)
+        bound = _bind_candidate(info, evidence.candidates, preprint_pair=preprint)
 
     flags: set[str] = set()
     reasons: list[Reason] = []
@@ -440,7 +452,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         same_records = [m.record for m in same] or [bound.record]
         status_findings, flags = _status_findings(entry, same_records, evidence.status_records)
         findings.extend(status_findings)
-        published = _published_version(entry, evidence)
+        published = _published_version(entry, evidence, bound.record)
         if published is not None:
             findings.append(published)
             flags.add("preprint_published")
@@ -550,18 +562,23 @@ def assess_all(
 
 
 def run_findings(evidence: dict[str, Evidence]) -> list[Finding]:
-    """RUN001 when any source was unavailable for any reference: the run cannot claim a pass."""
-    affected = [item for item in evidence.values() if item.unavailable]
+    """RUN001 when any source was unavailable for any reference: the run cannot claim a pass.
+
+    Offline mode is the user's choice, not a failing source, so it does not count here.
+    """
+    by_source: dict[str, set[str]] = {}
+    affected = 0
+    for item in evidence.values():
+        failures = {s: r for s, r in item.unavailable.items() if r != "offline"}
+        affected += bool(failures)
+        for source, reason in failures.items():
+            by_source.setdefault(source, set()).add(reason)
     if not affected:
         return []
-    by_source: dict[str, set[str]] = {}
-    for item in affected:
-        for source, reason in item.unavailable.items():
-            by_source.setdefault(source, set()).add(reason)
     described = [f"{source_name(s)} ({', '.join(sorted(r))})" for s, r in sorted(by_source.items())]
     return [
         make_finding(
-            "RUN001", None, count=len(affected), sources="; ".join(described),
+            "RUN001", None, count=affected, sources="; ".join(described),
             unavailable=sorted(by_source),
         )
     ]  # fmt: skip
