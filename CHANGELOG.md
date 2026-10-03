@@ -18,6 +18,8 @@ All notable changes to this project are documented here. The format follows
   Exit code 2 when a source was unavailable and nothing blocking was found.
 - `--refresh` (`check`, `bib fetch`, `bib fix`) asks every source again instead of using cached
   answers; within the run each answer is still asked for once. It contradicts `--offline`.
+- The JSON report records what each source did (`verification.sources`: requests, cache hits,
+  stale hits, negatives and unavailability by reason), so a run can be audited and compared.
 - When the arXiv API refuses requests or times out, arXiv IDs are verified through DataCite
   (`10.48550/arXiv.<id>`); the run still reports arXiv as unavailable.
 - Semantic Scholar as an optional rescue source, used only when `S2_API_KEY` is set: it is asked

@@ -46,6 +46,7 @@ def test_demo_paper_json_references(tmp_path: Path) -> None:
     result, payload = check_json(tmp_path, str(DEMO))
     assert result.exit_code == EXIT_FINDINGS
     assert payload["run"]["complete"] is True
+    sources = payload["verification"].pop("sources")
     assert payload["verification"] == {
         "mode": "online",
         "verdicts": {
@@ -54,6 +55,11 @@ def test_demo_paper_json_references(tmp_path: Path) -> None:
         },
         "unverified_offline": 0,
     }  # fmt: skip
+    # what each source did; Semantic Scholar is only asked with a key
+    assert {"arxiv", "crossref", "datacite", "dblp", "doiorg", "openalex"} <= set(sources)
+    assert "s2" not in sources
+    assert sources["crossref"]["requests"] > 0
+    assert all(s["unavailable"] == {} for s in sources.values())
     refs = {r["key"]: r for r in payload["references"]}
     assert set(refs) == CITED  # only references that appear in the PDF are verified
     assert refs["devlin2019bert"]["verdict"] == "identifier_conflict"
@@ -73,6 +79,9 @@ def test_offline_run_replays_the_cache(tmp_path: Path, recorded_web: FakeWeb) ->
     assert len(recorded_web.requests) == asked  # not a single request in offline mode
     assert offline["verification"]["mode"] == "offline"
     assert offline["verification"]["unverified_offline"] == 0
+    replayed = offline["verification"]["sources"].values()
+    assert sum(s["requests"] for s in replayed) == 0
+    assert sum(s["cache_hits"] + s["stale_hits"] for s in replayed) > 0
     assert offline["references"] == online["references"]
     assert offline["findings"] == online["findings"]
 
