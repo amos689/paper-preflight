@@ -50,3 +50,6 @@ All notable changes to this project are documented here. The format follows
   unverifiable in `--offline` runs, nor hides their published versions (REF015).
 - REF014 also reports an invented venue on a paper whose venue is known: an unrecognised name
   that shares no word or abbreviation with the recorded venue (abbreviations stay unknown).
+- REF012 also reports a title that is close to the record's but has other words ("towards" for
+  "for", "Hidden" for "Latent") and names them; spelling, hyphenation, "&", math and
+  "RETRACTED:" notices do not count, nor do preprints whose earlier titles are unknown.

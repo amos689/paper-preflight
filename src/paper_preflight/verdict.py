@@ -273,6 +273,28 @@ def _bind_candidate(
     return min(same_title, key=_rank)
 
 
+def _describe_changes(changes: tuple[tuple[str, str], ...], lang: str) -> str:
+    parts = []
+    for mine, recorded in changes:
+        if lang == "zh":
+            parts.append(
+                f"“{mine}”应为“{recorded}”"
+                if mine and recorded
+                else f"多出“{mine}”"
+                if mine
+                else f"缺少“{recorded}”"
+            )
+        else:
+            parts.append(
+                f'"{mine}" where the record has "{recorded}"'
+                if mine and recorded
+                else f'"{mine}" is not in the record'
+                if mine
+                else f'"{recorded}" is missing'
+            )
+    return ("；" if lang == "zh" else "; ").join(parts)
+
+
 def _year_gap(year: int | None, record: SourceRecord) -> int:
     years = record.all_years
     if year is None or not years:
@@ -287,11 +309,25 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
     key, record = entry.key, m.record
     source = source_name(record.source)
     out: list[Finding] = []
+    score = f"{m.title.score or 0.0:.2f}"
     if m.title.status == "mismatch":
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                found_title=record.title, score=f"{m.title.score or 0.0:.2f}",
+                found_title=record.title, score=score, difference=f"similarity {score}",
+                difference_zh=f"相似度 {score}", suggestion=protect_title(record.title),
+            )
+        )  # fmt: skip
+    elif m.title.changed and versions_known(record):
+        # Close but reworded ("towards" for "for", "Hidden" for "Latent"): HALLMARK's near-miss
+        # titles. Only when every title the work has had is known: a preprint's earlier version
+        # may carry the entry's wording.
+        out.append(
+            make_finding(
+                "REF012", _location(entry, "title"), key=key, field="title", source=source,
+                found_title=record.title, score=score,
+                difference=_describe_changes(m.title.changed, "en"),
+                difference_zh=_describe_changes(m.title.changed, "zh"),
                 suggestion=protect_title(record.title),
             )
         )  # fmt: skip
