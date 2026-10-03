@@ -1,12 +1,11 @@
 [build-system]
-requires = ["hatchling>=1.27"]
+requires = ["hatchling>=1.27", "hatch-fancy-pypi-readme>=24.1"]
 build-backend = "hatchling.build"
 
 [project]
 name = "paper-preflight"
-dynamic = ["version"]
+dynamic = ["version", "readme"]
 description = "Pre-submission integrity gate for LaTeX papers: every reference verified against real scholarly records. No LLM guessing, no false accusations."
-readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
@@ -69,6 +68,17 @@ dev = [
 
 [tool.hatch.version]
 path = "src/paper_preflight/__init__.py"
+
+# PyPI shows the README without the repository around it: relative links point to GitHub there.
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = '\]\((?!https?://|#)([^)\s]+)\)'
+replacement = '](https://github.com/amos689/paper-preflight/blob/main/\1)'
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/paper_preflight"]

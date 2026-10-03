@@ -20,6 +20,8 @@ All notable changes to this project are documented here. The format follows
   answers; within the run each answer is still asked for once. It contradicts `--offline`.
 - The JSON report records what each source did (`verification.sources`: requests, cache hits,
   stale hits, negatives and unavailability by reason), so a run can be audited and compared.
+- Releases are published to PyPI from GitHub Releases through trusted publishing, with PEP 740
+  attestations (`release.yml`, `docs/releasing.md`); the PyPI page links back to GitHub.
 - When the arXiv API refuses requests or times out, arXiv IDs are verified through DataCite
   (`10.48550/arXiv.<id>`); the run still reports arXiv as unavailable.
 - Semantic Scholar as an optional rescue source, used only when `S2_API_KEY` is set: it is asked
