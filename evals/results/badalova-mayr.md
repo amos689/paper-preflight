@@ -1,6 +1,6 @@
 # Head-to-head: Badalova & Mayr (2026)
 
-- **Tool:** paper-preflight 0.1.0, commit 37191c7
+- **Tool:** paper-preflight 0.1.0, commit 97e72da (main after #74)
 - **Data:** 104 references from three documents, checked by hand (71 verified, 33 problematic); the five tools' results as published (Zenodo 10.5281/zenodo.21457492, CC BY 4.0). Transcribed to BibTeX as written: `evals/badalova_mayr.bib`
 - **Run:** 2026-10-03, 0.0 min, live sources
 
