@@ -30,7 +30,22 @@ SOURCE_NAMES = {
     "crossref": "Crossref", "datacite": "DataCite", "doiorg": "doi.org", "arxiv": "arXiv",
     "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar",
 }  # fmt: skip
-_STOPWORDS = {"a", "an", "the", "on", "of", "for", "in", "to", "towards", "toward", "with", "and"}
+_STOPWORDS = {
+    "a",
+    "an",
+    "the",
+    "on",
+    "of",
+    "for",
+    "in",
+    "to",
+    "towards",
+    "toward",
+    "with",
+    "and",
+    "retracted",
+    "withdrawn",
+}  # Crossref prefixes retracted titles with "RETRACTED:"
 _SPECIAL = {"&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_"}
 
 

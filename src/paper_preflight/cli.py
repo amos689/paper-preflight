@@ -10,9 +10,13 @@ import platform
 import sys
 from enum import StrEnum
 from pathlib import Path
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 import typer
+
+if TYPE_CHECKING:  # imported lazily at run time to keep the CLI fast
+    from paper_preflight.check import VerifyOptions
+    from paper_preflight.fetch import FetchResult
 from platformdirs import user_cache_dir
 from rich.console import Console
 
@@ -282,3 +286,114 @@ def mcp(
         raise typer.Exit(EXIT_USAGE)
     server = create_server(root, cache_path=Path(cache_dir()) / "cache.sqlite3")
     server.run(show_banner=False)  # stdout carries the protocol: nothing else may be printed
+
+
+bib_app = typer.Typer(help="BibTeX helpers.", no_args_is_help=True)
+app.add_typer(bib_app, name="bib")
+
+
+@bib_app.command("fetch")
+def bib_fetch(
+    identifier: Annotated[
+        str | None, typer.Argument(help="A DOI or arXiv ID (URLs and doi:/arXiv: prefixes work).")
+    ] = None,
+    title: Annotated[str | None, typer.Option("--title", help="Search by title instead.")] = None,
+    author: Annotated[
+        str | None, typer.Option("--author", help="With --title: author(s), BibTeX style.")
+    ] = None,
+    year: Annotated[int | None, typer.Option("--year", help="With --title: the year.")] = None,
+    prefer: Annotated[
+        str,
+        typer.Option("--prefer", help="'published' (default) or 'preprint' for arXiv papers."),
+    ] = "published",
+    key: Annotated[str | None, typer.Option("--key", help="Citation key to use.")] = None,
+    output_format: Annotated[
+        OutputFormat, typer.Option("--format", "-f", help="'text' (BibTeX) or 'json'.")
+    ] = OutputFormat.TEXT,
+    offline: Annotated[
+        bool, typer.Option("--offline", help="Answer from the local cache only.")
+    ] = False,
+) -> None:
+    """Print a verified BibTeX entry for an identifier or a title. Never written from memory."""
+    import asyncio
+    import json
+
+    from paper_preflight.bibtex import SOURCE_NAMES, render
+    from paper_preflight.check import VerifyOptions
+    from paper_preflight.fetch import identifier_query, title_query
+
+    _safe_stdout()
+    if (identifier is None) == (title is None) or prefer not in {"published", "preprint"}:
+        typer.echo("paper-preflight: give either an identifier or --title", err=True)
+        raise typer.Exit(EXIT_USAGE)
+    query = identifier_query(identifier) if identifier else title_query(title or "", author, year)
+    if query is None:
+        typer.echo(f"paper-preflight: '{identifier}' is not a DOI or an arXiv ID", err=True)
+        raise typer.Exit(EXIT_USAGE)
+
+    options = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    result: FetchResult = asyncio.run(_run_fetch(query, options, prefer == "published"))
+    bibtex = render(result.record, key=key) if result.record is not None else None
+
+    if output_format is OutputFormat.JSON:
+        payload = {
+            "status": result.status,
+            "bibtex": bibtex,
+            "source": result.record.source if result.record else None,
+            "source_id": result.record.source_id if result.record else None,
+            "published_version_of": result.preprint.source_id if result.preprint else None,
+            "status_flags": sorted(result.record.status) if result.record else [],
+            "candidates": [
+                {"title": c.title, "year": c.year, "source": c.source, "id": c.source_id}
+                for c in result.candidates
+            ],
+            "unavailable": result.unavailable,
+        }
+        typer.echo(json.dumps(payload, ensure_ascii=False, indent=2))
+    elif result.record is not None and bibtex is not None:
+        typer.echo(bibtex, nl=False)
+        if result.record.status:  # retracted, withdrawn, expression of concern, correction
+            notices = ", ".join(sorted(result.record.status)).replace("_", " ")
+            typer.echo(f"warning: this work is marked {notices} by its registry", err=True)
+        if result.preprint is not None:
+            typer.echo(
+                f"note: arXiv {result.preprint.source_id} was published "
+                f"({result.record.venue or 'venue unknown'}, {result.record.year}); this is the "
+                "published version with the eprint kept. Use --prefer preprint for the preprint.",
+                err=True,
+            )
+    elif result.status == "ambiguous":
+        typer.echo("paper-preflight: several works match; give --author or --year:", err=True)
+        for c in result.candidates:
+            source = SOURCE_NAMES.get(c.source, c.source)
+            typer.echo(f"  {c.title} ({c.year or 'n.d.'}) [{source} {c.source_id}]", err=True)
+    else:
+        why = result.detail or (
+            "a source was unavailable: "
+            + ", ".join(f"{s} ({r})" for s, r in result.unavailable.items())
+            if result.status == "unavailable"
+            else "no source has it"
+        )
+        typer.echo(f"paper-preflight: not found ({why})", err=True)
+
+    if result.status == "found":
+        return
+    raise typer.Exit(EXIT_INCOMPLETE if result.status == "unavailable" else EXIT_FINDINGS)
+
+
+async def _run_fetch(query: str, options: VerifyOptions, prefer_published: bool) -> FetchResult:
+    import httpx
+
+    from paper_preflight import check as check_module
+    from paper_preflight.cache import Cache
+    from paper_preflight.fetch import fetch
+    from paper_preflight.resolve import Sources
+
+    cache = Cache(options.cache_path)
+    try:
+        transport = check_module.make_transport()
+        async with httpx.AsyncClient(transport=transport, follow_redirects=True) as http:
+            sources = Sources.create(http, cache, offline=options.offline)
+            return await fetch(query, sources, prefer_published=prefer_published)
+    finally:
+        cache.close()
