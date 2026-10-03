@@ -16,6 +16,7 @@ from difflib import SequenceMatcher
 from functools import cache
 from importlib import resources
 from typing import Literal
+from urllib.parse import urlsplit
 
 from rapidfuzz import fuzz
 from rapidfuzz.distance import Levenshtein
@@ -48,6 +49,9 @@ VENUE_FIELDS = ("booktitle", "journal", "journaltitle", "howpublished", "publish
 NAMED_VENUE_FIELDS = frozenset(VENUE_FIELDS[:3])
 
 
+_LINK_RE = re.compile(r"https?://[^\s{}<>\"]+", re.IGNORECASE)
+
+
 @dataclass(frozen=True)
 class EntryInfo:
     """The parts of a BibTeX entry that matching needs, extracted once."""
@@ -59,6 +63,7 @@ class EntryInfo:
     venue: str | None
     entry_type: str
     venue_field: str | None = None  # where ``venue`` came from (booktitle, journal, publisher ...)
+    link_hosts: tuple[str, ...] = ()  # hosts of the web pages the entry links to
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
@@ -67,6 +72,8 @@ class EntryInfo:
         match = re.search(r"\d{4}", year_text or "")
         venue_field = next((f for f in VENUE_FIELDS if entry.text(f)), None)
         venue = entry.text(venue_field) if venue_field else None
+        links = " ".join(entry.text(f) or "" for f in ("url", "howpublished", "note"))
+        hosts = (urlsplit(url).hostname or "" for url in _LINK_RE.findall(links))
         return cls(
             key=entry.key,
             title=entry.text("title") or "",
@@ -75,6 +82,7 @@ class EntryInfo:
             venue=venue,
             entry_type=entry.entry_type,
             venue_field=venue_field,
+            link_hosts=tuple(dict.fromkeys(h.removeprefix("www.") for h in hosts if h)),
         )
 
 

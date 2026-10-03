@@ -275,6 +275,27 @@ def test_too_new_to_be_indexed() -> None:
     assert result.reasons == (Reason.TOO_NEW,)
 
 
+@pytest.mark.parametrize(
+    ("url", "verdict"),
+    [
+        # a real paper in a society's own proceedings (2607.00307v1, Sese & Galapon 2022)
+        ("https://proceedings.spp-online.org/article/view/SPP-2022", Verdict.CANNOT_DETERMINE),
+        # a site the sources index: a paper linked there that none of them knows is missing
+        ("https://proceedings.mlr.press/v202/smith23a.html", Verdict.NOT_FOUND),
+        ("https://www.aclweb.org/anthology/2023.acl-long.1", Verdict.NOT_FOUND),
+    ],
+)  # fmt: skip
+def test_a_link_to_a_site_no_source_indexes_is_no_proof_of_absence(
+    url: str, verdict: Verdict
+) -> None:
+    entry = bib(NO_DOI.replace("  year = {2023},", f"  year = {{2023}}, url = {{{url}}},"))
+    item = evidence_for(entry, searched={"dblp", "crossref"}, negative={"dblp", "crossref"})
+    result = assess(entry, item, current_year=YEAR)
+    assert result.verdict is verdict
+    if verdict is Verdict.CANNOT_DETERMINE:
+        assert result.reasons == (Reason.UNINDEXED_LINK,)
+
+
 def test_short_title_is_never_not_found() -> None:
     entry = bib(CS_ENTRY.replace(TITLE, "Sparse Attention Revisited").replace(
         "  doi = {10.1234/acl.2023.1},\n", ""

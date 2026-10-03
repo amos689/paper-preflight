@@ -35,7 +35,7 @@ from paper_preflight.match import (
     is_preprint,
     wrong_paper,
 )
-from paper_preflight.resolve import GREY_TYPES, Evidence, looks_cs
+from paper_preflight.resolve import GREY_TYPES, Evidence, looks_cs, unindexed_hosts
 from paper_preflight.rules import make_finding
 from paper_preflight.sources.record import SourceRecord
 
@@ -61,6 +61,7 @@ class Reason(StrEnum):
     BUDGET_EXHAUSTED = "BUDGET_EXHAUSTED"
     NON_LATIN_UNSUPPORTED = "NON_LATIN_UNSUPPORTED"
     GREY_LITERATURE = "GREY_LITERATURE"
+    UNINDEXED_LINK = "UNINDEXED_LINK"
     TOO_NEW = "TOO_NEW"
     IDENTIFIER_EXISTS_NO_METADATA = "IDENTIFIER_EXISTS_NO_METADATA"
     CORRUPTED_SOURCE_RECORD = "CORRUPTED_SOURCE_RECORD"
@@ -78,6 +79,10 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
     Reason.GREY_LITERATURE: (
         "grey literature without an identifier (book, report, software, web page)",
         "没有标识符的灰色文献（图书、报告、软件、网页等）",
+    ),
+    Reason.UNINDEXED_LINK: (
+        "it links to a site no queried source indexes; check the link",
+        "条目链接的网站不在任何已查询来源的收录范围内，请人工核对该链接",
     ),
     Reason.TOO_NEW: ("too recent to be indexed yet", "过新，可能尚未被收录"),
     Reason.IDENTIFIER_EXISTS_NO_METADATA: (
@@ -771,6 +776,10 @@ def _abstention_reasons(
     ]
     if info.entry_type in GREY_TYPES and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)
+    # a paper in a society's own proceedings, linked there (Proceedings of the Samahang Pisika ng
+    # Pilipinas, proceedings.spp-online.org): no source knowing it says nothing about it
+    elif not live_ids and unindexed_hosts(info.link_hosts):
+        reasons.append(Reason.UNINDEXED_LINK)
     # this year's and next year's papers may not be indexed yet; a later year is just wrong
     if not live_ids and info.year is not None and current_year <= info.year <= current_year + 1:
         reasons.append(Reason.TOO_NEW)
