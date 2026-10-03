@@ -161,9 +161,7 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
-    for candidate, note in [(record.title, "")] + [
-        (t, EARLIER_VERSION) for t in record.alt_titles
-    ]:
+    for candidate, note in [(record.title, "")] + [(t, EARLIER_VERSION) for t in record.alt_titles]:
         score = title_score(entry_title, candidate)
         if score > best:
             best, best_note = score, note
