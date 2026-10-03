@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from paper_preflight.bib.names import parse_authors, parse_name
-from paper_preflight.bib.parse import parse_bib_file
+from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.match import (
     EntryInfo,
     best_candidate,
@@ -339,6 +339,40 @@ def test_a_one_letter_slip_in_a_source_needs_the_same_given_name() -> None:
 def test_venues_nobody_recognises(venue: str | None, status: str) -> None:
     cvpr = SourceRecord(source="dblp", source_id="x", title="t", venue="CVPR")
     assert check_venue(venue, cvpr).status == status
+
+
+@pytest.mark.parametrize(
+    ("venue", "recorded", "status"),
+    [
+        # one word the recorded venue does not have is enough...
+        ("International Conference on Quantum Machine Learning", "ICML", "mismatch"),
+        ("Journal of Statistical Machine Learning Theory", "ICML", "mismatch"),
+        ("Conference on Disentangled Representations", "ICLR", "mismatch"),
+        # ...but abbreviations, ordinals, series and publishers are not such words
+        ("Adv. Neural Inf. Process. Syst.", "NeurIPS", "unknown"),
+        ("Int. Conf. Mach. Learn.", "ICML", "unknown"),
+        ("Proceedings of Machine Learning Research", "ICML", "unknown"),
+        ("OpenReview.net", "ICLR", "unknown"),
+        ("Proc. of the Thirty-Fifth Conference on Artificial Intelligence", "AAAI", "unknown"),
+        # a workshop's name rarely contains its venue's: it must share no word at all
+        ("Workshop on Machine Learning for Creativity", "ICML", "unknown"),
+        ("ACM Workshop on Spatial Intelligence", "ICML", "mismatch"),
+    ],
+)  # fmt: skip
+def test_unrecognised_venues_naming_something_else(venue: str, recorded: str, status: str) -> None:
+    record = SourceRecord(source="dblp", source_id="x", title="t", venue=recorded)
+    assert check_venue(venue, record).status == status
+
+
+def test_only_venue_names_are_judged() -> None:
+    # a publisher or a howpublished note is not where the entry names its venue
+    record = SourceRecord(source="dblp", source_id="x", title="t", venue="CVPR")
+    assert check_venue("Curran Associates", record, named=False).status == "unknown"
+    entry = parse_bib_text(
+        "@inproceedings{k, title = {T}, publisher = {Curran Associates}, year = {2020}}",
+        Path("refs.bib"),
+    ).entries[0]
+    assert EntryInfo.from_entry(entry).venue_field == "publisher"
 
 
 def test_an_unrecognised_record_venue_is_never_a_mismatch() -> None:

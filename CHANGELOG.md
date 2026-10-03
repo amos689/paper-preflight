@@ -55,3 +55,7 @@ All notable changes to this project are documented here. The format follows
   "RETRACTED:" notices do not count, nor do preprints whose earlier titles are unknown.
 - More venues are recognised for REF014: AISTATS, UAI, COLT, CoRL, TMLR, IJCV, WWW, WSDM, CIKM,
   ICASSP, Interspeech, MICCAI, ICRA, IROS, WACV and BMVC. URLs in a venue field are ignored.
+- An unrecognised venue is also reported when it names something the recorded venue does not
+  ("International Conference on Quantum Machine Learning" for ICML). Abbreviations, ordinals,
+  series and publishers (PMLR, LNCS, OpenReview) never count, only booktitle and journal are
+  judged, and a workshop must share no word at all with the recorded venue.

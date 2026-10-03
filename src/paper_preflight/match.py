@@ -42,6 +42,12 @@ class FieldCheck:
     changed: tuple[tuple[str, str], ...] = ()
 
 
+# Where an entry names its venue, in order of preference. Only the first three name it; the
+# others may hold a URL or a publisher.
+VENUE_FIELDS = ("booktitle", "journal", "journaltitle", "howpublished", "publisher")
+NAMED_VENUE_FIELDS = frozenset(VENUE_FIELDS[:3])
+
+
 @dataclass(frozen=True)
 class EntryInfo:
     """The parts of a BibTeX entry that matching needs, extracted once."""
@@ -52,19 +58,15 @@ class EntryInfo:
     year: int | None
     venue: str | None
     entry_type: str
+    venue_field: str | None = None  # where ``venue`` came from (booktitle, journal, publisher ...)
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
         author_field = entry.fields.get("author") or entry.fields.get("editor")
         year_text = entry.text("year") or (entry.text("date") or "")[:4]
         match = re.search(r"\d{4}", year_text or "")
-        venue = (
-            entry.text("booktitle")
-            or entry.text("journal")
-            or entry.text("journaltitle")
-            or entry.text("howpublished")
-            or entry.text("publisher")
-        )
+        venue_field = next((f for f in VENUE_FIELDS if entry.text(f)), None)
+        venue = entry.text(venue_field) if venue_field else None
         return cls(
             key=entry.key,
             title=entry.text("title") or "",
@@ -72,6 +74,7 @@ class EntryInfo:
             year=int(match.group(0)) if match else None,
             venue=venue,
             entry_type=entry.entry_type,
+            venue_field=venue_field,
         )
 
 
@@ -369,7 +372,19 @@ _VENUE_FILLER = frozenset(
     "proceedings proc conference conf international intl annual journal transactions trans "
     "symposium symp workshop workshops meeting the and for ieee acm cvf advances volume vol "
     "part series lecture notes".split()
+    # ordinals: "Proceedings of the Thirty-Fifth AAAI Conference"
+    + "first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth "
+    "thirteenth fourteenth fifteenth sixteenth seventeenth eighteenth nineteenth twentieth "
+    "twenty thirtieth thirty fortieth forty fiftieth fifty sixtieth sixty".split()
 )
+# Words of the full names of venues whose patterns are only their abbreviation.
+_VENUE_FULL_NAMES = {
+    "aaai": "association for the advancement of artificial intelligence conference on artificial "
+    "intelligence",
+    "neurips": "advances in neural information processing systems",
+    "sigir": "research and development in information retrieval",
+    "interspeech": "conference of the international speech communication association",
+}
 
 
 def venue_words(text: str | None) -> set[str]:
@@ -382,26 +397,47 @@ def _related(ours: set[str], theirs: set[str]) -> bool:
     return any(a.startswith(b) or b.startswith(a) for a in ours for b in theirs)
 
 
-def check_venue(venue: str | None, record: SourceRecord) -> FieldCheck:
-    """A mismatch needs positive evidence: two recognised, different venues, or a venue nobody
-    recognises that shares no word (or abbreviation) with the recognised recorded one.
+def _abbreviates(word: str, known: set[str]) -> bool:
+    """``word`` is a known word, an abbreviation of one ("mach") or a longer form ("networks")."""
+    return any(k.startswith(word) or (len(k) >= 5 and word.startswith(k)) for k in known)
 
-    The second case catches invented venues ("Annual Conference on Spatial Intelligence" for a
-    CVPR paper; HALLMARK's nonexistent_venue type) without flagging abbreviations such as
-    "Proc. IEEE Conf. Comp. Vis. Patt. Recog." for CVPR.
+
+# Series and publishers that stand in for a venue name ("Proceedings of Machine Learning
+# Research" for ICML); they say nothing about which venue it was.
+_VENUE_SERIES = re.compile(
+    r"proceedings of machine learning research|\bpmlr\b|"
+    r"lecture notes in (computer science|artificial intelligence|bioinformatics)|\blncs\b|"
+    r"\blnai\b|openreview(\.net)?|curran associates|\bceur\b|springer|elsevier|mit press|"
+    r"acm press|aaai press|ieee computer society|association for computing machinery",
+    re.I,
+)
+
+
+def check_venue(venue: str | None, record: SourceRecord, *, named: bool = True) -> FieldCheck:
+    """A mismatch needs positive evidence: two recognised, different venues, or a venue nobody
+    recognises next to a recognised recorded one, naming something the recorded one does not.
+
+    The second case catches invented venues ("Annual Conference on Spatial Intelligence" or
+    "International Conference on Quantum Machine Learning" for an ICML paper; HALLMARK's
+    nonexistent_venue type) without flagging abbreviations such as "Proc. IEEE Conf. Comp. Vis.
+    Patt. Recog." for CVPR. It needs two words to compare, ignores series and publishers (PMLR,
+    LNCS, OpenReview), and only judges venue names (``named``: booktitle or journal, not a
+    publisher). A workshop must share no word at all: its name rarely contains its venue's.
     """
     mine, theirs = canonical_venue(venue), canonical_venue(record.venue)
     if mine is not None and theirs is not None:
         if mine == theirs:
             return FieldCheck("match")
         return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
-    if mine is None and theirs is not None:
-        ours = venue_words(venue)
-        known = venue_words(record.venue)
-        for key, patterns in _VENUES:
-            if key == theirs:
-                known |= {w for pattern in patterns for w in venue_words(pattern)}
-        if len(ours) >= 2 and not _related(ours, known):
+    if mine is None and theirs is not None and named and venue:
+        ours = venue_words(_VENUE_SERIES.sub(" ", venue))
+        # every word of the recorded name and its known forms, filler included ("adv", "proc")
+        names = [record.venue or "", _VENUE_FULL_NAMES.get(theirs, "")]
+        names += next(p for k, p in _VENUES if k == theirs)
+        known = {w for name in names for w in re.findall(r"[a-z]+", fold(name)) if len(w) >= 3}
+        foreign = {w for w in ours if not _abbreviates(w, known)}
+        workshop = "workshop" in fold(venue)
+        if len(ours) >= 2 and foreign and (foreign == ours or not workshop):
             return FieldCheck("mismatch", None, f"unrecognised venue vs {theirs}")
     return FieldCheck("unknown")
 
@@ -464,7 +500,7 @@ def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = Fal
     title = check_title(info.title, record)
     authors = check_authors(info.authors, record)
     year = check_year(info.year, record, preprint_pair=preprint_pair)
-    venue = check_venue(info.venue, record)
+    venue = check_venue(info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS)
     suspicious = suspicious_reason(record, info.year)
     short_title = word_count(info.title) < 5
     acceptable = (
