@@ -2,25 +2,56 @@
 
 from __future__ import annotations
 
+import io
+import locale
 import os
 import platform
 import sys
+from enum import StrEnum
+from pathlib import Path
 from typing import Annotated
 
 import typer
 from platformdirs import user_cache_dir
+from rich.console import Console
 
 from paper_preflight import __version__
+from paper_preflight.findings import Severity
 
 # Credentials are read from the environment only and are never printed.
 CREDENTIAL_ENV_VARS = ("PAPER_PREFLIGHT_EMAIL", "OPENALEX_API_KEY", "S2_API_KEY", "NCBI_API_KEY")
+
+# Exit codes (docs/adr/0002-verdicts-and-abstention.md).
+EXIT_OK = 0
+EXIT_FINDINGS = 1
+EXIT_INCOMPLETE = 2
+EXIT_USAGE = 3
+EXIT_INTERNAL = 4
 
 app = typer.Typer(
     name="paper-preflight",
     help="Pre-submission integrity gate for LaTeX papers.",
     no_args_is_help=True,
     add_completion=False,
+    pretty_exceptions_enable=False,
 )
+
+
+class OutputFormat(StrEnum):
+    TEXT = "text"
+    JSON = "json"
+
+
+class FailOn(StrEnum):
+    ERROR = "error"
+    WARNING = "warning"
+    NEVER = "never"
+
+
+class Lang(StrEnum):
+    AUTO = "auto"
+    EN = "en"
+    ZH = "zh"
 
 
 def _version_callback(value: bool) -> None:
@@ -49,6 +80,92 @@ def cache_dir() -> str:
     return os.environ.get("PAPER_PREFLIGHT_CACHE_DIR") or user_cache_dir(
         "paper-preflight", appauthor=False
     )
+
+
+def resolve_lang(lang: Lang) -> str:
+    if lang is not Lang.AUTO:
+        return str(lang.value)
+    configured = os.environ.get("PAPER_PREFLIGHT_LANG", "")
+    if configured:
+        return "zh" if configured.lower().startswith("zh") else "en"
+    names = [locale.getlocale()[0] or "", os.environ.get("LANG", "")]
+    return "zh" if any(n.lower().startswith(("zh", "chinese")) for n in names) else "en"
+
+
+def _safe_stdout() -> None:
+    """Never crash on characters the console encoding cannot represent."""
+    stream = sys.stdout
+    if isinstance(stream, io.TextIOWrapper) and stream.errors == "strict":
+        stream.reconfigure(errors="replace")
+
+
+@app.command()
+def check(
+    path: Annotated[
+        Path, typer.Argument(help="Project directory, main .tex file, or a .bib file.")
+    ] = Path("."),
+    main_file: Annotated[
+        Path | None, typer.Option("--main", help="Main .tex file if it cannot be detected.")
+    ] = None,
+    bib: Annotated[
+        list[Path] | None, typer.Option("--bib", help="Additional .bib file(s) to include.")
+    ] = None,
+    output_format: Annotated[
+        OutputFormat, typer.Option("--format", "-f", help="Output format.")
+    ] = OutputFormat.TEXT,
+    output: Annotated[
+        Path | None, typer.Option("--output", "-o", help="Write the report to a file.")
+    ] = None,
+    fail_on: Annotated[
+        FailOn, typer.Option("--fail-on", help="Lowest severity that makes the exit code 1.")
+    ] = FailOn.ERROR,
+    lang: Annotated[Lang, typer.Option("--lang", help="Message language.")] = Lang.AUTO,
+    max_findings: Annotated[
+        int | None, typer.Option("--max-findings", help="Limit findings in JSON output.")
+    ] = None,
+    cite_command: Annotated[
+        list[str] | None,
+        typer.Option("--cite-command", help="Extra citation macro, e.g. --cite-command mycite."),
+    ] = None,
+    hide_info: Annotated[bool, typer.Option("--hide-info", help="Hide info findings.")] = False,
+) -> None:
+    """Check a LaTeX project (or a .bib file) and report problems with its references."""
+    from paper_preflight.check import run_check
+    from paper_preflight.report.jsonout import render_json
+    from paper_preflight.report.text import render_text
+    from paper_preflight.tex.project import ProjectError
+
+    _safe_stdout()
+    language = resolve_lang(lang)
+    try:
+        result = run_check(path, main=main_file, extra_bib=bib, cite_commands=cite_command)
+    except ProjectError as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
+    except Exception as exc:  # report, never dump a traceback at the user by default
+        typer.echo(f"paper-preflight: internal error: {exc!r}", err=True)
+        if os.environ.get("PAPER_PREFLIGHT_DEBUG"):
+            raise
+        raise typer.Exit(EXIT_INTERNAL) from exc
+
+    if output_format is OutputFormat.JSON:
+        text = render_json(result, max_findings=max_findings)
+        if output:
+            output.write_text(text + "\n", encoding="utf-8")
+        else:
+            typer.echo(text)
+    else:
+        if output:
+            with output.open("w", encoding="utf-8") as handle:
+                render_text(result, Console(file=handle, width=100), language, not hide_info)
+        else:
+            render_text(result, Console(highlight=False), language, not hide_info)
+
+    threshold = None if fail_on is FailOn.NEVER else Severity(fail_on.value)
+    if result.has_blocking(threshold):
+        raise typer.Exit(EXIT_FINDINGS)
+    if not result.complete:
+        raise typer.Exit(EXIT_INCOMPLETE)
 
 
 @app.command()
