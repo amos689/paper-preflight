@@ -17,6 +17,7 @@ from importlib import resources
 from typing import Literal
 
 from rapidfuzz import fuzz
+from rapidfuzz.distance import Levenshtein
 
 from paper_preflight.bib.names import AuthorList, parse_authors
 from paper_preflight.bib.normalize import fold, title_key, word_count
@@ -140,8 +141,38 @@ def loose_surname(key: str) -> str:
     return key
 
 
-def same_surname(a: str, b: str) -> bool:
-    return a == b or loose_surname(a) == loose_surname(b)
+def _name_forms(person: Person) -> set[str]:
+    """Ways sources write one surname: its last part, all parts joined, and the last given name
+    joined to it (Crossref has "RichardWebster" for Brandon Richard Webster; "Sánchez-Fernández"
+    and "Sánchez Fernández" are one name), all with transcriptions folded."""
+    if person.literal:
+        return {loose_surname(surname_key(person))}
+    family = [w.strip("'") for w in re.findall(r"[\w']+", fold(person.family))]
+    given = re.findall(r"\w+", fold(person.given))
+    forms: set[str] = set()
+    if family:
+        forms |= {family[-1], "".join(family)}
+        if given:
+            forms.add(given[-1] + "".join(family))
+    return {loose_surname(form) for form in forms if form}
+
+
+def _first_given(person: Person) -> str:
+    words = re.findall(r"\w+", fold(person.given))
+    return words[0] if words else ""
+
+
+def same_person(a: Person, b: Person) -> bool:
+    """One person written differently by two sources (checked after exact surnames pair up)."""
+    if surname_key(a) == surname_key(b) or _name_forms(a) & _name_forms(b):
+        return True
+    # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
+    # record), accepted only when the full given names agree.
+    given = _first_given(a)
+    if len(given) < 2 or given != _first_given(b):
+        return False
+    key_a, key_b = surname_key(a), surname_key(b)
+    return min(len(key_a), len(key_b)) >= 2 and Levenshtein.distance(key_a, key_b) <= 1
 
 
 @dataclass(frozen=True)
@@ -154,31 +185,33 @@ class AuthorCheck(FieldCheck):
 
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     entry = [(person, key) for person in authors.people if (key := surname_key(person))]
-    record_keys = [k for k in (surname_key(p) for p in record.authors) if k]
-    if not entry or not record_keys:
+    people = [person for person in record.authors if surname_key(person)]
+    record_keys = [surname_key(person) for person in people]
+    if not entry or not people:
         return AuthorCheck("unknown")
     # exact surnames first, then spelling variants, so a variant never takes an exact match
-    pool = list(record_keys)
-    unmatched: list[tuple[Person, str]] = []
+    pool = list(zip(people, record_keys, strict=True))
+    unmatched: list[Person] = []
     for person, key in entry:
-        if key in pool:
-            pool.remove(key)
+        index = next((i for i, (_, k) in enumerate(pool) if k == key), None)
+        if index is None:
+            unmatched.append(person)
         else:
-            unmatched.append((person, key))
-    loose_pool = [loose_surname(k) for k in pool]
+            pool.pop(index)
     missing: list[str] = []
-    for person, key in unmatched:
-        if loose_surname(key) in loose_pool:
-            loose_pool.remove(loose_surname(key))
-        else:
+    for person in unmatched:
+        index = next((i for i, (other, _) in enumerate(pool) if same_person(person, other)), None)
+        if index is None:
             missing.append(person.display)
+        else:
+            pool.pop(index)
     matched = len(entry) - len(missing)
     overlap = matched / len(entry)
-    first_key = entry[0][1]
+    first_person = entry[0][0]
     if record.authors_ordered:
-        first = same_surname(first_key, record_keys[0])
+        first = same_person(first_person, people[0])
     else:
-        first = any(same_surname(first_key, k) for k in record_keys)
+        first = any(same_person(first_person, other) for other in people)
     missing_names = tuple(missing)
 
     def result(status: Status, note: str = "", *, disjoint: bool = False) -> AuthorCheck:

@@ -94,6 +94,9 @@ SOURCE_NAMES = {
 }  # fmt: skip
 SOURCE_PRIORITY = {"crossref": 0, "datacite": 1, "doiorg": 2, "dblp": 3, "openalex": 4, "arxiv": 5}
 VENUE_FIELDS = ("booktitle", "journal", "journaltitle", "howpublished", "publisher")
+# Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
+# entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
+AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2"})
 
 
 def source_name(source: str) -> str:
@@ -292,7 +295,9 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
         )  # fmt: skip
     authors = m.authors
     author_field = "author" if "author" in entry.fields else "editor"
-    if authors.status == "mismatch" and authors.disjoint:
+    if record.source in AUTHORS_NOT_CHECKED_AGAINST:
+        pass  # see AUTHORS_NOT_CHECKED_AGAINST
+    elif authors.status == "mismatch" and authors.disjoint:
         out.append(
             make_finding(
                 "REF010", _location(entry, author_field), key=key, field=author_field,
