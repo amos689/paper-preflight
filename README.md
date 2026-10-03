@@ -75,6 +75,7 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 | REF004 · REF005 | The work was retracted, or has an expression of concern or a correction |
 | REF010–REF014 | Authors, title, year or venue differ from the real record |
 | REF015 | A cited preprint has been formally published |
+| REF016 | The registry has a DOI the entry lacks (offered as a safe fix) |
 | REF017 | An identifier is written so that links break (`10.1162/tacl\_a\_00276`, `…v1`) |
 | CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
 | REF090 | Cannot determine, always with the reason (source unavailable, grey literature, …) |
