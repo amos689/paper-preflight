@@ -31,21 +31,31 @@
   - `paper-preflight check`（终端与 JSON 输出、中英双语、退出码）
   - 共 59 个测试
 
-### 进行中
+- [x] S1–S5 数据源验证（`docs/spikes/S1…S5`）→ ADR-0003 定稿：
+  - dblp 只用 SPARQL（搜索 API 有反爬墙）
+  - Crossref 有 10.65215 假副本，需要黑名单
+  - OpenAlex 只作次要来源
+  - S2 默认关闭，只在有 key 时启用
+  - arXiv 要取各版本标题
+- [x] SARIF 2.1.0 输出（用官方 schema 校验）；SQLite 缓存；数据源客户端基座（限流、冷却、来源不可用识别、离线回放）。共 80 个测试
+- [x] 示例论文 `examples/demo-paper/`（main.tex、refs.bib、EXPECTED.md）。离线阶段的预期发现已全部命中
 
-- [ ] S1–S5 数据源 API 验证（dblp SPARQL、Crossref、OpenAlex、arXiv/DataCite/doi.org、Semantic Scholar）→ `docs/spikes/`，之后定稿 ADR-0003
-- [ ] SARIF 2.1.0 输出
+### W0 状态：开发侧全部完成，等待用户操作
 
-### 待办（W0 剩余）
-
-- [ ] `examples/demo-paper/`：埋入各类问题的示例论文（伪造条目用虚构作者），依据 S1–S5 的实测元数据编写
-- [ ] 依据 S1–S5 定稿 ADR-0003（路由与 S2 补救策略）
-- [ ] 用户操作：
-  - 建 GitHub 组织 `paper-preflight` 与私有仓库
+- [ ] 用户：
+  - 建 GitHub 组织 `paper-preflight`，并建私有仓库 `paper-preflight/paper-preflight`
   - 注册 PyPI（2FA）
   - 申请 OpenAlex、S2 免费 key
   - 提供测试邮箱（只放本机环境变量）
-- [ ] 推送到 GitHub，确认 CI 全绿
+  - 决定提交作者邮箱是否改成 GitHub noreply
+- [ ] 推送到 GitHub，确认 CI 在 3 个系统 × 4 个 Python 版本上全绿
+
+## 下一步：W1–W2（已提前开始）
+
+- [ ] 各数据源适配器（doiRA、Crossref、DataCite、arXiv、dblp SPARQL、OpenAlex；S2 可选），带 respx 契约测试
+- [ ] 路由器与请求预算；`doctor` 加入连通性检查
+- [ ] REF017（DOI 中的 LaTeX 转义，离线即可检测）
+- [ ] 匹配与判决（W3），评测框架（W3）
 
 ## 已知问题与备忘
 

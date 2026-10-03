@@ -7,7 +7,7 @@ decision and its consequences. Superseded ADRs are kept and marked as such.
 |---|---|---|
 | [0001](0001-source-first-input.md) | Source-first input; PDF only as a low-confidence fallback | Accepted |
 | [0002](0002-verdicts-and-abstention.md) | Verdict taxonomy, abstention and exit codes | Accepted |
-| [0003](0003-identifier-first-routing.md) | Identifier-first source routing and Semantic Scholar "rescue" mode | Proposed (pending spikes S1–S5) |
+| [0003](0003-identifier-first-routing.md) | Identifier-first source routing (S2 off by default) | Accepted (spikes S1–S5) |
 | [0004](0004-no-llm-in-verdicts.md) | No LLM in the verdict path | Accepted |
 | [0005](0005-http-adapters-and-cache.md) | Own thin HTTP adapters and an application-level SQLite cache | Accepted |
 | [0006](0006-license-policy.md) | Dependency and adapted-code license policy | Accepted |
