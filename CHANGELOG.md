@@ -16,3 +16,7 @@ All notable changes to this project are documented here. The format follows
   Exit code 2 when a source was unavailable and nothing blocking was found.
 - When the arXiv API refuses requests or times out, arXiv IDs are verified through DataCite
   (`10.48550/arXiv.<id>`); the run still reports arXiv as unavailable.
+- Semantic Scholar as an optional rescue source, used only when `S2_API_KEY` is set: it is asked
+  about references no other source found, stays below the keyed limit of 1 request/s, backs off
+  exponentially on HTTP 429, and its outages never block a verdict. Its answers are cached
+  locally but never exported (licence).

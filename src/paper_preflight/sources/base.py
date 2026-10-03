@@ -58,7 +58,19 @@ class SourcePolicy:
     timeout: float = 20.0
     cooldown: float = 600.0  # how long to stop asking after the source became unavailable
     retries: int = 1  # retries for timeouts and 5xx only, with backoff
+    # Retries after HTTP 429 with exponential backoff (backoff, 2x, 4x ... or Retry-After if
+    # longer). 0 = a 429 makes the source unavailable at once, which suits shared public pools.
+    rate_limit_retries: int = 0
+    backoff: float = 2.0
     exportable: bool = True  # may cached responses be exported/redistributed?
+
+
+class _Retry(Exception):
+    """Internal: the response asks for another attempt after ``delay`` seconds."""
+
+    def __init__(self, delay: float) -> None:
+        super().__init__(delay)
+        self.delay = delay
 
 
 @dataclass
@@ -201,7 +213,8 @@ class SourceClient:
         accept = "application/json" if expect_json else "application/atom+xml, application/xml"
         merged_headers = {"User-Agent": USER_AGENT, "Accept": accept}
         merged_headers.update(headers or {})
-        attempt = 0
+        attempt = 0  # timeouts and 5xx
+        rate_limited = 0  # 429s
         while True:
             async with self._semaphore:
                 await self._pace()
@@ -219,13 +232,16 @@ class SourceClient:
                     continue
                 except httpx.HTTPError as exc:
                     raise self._unavailable(UnavailableReason.NETWORK, type(exc).__name__) from exc
-            result = self._interpret(
-                response, key, classify, negative_statuses, attempt, expect_json
-            )
-            if result is not None:
-                return result
-            attempt += 1
-            await asyncio.sleep(2.0 * attempt)
+            try:
+                return self._interpret(
+                    response, key, classify, negative_statuses, attempt, rate_limited, expect_json
+                )
+            except _Retry as retry:
+                if response.status_code == 429:
+                    rate_limited += 1
+                else:
+                    attempt += 1
+                await asyncio.sleep(retry.delay)
 
     def _retryable(
         self, reason: UnavailableReason, detail: str, attempt: int
@@ -241,8 +257,10 @@ class SourceClient:
         classify: Classifier,
         negative_statuses: tuple[int, ...],
         attempt: int,
+        rate_limited: int = 0,
         expect_json: bool = True,
-    ) -> Fetched | None:
+    ) -> Fetched:
+        """Turn a response into data, a negative, a retry (:class:`_Retry`) or unavailability."""
         status = response.status_code
         content_type = response.headers.get("content-type", "").lower()
         looks_html = "html" in content_type or response.text.lstrip()[:15].lower().startswith(
@@ -250,6 +268,10 @@ class SourceClient:
         )
         if status == 429:
             retry_after = _retry_after_seconds(response)
+            if rate_limited < self.policy.rate_limit_retries:
+                backoff = self.policy.backoff * 2**rate_limited
+                delay = max(backoff, retry_after or 0.0)
+                raise _Retry(delay + random.uniform(0, 0.25 * delay))
             raise self._unavailable(UnavailableReason.RATE_LIMITED, "HTTP 429", retry_after)
         if status == 403:
             body = response.text[:2000]
@@ -267,7 +289,7 @@ class SourceClient:
             error = self._retryable(UnavailableReason.SERVER_ERROR, f"HTTP {status}", attempt)
             if error is not None:
                 raise error
-            return None
+            raise _Retry(2.0 * (attempt + 1))
         if status != 200:
             raise self._unavailable(UnavailableReason.BAD_RESPONSE, f"HTTP {status}")
         if looks_html:
