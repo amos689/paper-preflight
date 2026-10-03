@@ -288,14 +288,46 @@ def canonical_venue(text: str | None) -> str | None:
     return None
 
 
+# Words every venue name may carry; they say nothing about which venue it is.
+_VENUE_FILLER = frozenset(
+    "proceedings proc conference conf international intl annual journal transactions trans "
+    "symposium symp workshop workshops meeting the and for ieee acm cvf advances volume vol "
+    "part series lecture notes".split()
+)
+
+
+def venue_words(text: str | None) -> set[str]:
+    words = re.findall(r"[a-z]+", fold(text or ""))
+    return {w for w in words if len(w) >= 3 and w not in _VENUE_FILLER}
+
+
+def _related(ours: set[str], theirs: set[str]) -> bool:
+    """Some word of one name abbreviates or equals a word of the other ("recog"/"recognition")."""
+    return any(a.startswith(b) or b.startswith(a) for a in ours for b in theirs)
+
+
 def check_venue(venue: str | None, record: SourceRecord) -> FieldCheck:
-    """Only report a mismatch when both sides name a recognised, different venue."""
+    """A mismatch needs positive evidence: two recognised, different venues, or a venue nobody
+    recognises that shares no word (or abbreviation) with the recognised recorded one.
+
+    The second case catches invented venues ("Annual Conference on Spatial Intelligence" for a
+    CVPR paper; HALLMARK's nonexistent_venue type) without flagging abbreviations such as
+    "Proc. IEEE Conf. Comp. Vis. Patt. Recog." for CVPR.
+    """
     mine, theirs = canonical_venue(venue), canonical_venue(record.venue)
-    if mine is None or theirs is None:
-        return FieldCheck("unknown")
-    if mine == theirs:
-        return FieldCheck("match")
-    return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
+    if mine is not None and theirs is not None:
+        if mine == theirs:
+            return FieldCheck("match")
+        return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
+    if mine is None and theirs is not None:
+        ours = venue_words(venue)
+        known = venue_words(record.venue)
+        for key, patterns in _VENUES:
+            if key == theirs:
+                known |= {w for pattern in patterns for w in venue_words(pattern)}
+        if len(ours) >= 2 and not _related(ours, known):
+            return FieldCheck("mismatch", None, f"unrecognised venue vs {theirs}")
+    return FieldCheck("unknown")
 
 
 # ---------------------------------------------------------------- guards
