@@ -26,12 +26,14 @@ from paper_preflight.sources import (
     dblp,
     doiorg,
     openalex,
+    pubmed,
     semanticscholar,
 )
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
 
 KNOWN_DOI = "10.1109/cvpr.2016.90"  # ResNet, CVPR 2016: registered with Crossref
 KNOWN_ARXIV = "1706.03762"  # Attention Is All You Need
+KNOWN_PMID = "9500320"  # Wakefield et al., Lancet 1998
 
 
 @dataclass(frozen=True)
@@ -71,6 +73,7 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
             lambda c: openalex.work_by_doi(c, KNOWN_DOI, api_key=openalex_key),
             "with API key" if openalex_key else "without API key",
         ),
+        (pubmed.POLICY, lambda c: pubmed.by_pmids(c, [KNOWN_PMID], email=mailto), ""),
         (semanticscholar.POLICY, s2_call, "" if s2_key else "S2_API_KEY not set"),
     ]
 

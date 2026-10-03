@@ -28,7 +28,7 @@ ENTRY_TYPES = {
 }  # fmt: skip
 SOURCE_NAMES = {
     "crossref": "Crossref", "datacite": "DataCite", "doiorg": "doi.org", "arxiv": "arXiv",
-    "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar",
+    "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar", "pubmed": "PubMed",
 }  # fmt: skip
 _STOPWORDS = {
     "a",

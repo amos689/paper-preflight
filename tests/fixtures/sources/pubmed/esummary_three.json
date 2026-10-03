@@ -1,0 +1,226 @@
+{
+ "header": {
+  "type": "esummary",
+  "version": "0.3"
+ },
+ "result": {
+  "uids": [
+   "9500320",
+   "31452104",
+   "99999999"
+  ],
+  "9500320": {
+   "uid": "9500320",
+   "pubdate": "1998 Feb 28",
+   "epubdate": "",
+   "source": "Lancet",
+   "authors": [
+    {
+     "name": "Wakefield AJ",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Murch SH",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Anthony A",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Linnell J",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Casson DM",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Malik M",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Berelowitz M",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Dhillon AP",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Thomson MA",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Harvey P",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Valentine A",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Davies SE",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "Walker-Smith JA",
+     "authtype": "Author",
+     "clusterid": ""
+    }
+   ],
+   "lastauthor": "Walker-Smith JA",
+   "title": "Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children.",
+   "sorttitle": "ileal lymphoid nodular hyperplasia non specific colitis and pervasive developmental disorder in children",
+   "volume": "351",
+   "issue": "9103",
+   "pages": "637-41",
+   "lang": [
+    "eng"
+   ],
+   "nlmuniqueid": "2985213R",
+   "issn": "0140-6736",
+   "essn": "",
+   "pubtype": [
+    "Journal Article",
+    "Research Support, Non-U.S. Gov't",
+    "Retracted Publication"
+   ],
+   "recordstatus": "PubMed - indexed for MEDLINE",
+   "pubstatus": "4",
+   "articleids": [
+    {
+     "idtype": "pubmed",
+     "idtypen": 1,
+     "value": "9500320"
+    },
+    {
+     "idtype": "doi",
+     "idtypen": 3,
+     "value": "10.1016/s0140-6736(97)11096-0"
+    },
+    {
+     "idtype": "pii",
+     "idtypen": 4,
+     "value": "S0140673697110960"
+    }
+   ],
+   "history": [],
+   "references": [],
+   "attributes": [
+    "Has Abstract"
+   ],
+   "pmcrefcount": "",
+   "fulljournalname": "Lancet (London, England)",
+   "elocationid": "",
+   "doctype": "citation",
+   "srccontriblist": [],
+   "booktitle": "",
+   "medium": "",
+   "edition": "",
+   "publisherlocation": "",
+   "publishername": "",
+   "srcdate": "",
+   "reportnumber": "",
+   "availablefromurl": "",
+   "locationlabel": "",
+   "doccontriblist": [],
+   "docdate": "",
+   "bookname": "",
+   "chapter": "",
+   "sortpubdate": "1998/02/28 00:00",
+   "sortfirstauthor": "Wakefield AJ",
+   "vernaculartitle": ""
+  },
+  "31452104": {
+   "uid": "31452104",
+   "pubdate": "2019",
+   "epubdate": "",
+   "source": "Methods Mol Biol",
+   "authors": [
+    {
+     "name": "Bitencourt-Ferreira G",
+     "authtype": "Author",
+     "clusterid": ""
+    },
+    {
+     "name": "de Azevedo WF Jr",
+     "authtype": "Author",
+     "clusterid": ""
+    }
+   ],
+   "lastauthor": "de Azevedo WF Jr",
+   "title": "Molegro Virtual Docker for Docking.",
+   "sorttitle": "molegro virtual docker for docking",
+   "volume": "2053",
+   "issue": "",
+   "pages": "149-167",
+   "lang": [
+    "eng"
+   ],
+   "nlmuniqueid": "9214969",
+   "issn": "1064-3745",
+   "essn": "1940-6029",
+   "pubtype": [
+    "Journal Article",
+    "Research Support, Non-U.S. Gov't"
+   ],
+   "recordstatus": "PubMed - indexed for MEDLINE",
+   "pubstatus": "4",
+   "articleids": [
+    {
+     "idtype": "pubmed",
+     "idtypen": 1,
+     "value": "31452104"
+    },
+    {
+     "idtype": "doi",
+     "idtypen": 3,
+     "value": "10.1007/978-1-4939-9752-7_10"
+    }
+   ],
+   "history": [],
+   "references": [],
+   "attributes": [
+    "Has Abstract"
+   ],
+   "pmcrefcount": "",
+   "fulljournalname": "Methods in molecular biology (Clifton, N.J.)",
+   "elocationid": "doi: 10.1007/978-1-4939-9752-7_10",
+   "doctype": "citation",
+   "srccontriblist": [],
+   "booktitle": "",
+   "medium": "",
+   "edition": "",
+   "publisherlocation": "",
+   "publishername": "",
+   "srcdate": "",
+   "reportnumber": "",
+   "availablefromurl": "",
+   "locationlabel": "",
+   "doccontriblist": [],
+   "docdate": "",
+   "bookname": "",
+   "chapter": "",
+   "sortpubdate": "2019/01/01 00:00",
+   "sortfirstauthor": "Bitencourt-Ferreira G",
+   "vernaculartitle": ""
+  },
+  "99999999": {
+   "uid": "99999999",
+   "error": "cannot get document summary"
+  }
+ }
+}

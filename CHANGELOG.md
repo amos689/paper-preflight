@@ -24,6 +24,8 @@ All notable changes to this project are documented here. The format follows
   about references no other source found, stays below the keyed limit of 1 request/s, backs off
   exponentially on HTTP 429, and its outages never block a verdict. Its answers are cached
   locally but never exported (licence).
+- PubMed (NCBI E-utilities) verifies PMIDs: its record anchors the entry, a PMID it does not
+  know is REF002, and articles it marks as retracted get REF004. `doctor` checks it too.
 - Evaluation harness for the HALLMARK benchmark (`evals/run_hallmark.py`): flag / clean / abstain
   outcomes, fabrication-only and any-issue modes, precision, conservative recall, false-positive
   rate and coverage, broken down by hallucination type.
