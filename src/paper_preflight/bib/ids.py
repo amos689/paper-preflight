@@ -1,0 +1,156 @@
+"""Extract and validate persistent identifiers from BibTeX entries.
+
+Identifiers are the strongest anchors for verification (ADR-0003), so extraction is careful about
+where a value comes from and never invents one:
+
+* DOI — ``doi`` field (with or without ``https://doi.org/`` or ``doi:`` prefixes), DOI URLs in
+  ``url``/``note``/``howpublished``; DataCite arXiv DOIs (10.48550/arXiv.*) also yield an arXiv ID.
+* arXiv — ``eprint`` (unless ``archiveprefix``/``eprinttype`` names another archive),
+  ``journal = {arXiv preprint arXiv:1706.03762}`` (Google Scholar style), arxiv.org URLs, notes.
+* PMID / PMCID, ISBN (checksum-validated), ISSN (checksum-validated).
+"""
+
+from __future__ import annotations
+
+import re
+from collections.abc import Iterable
+from dataclasses import dataclass
+
+from paper_preflight.bib.parse import BibEntry
+
+# Modern DOIs: 10.<registrant>/<suffix>. The suffix may contain almost anything; we stop at
+# whitespace, quotes, angle brackets and trailing punctuation.
+_DOI_RE = re.compile(r"\b(10\.\d{4,9}/[^\s\"<>{}]+)", re.IGNORECASE)
+_DOI_PREFIX_RE = re.compile(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE)
+_NEW_ARXIV_RE = re.compile(r"(?<![\d.])(\d{4}\.\d{4,5})(v\d+)?(?![\d])")
+_OLD_ARXIV_RE = re.compile(r"\b([a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7})(v\d+)?\b")
+_ARXIV_CONTEXT_RE = re.compile(r"arxiv", re.IGNORECASE)
+_ARXIV_DOI_RE = re.compile(r"^10\.48550/arxiv\.(.+)$", re.IGNORECASE)
+_PMCID_RE = re.compile(r"\bPMC\d{4,9}\b", re.IGNORECASE)
+_TRAILING_PUNCTUATION = ".,;:)]}"
+
+
+@dataclass(frozen=True)
+class Identifier:
+    scheme: str  # "doi" | "arxiv" | "pmid" | "pmcid" | "isbn" | "issn"
+    value: str  # normalised (DOIs lower-cased, arXiv without version, ISBN digits only)
+    field: str  # BibTeX field it came from
+    version: str | None = None  # arXiv version, e.g. "v2"
+    raw: str = ""
+
+    def __str__(self) -> str:
+        return f"{self.scheme}:{self.value}{self.version or ''}"
+
+
+def normalize_doi(value: str) -> str | None:
+    """Return a normalised DOI or None if ``value`` contains no DOI."""
+    candidate = _DOI_PREFIX_RE.sub("", value.strip())
+    match = _DOI_RE.search(candidate)
+    if not match:
+        return None
+    doi = match.group(1).rstrip(_TRAILING_PUNCTUATION)
+    return doi.lower()
+
+
+def is_valid_doi_syntax(value: str) -> bool:
+    return bool(re.fullmatch(r"10\.\d{4,9}/\S+", value))
+
+
+def _arxiv_in(text: str, require_context: bool) -> tuple[str, str | None] | None:
+    if require_context and not _ARXIV_CONTEXT_RE.search(text):
+        return None
+    match = _NEW_ARXIV_RE.search(text) or _OLD_ARXIV_RE.search(text)
+    if not match:
+        return None
+    return match.group(1), match.group(2)
+
+
+def _isbn_digits(value: str) -> str | None:
+    digits = re.sub(r"[\s-]", "", value).upper()
+    if re.fullmatch(r"\d{9}[\dX]", digits):
+        total = sum((10 - i) * (10 if c == "X" else int(c)) for i, c in enumerate(digits))
+        return digits if total % 11 == 0 else None
+    if re.fullmatch(r"97[89]\d{10}", digits):
+        total = sum((1 if i % 2 == 0 else 3) * int(c) for i, c in enumerate(digits))
+        return digits if total % 10 == 0 else None
+    return None
+
+
+def _issn(value: str) -> str | None:
+    match = re.search(r"\b(\d{4})-?(\d{3}[\dXx])\b", value)
+    if not match:
+        return None
+    digits = (match.group(1) + match.group(2)).upper()
+    total = sum((8 - i) * int(c) for i, c in enumerate(digits[:7]))
+    check = (11 - total % 11) % 11
+    expected = "X" if check == 10 else str(check)
+    return f"{digits[:4]}-{digits[4:]}" if digits[7] == expected else None
+
+
+def extract_identifiers(entry: BibEntry) -> list[Identifier]:
+    """Return all identifiers found in an entry, most authoritative fields first, deduplicated."""
+    found: list[Identifier] = []
+
+    def add(identifier: Identifier) -> None:
+        if all((i.scheme, i.value) != (identifier.scheme, identifier.value) for i in found):
+            found.append(identifier)
+
+    def add_doi(text: str, field: str) -> None:
+        doi = normalize_doi(text)
+        if doi is None:
+            return
+        add(Identifier("doi", doi, field, raw=text))
+        arxiv_doi = _ARXIV_DOI_RE.match(doi)
+        if arxiv_doi:
+            arxiv = _arxiv_in(arxiv_doi.group(1), require_context=False)
+            if arxiv:
+                add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=text))
+
+    doi_field = entry.text("doi")
+    if doi_field:
+        add_doi(doi_field, "doi")
+
+    archive = (entry.text("archiveprefix") or entry.text("eprinttype") or "").strip().lower()
+    eprint = entry.text("eprint")
+    if eprint:
+        if archive in ("", "arxiv"):
+            arxiv = _arxiv_in(eprint, require_context=False)
+            if arxiv:
+                add(Identifier("arxiv", arxiv[0], "eprint", arxiv[1], raw=eprint))
+        elif archive in ("pubmed", "pmid") and eprint.strip().isdigit():
+            add(Identifier("pmid", eprint.strip(), "eprint", raw=eprint))
+
+    for field in ("journal", "booktitle", "url", "note", "howpublished", "publisher"):
+        value = entry.text(field)
+        if not value:
+            continue
+        if field in ("url", "note", "howpublished") and "doi" in value.lower():
+            add_doi(value, field)
+        arxiv = _arxiv_in(value, require_context=True)
+        if arxiv:
+            add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=value))
+
+    pmid = entry.text("pmid")
+    if pmid and pmid.strip().isdigit():
+        add(Identifier("pmid", pmid.strip(), "pmid", raw=pmid))
+    pmcid_text = entry.text("pmcid")
+    if pmcid_text:
+        match = _PMCID_RE.search(pmcid_text)
+        if match:
+            add(Identifier("pmcid", match.group(0).upper(), "pmcid", raw=pmcid_text))
+    isbn_text = entry.text("isbn")
+    if isbn_text:
+        for part in re.split(r"[,;]", isbn_text):
+            digits = _isbn_digits(part)
+            if digits:
+                add(Identifier("isbn", digits, "isbn", raw=part.strip()))
+    issn_text = entry.text("issn")
+    if issn_text:
+        issn = _issn(issn_text)
+        if issn:
+            add(Identifier("issn", issn, "issn", raw=issn_text))
+    return found
+
+
+def first(identifiers: Iterable[Identifier], scheme: str) -> Identifier | None:
+    return next((i for i in identifiers if i.scheme == scheme), None)
