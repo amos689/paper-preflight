@@ -21,7 +21,7 @@ arXiv, DataCite and OpenAlex (and Semantic Scholar, if you have a key) about eve
 When it cannot tell, it says so instead of guessing.
 
 > **Status: early release.** The checks below work today; install from GitHub until the first
-> PyPI release (v0.1, planned for November 2026). `bib fetch` / `bib fix` are next.
+> PyPI release (v0.1, planned for November 2026). `bib fix` is next.
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
 purpose. A real run, against the live sources:
@@ -133,6 +133,35 @@ Exit codes:
 | 2 | No blocking findings, but a source was unavailable, so the paper cannot be called clean yet |
 | 3 | Usage error |
 
+## Fetch verified BibTeX
+
+Instead of writing an entry from memory, ask for it by DOI, arXiv ID or title. Every field
+comes from the registry record, which a comment above the entry names:
+
+```bash
+paper-preflight bib fetch 1810.04805
+```
+
+```bibtex
+% Verified with paper-preflight against dblp (conf/naacl/DevlinCLT19), 2026-10-03
+@inproceedings{devlin2019bert,
+  title         = {{BERT:} Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author        = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle     = {NAACL-HLT (1)},
+  year          = {2019},
+  doi           = {10.18653/v1/n19-1423},
+  eprint        = {1810.04805},
+  archivePrefix = {arXiv},
+}
+```
+
+- **Preprints:** an arXiv preprint that has been published comes back as the published version,
+  with its `eprint` kept (`--prefer preprint` for the preprint itself).
+- **Titles:** `--title` (with `--author`/`--year` if needed) lists the candidates instead of
+  choosing when several works match.
+- **Retractions:** a retracted work comes with a warning.
+- **Agents:** `--format json` is for scripts and agents.
+
 ## Use it from your coding agent
 
 **Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
@@ -199,7 +228,7 @@ or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- `bib fetch` (verified BibTeX for an identifier) and `bib fix` (reviewable patches)
+- `bib fix` (reviewable patches that apply the verified records)
 - A GitHub Action, and the first PyPI release (v0.1)
 - Chinese-language references (v0.2)
 
