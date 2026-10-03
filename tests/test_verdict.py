@@ -415,3 +415,67 @@ def test_an_earlier_arxiv_version_title_is_fine() -> None:
     )  # fmt: skip
     result = assess(entry, evidence_for(entry, anchored=[renamed]), current_year=YEAR)
     assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
+
+
+NO_DOI = CS_ENTRY.replace("  doi = {10.1234/acl.2023.1},\n", "")
+
+
+def search_result(entry: BibEntry, *found: SourceRecord) -> Evidence:
+    return evidence_for(
+        entry, candidates=list(found), searched={"dblp", "crossref"}, negative={"crossref"}
+    )
+
+
+def test_a_year_in_the_future_is_reported_against_the_real_one() -> None:
+    # HALLMARK "future date": a real paper cited as 2034 (the gap limit guards reprints only)
+    entry = bib(NO_DOI.replace("2023", "2034"))
+    result = assess(entry, search_result(entry, record(source="dblp")), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF013"})
+
+
+def test_too_new_means_this_year_or_next() -> None:
+    def reasons_for(year: int) -> tuple[Reason, ...]:
+        entry = bib(NO_DOI.replace("2023", str(year)))
+        item = evidence_for(entry, searched={"dblp", "crossref"}, negative={"dblp", "crossref"})
+        return assess(entry, item, current_year=YEAR).reasons
+
+    assert reasons_for(YEAR + 1) == (Reason.TOO_NEW,)
+    assert reasons_for(YEAR + 8) == ()  # not "too new": no such paper was found (REF003)
+
+
+def test_placeholder_authors_on_a_real_title_are_reported() -> None:
+    # HALLMARK "placeholder authors": the title and year are real, the authors invented
+    entry = bib(
+        NO_DOI.replace(
+            "Smith, Ann and Jones, Bob and Lee, Carol", "Nina Rodriguez and Ibrahim Diallo"
+        )
+    )
+    result = assess(entry, search_result(entry, record(source="dblp")), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF010"})
+
+
+def test_swapped_coauthors_on_a_real_title_are_reported() -> None:
+    entry = bib(NO_DOI.replace("Jones, Bob and Lee, Carol", "Petrov, Slav and Kumar, Ravi"))
+    result = assess(entry, search_result(entry, record(source="dblp")), current_year=YEAR)
+    assert rules(result) == {"REF011"}
+
+
+@pytest.mark.parametrize(
+    ("change", "why"),
+    [
+        (("Smith, Ann and Jones, Bob and Lee, Carol", "{OpenAI}"), "an organisation, not a swap"),
+        (("Smith, Ann and Jones, Bob and Lee, Carol", "Kumar, Ravi"), "one name is too little"),
+        ((TITLE, "Robust Sparse Attention Revisited Today"), "a short title names many works"),
+        (("2023", "2019"), "another year may be another work"),
+    ],
+)
+def test_title_only_binding_stays_narrow(change: tuple[str, str], why: str) -> None:
+    entry = bib(NO_DOI.replace(*change))
+    other_authors = record(
+        title=entry.text("title") or "", authors=(Person("Wu", "Dan"), Person("Ito", "Ken"))
+    )
+    result = assess(
+        entry, search_result(entry, replace(other_authors, source="dblp")), current_year=YEAR
+    )
+    assert result.record is None, why
+    assert "REF010" not in rules(result), why

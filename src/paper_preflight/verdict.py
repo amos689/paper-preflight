@@ -37,6 +37,7 @@ from paper_preflight.sources.record import SourceRecord
 
 MIN_NOT_FOUND_WORDS = 5  # shorter titles are too generic to conclude "not found"
 MAX_YEAR_ONLY_GAP = 3  # same title and authors, year off by more than this: do not bind
+MIN_TITLE_ONLY_WORDS = 6  # a title this long names one work, even when the authors differ
 
 
 class Verdict(StrEnum):
@@ -219,7 +220,11 @@ def _rank(m: Match) -> tuple[int, int, float, float, int]:
 
 
 def _bind_candidate(
-    info: EntryInfo, candidates: list[SourceRecord], *, preprint_pair: bool = False
+    info: EntryInfo,
+    candidates: list[SourceRecord],
+    *,
+    preprint_pair: bool = False,
+    current_year: int | None = None,
 ) -> Match | None:
     """Bind an unanchored entry to one search candidate, or to none when in doubt."""
     if not candidates:
@@ -231,7 +236,9 @@ def _bind_candidate(
         pool = [m for m in evaluated if m.acceptable and title_key(m.record.title) == same_work]
         return min(pool or [best], key=_rank)
     # Same title and the very same authors, only the year differs: that is the cited work with a
-    # wrong year (REF013), not a missing one. Bound only if all such records are one work.
+    # wrong year (REF013), not a missing one. Bound only if all such records are one work. The
+    # gap limit guards against reprints; a year in the future cannot be one.
+    future = info.year is not None and current_year is not None and info.year > current_year + 1
     strong = [
         m
         for m in evaluated
@@ -239,11 +246,27 @@ def _bind_candidate(
         and m.authors.status == "match"
         and m.suspicious is None
         and not wrong_paper(info.authors, info.year, m.record)
-        and _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP
+        and (future or _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP)
     ]
-    if len({title_key(m.record.title) for m in strong}) != 1:
+    if len({title_key(m.record.title) for m in strong}) == 1:
+        return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
+    # Same long title, same year, one work, but other authors: that is the cited work with wrong
+    # authors (REF010/REF011: HALLMARK's placeholder and swapped authors), not a missing one.
+    # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap.
+    named = sum(1 for person in info.authors.people if not person.literal)
+    if word_count(info.title) < MIN_TITLE_ONLY_WORDS or named < 2:
         return None
-    return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
+    same_title = [
+        m
+        for m in evaluated
+        if m.title.status == "match"
+        and m.authors.status == "mismatch"
+        and m.year.status in {"match", "variant"}
+        and m.suspicious is None
+    ]
+    if len({title_key(m.record.title) for m in same_title}) != 1:
+        return None
+    return min(same_title, key=_rank)
 
 
 def _year_gap(year: int | None, record: SourceRecord) -> int:
@@ -470,7 +493,9 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     # 2. Bind: the best record reached by identifier, else one unambiguous search candidate.
     bound = min(same, key=_rank) if same else None
     if bound is None and not evidence.anchored:
-        bound = _bind_candidate(info, evidence.candidates, preprint_pair=preprint)
+        bound = _bind_candidate(
+            info, evidence.candidates, preprint_pair=preprint, current_year=current_year
+        )
 
     flags: set[str] = set()
     reasons: list[Reason] = []
@@ -561,7 +586,8 @@ def _abstention_reasons(
     ]
     if info.entry_type in GREY_TYPES and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)
-    if not live_ids and info.year is not None and info.year >= current_year:
+    # this year's and next year's papers may not be indexed yet; a later year is just wrong
+    if not live_ids and info.year is not None and current_year <= info.year <= current_year + 1:
         reasons.append(Reason.TOO_NEW)
     if any(i.scheme == "doi" and i.value in evidence.doi_agency for i in live_ids):
         reasons.append(Reason.IDENTIFIER_EXISTS_NO_METADATA)
