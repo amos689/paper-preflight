@@ -13,7 +13,12 @@ from typing import Any
 from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
+from paper_preflight.sources.base import (
+    PartialUnavailable,
+    SourceClient,
+    SourcePolicy,
+    SourceUnavailable,
+)
 from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 DOIRA_URL = "https://doi.org/doiRA/"
@@ -50,26 +55,35 @@ async def registration_agencies(
 ) -> dict[str, AgencyAnswer]:
     """Map each (lower-cased) DOI to its registration agency answer."""
     unique = list(dict.fromkeys(d.lower() for d in dois))
-    result: dict[str, AgencyAnswer] = {}
-    for start in range(0, len(unique), CHUNK):
-        chunk = unique[start : start + CHUNK]
+
+    def classify(_: Any) -> EntryKind:
+        return EntryKind.META
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
         path = ",".join(quote(d, safe="/") for d in chunk)
-
-        def classify(_: Any) -> EntryKind:
-            return EntryKind.META
-
         fetched = await client.get_json(DOIRA_URL + path, classify=classify)
-        for answer in parse_doira(fetched.data):
-            result[answer.doi.lower()] = answer
-        # doiRA answers a bare "Error" for DOIs whose prefix is not registered at all (a made-up
-        # 10.77771/... in HALLMARK). That word alone proves nothing, so the Handle API decides.
-        for doi in unclear_dois(fetched.data):
-            try:
-                exists = await handle_exists(client, doi)
-            except SourceUnavailable:
-                continue  # stays unknown: an unanswered check is not a negative
-            if exists is False:
-                result[doi] = AgencyAnswer(doi, None, False)
+        return {str(item.get("DOI", "")).lower(): item for item in fetched.data or []}
+
+    try:
+        items = await client.batch("doira", unique, fetch_chunk, chunk_size=CHUNK,
+                                   kind=EntryKind.META)  # fmt: skip
+    except PartialUnavailable as partial:
+        raise partial.with_found(await _answers(client, partial.found)) from None
+    return await _answers(client, items)
+
+
+async def _answers(client: SourceClient, items: dict[str, Any]) -> dict[str, AgencyAnswer]:
+    payload = list(items.values())
+    result = {answer.doi.lower(): answer for answer in parse_doira(payload)}
+    # doiRA answers a bare "Error" for DOIs whose prefix is not registered at all (a made-up
+    # 10.77771/... in HALLMARK). That word alone proves nothing, so the Handle API decides.
+    for doi in unclear_dois(payload):
+        try:
+            exists = await handle_exists(client, doi)
+        except SourceUnavailable:
+            continue  # stays unknown: an unanswered check is not a negative
+        if exists is False:
+            result[doi] = AgencyAnswer(doi, None, False)
     return result
 
 

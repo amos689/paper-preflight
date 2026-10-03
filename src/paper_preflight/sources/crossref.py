@@ -13,7 +13,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 WORKS_URL = "https://api.crossref.org/works"
@@ -140,9 +140,8 @@ async def works_by_doi(
 ) -> dict[str, SourceRecord]:
     """Fetch Crossref records for DOIs (case-insensitive). Missing DOIs are simply absent."""
     unique = list(dict.fromkeys(d.lower() for d in dois))
-    found: dict[str, SourceRecord] = {}
-    for start in range(0, len(unique), BATCH):
-        chunk = unique[start : start + BATCH]
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
         params = _params(
             {
                 "filter": ",".join(f"doi:{d}" for d in chunk),
@@ -152,9 +151,18 @@ async def works_by_doi(
             mailto,
         )
         fetched = await client.get_json(WORKS_URL, params=params, classify=_classify_list)
-        for record in parse_work_list(fetched.data):
-            found[record.source_id] = record
-    return found
+        items = ((fetched.data or {}).get("message") or {}).get("items") or []
+        return {str(item.get("DOI", "")).lower(): item for item in items}
+
+    try:
+        items = await client.batch("works", unique, fetch_chunk, chunk_size=BATCH)
+    except PartialUnavailable as partial:
+        raise partial.with_found(_records(partial.found)) from None
+    return _records(items)
+
+
+def _records(items: dict[str, Any]) -> dict[str, SourceRecord]:
+    return {doi: parse_work(item) for doi, item in items.items()}
 
 
 async def search_bibliographic(

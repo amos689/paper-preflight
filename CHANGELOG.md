@@ -45,3 +45,5 @@ All notable changes to this project are documented here. The format follows
   venue, wrong identifiers). Only the affected fields change. REF016 offers a missing DOI.
 - GitHub Action (`action.yml`): runs the check, writes the job summary and a SARIF report,
   caches answers per bibliography (`docs/github-action.md`).
+- Identifier lookups (doi.org, Crossref, DataCite, OpenAlex, arXiv) are cached per identifier, so
+  adding an entry no longer makes its batch companions unverifiable in `--offline` runs.

@@ -13,7 +13,7 @@ from typing import Any
 from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 WORKS_URL = "https://api.openalex.org/works"
@@ -93,20 +93,25 @@ async def works_by_doi(
     client: SourceClient, dois: Iterable[str], *, api_key: str | None = None
 ) -> dict[str, SourceRecord]:
     unique = list(dict.fromkeys(d.lower() for d in dois))
-    found: dict[str, SourceRecord] = {}
 
     def classify(payload: Any) -> EntryKind:
         return EntryKind.SEARCH if (payload or {}).get("results") else EntryKind.NEGATIVE
 
-    for start in range(0, len(unique), BATCH):
-        chunk = unique[start : start + BATCH]
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
         params = _params(
             api_key,
             {"filter": "doi:" + "|".join(chunk), "select": SELECT, "per_page": len(chunk)},
         )
         fetched = await client.get_json(WORKS_URL, params=params, classify=classify)
+        answers: dict[str, Any] = {}
         for item in (fetched.data or {}).get("results") or []:
-            record = parse_work(item)
-            if record.doi:
-                found[record.doi] = record
-    return found
+            doi = parse_work(item).doi
+            if doi:
+                answers[doi] = item
+        return answers
+
+    try:
+        items = await client.batch("works", unique, fetch_chunk, chunk_size=BATCH)
+    except PartialUnavailable as partial:
+        raise partial.with_found({k: parse_work(v) for k, v in partial.found.items()}) from None
+    return {doi: parse_work(item) for doi, item in items.items()}
