@@ -103,13 +103,30 @@
 
 - 2026-10-03 用户最终决定：提交信息不再带 Claude 的 Co-Authored-By 署名，`main` 的历史已由用户改写并强制推送
 
+## W5：召回率攻坚与流水线补全（2026-10-03）
+
+每个 PR 都在 HALLMARK dev_public 全集上对比 main 回放，VALID 误报一条不增。
+
+| PR | 内容 |
+|---|---|
+| #42 | REF012 识别"只改一两个词"的标题，并在消息里点出改了哪些词（拼写、连字符、"&"、数学符号、RETRACTED 前缀不算）：near_miss_title 46.2% → 78.8% |
+| #43 | 会议名录补上 AISTATS、UAI、COLT、WWW 等 16 个；venue 字段里的 URL 不再被当成会议名：wrong_venue 46.8% → 74.5%，preprint_as_published 73.3% → 100% |
+| #44 | 编造的会议名只要含有记录会议没有的词就报（缩写、序数词、PMLR 等系列名不算；workshop 仍须完全不相交；只看 booktitle/journal） |
+| #45 | 同一已识别会议可作为绑定证据：4–5 个词的标题在同会议同年也能绑定（错作者 → REF010），同会议的年份差不受"重印"限制（REF013） |
+| #46 | 只找到"别人写的相似标题"（作者完全不同、标题也不同）时，不再挡住"查无此文"（REF003） |
+| #47 | 姓相同、名字却属于另一个人的作者（"Aviral Sharma" 冒充 Archit Sharma）报 REF011；缩写、简称、中间名、连字符、音译、常见昵称不算：swapped_authors 85.1% → 91.0% |
+| #48 | CFG001：没有屏蔽掉任何发现的抑制注释会被报出（只在规则确实运行过时判断）；README 补上抑制注释的说明 |
+| #49 | `--refresh`（`check`、`bib fetch`、`bib fix`）：忽略本次运行前的缓存，向所有来源重新查询 |
+| #50 | 同作者、同会议、同年份、标题只差一两个词的检索结果也能绑定，并由 REF012 点出改动的词 |
+| #51 | 重新实跑 HALLMARK：any_issue 精确率 97.6%、召回率 90.5%、F1 93.9%，覆盖率 98.3%；剔除争议标签后 100% 精确、0% 误报 |
+
 ## 下一步
 
-- [ ] 召回率：只改一两个词的标题（near_miss_title 46% 漏检）、错误的会议（wrong_venue 51% 漏检）、"预印本冒充正式发表"
+- [ ] 召回率：只有预印本记录的论文上编造/错误的会议名（需要会议名录或已发表版本的会议）；只漏掉部分作者的作者列表（partial_author_list）
 - [ ] Crossref 不可用时，用 S2 批量接口按 DOI/arXiv 兜底（需要客户端支持 POST）
-- [ ] REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
-- [ ] 运行清单（run manifest）；`--refresh`、`--final`、`--record/--replay`
-- [ ] CI 里用 `claude plugin validate --strict` 校验插件清单
+- [ ] REF019（条目类型不符）：噪声大（大量 NeurIPS 论文被写成 @article），需先想清楚只报哪些强矛盾
+- [ ] 运行清单（run manifest）；`--final`、`--record/--replay`
+- [ ] CI 里用 `claude plugin validate --strict` 校验插件清单（需要在 CI 装 Claude Code CLI）
 - [ ] 需要用户操作：PyPI 发布 v0.1；投稿 awesome 列表、MCP Registry 等对外发布
 
 ## 已知问题与备忘
