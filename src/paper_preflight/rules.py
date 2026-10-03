@@ -202,6 +202,15 @@ RULES: dict[str, Rule] = {
             FixLevel.UNSAFE,
         ),
         _rule(
+            "REF016", "identifier-available", I,
+            ("A DOI can be added", "可以补充 DOI"),
+            ("'{key}' has no DOI; {source} records {doi} for it. Adding it makes the reference "
+             "unambiguous.",
+             "条目 '{key}' 没有 DOI；{source} 记录的 DOI 是 {doi}。"
+             "补上它可以让这条引用不再有歧义。"),
+            FixLevel.SAFE,
+        ),
+        _rule(
             "REF015", "preprint-published", W,
             ("Preprint has been formally published", "预印本已正式发表"),
             ("'{key}' cites a preprint that has been published in {found_venue} "
