@@ -25,3 +25,6 @@ All notable changes to this project are documented here. The format follows
   rate and coverage, broken down by hallucination type.
 - `doctor` checks each source with one uncached request and reports `ok`, `unavailable` (with the
   reason: rate limit, bot wall, timeout ...) or `skipped`; `--offline` skips the check.
+- MCP server (`paper-preflight mcp`, needs the `mcp` extra): read-only `preflight_check` with
+  paged findings and `preflight_explain`; paths are confined to the workspace root
+  (`docs/mcp.md`).
