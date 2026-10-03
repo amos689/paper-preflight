@@ -7,6 +7,7 @@ import respx
 from paper_preflight.cache import Cache, EntryKind
 from paper_preflight.sources import base
 from paper_preflight.sources.base import (
+    PartialUnavailable,
     SourceClient,
     SourcePolicy,
     SourceUnavailable,
@@ -222,3 +223,57 @@ async def test_non_exportable_policy_marks_cache_entries(http: httpx.AsyncClient
     cache = Cache(None)
     await make(http, cache, exportable=False).get_json(URL)
     assert cache.export() == []
+
+
+def answers_from(store: dict[str, object], calls: list[list[str]]):  # type: ignore[no-untyped-def]
+    async def fetch_chunk(chunk: list[str]) -> dict[str, object]:
+        calls.append(list(chunk))
+        return {key: store[key] for key in chunk if key in store}
+
+    return fetch_chunk
+
+
+@pytest.mark.anyio
+async def test_batch_answers_are_cached_per_identifier(http: httpx.AsyncClient) -> None:
+    calls: list[list[str]] = []
+    fetch = answers_from({"a": {"n": 1}, "b": {"n": 2}, "c": {"n": 3}}, calls)
+    client = make(http)
+    assert await client.batch("x", ["a", "b", "zz"], fetch, chunk_size=10) == {
+        "a": {"n": 1}, "b": {"n": 2},
+    }  # fmt: skip
+    # other companions: only the new identifier is asked for; "zz" is a cached "no"
+    assert await client.batch("x", ["zz", "b", "c"], fetch, chunk_size=10) == {
+        "b": {"n": 2}, "c": {"n": 3},
+    }  # fmt: skip
+    assert calls == [["a", "b", "zz"], ["c"]]
+
+
+@pytest.mark.anyio
+async def test_batch_offline_keeps_what_is_cached(http: httpx.AsyncClient) -> None:
+    cache = Cache(None)
+    online = make(http, cache)
+    await online.batch("x", ["a"], answers_from({"a": 1}, []), chunk_size=10)
+    offline = SourceClient(
+        SourcePolicy(name="example", min_interval=0.0), http, cache, offline=True
+    )
+    with pytest.raises(PartialUnavailable) as caught:
+        await offline.batch("x", ["a", "new"], answers_from({}, []), chunk_size=10)
+    assert caught.value.reason is UnavailableReason.OFFLINE
+    assert (caught.value.found, caught.value.missing) == ({"a": 1}, ["new"])
+
+
+@pytest.mark.anyio
+async def test_batch_failure_keeps_the_chunks_already_answered(http: httpx.AsyncClient) -> None:
+    calls: list[list[str]] = []
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, object]:
+        calls.append(chunk)
+        if len(calls) == 2:
+            raise SourceUnavailable("example", UnavailableReason.RATE_LIMITED)
+        return {key: key.upper() for key in chunk}
+
+    with pytest.raises(PartialUnavailable) as caught:
+        await make(http).batch("x", ["a", "b", "c", "d"], fetch_chunk, chunk_size=2)
+    assert caught.value.found == {"a": "A", "b": "B"}
+    assert caught.value.missing == ["c", "d"]
+    assert caught.value.reason is UnavailableReason.RATE_LIMITED

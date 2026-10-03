@@ -17,7 +17,7 @@ import asyncio
 import os
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field, replace
-from typing import TypeVar
+from typing import TypeVar, cast
 
 import httpx
 
@@ -35,7 +35,12 @@ from paper_preflight.sources import (
     openalex,
     semanticscholar,
 )
-from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
+from paper_preflight.sources.base import (
+    PartialUnavailable,
+    SourceClient,
+    SourcePolicy,
+    SourceUnavailable,
+)
 from paper_preflight.sources.doiorg import AgencyAnswer
 from paper_preflight.sources.record import SourceRecord
 
@@ -122,10 +127,25 @@ def looks_cs(info: EntryInfo) -> bool:
     return info.entry_type in CS_ENTRY_TYPES or canonical_venue(info.venue) is not None
 
 
-async def _guard(evidence: list[Evidence], call: Callable[[], Awaitable[T]]) -> T | None:
-    """Run a source call; on unavailability record it on every affected entry and return None."""
+async def _guard(
+    evidence: list[Evidence],
+    call: Callable[[], Awaitable[T]],
+    owners_of: Callable[[str], list[Evidence]] | None = None,
+) -> T | None:
+    """Run a source call; on unavailability record it on the affected entries.
+
+    A batch that answered for some identifiers (:class:`PartialUnavailable`) returns what it
+    found, and only the owners of the unanswered identifiers are marked (``owners_of``).
+    """
     try:
         return await call()
+    except PartialUnavailable as partial:
+        affected = evidence
+        if owners_of is not None:
+            affected = [item for key in partial.missing for item in owners_of(key)]
+        for item in affected:
+            item.mark_unavailable(partial)
+        return cast(T, partial.found)
     except SourceUnavailable as error:
         for item in evidence:
             item.mark_unavailable(error)
@@ -148,8 +168,17 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
             if ident.scheme == "doi":
                 by_doi.setdefault(ident.value, []).append(item)
     doi_owners = [e for items in by_doi.values() for e in items]
+
+    def doi_owners_of(doi: str) -> list[Evidence]:
+        return by_doi.get(doi, [])
+
     agencies = (
-        await _guard(doi_owners, lambda: doiorg.registration_agencies(sources.doiorg, by_doi)) or {}
+        await _guard(
+            doi_owners,
+            lambda: doiorg.registration_agencies(sources.doiorg, by_doi),
+            owners_of=doi_owners_of,
+        )
+        or {}
     )
     for doi, items in by_doi.items():
         answer = agencies.get(doi)
@@ -162,8 +191,12 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     other_dois = [
         (d, a.agency) for d, a in agencies.items() if a.agency not in (None, "Crossref", "DataCite")
     ]
-    if not agencies and by_doi:  # doi.org unavailable: still try Crossref directly
-        crossref_dois = list(by_doi)
+    # DOIs doi.org could not route (it was unavailable for them): still try Crossref directly
+    crossref_dois += [
+        doi
+        for doi, items in by_doi.items()
+        if doi not in agencies and any("doiorg" in item.unavailable for item in items)
+    ]
 
     crossref_owners = [e for d in crossref_dois for e in by_doi.get(d, [])]
     datacite_owners = [e for d in datacite_dois for e in by_doi.get(d, [])]
@@ -171,13 +204,19 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         _guard(
             crossref_owners,
             lambda: crossref.works_by_doi(sources.crossref, crossref_dois, mailto=sources.mailto),
+            owners_of=doi_owners_of,
         ),
-        _guard(datacite_owners, lambda: datacite.dois(sources.datacite, datacite_dois)),
+        _guard(
+            datacite_owners,
+            lambda: datacite.dois(sources.datacite, datacite_dois),
+            owners_of=doi_owners_of,
+        ),
         _guard(
             crossref_owners,
             lambda: openalex.works_by_doi(
                 sources.openalex, crossref_dois, api_key=sources.openalex_key
             ),
+            owners_of=doi_owners_of,
         ),
     )
     for doi, record in {**(cr_records or {}), **(dc_records or {})}.items():
@@ -197,9 +236,20 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         for arxiv_id in ids:
             by_arxiv.setdefault(arxiv_id, []).append(item)
     arxiv_owners = [e for items in by_arxiv.values() for e in items]
-    ax_records = await _guard(arxiv_owners, lambda: arxiv.by_ids(sources.arxiv, list(by_arxiv)))
-    if ax_records is None and by_arxiv:
-        await _arxiv_via_datacite(by_arxiv, sources)
+    ax_records = await _guard(
+        arxiv_owners,
+        lambda: arxiv.by_ids(sources.arxiv, list(by_arxiv)),
+        owners_of=lambda arxiv_id: by_arxiv.get(arxiv_id, []),
+    )
+    # IDs arXiv did not answer for (unavailable, not "no such ID") go to DataCite instead
+    unanswered = {
+        arxiv_id: items
+        for arxiv_id, items in by_arxiv.items()
+        if (ax_records is None or arxiv_id not in ax_records)
+        and any("arxiv" in item.unavailable for item in items)
+    }
+    if unanswered:
+        await _arxiv_via_datacite(unanswered, sources)
     if ax_records is not None:
         for arxiv_id, items in by_arxiv.items():
             arxiv_record = ax_records.get(arxiv_id)
@@ -209,7 +259,7 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
             for item in items:
                 if arxiv_record is not None:
                     item.anchored.append(arxiv_record)
-                else:
+                elif arxiv_id not in unanswered:
                     item.arxiv_missing.append(arxiv_id)
 
     # 3. Published versions of cited preprints via dblp (CoRR record -> venue record).
@@ -258,7 +308,14 @@ async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sour
     """
     wanted = {f"10.48550/arxiv.{arxiv_id}".lower(): arxiv_id for arxiv_id in by_arxiv}
     owners = [e for items in by_arxiv.values() for e in items]
-    records = await _guard(owners, lambda: datacite.dois(sources.datacite, list(wanted))) or {}
+    records = (
+        await _guard(
+            owners,
+            lambda: datacite.dois(sources.datacite, list(wanted)),
+            owners_of=lambda doi: by_arxiv.get(wanted.get(doi, ""), []),
+        )
+        or {}
+    )
     for doi, record in records.items():
         for item in by_arxiv.get(wanted.get(doi, ""), []):
             if all(r.source_id != record.source_id for r in item.anchored):

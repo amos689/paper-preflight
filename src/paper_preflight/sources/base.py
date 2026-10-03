@@ -16,7 +16,7 @@ import asyncio
 import json
 import random
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import Awaitable, Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
@@ -48,6 +48,24 @@ class SourceUnavailable(Exception):
         self.source = source
         self.reason = reason
         self.detail = detail
+
+
+class PartialUnavailable(SourceUnavailable):
+    """A batch lookup answered for some identifiers (``found``) but not for ``missing`` ones.
+
+    Callers keep what was found and treat only the missing identifiers as unavailable, so one
+    new entry in a bibliography does not make its batch companions unverifiable offline.
+    """
+
+    def __init__(self, error: SourceUnavailable, found: dict[str, Any], missing: list[str]) -> None:
+        super().__init__(error.source, error.reason, error.detail)
+        self.found = found
+        self.missing = missing
+
+    def with_found(self, found: dict[str, Any]) -> PartialUnavailable:
+        """The same unavailability with ``found`` converted (payloads to records, say)."""
+        return PartialUnavailable(SourceUnavailable(self.source, self.reason, self.detail),
+                                  found, self.missing)  # fmt: skip
 
 
 @dataclass
@@ -182,6 +200,61 @@ class SourceClient:
         return await self._get(
             url, params, headers, classify, negative_statuses, cache_key, expect_json=False
         )
+
+    async def batch(
+        self,
+        namespace: str,
+        ids: Iterable[str],
+        fetch_chunk: Callable[[list[str]], Awaitable[Mapping[str, Any]]],
+        *,
+        chunk_size: int,
+        kind: EntryKind = EntryKind.POSITIVE,
+    ) -> dict[str, Any]:
+        """Answer a batch lookup one identifier at a time from the cache, fetching the rest.
+
+        Every identifier's answer (its payload, or "not in this source") is cached on its own, so
+        a later batch with other companions, or an offline run, reuses it. ``fetch_chunk``
+        returns ``{id: payload}`` for the identifiers the source has; the others are cached as
+        negatives. Returns the payloads found. When some identifiers cannot be answered (offline
+        without a cached answer, or the source failing), :class:`PartialUnavailable` carries the
+        answers found so far.
+        """
+        found: dict[str, Any] = {}
+        missing: list[str] = []
+        for item_id in dict.fromkeys(ids):
+            cached = self.cache.get(
+                self.name, f"item:{namespace}:{item_id}", allow_stale=self.offline
+            )
+            if cached is None:
+                missing.append(item_id)
+                continue
+            if cached.stale:
+                self.stats.stale_hits += 1
+            else:
+                self.stats.cache_hits += 1
+            payload = cached.payload
+            if not (isinstance(payload, dict) and _NEGATIVE_STATUS in payload):
+                found[item_id] = payload
+        if not missing:
+            return found
+        if self.offline:
+            raise PartialUnavailable(self._unavailable(UnavailableReason.OFFLINE), found, missing)
+        for start in range(0, len(missing), chunk_size):
+            chunk = missing[start : start + chunk_size]
+            try:
+                answers = await fetch_chunk(chunk)
+            except SourceUnavailable as error:
+                raise PartialUnavailable(error, found, missing[start:]) from error
+            for item_id in chunk:
+                key = f"item:{namespace}:{item_id}"
+                if item_id in answers:
+                    found[item_id] = answers[item_id]
+                    self.cache.put(self.name, key, answers[item_id], kind,
+                                   exportable=self.policy.exportable)  # fmt: skip
+                else:
+                    self.cache.put(self.name, key, {_NEGATIVE_STATUS: 404}, EntryKind.NEGATIVE,
+                                   exportable=self.policy.exportable)  # fmt: skip
+        return found
 
     async def _get(
         self,

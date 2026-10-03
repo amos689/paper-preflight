@@ -14,7 +14,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse
 
 API_URL = "https://export.arxiv.org/api/query"
@@ -104,11 +104,38 @@ async def _feed(client: SourceClient, params: dict[str, Any]) -> str:
 async def by_ids(client: SourceClient, ids: Iterable[str]) -> dict[str, SourceRecord]:
     """Latest-version records keyed by base arXiv ID (without version)."""
     unique = list(dict.fromkeys(re.sub(r"v\d+$", "", i) for i in ids))
-    found: dict[str, SourceRecord] = {}
-    for start in range(0, len(unique), BATCH):
-        chunk = unique[start : start + BATCH]
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
         feed = await _feed(client, {"id_list": ",".join(chunk), "max_results": len(chunk)})
-        for record in parse_feed(feed):
+        return split_feed(feed)
+
+    try:
+        entries = await client.batch("abs", unique, fetch_chunk, chunk_size=BATCH)
+    except PartialUnavailable as partial:
+        raise partial.with_found(_from_entries(partial.found)) from None
+    return _from_entries(entries)
+
+
+def split_feed(xml_text: str) -> dict[str, str]:
+    """Each entry of an Atom feed as a stand-alone feed, keyed by base arXiv ID (for caching)."""
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return {}
+    out: dict[str, str] = {}
+    for entry in root.findall("atom:entry", NS):
+        match = _ID_RE.search(_text(entry, "atom:id") or "")
+        if match:
+            out[match.group("id")] = (
+                f'<feed xmlns="{NS["atom"]}">{ET.tostring(entry, encoding="unicode")}</feed>'
+            )
+    return out
+
+
+def _from_entries(entries: dict[str, Any]) -> dict[str, SourceRecord]:
+    found: dict[str, SourceRecord] = {}
+    for feed in entries.values():
+        for record in parse_feed(str(feed)):
             found[record.source_id] = record
     return found
 

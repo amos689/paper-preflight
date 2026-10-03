@@ -108,3 +108,25 @@ def test_bib_only_mode_verifies_every_entry(tmp_path: Path) -> None:
     _, payload = check_json(tmp_path, str(DEMO / "refs.bib"))
     keys = {r["key"] for r in payload["references"]}
     assert keys == CITED | {"lecun1998gradient"}  # no LaTeX: everything in the file counts
+
+
+def test_offline_after_adding_an_entry_keeps_every_other_verdict(tmp_path: Path) -> None:
+    # Answers are cached per identifier, so one new entry does not invalidate its batch
+    # companions: before, every DOI lookup of the bibliography missed the cache offline.
+    bib = tmp_path / "refs.bib"
+    bib.write_text((DEMO / "refs.bib").read_text(encoding="utf-8"), encoding="utf-8")
+    _, online = check_json(tmp_path, str(bib))
+    added = [
+        "",
+        "@article{added2025new, title = {A Newly Added Paper With A Long Title},",
+        "  author = {Doe, Jane}, year = {2025}, doi = {10.1109/CVPR.2016.91}}",
+        "",
+    ]
+    with bib.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(added))
+    _, offline = check_json(tmp_path, str(bib), "--offline")
+    before = {r["key"]: r["verdict"] for r in online["references"]}
+    after = {r["key"]: r["verdict"] for r in offline["references"]}
+    assert {k: after[k] for k in before} == before
+    assert after["added2025new"] == "cannot_determine"
+    assert offline["verification"]["unverified_offline"] == 1

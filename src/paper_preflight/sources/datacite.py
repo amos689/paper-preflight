@@ -6,7 +6,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from paper_preflight.cache import EntryKind
-from paper_preflight.sources.base import SourceClient, SourcePolicy
+from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
 from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 DOIS_URL = "https://api.datacite.org/dois"
@@ -78,11 +78,16 @@ def _classify(payload: Any) -> EntryKind:
 
 async def dois(client: SourceClient, values: Iterable[str]) -> dict[str, SourceRecord]:
     unique = list(dict.fromkeys(v.lower() for v in values))
-    found: dict[str, SourceRecord] = {}
-    for start in range(0, len(unique), BATCH):
-        chunk = unique[start : start + BATCH]
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
         params = {"ids": ",".join(chunk), "fields[dois]": FIELDS, "page[size]": len(chunk)}
         fetched = await client.get_json(DOIS_URL, params=params, classify=_classify)
-        for record in parse_dois(fetched.data):
-            found[record.source_id] = record
-    return found
+        data = (fetched.data or {}).get("data") or []
+        items = [data] if isinstance(data, dict) else data
+        return {parse_doi(item).source_id: item for item in items}
+
+    try:
+        items = await client.batch("dois", unique, fetch_chunk, chunk_size=BATCH)
+    except PartialUnavailable as partial:
+        raise partial.with_found({k: parse_doi(v) for k, v in partial.found.items()}) from None
+    return {doi: parse_doi(item) for doi, item in items.items()}
