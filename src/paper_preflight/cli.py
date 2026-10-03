@@ -94,6 +94,12 @@ def resolve_lang(lang: Lang) -> str:
     return "zh" if any(n.lower().startswith(("zh", "chinese")) for n in names) else "en"
 
 
+def _no_refresh_offline(refresh: bool, offline: bool) -> None:
+    if refresh and offline:
+        typer.echo("paper-preflight: --refresh asks the sources again; drop --offline", err=True)
+        raise typer.Exit(EXIT_USAGE)
+
+
 def _progress_message(language: str, offline: bool) -> str:
     if language == "zh":
         return "正在用本地缓存核查参考文献…" if offline else "正在向学术数据源核查参考文献…"
@@ -145,6 +151,10 @@ def check(
             help="Do not use the network: verify references from cached answers only.",
         ),
     ] = False,
+    refresh: Annotated[
+        bool,
+        typer.Option("--refresh", help="Ask every source again instead of using cached answers."),
+    ] = False,
 ) -> None:
     """Check a LaTeX project (or a .bib file) and report problems with its references."""
     from paper_preflight.check import VerifyOptions, run_check
@@ -154,8 +164,11 @@ def check(
     from paper_preflight.tex.project import ProjectError
 
     _safe_stdout()
+    _no_refresh_offline(refresh, offline)
     language = resolve_lang(lang)
-    verify = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    verify = VerifyOptions(
+        offline=offline, refresh=refresh, cache_path=Path(cache_dir()) / "cache.sqlite3"
+    )
     progress = Console(stderr=True)
     status: contextlib.AbstractContextManager[object] = (
         progress.status(_progress_message(language, offline))
@@ -309,6 +322,10 @@ def bib_fetch(
     offline: Annotated[
         bool, typer.Option("--offline", help="Answer from the local cache only.")
     ] = False,
+    refresh: Annotated[
+        bool,
+        typer.Option("--refresh", help="Ask every source again instead of using cached answers."),
+    ] = False,
 ) -> None:
     """Print a verified BibTeX entry for an identifier or a title. Never written from memory."""
     import asyncio
@@ -326,10 +343,17 @@ def bib_fetch(
         typer.echo(f"paper-preflight: '{identifier}' is not a DOI or an arXiv ID", err=True)
         raise typer.Exit(EXIT_USAGE)
 
+    _no_refresh_offline(refresh, offline)
     cache_path = Path(cache_dir()) / "cache.sqlite3"
     prefer_published = prefer == "published"
     result = asyncio.run(
-        lookup(query, cache_path=cache_path, offline=offline, prefer_published=prefer_published)
+        lookup(
+            query,
+            cache_path=cache_path,
+            offline=offline,
+            prefer_published=prefer_published,
+            refresh=refresh,
+        )
     )
     payload = to_dict(result, key=key)
     bibtex = payload["bibtex"]
@@ -395,6 +419,10 @@ def bib_fix(
     offline: Annotated[
         bool, typer.Option("--offline", help="Answer from the local cache only.")
     ] = False,
+    refresh: Annotated[
+        bool,
+        typer.Option("--refresh", help="Ask every source again instead of using cached answers."),
+    ] = False,
 ) -> None:
     """Fix the .bib files from the verified records: a diff by default, --apply to write."""
     import json
@@ -407,7 +435,10 @@ def bib_fix(
     if level not in {"safe", "unsafe"}:
         typer.echo("paper-preflight: --level is 'safe' or 'unsafe'", err=True)
         raise typer.Exit(EXIT_USAGE)
-    verify = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    _no_refresh_offline(refresh, offline)
+    verify = VerifyOptions(
+        offline=offline, refresh=refresh, cache_path=Path(cache_dir()) / "cache.sqlite3"
+    )
     try:
         result = run_check(path, main=main_file, verify=verify)
     except ProjectError as exc:

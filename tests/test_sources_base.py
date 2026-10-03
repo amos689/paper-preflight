@@ -1,3 +1,4 @@
+import time
 from collections.abc import AsyncIterator
 
 import httpx
@@ -214,6 +215,28 @@ async def test_offline_mode_replays_cache_including_stale(http: httpx.AsyncClien
     with pytest.raises(SourceUnavailable) as caught:
         await client.get_json(URL, params={"missing": 1})
     assert caught.value.reason is UnavailableReason.OFFLINE
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_refresh_asks_again_once_per_run(http: httpx.AsyncClient) -> None:
+    route = respx.get(URL).mock(return_value=httpx.Response(200, json={"t": "new"}))
+    cache = Cache(None)
+    cache.put("example", "api.example.org/works", {"t": "old"}, EntryKind.POSITIVE)
+    cache.put("example", "item:ids:a", 0, EntryKind.POSITIVE)
+    time.sleep(0.05)  # the --refresh run starts after those answers were stored
+    policy = SourcePolicy(name="example", min_interval=0.0)
+    client = SourceClient(policy, http, cache, fresh_after=time.time())
+    first = await client.get_json(URL)
+    assert (first.data, first.from_cache) == ({"t": "new"}, False)  # asked again, and replaced
+    calls: list[list[str]] = []
+    store = {"a": 1, "b": 2}
+    assert await client.batch("ids", ["a"], answers_from(store, calls), chunk_size=10) == {"a": 1}
+    await client.batch("ids", ["a", "b"], answers_from(store, calls), chunk_size=10)
+    # within the run, every answer is asked for once
+    assert calls == [["a"], ["b"]]
+    assert (await client.get_json(URL)).from_cache
+    assert route.call_count == 1
 
 
 @pytest.mark.anyio

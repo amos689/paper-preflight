@@ -93,6 +93,7 @@ class Sources:
         cache: Cache,
         *,
         offline: bool = False,
+        fresh_after: float | None = None,
         environ: dict[str, str] | None = None,
     ) -> Sources:
         env = environ if environ is not None else dict(os.environ)
@@ -100,7 +101,9 @@ class Sources:
 
         def client(policy: SourcePolicy) -> SourceClient:
             # copy the module-level policy: a client may slow itself down during a run
-            return SourceClient(replace(policy), http, cache, offline=offline)
+            return SourceClient(
+                replace(policy), http, cache, offline=offline, fresh_after=fresh_after
+            )
 
         return cls(
             doiorg=client(doiorg.POLICY),
