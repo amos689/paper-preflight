@@ -33,6 +33,15 @@ def test_person_from_display() -> None:
     assert Person.from_display("Plato") == Person(family="Plato")
 
 
+def test_person_from_parts() -> None:
+    assert Person.from_parts("James W.", "Davidson Jr.") == Person("Davidson", "James W.")
+    assert Person.from_parts("Martin Luther", "King, Jr.") == Person("King", "Martin Luther")
+    # the original script after the romanised name (Crossref) is dropped, a name in it alone kept
+    assert Person.from_parts("Lihwai 俐 暉", "Lin 林") == Person("Lin", "Lihwai")
+    assert Person.from_parts("志华", "周") == Person("周", "志华")
+    assert Person.from_parts(None, "Jr.") == Person("Jr.")
+
+
 def test_doira_routing() -> None:
     answers = {a.doi.lower(): a for a in doiorg.parse_doira(load("doiorg/doira_multi.json"))}
     assert answers["10.1109/cvpr.2016.90"].agency == "Crossref"

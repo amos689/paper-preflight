@@ -368,6 +368,39 @@ def _organisation(person: Person) -> bool:
     return bool(person.literal) or (not person.given and len(person.family.split()) == 1)
 
 
+def _pair_by_given_name(
+    entry: list[tuple[Person, str]], pool: list[tuple[Person, str]]
+) -> dict[int, int]:
+    """Pair entry and record people of one surname whose given names agree, as many as possible.
+
+    Co-authors sharing a surname (Yang Song and Jiaming Song; Lihwai, Yen-Ting and Sicheng Lin in
+    SDSS DR17) must not be paired in order: "L. Lin" agrees with each of them, and taking the
+    first would leave a later Lin with none. Augmenting paths find the largest pairing.
+    """
+    options = [
+        [
+            i
+            for i, (other, k) in enumerate(pool)
+            if k == key and not given_names_differ(person, other)
+        ]
+        for person, key in entry
+    ]
+    owner: dict[int, int] = {}  # record index -> entry index
+
+    def place(j: int, seen: set[int]) -> bool:
+        for i in options[j]:
+            if i not in seen:
+                seen.add(i)
+                if i not in owner or place(owner[i], seen):
+                    owner[i] = j
+                    return True
+        return False
+
+    for j in range(len(entry)):
+        place(j, set())
+    return {j: i for i, j in owner.items()}
+
+
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
     people = [_as_meant(p, written) for p in record.authors if surname_key(p)]
@@ -377,27 +410,29 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     if not entry or not people:
         return AuthorCheck("unknown")
     # exact surnames first, then spelling variants, so a variant never takes an exact match
-    pool = list(zip(people, record_keys, strict=True))
-    unmatched: list[Person] = []
+    paired = _pair_by_given_name(entry, list(zip(people, record_keys, strict=True)))
+    taken = set(paired.values())
     renamed: list[tuple[str, str]] = []
-    for person, key in entry:
-        same = [i for i, (_, k) in enumerate(pool) if k == key]
-        # co-authors sharing a surname (Yang Song, Jiaming Song) pair up by given name first
-        index = next((i for i in same if not given_names_differ(person, pool[i][0])), None)
-        if index is None and same:
-            index = same[0]
-            renamed.append((person.display, pool[index][0].display))
-        if index is None:
-            unmatched.append(person)
-        else:
-            pool.pop(index)
+    for j, (person, key) in enumerate(entry):
+        if j in paired:
+            continue
+        index = next((i for i, k in enumerate(record_keys) if k == key and i not in taken), None)
+        if index is not None:
+            paired[j] = index
+            taken.add(index)
+            renamed.append((person.display, people[index].display))
     missing: list[str] = []
-    for person in unmatched:
-        index = next((i for i, (other, _) in enumerate(pool) if same_person(person, other)), None)
+    for j, (person, _) in enumerate(entry):
+        if j in paired:
+            continue
+        index = next(
+            (i for i, other in enumerate(people) if i not in taken and same_person(person, other)),
+            None,
+        )
         if index is None:
             missing.append(person.display)
         else:
-            pool.pop(index)
+            taken.add(index)
     matched = len(entry) - len(missing)
     overlap = matched / len(entry)
     first_person = entry[0][0]
