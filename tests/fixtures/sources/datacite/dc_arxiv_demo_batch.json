@@ -1,0 +1,200 @@
+{
+ "data": [
+  {
+   "id": "10.48550/arxiv.1512.03385",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.48550/arxiv.1512.03385",
+    "titles": [
+     {
+      "title": "Deep Residual Learning for Image Recognition"
+     }
+    ],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "givenName": "Kaiming",
+      "familyName": "He",
+      "name": "He, Kaiming",
+      "affiliation": [],
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "givenName": "Xiangyu",
+      "familyName": "Zhang",
+      "name": "Zhang, Xiangyu",
+      "affiliation": [],
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "givenName": "Shaoqing",
+      "familyName": "Ren",
+      "name": "Ren, Shaoqing",
+      "affiliation": [],
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "givenName": "Jian",
+      "familyName": "Sun",
+      "name": "Sun, Jian",
+      "affiliation": [],
+      "nameIdentifiers": []
+     }
+    ],
+    "publicationYear": 2015,
+    "version": "1",
+    "types": {
+     "schemaOrg": "CreativeWork",
+     "resourceTypeGeneral": "Preprint",
+     "citeproc": "article",
+     "bibtex": "misc",
+     "ris": "GEN",
+     "resourceType": "Article"
+    },
+    "url": "https://arxiv.org/abs/1512.03385",
+    "identifiers": [
+     {
+      "identifier": "1512.03385",
+      "identifierType": "arXiv"
+     }
+    ],
+    "publisher": "arXiv",
+    "dates": [
+     {
+      "date": "2015-12-10T19:51:55Z",
+      "dateType": "Submitted",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2015-12-11T01:12:12Z",
+      "dateType": "Updated",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2015-12",
+      "dateType": "Available",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2015",
+      "dateType": "Issued"
+     }
+    ]
+   },
+   "relationships": {}
+  },
+  {
+   "id": "10.48550/arxiv.1606.08415",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.48550/arxiv.1606.08415",
+    "titles": [
+     {
+      "title": "Gaussian Error Linear Units (GELUs)"
+     }
+    ],
+    "creators": [
+     {
+      "nameType": "Personal",
+      "givenName": "Dan",
+      "familyName": "Hendrycks",
+      "name": "Hendrycks, Dan",
+      "affiliation": [],
+      "nameIdentifiers": []
+     },
+     {
+      "nameType": "Personal",
+      "givenName": "Kevin",
+      "familyName": "Gimpel",
+      "name": "Gimpel, Kevin",
+      "affiliation": [],
+      "nameIdentifiers": []
+     }
+    ],
+    "publicationYear": 2016,
+    "version": "5",
+    "types": {
+     "schemaOrg": "CreativeWork",
+     "resourceTypeGeneral": "Preprint",
+     "citeproc": "article",
+     "bibtex": "misc",
+     "ris": "GEN",
+     "resourceType": "Article"
+    },
+    "url": "https://arxiv.org/abs/1606.08415",
+    "identifiers": [
+     {
+      "identifier": "1606.08415",
+      "identifierType": "arXiv"
+     }
+    ],
+    "publisher": "arXiv",
+    "dates": [
+     {
+      "date": "2016-06-27T19:20:40Z",
+      "dateType": "Submitted",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2016-06-28T00:20:49Z",
+      "dateType": "Updated",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2016-07-08T18:32:46Z",
+      "dateType": "Submitted",
+      "dateInformation": "v2"
+     },
+     {
+      "date": "2016-07-11T00:10:11Z",
+      "dateType": "Updated",
+      "dateInformation": "v2"
+     },
+     {
+      "date": "2018-11-11T07:40:32Z",
+      "dateType": "Submitted",
+      "dateInformation": "v3"
+     },
+     {
+      "date": "2018-11-13T01:11:20Z",
+      "dateType": "Updated",
+      "dateInformation": "v3"
+     },
+     {
+      "date": "2020-07-08T16:41:42Z",
+      "dateType": "Submitted",
+      "dateInformation": "v4"
+     },
+     {
+      "date": "2020-07-09T00:19:32Z",
+      "dateType": "Updated",
+      "dateInformation": "v4"
+     },
+     {
+      "date": "2023-06-06T01:53:32Z",
+      "dateType": "Submitted",
+      "dateInformation": "v5"
+     },
+     {
+      "date": "2023-06-07T00:07:34Z",
+      "dateType": "Updated",
+      "dateInformation": "v5"
+     },
+     {
+      "date": "2016-06",
+      "dateType": "Available",
+      "dateInformation": "v1"
+     },
+     {
+      "date": "2016",
+      "dateType": "Issued"
+     }
+    ]
+   },
+   "relationships": {}
+  }
+ ]
+}
