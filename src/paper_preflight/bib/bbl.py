@@ -368,12 +368,12 @@ def _authors(text: str, first_family: str | None = None) -> str:
     if len(people) >= 2 and all(_INITIALS.fullmatch(n) for n in people[1::2]):
         names = [f"{people[i]}, {people[i + 1]}" for i in range(0, len(people) - 1, 2)]
         names += ["others"] if truncated else []
-    elif _inverted_first(names) or (
-        first_family is not None and len(names) >= 2 and names[0] == first_family
+    elif _inverted_first(people) or (
+        first_family is not None and len(people) >= 2 and people[0] == first_family
     ):
         # only the first author inverted: "Angelopoulos, Anastasios N., John C. Duchi, ...",
-        # "Ochoa Rivera, Eduardo, Ambuj Tewari", "Bastani, Hamsa"
-        names = [f"{names[0]}, {names[1]}", *names[2:]]
+        # "Ochoa Rivera, Eduardo, Ambuj Tewari", "Bastani, Hamsa"; "Petr Knoth et al." is not
+        names = [f"{people[0]}, {people[1]}", *people[2:]] + (["others"] if truncated else [])
     # the period after the last name goes; an initial's stays
     return " and ".join(n[:-1] if _SENTENCE_END.search(n) else n for n in names)
 

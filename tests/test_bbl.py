@@ -75,6 +75,10 @@ def test_natbib_items_become_entries() -> None:
          r"\newblock \doi{http://dx.doi.org/10.1103/PhysRevLett.78.436}.",
          {"doi": "10.1103/PhysRevLett.78.436", "year": "1997", "title": None,
           "author": "J.N. Ginocchio and A.S. de Castro"}),
+        # one author and "et al.": not an inverted name
+        (r"\bibitem{knoth}Petr Knoth et~al. \newblock CORE: A global aggregation service for"
+         r" open access papers. \newblock \emph{Scientific Data}, 10:366, 2023.",
+         {"author": "Petr Knoth and others"}),
         # ACL: the year after the authors
         (r"\bibitem[{Cobbe et~al.(2021)}]{cobbe}Karl Cobbe, Vineet Kosaraju, and John Schulman."
          r" 2021. \newblock Training verifiers to solve math word problems."
