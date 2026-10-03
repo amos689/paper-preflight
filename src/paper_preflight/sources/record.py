@@ -8,6 +8,10 @@ from dataclasses import dataclass, field
 
 _HOMONYM_SUFFIX_RE = re.compile(r"\s+\d{4}$")  # dblp: "Jian Sun 0001"
 _SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv"}
+# Last words that make a display name a group, not a person ("Gemma Team" on arXiv 2503.19786)
+COLLECTIVE_WORDS = frozenset(
+    "team collaboration consortium project committee community initiative group alliance".split()
+)
 
 
 def collapse(text: str) -> str:
@@ -85,6 +89,8 @@ class Person:
         parts = name.split(" ")
         while len(parts) > 1 and parts[-1].lower().strip(",") in _SUFFIXES:
             parts.pop()
+        if len(parts) > 1 and parts[-1].lower() in COLLECTIVE_WORDS:
+            return cls(family=name, literal=name)
         if len(parts) == 1:
             return cls(family=parts[0])
         return cls(family=parts[-1], given=" ".join(parts[:-1]))
