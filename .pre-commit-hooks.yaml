@@ -1,0 +1,18 @@
+# pre-commit hooks for LaTeX projects (https://pre-commit.com). Both check the whole project in
+# the repository root, so they run once per commit when a .tex or .bib file changed.
+- id: paper-preflight
+  name: paper-preflight (verify references)
+  description: Verify every cited reference against Crossref, dblp, arXiv, DataCite and OpenAlex.
+  entry: paper-preflight check
+  language: python
+  types_or: [tex, bib]
+  pass_filenames: false
+  require_serial: true
+- id: paper-preflight-offline
+  name: paper-preflight (offline, cached answers only)
+  description: Citation-key checks plus cached reference verdicts; never touches the network.
+  entry: paper-preflight check --offline
+  language: python
+  types_or: [tex, bib]
+  pass_filenames: false
+  require_serial: true
