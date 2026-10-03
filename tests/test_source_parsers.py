@@ -299,6 +299,21 @@ def test_crossref_december_print_counts_the_next_year() -> None:
     assert crossref.parse_work(item).years == {2020}
 
 
+def test_crossref_late_online_date_counts_the_next_volume() -> None:
+    # Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, no print date; volume 4 is 2019
+    item = {
+        "DOI": "10.1088/2058-9565/aae0fe", "type": "journal-article", "title": ["Cryogenic"],
+        "issued": {"date-parts": [[2018, 10, 9]]}, "volume": "4",
+        "published-online": {"date-parts": [[2018, 10, 9]]},
+    }  # fmt: skip
+    assert crossref.parse_work(item).years == {2018, 2019}
+    item["published-online"] = {"date-parts": [[2018, 5, 9]]}  # earlier in the year: no
+    assert crossref.parse_work(item).years == {2018}
+    item["published-online"] = {"date-parts": [[2018, 10, 9]]}
+    item["published-print"] = {"date-parts": [[2018, 11]]}  # a print date says which year
+    assert crossref.parse_work(item).years == {2018}
+
+
 # Crossref's answer to an unknown select: "Valid selects for this route are: ..." (2026-10-03).
 # A field outside this list makes every /works request fail with 400.
 CROSSREF_WORKS_SELECTS = set(

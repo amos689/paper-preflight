@@ -85,6 +85,18 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     printed = ((item.get("published-print") or {}).get("date-parts") or [[None]])[0]
     if len(printed) >= 2 and printed[0] and printed[1] == 12:
         years.add(int(printed[0]) + 1)
+    # An article online late in the year, with no print date, is often in next year's volume
+    # (Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, volume 4 is 2019).
+    online = ((item.get("published-online") or {}).get("date-parts") or [[None]])[0]
+    if (
+        item.get("type") == "journal-article"
+        and not item.get("published-print")
+        and item.get("volume")
+        and len(online) >= 2
+        and online[0]
+        and online[1] >= 10
+    ):
+        years.add(int(online[0]) + 1)
     # Wiley and Blackwell DOIs carry the year the article was published ("10.1046/j.1365-8711.
     # 2000.03658.x", MNRAS 319(3), December 2000); a backfile deposit may give only the year it
     # went online (2002). The DOI's year counts when it is a few years before the registered ones.
