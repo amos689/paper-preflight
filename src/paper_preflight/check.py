@@ -16,7 +16,12 @@ from paper_preflight import __version__
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
 from paper_preflight.cache import Cache
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
-from paper_preflight.hygiene import HygieneInput, bib_paths_for, check_hygiene
+from paper_preflight.hygiene import (
+    HygieneInput,
+    bib_paths_for,
+    check_hygiene_tracked,
+    unused_suppressions,
+)
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.rules import make_finding
 from paper_preflight.tex.auxdata import find_build_data
@@ -86,11 +91,12 @@ def run_check(
 
     if target.is_file() and target.suffix.lower() == ".bib":
         bib_files = [parse_bib_file(target), *(parse_bib_file(p) for p in extra if p != target)]
+        findings, used = check_hygiene_tracked(HygieneInput(bib_files=bib_files))
         result = CheckResult(
             root=target.parent,
             main=None,
             bib_files=bib_files,
-            findings=check_hygiene(HygieneInput(bib_files=bib_files)),
+            findings=findings,
             cited_keys=0,
             entries=sum(len(b.entries) for b in bib_files),
             used_build_data=None,
@@ -108,7 +114,7 @@ def run_check(
         nocite_all = project.nocite_all or bool(build and build.nocite_all)
         bib_paths = bib_paths_for(project, extra)
         bib_files = [parse_bib_file(p) for p in bib_paths]
-        findings = check_hygiene(
+        findings, used = check_hygiene_tracked(
             HygieneInput(
                 bib_files=bib_files,
                 project=project,
@@ -138,9 +144,33 @@ def run_check(
 
     if verify is not None:
         _verify_into(result, to_verify, verify)
+    result.findings.extend(_unused_suppressions(result, used))
     result.findings = sort_findings(result.findings)
     result.finished_at = time.time()
     return result
+
+
+# Citation rules that need the LaTeX project: a .bib-only run cannot have triggered them.
+_PROJECT_RULES = frozenset({"CIT001", "CIT003", "CIT005"})
+
+
+def _unused_suppressions(result: CheckResult, used: set[tuple[str, str]]) -> list[Finding]:
+    """CFG001 for suppressions that dropped nothing, among the rules that ran on their entry."""
+    used = used | {(key, rule) for key, a in result.verdicts.items() for rule in a.suppressed}
+
+    def judged(entry: BibEntry, rule: str) -> bool:
+        if rule.startswith("TEX") or rule in _PROJECT_RULES:
+            return result.main is not None
+        if rule.startswith("CIT"):
+            return True
+        if rule.startswith("REF"):
+            # only a complete online run has asked every source about every verified entry:
+            # offline answers and outages may leave some reference rules unrun
+            online = result.verification == "online" and result.complete
+            return online and entry.key in result.verdicts
+        return False  # RUN001 and CFG001 are not about one entry
+
+    return unused_suppressions(first_definitions(result.bib_files), used, judged)
 
 
 def first_definitions(bib_files: Iterable[BibFile], keys: set[str] | None = None) -> list[BibEntry]:

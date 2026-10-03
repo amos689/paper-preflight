@@ -191,6 +191,21 @@ paper-preflight bib fix path/to/paper --level unsafe
 - Only the affected fields change; comments, formatting, line endings and encoding are kept.
   A reference nobody could find is never "fixed": only you can say what was meant.
 
+## Silence a finding you have checked
+
+A comment directly above an entry silences rules for that entry, with an optional reason:
+
+```bibtex
+% preflight: ignore[REF003] reason="internal technical report, not indexed anywhere"
+@techreport{lab2024internal,
+  ...
+}
+```
+
+The verdict stays in the JSON report; only the finding is dropped. A suppression that silenced
+nothing is reported as CFG001 (info), so stale comments do not pile up. Reference rules are only
+judged after a complete online run, since offline answers and outages may leave them unrun.
+
 ## Use it from your coding agent
 
 **Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude

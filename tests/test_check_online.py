@@ -152,3 +152,20 @@ def test_offline_after_adding_a_preprint_keeps_published_versions(tmp_path: Path
     assert before["he2015residual"] == ["preprint_published"]
     assert {k: after[k] for k in before} == before
     assert "REF015" in [f["rule"] for f in offline["findings"]]
+
+
+def test_unused_reference_suppressions_need_a_complete_online_run(tmp_path: Path) -> None:
+    bib = tmp_path / "refs.bib"
+    text = (DEMO / "refs.bib").read_text(encoding="utf-8")
+    for key in ("he2016deep", "kingma2015adam"):
+        text = text.replace(
+            f"@inproceedings{{{key},", f"% preflight: ignore[REF013]\n@inproceedings{{{key},"
+        )
+    bib.write_text(text, encoding="utf-8")
+    _, online = check_json(tmp_path, str(bib))
+    found = [(f["rule"], f.get("key")) for f in online["findings"]]
+    assert ("CFG001", "he2016deep") in found  # verified, and there was no wrong year to hide
+    assert ("CFG001", "kingma2015adam") not in found  # its wrong year was suppressed
+    assert ("REF013", "kingma2015adam") not in found
+    _, offline = check_json(tmp_path, str(bib), "--offline")
+    assert "CFG001" not in [f["rule"] for f in offline["findings"]]

@@ -112,6 +112,7 @@ class Assessment:
     flags: frozenset[str] = frozenset()
     record: SourceRecord | None = None  # the record the entry is bound to, if any
     findings: tuple[Finding, ...] = ()
+    suppressed: frozenset[str] = frozenset()  # rules whose findings a suppression comment dropped
 
 
 # ---------------------------------------------------------------- helpers
@@ -626,6 +627,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         flags=frozenset(flags),
         record=bound.record if bound else None,
         findings=kept,
+        suppressed=frozenset(f.rule_id for f in findings if entry.suppressed(f.rule_id)),
     )
 
 
