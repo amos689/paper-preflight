@@ -53,6 +53,9 @@ class FakeWeb:
     def __init__(self) -> None:
         self.failing: dict[str, str] = {}  # host fragment -> "html" | "429"
         self.requests: list[httpx.Request] = []
+        # Semantic Scholar answers are SYNTHETIC (its licence forbids storing real responses):
+        # lower-cased title -> paper JSON in S2's schema. Unknown titles get S2's 404.
+        self.s2_papers: dict[str, dict[str, object]] = {}
 
     def fail(self, host_fragment: str, mode: str = "html") -> None:
         self.failing[host_fragment] = mode
@@ -84,6 +87,11 @@ class FakeWeb:
             )  # fmt: skip
         if host == "sparql.dblp.org":
             return self._dblp(request)
+        if host == "api.semanticscholar.org" and request.url.path.endswith("/search/match"):
+            paper = self.s2_papers.get(request.url.params.get("query", "").lower())
+            if paper is None:
+                return httpx.Response(404, json={"error": "Title match not found"})
+            return httpx.Response(200, json={"data": [paper]})
         return httpx.Response(404, json={})
 
     def _doira(self, request: httpx.Request) -> httpx.Response:
