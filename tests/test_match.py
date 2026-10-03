@@ -417,3 +417,27 @@ def test_co_authors_sharing_a_surname_pair_up_by_given_name() -> None:
 def test_an_unrecognised_record_venue_is_never_a_mismatch() -> None:
     record = SourceRecord(source="crossref", source_id="x", title="t", venue="J. Obscure Stud.")
     assert check_venue("Annual Conference on Spatial Intelligence", record).status == "unknown"
+
+
+def test_family_name_then_initials_without_a_comma() -> None:
+    # "Zhang C. and Zhang T. and Wang L." (a real paper's .bib) reads as given name "Zhang",
+    # family "C."; the record's Zhang, Zhang and Wang are the people meant
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t",
+        authors=(Person("Zhang", "Chenyu"), Person("Zhang", "Tianyu"), Person("Wang", "Lei")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Zhang C. and Zhang T. and Wang L."), record)
+    assert (check.status, check.missing) == ("match", ())
+    # a family name that is an initial stays one when the record has it
+    malcolm = SourceRecord(source="x", source_id="y", title="t", authors=(Person("X", "Malcolm"),))
+    assert check_authors(parse_authors("Malcolm X"), malcolm).status == "match"
+    # and other people are still other people
+    others = check_authors(parse_authors("Doe J. and Roe R."), record)
+    assert others.disjoint
+    # the registry may be the side that swapped them (Crossref: given "Shwetha", family "S")
+    crossref = SourceRecord(
+        source="crossref", source_id="z", title="t",
+        authors=(Person("Mondal", "Ishani"), Person("S", "Shwetha")),
+    )  # fmt: skip
+    swapped = check_authors(parse_authors("Mondal, Ishani and Shwetha, S"), crossref)
+    assert (swapped.status, swapped.missing) == ("match", ())
