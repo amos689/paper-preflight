@@ -309,17 +309,20 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # A wrong or dead identifier does not mean the work does not exist, so entries whose
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
+    in_dblp = [i for i in unanchored if looks_cs(i.info) or i.info.entry_type not in GREY_TYPES]
     searched = 0
 
     async def title_search(item: Evidence) -> None:
         nonlocal searched
-        await _title_search(item, sources)
+        await _search_crossref(item, sources)
         searched += 1
         sources.report("title", searched, len(unanchored))
 
     if unanchored:
         sources.report("title", 0, len(unanchored))
-    await asyncio.gather(*(title_search(item) for item in unanchored))
+    await asyncio.gather(
+        _search_dblp(in_dblp, sources), *(title_search(item) for item in unanchored)
+    )
     await _registered_years(unanchored, sources)
 
     # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
@@ -487,15 +490,6 @@ async def _published_versions(
                 item.published_versions.append(record)
 
 
-async def _title_search(item: Evidence, sources: Sources) -> None:
-    info = item.info
-    tasks: list[Awaitable[None]] = []
-    if looks_cs(info) or info.entry_type not in GREY_TYPES:
-        tasks.append(_search_dblp(item, sources))
-    tasks.append(_search_crossref(item, sources))
-    await asyncio.gather(*tasks)
-
-
 async def _registered_years(items: list[Evidence], sources: Sources) -> None:
     """Crossref's record for candidates whose year is a year or two off the entry's.
 
@@ -532,17 +526,48 @@ async def _registered_years(items: list[Evidence], sources: Sources) -> None:
             item.candidates.append(record)
 
 
-async def _search_dblp(item: Evidence, sources: Sources) -> None:
-    item.searched.add("dblp")
-    candidates = await _guard([item], lambda: dblp.title_candidates(sources.dblp, item.info.title))
-    if candidates is None:
+async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
+    """dblp's title search for all entries at once: ten prefixes to a query, fifty records."""
+    if not items:
         return
-    close = [pub for pub, title in candidates if title_score(item.info.title, title) >= 0.85][:5]
-    if not close:
-        item.negative.add("dblp")
+    by_prefix: dict[str, list[Evidence]] = {}
+    for item in items:
+        item.searched.add("dblp")
+        low = dblp.prefix_range(item.info.title)[0]
+        if low:
+            by_prefix.setdefault(low, []).append(item)
+        else:
+            item.negative.add("dblp")  # no letter to search for
+    found = await _guard(
+        items,
+        lambda: dblp.title_candidates_many(sources.dblp, [i.info.title for i in items]),
+        owners_of=lambda low: by_prefix.get(low, []),
+    )
+    if found is None:
         return
-    records = await _guard([item], lambda: dblp.full_records(sources.dblp, close))
-    item.candidates.extend((records or {}).values())
+    wanted: dict[str, list[Evidence]] = {}
+    for low, owners in by_prefix.items():
+        for item in owners:
+            if "dblp" in item.unavailable:
+                continue  # not answered: no "no such work" either
+            candidates = found.get(low, [])
+            close = [p for p, t in candidates if title_score(item.info.title, t) >= 0.85][:5]
+            if not close:
+                item.negative.add("dblp")
+            for pub in close:
+                wanted.setdefault(pub, []).append(item)
+    if not wanted:
+        return
+    records = await _guard(
+        [item for owners in wanted.values() for item in owners],
+        lambda: dblp.full_records(sources.dblp, list(wanted)),
+        owners_of=lambda pub: wanted.get(pub, []),
+    )
+    for pub, owners in wanted.items():
+        record = (records or {}).get(pub.removeprefix(dblp.REC))
+        if record is not None:
+            for item in owners:
+                item.candidates.append(record)
 
 
 async def _search_crossref(item: Evidence, sources: Sources) -> None:
