@@ -90,7 +90,7 @@ benchmark of real and hallucinated BibTeX entries, against the live sources.
 | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|
 | Fabrication: wrong identifier, not found, no author in common | 98.0% | 49.9% | 1.0% | 96.6% |
-| Any issue: also wrong authors, title, year or venue | 97.0% | 72.9% | 2.1% | 96.6% |
+| Any issue: also wrong authors, title, year or venue | 97.2% | 77.8% | 2.1% | 96.6% |
 
 HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
 

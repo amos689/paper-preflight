@@ -5,14 +5,13 @@
 - **Run:** 2026-10-03, 1.9 min, live sources
 - **Unavailable during the run:** none
 - **Unparsed entries:** 0
-- **Note:** the live run predates `evals/hallmark_disputed.toml`; the summary without disputed labels comes from replaying it from the cache (`--offline`), which reproduced every per-type result.
 
 ## Summary (main types; stress types reported separately)
 
 | Mode | Precision | Recall | F1 | False-positive rate | Coverage |
 |---|---|---|---|---|---|
 | fabrication | 98.0% | 49.9% | 66.1% | 1.0% | 96.6% |
-| any_issue | 97.0% | 72.9% | 83.3% | 2.1% | 96.6% |
+| any_issue | 97.2% | 77.8% | 86.4% | 2.1% | 96.6% |
 
 ## Summary without the 11 disputed labels
 
@@ -21,7 +20,7 @@ The same run, leaving out 11 entries labelled VALID that are not correct citatio
 | Mode | Precision | Recall | F1 | False-positive rate | Coverage |
 |---|---|---|---|---|---|
 | fabrication | 100.0% | 49.9% | 66.6% | 0.0% | 96.6% |
-| any_issue | 100.0% | 72.9% | 84.3% | 0.0% | 96.6% |
+| any_issue | 100.0% | 77.8% | 87.5% | 0.0% | 96.6% |
 
 ## fabrication: outcomes by hallucination type
 
@@ -54,7 +53,7 @@ For VALID entries a flag is a false positive; for the others, clean is a miss.
 | VALID | – | 513 | 2.1% | 97.9% | 0.0% |
 | fabricated_doi | 1 | 38 | 100.0% | 0.0% | 0.0% |
 | future_date | 1 | 30 | 100.0% | 0.0% | 0.0% |
-| nonexistent_venue | 1 | 39 | 0.0% | 100.0% | 0.0% |
+| nonexistent_venue | 1 | 39 | 61.5% | 38.5% | 0.0% |
 | placeholder_authors | 1 | 41 | 95.1% | 0.0% | 4.9% |
 | chimeric_title | 2 | 47 | 89.4% | 0.0% | 10.6% |
 | hybrid_fabrication | 2 | 26 | 80.8% | 0.0% | 19.2% |
