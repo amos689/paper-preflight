@@ -128,6 +128,58 @@ async def test_403_challenge(http: httpx.AsyncClient) -> None:
     assert caught.value.reason is UnavailableReason.CHALLENGE
 
 
+@pytest.fixture
+def delays(monkeypatch: pytest.MonkeyPatch) -> list[float]:
+    recorded: list[float] = []
+
+    async def record(delay: float) -> None:
+        recorded.append(delay)
+
+    monkeypatch.setattr(base.asyncio, "sleep", record)
+    return recorded
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_rate_limit_retries_back_off_exponentially(
+    http: httpx.AsyncClient, delays: list[float]
+) -> None:
+    route = respx.get(URL).mock(
+        side_effect=[httpx.Response(429), httpx.Response(429), httpx.Response(200, json={"a": 1})]
+    )
+    result = await make(http, rate_limit_retries=3, backoff=2.0).get_json(URL)
+    assert result.data == {"a": 1}
+    assert route.call_count == 3
+    assert len(delays) == 2
+    assert 2.0 <= delays[0] <= 2.5  # backoff, plus up to 25% jitter
+    assert 4.0 <= delays[1] <= 5.0  # doubled
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_rate_limit_backoff_honours_a_longer_retry_after(
+    http: httpx.AsyncClient, delays: list[float]
+) -> None:
+    respx.get(URL).mock(
+        side_effect=[
+            httpx.Response(429, headers={"retry-after": "10"}),
+            httpx.Response(200, json={"a": 1}),
+        ]
+    )
+    await make(http, rate_limit_retries=1).get_json(URL)
+    assert delays[0] >= 10.0
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_rate_limit_retries_run_out(http: httpx.AsyncClient, delays: list[float]) -> None:
+    route = respx.get(URL).mock(return_value=httpx.Response(429))
+    with pytest.raises(SourceUnavailable) as caught:
+        await make(http, rate_limit_retries=2).get_json(URL)
+    assert caught.value.reason is UnavailableReason.RATE_LIMITED
+    assert route.call_count == 3  # the first try and two retries, then the source cools down
+
+
 @pytest.mark.anyio
 @respx.mock
 async def test_server_error_is_retried_once(http: httpx.AsyncClient) -> None:

@@ -26,7 +26,15 @@ from paper_preflight.bib.normalize import word_count
 from paper_preflight.bib.parse import BibEntry
 from paper_preflight.cache import Cache
 from paper_preflight.match import EntryInfo, title_score
-from paper_preflight.sources import arxiv, crossref, datacite, dblp, doiorg, openalex
+from paper_preflight.sources import (
+    arxiv,
+    crossref,
+    datacite,
+    dblp,
+    doiorg,
+    openalex,
+    semanticscholar,
+)
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
 from paper_preflight.sources.doiorg import AgencyAnswer
 from paper_preflight.sources.record import SourceRecord
@@ -52,6 +60,8 @@ class Evidence:
     searched: set[str] = field(default_factory=set)  # sources asked by title
     negative: set[str] = field(default_factory=set)  # sources that answered "no such work"
     unavailable: dict[str, str] = field(default_factory=dict)  # source -> reason
+    # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
+    optional_unavailable: dict[str, str] = field(default_factory=dict)
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
 
     def mark_unavailable(self, error: SourceUnavailable) -> None:
@@ -68,6 +78,8 @@ class Sources:
     openalex: SourceClient
     mailto: str | None = None
     openalex_key: str | None = None
+    s2: SourceClient | None = None  # only with an API key (docs/spikes/S5)
+    s2_key: str | None = None
 
     @classmethod
     def create(
@@ -79,6 +91,7 @@ class Sources:
         environ: dict[str, str] | None = None,
     ) -> Sources:
         env = environ if environ is not None else dict(os.environ)
+        s2_key = env.get("S2_API_KEY") or None
 
         def client(policy: SourcePolicy) -> SourceClient:
             # copy the module-level policy: a client may slow itself down during a run
@@ -93,10 +106,13 @@ class Sources:
             openalex=client(openalex.POLICY),
             mailto=env.get("PAPER_PREFLIGHT_EMAIL") or None,
             openalex_key=env.get("OPENALEX_API_KEY") or None,
+            s2=client(semanticscholar.POLICY) if s2_key else None,
+            s2_key=s2_key,
         )
 
     def all_clients(self) -> list[SourceClient]:
-        return [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex]
+        clients = [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex]
+        return clients + ([self.s2] if self.s2 is not None else [])
 
 
 def looks_cs(info: EntryInfo) -> bool:
@@ -201,6 +217,12 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
     await asyncio.gather(*(_title_search(item, sources) for item in unanchored))
+
+    # 5. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
+    if sources.s2 is not None and sources.s2_key:
+        s2, key = sources.s2, sources.s2_key
+        lost = [i for i in unanchored if not i.candidates and word_count(i.info.title) >= 3]
+        await asyncio.gather(*(_search_s2(item, s2, key) for item in lost))
     return evidence
 
 
@@ -297,3 +319,17 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
         item.candidates.extend(close)
     else:
         item.negative.add("crossref")
+
+
+async def _search_s2(item: Evidence, client: SourceClient, api_key: str) -> None:
+    """S2 is optional: a failure is kept apart so that it never blocks a verdict."""
+    try:
+        record = await semanticscholar.search_match(client, item.info.title, api_key)
+    except SourceUnavailable as error:
+        item.optional_unavailable.setdefault(error.source, error.reason.value)
+        return
+    item.searched.add("s2")
+    if record is not None and title_score(item.info.title, record.title) >= 0.85:
+        item.candidates.append(record)
+    else:
+        item.negative.add("s2")
