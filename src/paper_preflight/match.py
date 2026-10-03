@@ -189,12 +189,19 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
 # ---------------------------------------------------------------- authors
 
 
+# Apostrophes in names: straight, curly (Crossref's O’Connell), modifier letter, accents.
+_APOSTROPHES = re.compile("['\u2018\u2019\u02bc\u0060\u00b4]")
+
+
 def surname_key(person: Person) -> str:
-    """Comparison key: last word of the folded family name (``van der Berg`` → ``berg``)."""
+    """Comparison key: last word of the folded family name (``van der Berg`` → ``berg``).
+
+    Apostrophes are dropped, so O'Connell and O’Connell (as Crossref writes it) are one key.
+    """
     if person.literal:
-        return " ".join(re.findall(r"\w+", fold(person.literal)))
-    words = re.findall(r"[\w'-]+", fold(person.family))
-    return words[-1].strip("'-") if words else ""
+        return " ".join(re.findall(r"\w+", fold(_APOSTROPHES.sub("", person.literal))))
+    words = re.findall(r"[\w-]+", fold(_APOSTROPHES.sub("", person.family)))
+    return words[-1].strip("-") if words else ""
 
 
 _TRANSCRIPTIONS = (("ae", "a"), ("oe", "o"), ("ue", "u"), ("ss", "s"))
@@ -218,7 +225,7 @@ def _name_forms(person: Person) -> set[str]:
     and "Sánchez Fernández" are one name), all with transcriptions folded."""
     if person.literal:
         return {loose_surname(surname_key(person))}
-    family = [w.strip("'") for w in re.findall(r"[\w']+", fold(person.family))]
+    family = re.findall(r"\w+", fold(_APOSTROPHES.sub("", person.family)))
     given = re.findall(r"\w+", fold(person.given))
     forms: set[str] = set()
     if family:

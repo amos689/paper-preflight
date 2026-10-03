@@ -463,3 +463,20 @@ def test_a_solar_symbol_is_the_word_sun() -> None:
     entry = "Isochrones for low- and intermediate-mass stars: From 0.15 to 7 M_sun"
     record = "Isochrones for low- and intermediate-mass stars: From 0.15 to 7 M_\u2299"
     assert changed_words(entry, record) == ()
+
+
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
+        ("O'Connell, Julia", "O\u2019Connell"),  # Crossref's curly apostrophe (real papers)
+        ("D'Orazi, V.", "D\u2019Orazi"),
+        ("Dell'Oro, A.", "Dell\u2019Oro"),
+        ("{Abdurro'uf}", "Abdurro\u2019uf"),
+    ],
+)
+def test_apostrophes_do_not_make_another_person(written: str, recorded: str) -> None:
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t", authors=(Person(recorded, "J."),)
+    )
+    check = check_authors(parse_authors(written), record)
+    assert (check.status, check.missing) == ("match", ())
