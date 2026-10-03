@@ -760,3 +760,10 @@ source = "real_papers:2607.16271v1"
 key = "bib36"
 expect = []
 note = "guard: 'Fracture and Structural Integrity' against Crossref's 'Frattura ed Integrità Strutturale'"
+
+[[case]]
+name = "fp-kerawala2001relocating-sici"
+source = "real_papers:2607.13343v1"
+key = "kerawala2001relocating"
+expect = []
+note = "guard: Wiley's SICI DOI 10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V was cut at '<' (REF002 and a broken REF017 suggestion)"

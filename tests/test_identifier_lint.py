@@ -32,6 +32,10 @@ def test_url_prefix_and_invalid_doi() -> None:
 def test_canonical_values_pass() -> None:
     assert findings("@article{a, doi = {10.1109/CVPR.2016.90}}") == []
     assert findings("@article{a, doi = {10.1016/S0140-6736(97)11096-0}}") == []
+    assert (
+        findings("@article{a, doi = {10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V}}")
+        == []
+    )
     assert findings("@misc{a, eprint = {1706.03762}, archivePrefix = {arXiv}}") == []
     assert findings("@misc{a, eprint = {hep-th/9901001v2}, archivePrefix = {arXiv}}") == []
 

@@ -22,6 +22,15 @@ def ids(bib: str) -> list[str]:
         # arXiv DOIs carry no version: doi.org answers 404 for the versioned form
         ("10.48550/arXiv.2602.12139v1", "10.48550/arxiv.2602.12139"),
         ("10.1234/sample.v2", "10.1234/sample.v2"),  # other DOIs are left alone
+        # Wiley's SICI DOIs keep their bracketed part (2607.13343v1, kerawala2001relocating)
+        (
+            "10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V",
+            "10.1002/1097-0347(200103)23:3<230::aid-hed1023>3.0.co;2-v",
+        ),
+        (
+            "<https://doi.org/10.1109/CVPR.2016.90>",
+            "10.1109/cvpr.2016.90",
+        ),  # a lone bracket ends it
     ],
 )
 def test_normalize_doi(raw: str, expected: str | None) -> None:
