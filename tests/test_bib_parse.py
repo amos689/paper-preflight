@@ -109,3 +109,14 @@ def test_html_entities_from_web_pages_are_decoded() -> None:
     (entry,) = parse_bib_text(bib, Path("refs.bib")).entries
     assert entry.text("title") == "Tom & Jerry: A \u201cCase\u201d Study"
     assert entry.text("author") == "Francesco d'Amore and Shin-Fang Ch'ng"
+
+
+def test_ads_markup_and_raisebox_in_titles() -> None:
+    # ADS exports seen in real astronomy papers
+    text = (
+        r"@article{a, title = {The many faces of the <ASTROBJ>NGC 1068</ASTROBJ> torus}}" "\n"
+        r"@article{b, title = {Abundances in the Star HD\raisebox{-0.5ex}\textasciitilde84937}}"
+    )  # fmt: skip
+    entries = {e.key: e for e in parse_bib_text(text, Path("refs.bib")).entries}
+    assert entries["a"].text("title") == "The many faces of the NGC 1068 torus"
+    assert entries["b"].text("title") == "Abundances in the Star HD~84937"

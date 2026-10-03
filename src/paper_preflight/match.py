@@ -124,13 +124,21 @@ _EDITORIAL_PREFIX = re.compile(
 )
 
 
+# Symbols one side writes as a word: ADS exports "M$_{sun}$" where Crossref has "M_⊙".
+_SYMBOL_WORDS = {"\u2299": "sun", "\u2609": "sun", "\u2295": "earth", "\u2641": "earth"}
+_SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
+
+
 def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
     """Where two titles differ word for word: (entry's words, record's words) per place.
 
     Case, punctuation, spacing and hyphenation ("Chain of-Thought", "Pre-training"), "&" for
     "and", British spellings and a registry's "RETRACTED:" are not differences.
     """
-    record_title = _EDITORIAL_PREFIX.sub("", record_title)
+    record_title = _SYMBOL_WORDS_RE.sub(
+        lambda m: f" {_SYMBOL_WORDS[m.group(0)]} ", _EDITORIAL_PREFIX.sub("", record_title)
+    )
+    entry_title = _SYMBOL_WORDS_RE.sub(lambda m: f" {_SYMBOL_WORDS[m.group(0)]} ", entry_title)
     ours = title_key(entry_title.replace("&", " and ")).split()
     theirs = title_key(record_title.replace("&", " and ")).split()
     changes: list[tuple[str, str]] = []

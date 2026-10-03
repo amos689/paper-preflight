@@ -27,8 +27,9 @@ from bibtexparser.model import (
     ParsingFailedBlock,
     String,
 )
-from pylatexenc.latex2text import LatexNodes2Text
+from pylatexenc import latex2text, latexwalker, macrospec
 
+from paper_preflight.sources.record import MARKUP_TAG_RE
 from paper_preflight.textio import read_text
 
 logging.getLogger("bibtexparser").setLevel(logging.CRITICAL)  # we report problems ourselves
@@ -49,7 +50,20 @@ _SUPPRESSION_RE = re.compile(
 )
 _SIMPLE_ESCAPES_RE = re.compile(r"\\([_%&#$])")
 
-_latex2text = LatexNodes2Text(math_mode="text", strict_latex_spaces=True)
+# Macros the default context does not know, seen in real .bib files (ADS exports).
+_WALKER_CONTEXT = latexwalker.get_default_latex_context_db()
+_WALKER_CONTEXT.add_context_category(
+    "paper-preflight", prepend=True, macros=[macrospec.MacroSpec("raisebox", "{[[{")]
+)
+_TEXT_CONTEXT = latex2text.get_default_latex_context_db()
+_TEXT_CONTEXT.add_context_category(
+    "paper-preflight",
+    prepend=True,
+    macros=[latex2text.MacroTextSpec("raisebox", simplify_repl="%(4)s")],  # its text only
+)
+_latex2text = latex2text.LatexNodes2Text(
+    math_mode="text", strict_latex_spaces=True, latex_context=_TEXT_CONTEXT
+)
 
 
 @dataclass(frozen=True)
@@ -171,8 +185,9 @@ def latex_to_text(value: str) -> str:
     # BibTeX copied from web pages carries HTML entities ("Francesco d&apos;Amore" in a dblp-
     # scraped HALLMARK entry); decode them first, or "&" reaches LaTeX as an alignment tab.
     value = _HTML_ENTITY_RE.sub(_decode_entity, value)
+    value = MARKUP_TAG_RE.sub("", value)  # ADS: "<ASTROBJ>NGC 1068</ASTROBJ>"
     try:
-        text = _latex2text.latex_to_text(value)
+        text = _latex2text.latex_to_text(value, latex_context=_WALKER_CONTEXT)
     except Exception:  # pylatexenc can fail on malformed input; fall back
         text = value.replace("{", "").replace("}", "")
     return " ".join(text.split())

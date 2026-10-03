@@ -15,7 +15,7 @@ from typing import Any
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 API_URL = "https://export.arxiv.org/api/query"
 BATCH = 50
@@ -45,7 +45,7 @@ def parse_feed(xml_text: str) -> list[SourceRecord]:
             continue  # error entries have no arXiv abs id
         base_id = match.group("id")
         version = match.group("version")
-        title = _text(entry, "atom:title") or ""
+        title = plain_title(_text(entry, "atom:title") or "")  # arXiv keeps TeX in titles
         authors = tuple(
             Person.from_display(collapse(name.text or ""))
             for name in entry.findall("atom:author/atom:name", NS)

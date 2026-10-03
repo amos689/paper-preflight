@@ -195,6 +195,19 @@ def test_csl_parsing() -> None:
             "Deep Residual Learning   for Image Recognition",
             "Deep Residual Learning for Image Recognition",
         ),
+        # real papers: escaped tags (10.1117/12.176725), a LaTeX document for one formula
+        # (10.1086/308445), arXiv's TeX, and a less-than sign that is no tag
+        ("&lt;title&gt;HIRES: the spectrometer&lt;/title&gt;", "HIRES: the spectrometer"),
+        (
+            r"55 Galaxies in the \documentclass{aastex} \usepackage{amsbsy} \pagestyle{empty}"
+            r" \begin{document} \landscape $z=0.33$ \end{document} Cluster",
+            "55 Galaxies in the z=0.33 Cluster",
+        ),
+        (r"Biological $2\mathrm{D}{+}t$ Reaction-Diffusion", "Biological 2D+t Reaction-Diffusion"),
+        (
+            "from &lt;100 mas Resolution ALMA Observations",
+            "from <100 mas Resolution ALMA Observations",
+        ),
     ],
 )
 def test_plain_title(raw: str, plain: str) -> None:
