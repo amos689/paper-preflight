@@ -57,6 +57,9 @@ All notable changes to this project are documented here. The format follows
 - REF012 also reports a title that is close to the record's but has other words ("towards" for
   "for", "Hidden" for "Latent") and names them; spelling, hyphenation, "&", math and
   "RETRACTED:" notices do not count, nor do preprints whose earlier titles are unknown.
+- REF011 also reports an author whose surname is right but whose given name belongs to someone
+  else ("Aviral Sharma" for Archit Sharma). Initials, short forms, middle names, hyphenation,
+  transcriptions and common nicknames (Bill, Misha) agree.
 - More venues are recognised for REF014: AISTATS, UAI, COLT, CoRL, TMLR, IJCV, WWW, WSDM, CIKM,
   ICASSP, Interspeech, MICCAI, ICRA, IROS, WACV and BMVC. URLs in a venue field are ignored.
 - An unrecognised venue is also reported when it names something the recorded venue does not
