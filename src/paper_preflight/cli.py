@@ -40,6 +40,7 @@ app = typer.Typer(
 class OutputFormat(StrEnum):
     TEXT = "text"
     JSON = "json"
+    SARIF = "sarif"
 
 
 class FailOn(StrEnum):
@@ -132,6 +133,7 @@ def check(
     """Check a LaTeX project (or a .bib file) and report problems with its references."""
     from paper_preflight.check import run_check
     from paper_preflight.report.jsonout import render_json
+    from paper_preflight.report.sarif import render_sarif
     from paper_preflight.report.text import render_text
     from paper_preflight.tex.project import ProjectError
 
@@ -148,8 +150,11 @@ def check(
             raise
         raise typer.Exit(EXIT_INTERNAL) from exc
 
-    if output_format is OutputFormat.JSON:
-        text = render_json(result, max_findings=max_findings)
+    if output_format in (OutputFormat.JSON, OutputFormat.SARIF):
+        if output_format is OutputFormat.JSON:
+            text = render_json(result, max_findings=max_findings)
+        else:
+            text = render_sarif(result)
         if output:
             output.write_text(text + "\n", encoding="utf-8")
         else:
