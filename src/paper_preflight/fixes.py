@@ -56,6 +56,8 @@ def plan(
     rules = SAFE_RULES | (UNSAFE_RULES if level == "unsafe" else frozenset())
     entries: dict[str, BibEntry] = {}
     for bib in bib_files:
+        if bib.derived:
+            continue  # a compiled .bbl is not the source to fix
         for entry in bib.entries:
             entries.setdefault(entry.key, entry)
     fixes: dict[tuple[str, str], Fix] = {}

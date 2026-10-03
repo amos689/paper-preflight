@@ -13,6 +13,7 @@ from pathlib import Path
 import httpx
 
 from paper_preflight import __version__
+from paper_preflight.bib.bbl import parse_bbl_file
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
 from paper_preflight.cache import Cache
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
@@ -95,8 +96,11 @@ def run_check(
     extra = [p.resolve() for p in (extra_bib or [])]
     target = target.resolve()
 
-    if target.is_file() and target.suffix.lower() == ".bib":
-        bib_files = [parse_bib_file(target), *(parse_bib_file(p) for p in extra if p != target)]
+    if target.is_file() and target.suffix.lower() in {".bib", ".bbl"}:
+        first = (
+            parse_bbl_file(target) if target.suffix.lower() == ".bbl" else parse_bib_file(target)
+        )
+        bib_files = [first, *(parse_bib_file(p) for p in extra if p != target)]
         findings, used = check_hygiene_tracked(HygieneInput(bib_files=bib_files))
         result = CheckResult(
             root=target.parent,
@@ -120,6 +124,9 @@ def run_check(
         nocite_all = project.nocite_all or bool(build and build.nocite_all)
         bib_paths = bib_paths_for(project, extra)
         bib_files = [parse_bib_file(p) for p in bib_paths]
+        compiled = None if bib_files else _compiled_bibliography(project.main)
+        if compiled is not None:
+            bib_files = [parse_bbl_file(compiled)]
         findings, used = check_hygiene_tracked(
             HygieneInput(
                 bib_files=bib_files,
@@ -129,7 +136,10 @@ def run_check(
                 nocite_all=nocite_all,
             )
         )
-        if not project.bib_resources and not extra:
+        if compiled is not None:
+            # the .bib files are not here (an arXiv source, say): the .bbl stands in for them
+            findings = [f for f in findings if f.rule_id != "CIT005"]
+        elif not project.bib_resources and not extra:
             findings.append(
                 make_finding(
                     "CIT005", Location(project.main, 1, 1), path="(no \\bibliography found)"
@@ -147,6 +157,12 @@ def run_check(
         )
         # only references that appear in the PDF are verified
         to_verify = first_definitions(bib_files, None if nocite_all else cited)
+
+        if compiled is not None:
+            result.notes.append(
+                f"References read from {compiled.name}: no .bib file was found. "
+                "Fixes are not proposed for a compiled bibliography."
+            )
 
     if verify is not None:
         _verify_into(result, to_verify, verify)
@@ -177,6 +193,15 @@ def _unused_suppressions(result: CheckResult, used: set[tuple[str, str]]) -> lis
         return False  # RUN001 and CFG001 are not about one entry
 
     return unused_suppressions(first_definitions(result.bib_files), used, judged)
+
+
+def _compiled_bibliography(main: Path) -> Path | None:
+    """The .bbl LaTeX left for the main file (or the only one in its folder), if any."""
+    same_name = main.with_suffix(".bbl")
+    if same_name.is_file():
+        return same_name
+    others = sorted(main.parent.glob("*.bbl"))
+    return others[0] if len(others) == 1 else None
 
 
 def first_definitions(bib_files: Iterable[BibFile], keys: set[str] | None = None) -> list[BibEntry]:

@@ -174,6 +174,8 @@ uvx paper-preflight check path/to/paper
 ```
 
 `path/to/paper` is the project directory, its main `.tex` file, or a single `.bib` file.
+A project that ships no `.bib`, as many arXiv sources do, is read from its compiled `.bbl`
+(checked, but never edited).
 
 | Option | Effect |
 |---|---|

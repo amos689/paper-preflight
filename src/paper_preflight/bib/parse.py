@@ -119,6 +119,7 @@ class BibFile:
     encoding: str
     entries: list[BibEntry] = field(default_factory=list)
     issues: list[BibIssue] = field(default_factory=list)
+    derived: bool = False  # read from a compiled .bbl: checked, but never edited
 
 
 def _split_concatenation(raw: str) -> list[str]:
