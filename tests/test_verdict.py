@@ -133,12 +133,31 @@ async def test_unavailable_source_is_not_a_negative_answer() -> None:
 
 
 @pytest.mark.anyio
-async def test_arxiv_outage_does_not_turn_a_preprint_year_into_an_error() -> None:
-    # Seen live on 2026-10-03: arXiv answered 429, so the preprint entry was found by title
-    # search and bound to the published CVPR 2016 record. Its year (2015) is the preprint's,
-    # which is expected; the right finding is REF015, not a year mismatch.
+async def test_arxiv_outage_falls_back_to_datacite() -> None:
+    # Seen live on 2026-10-03: the arXiv API answered 429. DataCite holds every arXiv paper as
+    # 10.48550/arXiv.<id>, so both preprints are still verified.
     web = FakeWeb()
     web.fail("export.arxiv.org", "429")
+    assessments, evidence = await run_demo(web)
+    preprint = assessments["he2015residual"]
+    assert preprint.record is not None
+    assert preprint.record.source == "datacite"
+    assert (preprint.verdict, rules(preprint)) == (Verdict.VERIFIED, {"REF015"})
+    gelu = assessments["hendrycks2016gelu"]
+    assert (gelu.verdict, rules(gelu)) == (Verdict.VERIFIED, set())
+    # withdrawals are only known to arXiv: the run still says arXiv was unavailable
+    (incomplete,) = run_findings(evidence)
+    assert "arXiv (rate_limited)" in incomplete.message.en
+
+
+@pytest.mark.anyio
+async def test_arxiv_outage_does_not_turn_a_preprint_year_into_an_error() -> None:
+    # With arXiv and DataCite both down, the preprint entry is found by title search and bound
+    # to the published CVPR 2016 record. Its year (2015) is the preprint's, which is expected;
+    # the right finding is REF015, not a year mismatch (a false REF013 seen live on 2026-10-03).
+    web = FakeWeb()
+    web.fail("export.arxiv.org", "429")
+    web.fail("api.datacite.org", "429")
     assessments, _ = await run_demo(web)
     preprint = assessments["he2015residual"]
     assert preprint.record is not None
