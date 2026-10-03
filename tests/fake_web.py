@@ -107,6 +107,8 @@ class FakeWeb:
             return httpx.Response(200, json=_load("crossref/biblio_t8.json"))
         if "Deep Residual Learning" in query:
             return httpx.Response(200, json=_load("crossref/biblio_t2.json"))
+        if "Attention Is All You Need" in query:  # ranks the fake 10.65215 copies first
+            return httpx.Response(200, json=_load("crossref/biblio_t1_withauthors.json"))
         return httpx.Response(200, json={"message": {"items": []}})
 
     def _dblp(self, request: httpx.Request) -> httpx.Response:
@@ -120,8 +122,14 @@ class FakeWeb:
             return httpx.Response(200, json=_sparql(rows, ["doi", "pub"]))
         if "authoredBy" in query:
             return httpx.Response(200, json=_load("dblp/link_corr_to_conf.json"))
+        if "VALUES ?pub" in query and "KingmaB14" in query:
+            return httpx.Response(200, json=_load("dblp/full_records_adam.json"))
         if "VALUES ?pub" in query:
             return httpx.Response(200, json=_load("dblp/full_records.json"))
         if "quantum gradient folding" in query:
             return httpx.Response(200, json=_load("dblp/prefix_t8.json"))
+        if "adam: a method for stochastic" in query:
+            return httpx.Response(200, json=_load("dblp/prefix_adam.json"))
+        if "attention is all you need" in query:
+            return httpx.Response(200, json=_load("dblp/prefix_t1.json"))
         return httpx.Response(200, json=_sparql([], ["pub", "t"]))

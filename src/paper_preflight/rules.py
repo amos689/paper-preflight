@@ -124,6 +124,111 @@ RULES: dict[str, Rule] = {
              "条目 '{key}' 的 {field} {problem_zh}：'{value}'。应写为：{suggestion}"),
             FixLevel.SAFE,
         ),
+        # ---- reference verification (docs/adr/0002); wording stays neutral by design
+        _rule(
+            "REF001", "identifier-conflict", E,
+            ("Identifier points to a different work", "标识符指向另一篇作品"),
+            ("The {field} of '{key}' ({identifier}) resolves to a different work in {source}: "
+             "\"{found_title}\" ({found_authors}, {found_year}).",
+             "条目 '{key}' 的 {field}（{identifier}）在 {source} 中指向另一篇作品："
+             "\"{found_title}\"（{found_authors}，{found_year}）。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF002", "identifier-not-found", E,
+            ("Identifier does not exist", "标识符不存在"),
+            ("The {field} of '{key}' ({identifier}) does not exist: "
+             "{authority} has no record of it.",
+             "条目 '{key}' 的 {field}（{identifier}）不存在：{authority} 没有该标识符的记录。"),
+        ),
+        _rule(
+            "REF003", "not-found", E,
+            ("Reference not found in any source", "所有来源均未找到该文献"),
+            ("'{key}' was not found in {sources}, and every source responded. "
+             "Check that the work exists and that its title is correct.",
+             "在 {sources_zh} 中均未找到 '{key}'，且所有来源都已正常应答。"
+             "请确认该作品确实存在、标题无误。"),
+        ),
+        _rule(
+            "REF004", "retracted", E,
+            ("Cited work has been retracted", "被引作品已撤稿"),
+            ("'{key}' has been {notice} (reported by {sources}). "
+             "Cite it only if the text discusses the retraction.",
+             "'{key}' 已{notice_zh}（依据：{sources_zh}）。"
+             "除非正文讨论的就是撤稿本身，否则不应引用。"),
+        ),
+        _rule(
+            "REF005", "concern-or-correction", W,
+            ("Expression of concern or correction", "关注声明或更正"),
+            ("'{key}' has {notice} (reported by {sources}).",
+             "'{key}' 有{notice_zh}（依据：{sources_zh}）。"),
+        ),
+        _rule(
+            "REF010", "authors-disjoint", E,
+            ("Author list is entirely different", "作者列表完全不同"),
+            ("None of the authors of '{key}' appear on the matching record in {source} "
+             "({found_authors}).",
+             "条目 '{key}' 的作者无一出现在 {source} 的匹配记录中（记录作者：{found_authors}）。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF011", "authors-differ", W,
+            ("Author list differs", "作者列表部分不同"),
+            ("The authors of '{key}' differ from {source}: {detail}.",
+             "条目 '{key}' 的作者与 {source} 的记录不一致：{detail_zh}。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF012", "title-differs", W,
+            ("Title differs from the record", "标题与记录不符"),
+            ("The title of '{key}' differs from {source}: \"{found_title}\" "
+             "(similarity {score}).",
+             "条目 '{key}' 的标题与 {source} 的记录不符：\"{found_title}\"（相似度 {score}）。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF013", "year-differs", W,
+            ("Year differs from the record", "年份与记录不符"),
+            ("'{key}' gives the year {year}, but {source} records {found_years}.",
+             "条目 '{key}' 的年份是 {year}，但 {source} 记录为 {found_years}。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF014", "venue-differs", W,
+            ("Venue differs from the record", "发表场所与记录不符"),
+            ("'{key}' names {venue} as the venue, but {source} records {found_venue}.",
+             "条目 '{key}' 写的发表场所是 {venue}，但 {source} 记录为 {found_venue}。"),
+            FixLevel.UNSAFE,
+        ),
+        _rule(
+            "REF015", "preprint-published", W,
+            ("Preprint has been formally published", "预印本已正式发表"),
+            ("'{key}' cites a preprint that has been published in {found_venue} "
+             "({found_year}){doi_note}. Cite the published version and keep the eprint field.",
+             "'{key}' 引用的预印本已正式发表于 {found_venue}（{found_year}）{doi_note_zh}。"
+             "建议改引正式版本，并保留 eprint 字段。"),
+            FixLevel.SUGGESTION,
+        ),
+        _rule(
+            "REF018", "arxiv-withdrawn", W,
+            ("arXiv preprint withdrawn", "arXiv 预印本已撤回"),
+            ("The arXiv preprint cited by '{key}' ({identifier}) has been withdrawn.",
+             "'{key}' 引用的 arXiv 预印本（{identifier}）已被撤回。"),
+        ),
+        _rule(
+            "REF090", "cannot-determine", I,
+            ("Reference could not be verified", "无法核实该文献"),
+            ("'{key}' could not be verified: {reasons_text}.",
+             "无法核实 '{key}'：{reasons_text_zh}。"),
+        ),
+        _rule(
+            "RUN001", "run-incomplete", W,
+            ("Run incomplete: some sources were unavailable", "运行不完整：部分来源不可用"),
+            ("{count} reference(s) could not be fully checked because these sources were "
+             "unavailable: {sources}. Results may change when you re-run later.",
+             "有 {count} 条文献未能完整核查，因为以下来源不可用：{sources}。"
+             "稍后重新运行，结果可能会变化。"),
+        ),
     ]
 }  # fmt: skip
 

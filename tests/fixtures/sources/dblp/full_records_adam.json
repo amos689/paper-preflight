@@ -1,0 +1,103 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "title",
+   "type",
+   "venue",
+   "year",
+   "doi",
+   "primary",
+   "ord",
+   "name"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/KingmaB14"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Adam: A Method for Stochastic Optimization."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR (Poster)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2015"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1412.6980"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1412.6980"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Diederik P. Kingma"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/KingmaB14"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Adam: A Method for Stochastic Optimization."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR (Poster)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2015"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1412.6980"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1412.6980"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jimmy Ba"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 2074,
+  "result-size-total": 2
+ }
+}
