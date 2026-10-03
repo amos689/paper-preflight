@@ -11,6 +11,8 @@ All notable changes to this project are documented here. The format follows
 - An entry that names where the work appeared (booktitle or journal) cites that version even
   when the venue is not recognised and the entry keeps its arXiv eprint: no more REF015
   telling it to cite the published version it already cites.
+- An organisation leading a record's author list ("OpenAI" before Josh Achiam on the GPT-4
+  report) is not taken for the first author when the entry leaves it out (REF011).
 - An entry citing an earlier arXiv version (matched through that version's title) is no longer
   reported for its author order when a later version reordered the authors (REF011).
 - A published version's year a year or two after the only record found, a preprint (dblp lists

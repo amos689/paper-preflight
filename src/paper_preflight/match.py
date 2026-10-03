@@ -363,6 +363,11 @@ def _as_meant(person: Person, other_keys: set[str]) -> Person:
     return person
 
 
+def _organisation(person: Person) -> bool:
+    """A collective author: a literal name, or a single word without a given name ("OpenAI")."""
+    return bool(person.literal) or (not person.given and len(person.family.split()) == 1)
+
+
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
     people = [_as_meant(p, written) for p in record.authors if surname_key(p)]
@@ -397,7 +402,12 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     overlap = matched / len(entry)
     first_person = entry[0][0]
     if record.authors_ordered:
-        first = same_person(first_person, people[0])
+        leads = [people[0]]
+        # an organisation leading the record ("OpenAI" before Josh Achiam, arXiv 2303.08774) is
+        # no first author to compare with when the entry leaves it out
+        if _organisation(people[0]) and not any(same_person(p, people[0]) for p, _ in entry):
+            leads += people[1:2]
+        first = any(same_person(first_person, lead) for lead in leads)
     else:
         first = any(same_person(first_person, other) for other in people)
     missing_names = tuple(missing)
