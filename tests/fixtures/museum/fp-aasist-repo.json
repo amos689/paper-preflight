@@ -1,0 +1,1094 @@
+{
+ "bib": "@online{aasist_repo,\n  author = {Jung, J. and others},\n  title = {AASIST: Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks},\n  year = {2021},\n  url = {https://github.com/clovaai/aasist},\n  urldate = {2026-03-27}\n}\n",
+ "cache": [
+  {
+   "source": "crossref",
+   "key": "api.crossref.org/works?query.bibliographic=AASIST%3A+Audio+Anti-Spoofing+using+Integrated+Spectro-Temporal+Graph+Attention+Networks+Jung+2021&rows=10&select=DOI%2Ctitle%2Csubtitle%2Ctype%2Cauthor%2Cissued%2Cpublished-print%2Cpublished-online%2Ccontainer-title%2Cevent%2Cupdated-by%2Crelation%2Cvolume%2Cissue%2Cpage%2Cpublisher%2Cmember%2Cprefix%2CURL%2Ccreated",
+   "kind": "search",
+   "payload": {
+    "status": "ok",
+    "message-type": "work-list",
+    "message-version": "1.0.0",
+    "message": {
+     "facets": {},
+     "total-results": 899216,
+     "items": [
+      {
+       "publisher": "Ho Chi Minh City Open University Journal of Science",
+       "issue": "3",
+       "DOI": "10.46223/hcmcoujs.tech.en.16.3.4731.2026",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2026,
+          9,
+          10
+         ]
+        ],
+        "date-time": "2026-09-10T15:14:55Z",
+        "timestamp": 1789053295000
+       },
+       "title": [
+        "Enhancing Vietnamese speech anti-spoofing  with Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks (AASIST) and data augmentation"
+       ],
+       "prefix": "10.46223",
+       "volume": "16",
+       "author": [
+        {
+         "ORCID": "https://orcid.org/0009-0002-4007-439X",
+         "authenticated-orcid": false,
+         "given": "Ngoc Thao",
+         "family": "Tran",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "ORCID": "https://orcid.org/0000-0002-3991-2037",
+         "authenticated-orcid": false,
+         "given": "Duy Quy",
+         "family": "Thai",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "24746",
+       "published-online": {
+        "date-parts": [
+         [
+          2026,
+          1,
+          27
+         ]
+        ]
+       },
+       "container-title": [
+        "Ho Chi Minh City Open University Journal of Science - Engineering and Technology"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2026,
+          1,
+          27
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.46223/hcmcoujs.tech.en.16.3.4731.2026"
+      },
+      {
+       "publisher": "IEEE",
+       "published-print": {
+        "date-parts": [
+         [
+          2022,
+          5,
+          23
+         ]
+        ]
+       },
+       "DOI": "10.1109/icassp43922.2022.9747766",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2022,
+          4,
+          27
+         ]
+        ],
+        "date-time": "2022-04-27T15:50:34Z",
+        "timestamp": 1651074634000
+       },
+       "page": "6367-6371",
+       "title": [
+        "AASIST: Audio Anti-Spoofing Using Integrated Spectro-Temporal Graph Attention Networks"
+       ],
+       "prefix": "10.1109",
+       "author": [
+        {
+         "given": "Jee-weon",
+         "family": "Jung",
+         "sequence": "first",
+         "affiliation": [
+          {
+           "name": "Naver Corporation,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Hee-Soo",
+         "family": "Heo",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Naver Corporation,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Hemlata",
+         "family": "Tak",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Sophia Antipolis,EURECOM,France"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Hye-jin",
+         "family": "Shim",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "University of Seoul,School of Computer Science,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Joon Son",
+         "family": "Chung",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Korea Advanced Institute of Science and Technology,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Bong-Jin",
+         "family": "Lee",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Naver Corporation,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Ha-Jin",
+         "family": "Yu",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "University of Seoul,School of Computer Science,South Korea"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Nicholas",
+         "family": "Evans",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Sophia Antipolis,EURECOM,France"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "263",
+       "event": {
+        "name": "ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "start": {
+         "date-parts": [
+          [
+           2022,
+           5,
+           23
+          ]
+         ]
+        },
+        "location": "Singapore, Singapore",
+        "end": {
+         "date-parts": [
+          [
+           2022,
+           5,
+           27
+          ]
+         ]
+        }
+       },
+       "container-title": [
+        "ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2022,
+          5,
+          23
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1109/icassp43922.2022.9747766"
+      },
+      {
+       "publisher": "ISCA",
+       "DOI": "10.21437/asvspoof.2021-1",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2021,
+          9,
+          10
+         ]
+        ],
+        "date-time": "2021-09-10T05:45:31Z",
+        "timestamp": 1631252731000
+       },
+       "page": "1-8",
+       "title": [
+        "End-to-end spectro-temporal graph attention networks for speaker verification anti-spoofing and speech deepfake detection"
+       ],
+       "prefix": "10.21437",
+       "author": [
+        {
+         "given": "Hemlata",
+         "family": "Tak",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Jee-weon",
+         "family": "Jung",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Jose",
+         "family": "Patino",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Madhu",
+         "family": "Kamble",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Massimiliano",
+         "family": "Todisco",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Nicholas",
+         "family": "Evans",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "8866",
+       "published-online": {
+        "date-parts": [
+         [
+          2021,
+          9,
+          16
+         ]
+        ]
+       },
+       "event": {
+        "acronym": "asvspoof_2021",
+        "name": "2021 Edition of the Automatic Speaker Verification and Spoofing Countermeasures Challenge"
+       },
+       "container-title": [
+        "2021 Edition of the Automatic Speaker Verification and Spoofing Countermeasures Challenge"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2021,
+          9,
+          16
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.21437/asvspoof.2021-1"
+      },
+      {
+       "publisher": "Politeknik Pertanian Negeri Samarinda",
+       "issue": "1",
+       "DOI": "10.51967/tanesa.v27i1.3841",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2026,
+          7,
+          7
+         ]
+        ],
+        "date-time": "2026-07-07T11:26:04Z",
+        "timestamp": 1783423564000
+       },
+       "title": [
+        "Robust Voice Anti-Spoofing for Indonesian Datasets Using Spectro-Temporal Graph Attention Networks"
+       ],
+       "prefix": "10.51967",
+       "volume": "27",
+       "author": [
+        {
+         "given": "Bima",
+         "family": "Prihasto",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Boby Mugi",
+         "family": "Pratama",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Adinia",
+         "family": "Amaliah",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "29542",
+       "published-online": {
+        "date-parts": [
+         [
+          2026,
+          6,
+          26
+         ]
+        ]
+       },
+       "container-title": [
+        "Buletin Poltanesa"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2026,
+          6,
+          26
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.51967/tanesa.v27i1.3841"
+      },
+      {
+       "publisher": "ISCA",
+       "DOI": "10.21437/interspeech.2021-993",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2021,
+          8,
+          27
+         ]
+        ],
+        "date-time": "2021-08-27T01:59:39Z",
+        "timestamp": 1630029579000
+       },
+       "page": "2356-2360",
+       "title": [
+        "Graph Attention Networks for Anti-Spoofing"
+       ],
+       "prefix": "10.21437",
+       "author": [
+        {
+         "given": "Hemlata",
+         "family": "Tak",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Jee-weon",
+         "family": "Jung",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Jose",
+         "family": "Patino",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Massimiliano",
+         "family": "Todisco",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Nicholas",
+         "family": "Evans",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "8866",
+       "published-online": {
+        "date-parts": [
+         [
+          2021,
+          8,
+          30
+         ]
+        ]
+       },
+       "event": {
+        "acronym": "interspeech_2021",
+        "name": "Interspeech 2021"
+       },
+       "container-title": [
+        "Interspeech 2021"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2021,
+          8,
+          30
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.21437/interspeech.2021-993"
+      },
+      {
+       "publisher": "IEEE",
+       "published-print": {
+        "date-parts": [
+         [
+          2023,
+          6,
+          4
+         ]
+        ]
+       },
+       "DOI": "10.1109/icassp49357.2023.10096741",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2023,
+          5,
+          5
+         ]
+        ],
+        "date-time": "2023-05-05T17:28:30Z",
+        "timestamp": 1683307710000
+       },
+       "page": "1-5",
+       "title": [
+        "Graph-Based Spectro-Temporal Dependency Modeling for Anti-Spoofing"
+       ],
+       "prefix": "10.1109",
+       "author": [
+        {
+         "given": "Feng",
+         "family": "Chen",
+         "sequence": "first",
+         "affiliation": [
+          {
+           "name": "Harbin Institute of Technology,School of Computer Science and Technology,China"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Shiwen",
+         "family": "Deng",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Harbin Normal University,School of Mathematical Science,China"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Tieran",
+         "family": "Zheng",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Harbin Institute of Technology,School of Computer Science and Technology,China"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Yongjun",
+         "family": "He",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Harbin Institute of Technology,School of Computer Science and Technology,China"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Jiqing",
+         "family": "Han",
+         "sequence": "additional",
+         "affiliation": [
+          {
+           "name": "Harbin Institute of Technology,School of Computer Science and Technology,China"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "263",
+       "event": {
+        "name": "ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "start": {
+         "date-parts": [
+          [
+           2023,
+           6,
+           4
+          ]
+         ]
+        },
+        "location": "Rhodes Island, Greece",
+        "end": {
+         "date-parts": [
+          [
+           2023,
+           6,
+           10
+          ]
+         ]
+        }
+       },
+       "container-title": [
+        "ICASSP 2023 - 2023 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2023,
+          6,
+          4
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1109/icassp49357.2023.10096741"
+      },
+      {
+       "publisher": "ISCA",
+       "DOI": "10.21437/interspeech.2022-904",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2022,
+          9,
+          16
+         ]
+        ],
+        "date-time": "2022-09-16T11:42:06Z",
+        "timestamp": 1663328526000
+       },
+       "page": "376-380",
+       "title": [
+        "Audio Anti-spoofing Using Simple Attention Module and Joint Optimization Based on Additive Angular Margin Loss and Meta-learning"
+       ],
+       "prefix": "10.21437",
+       "author": [
+        {
+         "given": "John H.L.",
+         "family": "Hansen",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "ZHENYU",
+         "family": "WANG",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "8866",
+       "published-online": {
+        "date-parts": [
+         [
+          2022,
+          9,
+          18
+         ]
+        ]
+       },
+       "event": {
+        "acronym": "interspeech_2022",
+        "name": "Interspeech 2022"
+       },
+       "container-title": [
+        "Interspeech 2022"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2022,
+          9,
+          18
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.21437/interspeech.2022-904"
+      },
+      {
+       "publisher": "IEEE",
+       "published-print": {
+        "date-parts": [
+         [
+          2021,
+          6,
+          6
+         ]
+        ]
+       },
+       "DOI": "10.1109/icassp39728.2021.9414611",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2021,
+          5,
+          13
+         ]
+        ],
+        "date-time": "2021-05-13T19:53:45Z",
+        "timestamp": 1620935625000
+       },
+       "page": "6473-6477",
+       "title": [
+        "Improving Audio Anomalies Recognition Using Temporal Convolutional Attention Networks"
+       ],
+       "prefix": "10.1109",
+       "author": [
+        {
+         "given": "Qiang",
+         "family": "Huang",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Thomas",
+         "family": "Hain",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "263",
+       "event": {
+        "name": "ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)",
+        "start": {
+         "date-parts": [
+          [
+           2021,
+           6,
+           6
+          ]
+         ]
+        },
+        "location": "Toronto, ON, Canada",
+        "end": {
+         "date-parts": [
+          [
+           2021,
+           6,
+           11
+          ]
+         ]
+        }
+       },
+       "container-title": [
+        "ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2021,
+          6,
+          6
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1109/icassp39728.2021.9414611"
+      },
+      {
+       "publisher": "SCITEPRESS - Science and Technology Publications",
+       "published-print": {
+        "date-parts": [
+         [
+          2022
+         ]
+        ]
+       },
+       "DOI": "10.5220/0010921200003182",
+       "type": "proceedings-article",
+       "created": {
+        "date-parts": [
+         [
+          2022,
+          5,
+          2
+         ]
+        ],
+        "date-time": "2022-05-02T12:53:04Z",
+        "timestamp": 1651495984000
+       },
+       "page": "27-34",
+       "title": [
+        "Fine-grained Detection of Academic Emotions with Spatial Temporal Graph Attention Networks using Facial Landmarks"
+       ],
+       "prefix": "10.5220",
+       "author": [
+        {
+         "given": "Hua",
+         "family": "Fwa",
+         "sequence": "first",
+         "affiliation": [
+          {
+           "name": "School of Computing and Information Systems, Singapore Management University, Singapore, --- Select a Country ---"
+          }
+         ],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "3171",
+       "event": {
+        "name": "14th International Conference on Computer Supported Education",
+        "start": {
+         "date-parts": [
+          [
+           2022,
+           4,
+           22
+          ]
+         ]
+        },
+        "location": "Online Streaming, --- Select a Country ---",
+        "end": {
+         "date-parts": [
+          [
+           2022,
+           4,
+           24
+          ]
+         ]
+        }
+       },
+       "container-title": [
+        "Proceedings of the 14th International Conference on Computer Supported Education"
+       ],
+       "subtitle": [
+        ""
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          2022
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.5220/0010921200003182"
+      },
+      {
+       "publisher": "Elsevier BV",
+       "DOI": "10.2139/ssrn.7206465",
+       "type": "posted-content",
+       "created": {
+        "date-parts": [
+         [
+          2026,
+          7,
+          30
+         ]
+        ],
+        "date-time": "2026-07-30T16:38:20Z",
+        "timestamp": 1785429500000
+       },
+       "title": [
+        "SoundGraphNet: Graph-Guided Spectro-Temporal Decoding with Adaptive-Margin Regularization for Multi-Label Audio Event Recognition"
+       ],
+       "prefix": "10.2139",
+       "author": [
+        {
+         "given": "Selina",
+         "family": "Zhang",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Zack",
+         "family": "Ma",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "Lucas",
+         "family": "Ma",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "ORCID": "https://orcid.org/0009-0005-6564-6130",
+         "authenticated-orcid": true,
+         "given": "Mingni",
+         "family": "Luo",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "78",
+       "issued": {
+        "date-parts": [
+         [
+          2026
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.2139/ssrn.7206465"
+      }
+     ],
+     "items-per-page": 10,
+     "query": {
+      "start-index": 0,
+      "search-terms": null
+     }
+    }
+   }
+  }
+ ],
+ "recorded": {
+  "rules": [],
+  "verdict": "cannot_determine (GREY_LITERATURE) (AMBIGUOUS_CANDIDATES)"
+ }
+}

@@ -1,0 +1,674 @@
+{
+ "bib": "@phdthesis{Martel96,\n  author = {Martel, Andr{\\'e} R.},\n  title = {Spectropolarimetry of High-Polarization Seyfert 1 Galaxies},\n  school = {University of California, Santa Cruz},\n  year = {1996},\n  advisor = {Miller, Joseph S.}\n}\n",
+ "cache": [
+  {
+   "source": "crossref",
+   "key": "api.crossref.org/works?query.bibliographic=Spectropolarimetry+of+High-Polarization+Seyfert+1+Galaxies+Martel+1996&rows=10&select=DOI%2Ctitle%2Csubtitle%2Ctype%2Cauthor%2Cissued%2Cpublished-print%2Cpublished-online%2Ccontainer-title%2Cevent%2Cupdated-by%2Crelation%2Cvolume%2Cissue%2Cpage%2Cpublisher%2Cmember%2Cprefix%2CURL%2Ccreated",
+   "kind": "search",
+   "payload": {
+    "status": "ok",
+    "message-type": "work-list",
+    "message-version": "1.0.0",
+    "message": {
+     "facets": {},
+     "total-results": 5198925,
+     "items": [
+      {
+       "publisher": "IOP Publishing",
+       "published-print": {
+        "date-parts": [
+         [
+          1997,
+          5
+         ]
+        ]
+       },
+       "DOI": "10.1086/133923",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T17:58:28Z",
+        "timestamp": 1027706308000
+       },
+       "page": "630",
+       "title": [
+        "Spectropolarimetry of High-Polarization Seyfert I Galaxies"
+       ],
+       "prefix": "10.1088",
+       "volume": "109",
+       "author": [
+        {
+         "given": "Andre R.",
+         "family": "Martel",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        }
+       ],
+       "member": "266",
+       "container-title": [
+        "Publications of the Astronomical Society of the Pacific"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1997,
+          5
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/133923"
+      },
+      {
+       "publisher": "American Astronomical Society",
+       "published-print": {
+        "date-parts": [
+         [
+          1990,
+          6
+         ]
+        ]
+       },
+       "DOI": "10.1086/168780",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T18:30:06Z",
+        "timestamp": 1027708206000
+       },
+       "page": "456",
+       "title": [
+        "Spectropolarimetry of high-polarization Seyfert 2 galaxies and unified Seyfert theories"
+       ],
+       "prefix": "10.3847",
+       "volume": "355",
+       "author": [
+        {
+         "given": "J. S.",
+         "family": "Miller",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "R. W.",
+         "family": "Goodrich",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "2208",
+       "container-title": [
+        "The Astrophysical Journal"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1990,
+          6
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/168780"
+      },
+      {
+       "publisher": "Elsevier BV",
+       "issue": "1",
+       "published-print": {
+        "date-parts": [
+         [
+          1996,
+          1
+         ]
+        ]
+       },
+       "DOI": "10.1016/0083-6656(95)00118-2",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          25
+         ]
+        ],
+        "date-time": "2002-07-25T21:22:33Z",
+        "timestamp": 1027632153000
+       },
+       "page": "149-153",
+       "title": [
+        "Ultraviolet spectropolarimetry of Seyfert 2 galaxies"
+       ],
+       "prefix": "10.1016",
+       "volume": "40",
+       "author": [
+        {
+         "given": "Todd",
+         "family": "Hurt",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        }
+       ],
+       "member": "78",
+       "container-title": [
+        "Vistas in Astronomy"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1996,
+          1
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1016/0083-6656(95)00118-2"
+      },
+      {
+       "publisher": "American Astronomical Society",
+       "published-print": {
+        "date-parts": [
+         [
+          1994,
+          10
+         ]
+        ]
+       },
+       "DOI": "10.1086/174706",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T18:37:00Z",
+        "timestamp": 1027708620000
+       },
+       "page": "82",
+       "title": [
+        "Spectropolarimetry of high-polarization Seyfert 1 galaxies: Geometry and kinematics of the scattering regions"
+       ],
+       "prefix": "10.3847",
+       "volume": "434",
+       "author": [
+        {
+         "given": "R. W.",
+         "family": "Goodrich",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        },
+        {
+         "given": "J. S.",
+         "family": "Miller",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "2208",
+       "container-title": [
+        "The Astrophysical Journal"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1994,
+          10
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/174706"
+      },
+      {
+       "publisher": "Springer Netherlands",
+       "published-print": {
+        "date-parts": [
+         [
+          1989
+         ]
+        ]
+       },
+       "DOI": "10.1007/978-94-009-0963-2_26",
+       "type": "book-chapter",
+       "created": {
+        "date-parts": [
+         [
+          2012,
+          1,
+          17
+         ]
+        ],
+        "date-time": "2012-01-17T18:34:44Z",
+        "timestamp": 1326825284000
+       },
+       "page": "103-105",
+       "title": [
+        "Spectropolarimetry and Variability of Seyfert 1.8 and 1.9 Galaxies"
+       ],
+       "prefix": "10.1007",
+       "author": [
+        {
+         "given": "Robert W.",
+         "family": "Goodrich",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        }
+       ],
+       "member": "297",
+       "container-title": [
+        "Active Galactic Nuclei"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1989
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1007/978-94-009-0963-2_26"
+      },
+      {
+       "publisher": "American Astronomical Society",
+       "published-print": {
+        "date-parts": [
+         [
+          1989,
+          7
+         ]
+        ]
+       },
+       "DOI": "10.1086/167586",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T14:27:37Z",
+        "timestamp": 1027693657000
+       },
+       "page": "224",
+       "title": [
+        "Spectropolarimetry of 'narrow-line' Seyfert 1 galaxies"
+       ],
+       "prefix": "10.3847",
+       "volume": "342",
+       "author": [
+        {
+         "given": "Robert W.",
+         "family": "Goodrich",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "2208",
+       "container-title": [
+        "The Astrophysical Journal"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1989,
+          7
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/167586"
+      },
+      {
+       "publisher": "American Astronomical Society",
+       "published-print": {
+        "date-parts": [
+         [
+          1989,
+          5
+         ]
+        ]
+       },
+       "DOI": "10.1086/167384",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T18:27:37Z",
+        "timestamp": 1027708057000
+       },
+       "page": "190",
+       "title": [
+        "Spectropolarimetry and variability of Seyfert 1.8 and 1.9 galaxies"
+       ],
+       "prefix": "10.3847",
+       "volume": "340",
+       "author": [
+        {
+         "given": "Robert W.",
+         "family": "Goodrich",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "2208",
+       "container-title": [
+        "The Astrophysical Journal"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1989,
+          5
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/167384"
+      },
+      {
+       "publisher": "Cambridge University Press (CUP)",
+       "published-print": {
+        "date-parts": [
+         [
+          1989
+         ]
+        ]
+       },
+       "DOI": "10.1017/s0074180900140495",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2019,
+          6,
+          6
+         ]
+        ],
+        "date-time": "2019-06-06T21:43:31Z",
+        "timestamp": 1559857411000
+       },
+       "page": "103-105",
+       "title": [
+        "Spectropolarimetry and Variability of Seyfert 1.8 and 1.9 Galaxies"
+       ],
+       "prefix": "10.1017",
+       "volume": "134",
+       "author": [
+        {
+         "given": "Robert W.",
+         "family": "Goodrich",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        }
+       ],
+       "member": "56",
+       "published-online": {
+        "date-parts": [
+         [
+          2017,
+          8,
+          7
+         ]
+        ]
+       },
+       "container-title": [
+        "Symposium - International Astronomical Union"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1989
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1017/s0074180900140495"
+      },
+      {
+       "publisher": "American Astronomical Society",
+       "published-print": {
+        "date-parts": [
+         [
+          1994,
+          7
+         ]
+        ]
+       },
+       "DOI": "10.1086/174394",
+       "type": "journal-article",
+       "created": {
+        "date-parts": [
+         [
+          2002,
+          7,
+          26
+         ]
+        ],
+        "date-time": "2002-07-26T18:37:00Z",
+        "timestamp": 1027708620000
+       },
+       "page": "196",
+       "title": [
+        "Blue spectropolarimetry of Seyfert 2 galaxies. 1: Analysis and basic results"
+       ],
+       "prefix": "10.3847",
+       "volume": "430",
+       "author": [
+        {
+         "given": "Laura E.",
+         "family": "Kay",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "vocabulary": "crossref",
+           "role": "author"
+          }
+         ]
+        }
+       ],
+       "member": "2208",
+       "container-title": [
+        "The Astrophysical Journal"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1994,
+          7
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1086/174394"
+      },
+      {
+       "publisher": "Springer Netherlands",
+       "published-print": {
+        "date-parts": [
+         [
+          1996
+         ]
+        ]
+       },
+       "DOI": "10.1007/978-94-009-0295-4_143",
+       "type": "book-chapter",
+       "created": {
+        "date-parts": [
+         [
+          2011,
+          9,
+          16
+         ]
+        ],
+        "date-time": "2011-09-16T04:01:36Z",
+        "timestamp": 1316145696000
+       },
+       "page": "402-404",
+       "title": [
+        "KECK Spectropolarimetry of High Redshift Radio Galaxies"
+       ],
+       "prefix": "10.1007",
+       "author": [
+        {
+         "given": "A.",
+         "family": "Cimatti",
+         "sequence": "first",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        },
+        {
+         "given": "A.",
+         "family": "Dey",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        },
+        {
+         "given": "W.",
+         "family": "van Breugel",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        },
+        {
+         "given": "R.",
+         "family": "Antonucci",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        },
+        {
+         "given": "H.",
+         "family": "Spinrad",
+         "sequence": "additional",
+         "affiliation": [],
+         "role": [
+          {
+           "role": "author",
+           "vocabulary": "crossref"
+          }
+         ]
+        }
+       ],
+       "member": "297",
+       "container-title": [
+        "Extragalactic Radio Sources"
+       ],
+       "issued": {
+        "date-parts": [
+         [
+          1996
+         ]
+        ]
+       },
+       "URL": "https://doi.org/10.1007/978-94-009-0295-4_143"
+      }
+     ],
+     "items-per-page": 10,
+     "query": {
+      "start-index": 0,
+      "search-terms": null
+     }
+    }
+   }
+  }
+ ],
+ "recorded": {
+  "rules": [],
+  "verdict": "cannot_determine (GREY_LITERATURE) (AMBIGUOUS_CANDIDATES)"
+ }
+}

@@ -270,7 +270,10 @@ def _bind_candidate(
             or m.venue.status == "match"
             or _year_gap(info.year, m.record) <= MAX_YEAR_ONLY_GAP
         )
-        and not (m.year.status == "mismatch" and other_publication(info, m))
+        and not (
+            m.year.status == "mismatch"
+            and (other_publication(info, m) or other_kind(info, m.record))
+        )
     ]
     if len({title_key(m.record.title) for m in strong}) == 1:
         return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
@@ -366,6 +369,43 @@ def other_publication(info: EntryInfo, m: Match) -> bool:
     ours = venue_words(VENUE_SERIES.sub(" ", info.venue))
     theirs = venue_words(VENUE_SERIES.sub(" ", m.record.venue))
     return bool(ours) and bool(theirs) and not related_words(ours, theirs)
+
+
+# What kind of publication a record or an entry is, across the sources' vocabularies (Crossref
+# and OpenAlex types, CSL, dblp, DataCite's resourceTypeGeneral) and BibTeX's entry types.
+_RECORD_KINDS = {
+    "journal-article": "article", "article": "article", "article-journal": "article",
+    "proceedings-article": "paper", "inproceedings": "paper", "paper-conference": "paper",
+    "book-chapter": "chapter", "incollection": "chapter", "chapter": "chapter",
+    "dissertation": "thesis", "thesis": "thesis", "phdthesis": "thesis",
+    "posted-content": "preprint", "preprint": "preprint", "informal": "preprint",
+    "report": "report", "software": "software", "dataset": "software", "component": "software",
+}  # fmt: skip
+_ENTRY_KINDS = {
+    "phdthesis": "thesis", "mastersthesis": "thesis", "thesis": "thesis",
+    "incollection": "chapter", "inbook": "chapter",
+    "online": "software", "software": "software", "electronic": "software", "www": "software",
+    "article": "article", "inproceedings": "paper", "conference": "paper",
+}  # fmt: skip
+# Record kinds an entry of each kind cannot be, whatever the title
+_NOT_THE_SAME = {
+    "thesis": {"article", "paper", "chapter", "preprint", "report", "software"},
+    "chapter": {"article", "paper", "preprint"},
+    "software": {"article", "paper", "chapter", "thesis"},
+    "article": {"report", "thesis"},
+    "paper": {"report", "thesis"},
+}
+
+
+def other_kind(info: EntryInfo, record: SourceRecord) -> bool:
+    """The record is another kind of publication than the entry: a thesis abstract in a journal
+    for a thesis (Martel 1996, PASP 1997), a conference paper for a book chapter of the same title
+    (Hecht-Nielsen, IJCNN 1989 and Neural Networks for Perception 1992), a paper for the
+    repository that implements it, a technical report for a NIPS paper.
+    """
+    entry_kind = _ENTRY_KINDS.get(info.entry_type)
+    record_kind = _RECORD_KINDS.get((record.work_type or "").lower())
+    return record_kind in _NOT_THE_SAME.get(entry_kind or "", set())
 
 
 def _year_gap(year: int | None, record: SourceRecord) -> int:
