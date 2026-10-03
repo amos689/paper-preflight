@@ -1,0 +1,219 @@
+import json
+from pathlib import Path
+from typing import Any
+
+import pytest
+
+from paper_preflight.bib.names import parse_authors, parse_name
+from paper_preflight.bib.parse import parse_bib_file
+from paper_preflight.match import (
+    EntryInfo,
+    best_candidate,
+    canonical_venue,
+    check_authors,
+    check_title,
+    check_year,
+    evaluate,
+    suspicious_reason,
+    title_score,
+)
+from paper_preflight.sources import crossref
+from paper_preflight.sources.record import Person, SourceRecord
+
+FIXTURES = Path(__file__).parent / "fixtures" / "sources"
+DEMO = Path(__file__).parent.parent / "examples" / "demo-paper" / "refs.bib"
+
+
+def load(name: str) -> Any:
+    return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
+
+
+@pytest.fixture(scope="module")
+def demo() -> dict[str, EntryInfo]:
+    return {e.key: EntryInfo.from_entry(e) for e in parse_bib_file(DEMO).entries}
+
+
+@pytest.fixture(scope="module")
+def cvpr() -> SourceRecord:
+    return crossref.parse_work(load("crossref/work_cvpr.json")["message"])
+
+
+# ------------------------------------------------------------------ names
+
+
+@pytest.mark.parametrize(
+    ("raw", "family", "given"),
+    [
+        ("He, Kaiming", "He", "Kaiming"),
+        ("Kaiming He", "He", "Kaiming"),
+        ("van der Berg, Jan", "van der Berg", "Jan"),
+        ("Jan van der Berg", "van der Berg", "Jan"),
+        ('M{\\"u}ller, J{\\"o}rg', "Müller", "Jörg"),
+        ("Gomez, Aidan N.", "Gomez", "Aidan N."),
+        ("{World Health Organization}", "World Health Organization", ""),
+    ],
+)
+def test_parse_name(raw: str, family: str, given: str) -> None:
+    person = parse_name(raw)
+    assert (person.family, person.given) == (family, given)
+
+
+def test_parse_authors_and_others() -> None:
+    authors = parse_authors("Doe, Jane and {Research and Development Team} and others")
+    assert [p.family for p in authors.people] == ["Doe", "Research and Development Team"]
+    assert authors.truncated
+    assert parse_authors("").people == ()
+
+
+# ------------------------------------------------------------------ titles
+
+
+def test_title_scores() -> None:
+    assert title_score("Attention Is All You Need", "Attention is All you Need.") == 1.0
+    assert title_score("{BERT}: Pre-training", "BERT: Pre-training") == 1.0
+    assert (
+        title_score("Deep Residual Learning", "Deep Residual Learning for Image Recognition") < 0.9
+    )
+
+
+def test_subtitle_omitted_is_a_variant(cvpr: SourceRecord) -> None:
+    record = SourceRecord(
+        source="x", source_id="1",
+        title="Natural Questions: A Benchmark for Question Answering Research",
+    )  # fmt: skip
+    check = check_title("Natural Questions", record)
+    assert check.status == "mismatch"  # too short to be an acceptable prefix
+    long_record = SourceRecord(
+        source="x", source_id="2",
+        title="Gaussian Error Linear Units for Deep Networks: A Practical Study",
+    )  # fmt: skip
+    assert (
+        check_title("Gaussian Error Linear Units for Deep Networks", long_record).status
+        == "variant"
+    )
+
+
+def test_earlier_version_title_is_a_variant() -> None:
+    record = SourceRecord(
+        source="arxiv", source_id="1606.08415",
+        title="Gaussian Error Linear Units (GELUs)",
+        alt_titles=(
+            "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear"
+            " Units",
+        ),
+    )  # fmt: skip
+    check = check_title(
+        "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units",
+        record,
+    )
+    assert check.status == "variant"
+    assert "earlier version" in check.note
+
+
+# ------------------------------------------------------------------ authors
+
+
+def test_authors_match_and_truncation(demo: dict[str, EntryInfo], cvpr: SourceRecord) -> None:
+    assert check_authors(demo["he2016deep"].authors, cvpr).status == "match"
+    two = parse_authors("He, Kaiming and Zhang, Xiangyu")
+    omitted = check_authors(two, cvpr)
+    assert omitted.status == "variant"
+    assert omitted.note == "some authors omitted"
+    assert (
+        check_authors(parse_authors("He, Kaiming and Zhang, Xiangyu and others"), cvpr).status
+        == "match"
+    )
+
+
+def test_disjoint_authors(demo: dict[str, EntryInfo], cvpr: SourceRecord) -> None:
+    check = check_authors(demo["devlin2019bert"].authors, cvpr)
+    assert check.status == "mismatch"
+    assert check.disjoint
+
+
+def test_fabricated_coauthor_is_detected(cvpr: SourceRecord) -> None:
+    authors = parse_authors("He, Kaiming and Lindqvist, Aurelio and Ren, Shaoqing and Sun, Jian")
+    check = check_authors(authors, cvpr)
+    assert check.status == "variant"
+    assert check.missing == ("Aurelio Lindqvist",)
+
+
+# ------------------------------------------------------------------ year and venue
+
+
+def test_year_has_no_blanket_tolerance(demo: dict[str, EntryInfo]) -> None:
+    # dblp files Adam under a CoRR key but lists it as ICLR (Poster) 2015 (spike S1)
+    record = SourceRecord(
+        source="dblp", source_id="journals/corr/KingmaB14",
+        title="Adam: A Method for Stochastic Optimization", year=2015,
+        years=frozenset({2015}), venue="ICLR (Poster)",
+    )  # fmt: skip
+    assert check_year(demo["kingma2015adam"].year, record).status == "mismatch"  # 2016 vs 2015
+    preprint = SourceRecord(
+        source="arxiv", source_id="x", title="t", year=2015, work_type="preprint"
+    )
+    assert check_year(2016, preprint).status == "variant"
+
+
+@pytest.mark.parametrize(
+    ("text", "key"),
+    [
+        ("Advances in Neural Information Processing Systems 30", "neurips"),
+        ("NIPS", "neurips"),
+        ("2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)", "cvpr"),
+        ("IEEE/CVF International Conference on Computer Vision", "iccv"),
+        ("Proceedings of NAACL-HLT 2019", "naacl"),
+        (
+            "Proceedings of the 2019 Conference of the North American Chapter of the Association "
+            "for Computational Linguistics",
+            "naacl",
+        ),
+        ("Transactions of the Association for Computational Linguistics", "tacl"),
+        ("CoRR", "arxiv"),
+        ("The Lancet", None),
+    ],
+)
+def test_canonical_venue(text: str, key: str | None) -> None:
+    assert canonical_venue(text) == key
+
+
+# ------------------------------------------------------------------ whole records
+
+
+def test_evaluate_correct_entry(demo: dict[str, EntryInfo], cvpr: SourceRecord) -> None:
+    match = evaluate(demo["he2016deep"], cvpr)
+    assert match.acceptable
+    assert (match.title.status, match.authors.status, match.year.status, match.venue.status) == (
+        "match", "match", "match", "match",
+    )  # fmt: skip
+
+
+def test_fake_duplicate_is_never_acceptable(demo: dict[str, EntryInfo]) -> None:
+    fake = crossref.parse_work(load("crossref/work_65215_ysbyhc05.json")["message"])
+    assert suspicious_reason(fake, 2017) is not None
+    match = evaluate(demo["vaswani2017attention"], fake)
+    assert match.title.status == "match"
+    assert not match.acceptable
+
+
+def test_best_candidate_from_crossref_search(demo: dict[str, EntryInfo]) -> None:
+    candidates = crossref.parse_work_list(load("crossref/biblio_t2.json"))
+    best = best_candidate(demo["he2016deep"], candidates)
+    assert best is not None
+    assert best.record.doi == "10.1109/cvpr.2016.90"  # ranked 3rd by Crossref, still found
+
+
+def test_no_candidate_for_fabricated_reference(demo: dict[str, EntryInfo]) -> None:
+    candidates = crossref.parse_work_list(load("crossref/biblio_t8.json"))
+    assert best_candidate(demo["lindqvist2024quantum"], candidates) is None
+
+
+def test_wrong_paper_guard() -> None:
+    info = EntryInfo(
+        "k", "Some Title Of A Paper", parse_authors("Smith, A."), 2020, None, "article"
+    )
+    record = SourceRecord(
+        source="x", source_id="1", title="Some Title Of A Paper",
+        authors=(Person(family="Jones"),), year=2005,
+    )  # fmt: skip
+    assert not evaluate(info, record).acceptable
