@@ -185,3 +185,20 @@ async def test_bib_fix_proposes_a_diff_and_writes_nothing(workspace: Path) -> No
     )
     assert [(f["key"], f["new"]) for f in only["fixes"]] == [("kingma2015adam", "2015")]
     assert (workspace / "paper" / "refs.bib").read_bytes() == before
+
+
+@pytest.mark.anyio
+async def test_check_reports_progress(workspace: Path) -> None:
+    updates: list[tuple[float, float | None, str | None]] = []
+
+    async def on_progress(progress: float, total: float | None, message: str | None) -> None:
+        updates.append((progress, total, message))
+
+    async with Client(create_server(workspace), progress_handler=on_progress) as client:
+        tools = {tool.name: tool for tool in await client.list_tools()}
+        assert "ctx" not in tools["preflight_check"].input_schema["properties"]
+        await client.call_tool("preflight_check", {"path": "paper"})
+    assert updates, "no progress notification"
+    final = [u for u in updates if u[2] and u[2].startswith("References searched by title")]
+    assert final
+    assert final[-1][0] == final[-1][1]  # the title search reached its total

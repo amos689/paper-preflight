@@ -8,6 +8,7 @@ import locale
 import os
 import platform
 import sys
+import time
 from enum import StrEnum
 from pathlib import Path
 from typing import Annotated
@@ -15,6 +16,7 @@ from typing import Annotated
 import typer
 from platformdirs import user_cache_dir
 from rich.console import Console
+from rich.status import Status
 
 from paper_preflight import __version__
 from paper_preflight.findings import Severity
@@ -108,6 +110,25 @@ def _progress_message(language: str, offline: bool) -> str:
     return "Verifying references against Crossref, dblp, arXiv, DataCite and OpenAlex…"
 
 
+_STAGES = {
+    "en": {"title": "searching by title", "rescue": "asking Semantic Scholar"},
+    "zh": {"title": "按标题检索", "rescue": "询问 Semantic Scholar"},
+}
+
+
+def progress_text(
+    base: str, language: str, stage: str, done: int, total: int, seconds: float
+) -> str:
+    """The status line while a stage runs: "… (searching by title 12/40, about 30 s left)"."""
+    zh = language == "zh"
+    label = _STAGES["zh" if zh else "en"].get(stage, stage)
+    text = f"{base}（{label} {done}/{total}" if zh else f"{base} ({label} {done}/{total}"
+    if 0 < done < total and seconds > 0:
+        left = round(seconds / done * (total - done))
+        text += f"，约剩 {left} 秒" if zh else f", about {left} s left"
+    return text + ("）" if zh else ")")
+
+
 def _safe_stdout() -> None:
     """Never crash on characters the console encoding cannot represent."""
     stream = sys.stdout
@@ -166,15 +187,25 @@ def check(
     _safe_stdout()
     _no_refresh_offline(refresh, offline)
     language = resolve_lang(lang)
-    verify = VerifyOptions(
-        offline=offline, refresh=refresh, cache_path=Path(cache_dir()) / "cache.sqlite3"
-    )
     progress = Console(stderr=True)
+    message = _progress_message(language, offline)
     status: contextlib.AbstractContextManager[object] = (
-        progress.status(_progress_message(language, offline))
+        progress.status(message)
         if progress.is_terminal  # never animate into logs or CI output
         else contextlib.nullcontext()
     )
+    started: dict[str, float] = {}
+
+    def report(stage: str, done: int, total: int) -> None:
+        if isinstance(status, Status):
+            began = started.setdefault(stage, time.monotonic())
+            seconds = time.monotonic() - began
+            status.update(progress_text(message, language, stage, done, total, seconds))
+
+    verify = VerifyOptions(
+        offline=offline, refresh=refresh, cache_path=Path(cache_dir()) / "cache.sqlite3",
+        progress=report,
+    )  # fmt: skip
     try:
         with status:
             result = run_check(

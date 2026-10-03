@@ -19,7 +19,7 @@ import asyncio
 from pathlib import Path
 from typing import Any, Literal
 
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
 from fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
 
@@ -69,6 +69,9 @@ def _finding(finding: Any, root: Path, lang: str) -> dict[str, Any]:
     }
 
 
+_STAGE_MESSAGES = {"title": "References searched by title:", "rescue": "Asked Semantic Scholar:"}
+
+
 def _summary(result: CheckResult) -> dict[str, Any]:
     return {
         "errors": result.count(Severity.ERROR),
@@ -93,7 +96,8 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
             open_world_hint=True,
         )
     )
-    def preflight_check(
+    async def preflight_check(
+        ctx: Context,
         path: str = ".",
         offline: bool = False,
         max_findings: int = 20,
@@ -108,11 +112,19 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         complete) and the findings, most severe first, `max_findings` at a time; call again
         with `offset=next_offset` for more. `complete: false` means a source was unavailable,
         so the paper cannot be declared clean yet. `offline: true` answers from the local cache
-        only. The first run of a paper may take a minute; later runs are served from the cache.
+        only. The first run of a paper may take a minute or two (progress is reported while the
+        references are searched); later runs are served from the cache.
         """
         target = _inside(root, path)
+        loop = asyncio.get_running_loop()
+
+        def report(stage: str, done: int, total: int) -> None:
+            message = f"{_STAGE_MESSAGES.get(stage, stage)} {done}/{total}"
+            asyncio.run_coroutine_threadsafe(ctx.report_progress(done, total, message), loop)
+
+        verify = VerifyOptions(offline=offline, cache_path=cache_path, progress=report)
         try:
-            result = run_check(target, verify=VerifyOptions(offline=offline, cache_path=cache_path))
+            result = await asyncio.to_thread(run_check, target, verify=verify)
         except ProjectError as error:
             raise ToolError(str(error)) from error
         findings = [f for f in result.findings if include_info or f.severity is not Severity.INFO]

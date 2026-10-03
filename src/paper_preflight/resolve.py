@@ -110,6 +110,12 @@ class Sources:
     openalex_key: str | None = None
     s2: SourceClient | None = None  # only with an API key (docs/spikes/S5)
     s2_key: str | None = None
+    # told (stage, done, total) as the slow stages advance: "title", then "rescue"
+    progress: Callable[[str, int, int], None] | None = None
+
+    def report(self, stage: str, done: int, total: int) -> None:
+        if self.progress is not None:
+            self.progress(stage, done, total)
 
     @classmethod
     def create(
@@ -303,14 +309,34 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # A wrong or dead identifier does not mean the work does not exist, so entries whose
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
-    await asyncio.gather(*(_title_search(item, sources) for item in unanchored))
+    searched = 0
+
+    async def title_search(item: Evidence) -> None:
+        nonlocal searched
+        await _title_search(item, sources)
+        searched += 1
+        sources.report("title", searched, len(unanchored))
+
+    if unanchored:
+        sources.report("title", 0, len(unanchored))
+    await asyncio.gather(*(title_search(item) for item in unanchored))
     await _registered_years(unanchored, sources)
 
     # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
     if sources.s2 is not None and sources.s2_key:
         s2, key = sources.s2, sources.s2_key
         lost = [i for i in unanchored if not i.candidates and word_count(i.info.title) >= 3]
-        await asyncio.gather(*(_search_s2(item, s2, key) for item in lost))
+        rescued = 0
+
+        async def rescue(item: Evidence) -> None:
+            nonlocal rescued
+            await _search_s2(item, s2, key)
+            rescued += 1
+            sources.report("rescue", rescued, len(lost))
+
+        if lost:
+            sources.report("rescue", 0, len(lost))
+        await asyncio.gather(*(rescue(item) for item in lost))
     return evidence
 
 

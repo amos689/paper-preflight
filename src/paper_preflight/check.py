@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import time
 from collections import Counter
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -40,6 +40,9 @@ class VerifyOptions:
     cache_path: Path | None = None  # None = an in-memory cache for this run only
     environ: Mapping[str, str] | None = None  # credentials; defaults to os.environ
     current_year: int | None = None
+    # told (stage, done, total) while the slow stages run: "title" searches, Semantic Scholar's
+    # "rescue"; the CLI shows it, the MCP server sends it as progress notifications
+    progress: Callable[[str, int, int], None] | None = field(default=None, compare=False)
 
 
 def make_transport() -> httpx.AsyncBaseTransport | None:
@@ -206,6 +209,7 @@ async def verify_entries(
                 http, cache, offline=options.offline, environ=environ,
                 fresh_after=time.time() if options.refresh else None,
             )  # fmt: skip
+            sources.progress = options.progress
             evidence = await resolve(entries, sources)
             stats = {client.name: client.stats for client in sources.all_clients()}
     finally:

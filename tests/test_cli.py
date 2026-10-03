@@ -2,7 +2,7 @@ import pytest
 from typer.testing import CliRunner
 
 from paper_preflight import __version__
-from paper_preflight.cli import app
+from paper_preflight.cli import app, progress_text
 
 from .fake_web import FakeWeb
 
@@ -86,3 +86,16 @@ def test_explain_lists_every_rule_and_rejects_unknown_ones() -> None:
     assert all(rule_id in listing.output for rule_id in RULES)
     unknown = runner.invoke(app, ["explain", "XYZ999"])
     assert unknown.exit_code == 3
+
+
+@pytest.mark.parametrize(
+    ("language", "done", "seconds", "expected"),
+    [
+        ("en", 12, 18.0, "Checking (searching by title 12/40, about 42 s left)"),
+        ("en", 0, 0.0, "Checking (searching by title 0/40)"),  # no estimate before the first
+        ("en", 40, 60.0, "Checking (searching by title 40/40)"),
+        ("zh", 10, 10.0, "Checking（按标题检索 10/40，约剩 30 秒）"),
+    ],
+)
+def test_progress_text(language: str, done: int, seconds: float, expected: str) -> None:
+    assert progress_text("Checking", language, "title", done, 40, seconds) == expected
