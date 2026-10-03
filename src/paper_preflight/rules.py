@@ -117,6 +117,13 @@ RULES: dict[str, Rule] = {
              "对 '{key}' 的 {rule} 抑制没有起作用。"),
             FixLevel.SAFE,
         ),
+        _rule(
+            "REF017", "malformed-identifier", W,
+            ("Identifier written incorrectly", "标识符写法错误"),
+            ("The {field} of '{key}' {problem}: '{value}'. Write it as: {suggestion}",
+             "条目 '{key}' 的 {field} {problem_zh}：'{value}'。应写为：{suggestion}"),
+            FixLevel.SAFE,
+        ),
     ]
 }  # fmt: skip
 

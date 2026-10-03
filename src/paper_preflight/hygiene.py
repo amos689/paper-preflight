@@ -10,6 +10,7 @@ from paper_preflight.bib.ids import extract_identifiers
 from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry, BibFile
 from paper_preflight.findings import Finding, Location
+from paper_preflight.identifier_lint import check_identifier_syntax
 from paper_preflight.rules import make_finding
 from paper_preflight.tex.auxdata import AuxData
 from paper_preflight.tex.project import TexProject
@@ -111,6 +112,7 @@ def check_hygiene(data: HygieneInput) -> list[Finding]:
                 )
             )
     findings.extend(_near_duplicates(list(entries.values())))
+    findings.extend(check_identifier_syntax(list(entries.values())))
     return _apply_suppressions(findings, entries)
 
 
