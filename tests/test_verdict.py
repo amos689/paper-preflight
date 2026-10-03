@@ -816,3 +816,30 @@ def test_another_kind_of_publication_does_not_correct_the_year(
     )  # fmt: skip
     result = assess(entry, search_result(entry, found), current_year=YEAR)
     assert ("REF013" in rules(result)) is reported
+
+
+ICML_ENTRY = ARXIV_ENTRY.replace("@misc", "@inproceedings").replace(
+    "  year = {2021},", "  booktitle = {Proceedings of ICML},\n  year = {2021},"
+)
+
+
+@pytest.mark.parametrize(
+    ("written", "on_arxiv", "at_icml"),
+    [
+        # ICML lists Jones first, arXiv lists Smith first: the entry follows ICML
+        ("Jones, Bob and Smith, Ann and Lee, Carol", (ANN, BOB, CAROL), (BOB, ANN, CAROL)),
+        # arXiv has "Bob Jones", ICML "Robert Jones": the entry follows arXiv
+        ("Smith, Ann and Jones, Bob and Lee, Carol", (ANN, BOB, CAROL),
+         (ANN, Person("Jones", "Robert"), CAROL)),
+    ],
+)  # fmt: skip
+def test_an_entry_naming_its_venue_fits_either_version(
+    written: str, on_arxiv: tuple[Person, ...], at_icml: tuple[Person, ...]
+) -> None:
+    entry = bib(ICML_ENTRY.replace("Smith, Ann and Jones, Bob and Lee, Carol", written))
+    published = replace(record(authors=at_icml, year=2021, source="dblp", venue="ICML"),
+                        source_id="conf/icml/x")  # fmt: skip
+    item = evidence_for(
+        entry, anchored=[replace(arxiv_record(), authors=on_arxiv)], published_versions=[published]
+    )
+    assert rules(assess(entry, item, current_year=YEAR)) == set()

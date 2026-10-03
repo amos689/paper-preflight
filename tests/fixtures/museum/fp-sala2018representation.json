@@ -1,0 +1,80 @@
+{
+ "bib": "@inproceedings{sala2018representation,\n  author = {Sala, Frederic and De Sa, Christopher and Gu, Albert and R\\'e, Christopher},\n  title = {Representation Tradeoffs for Hyperbolic Embeddings},\n  booktitle = {Proceedings of the 35th International Conference on Machine Learning (ICML)},\n  year = {2018},\n  url = {https://arxiv.org/abs/1804.03329}\n}\n",
+ "cache": [
+  {
+   "source": "arxiv",
+   "key": "item:abs:1804.03329",
+   "kind": "positive",
+   "payload": "<feed xmlns=\"http://www.w3.org/2005/Atom\"><ns0:entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:ns1=\"http://arxiv.org/schemas/atom\">\n    <ns0:id>http://arxiv.org/abs/1804.03329v2</ns0:id>\n    <ns0:title>Representation Tradeoffs for Hyperbolic Embeddings</ns0:title>\n    <ns0:updated>2018-04-24T04:11:36Z</ns0:updated>\n    <ns0:link href=\"https://arxiv.org/abs/1804.03329v2\" rel=\"alternate\" type=\"text/html\" />\n    <ns0:link href=\"https://arxiv.org/pdf/1804.03329v2\" rel=\"related\" type=\"application/pdf\" title=\"pdf\" />\n    <ns0:summary>Hyperbolic embeddings offer excellent quality with few dimensions when embedding hierarchical data structures like synonym or type hierarchies. Given a tree, we give a combinatorial construction that embeds the tree in hyperbolic space with arbitrarily low distortion without using optimization. On WordNet, our combinatorial embedding obtains a mean-average-precision of 0.989 with only two dimensions, while Nickel et al.'s recent construction obtains 0.87 using 200 dimensions. We provide upper and lower bounds that allow us to characterize the precision-dimensionality tradeoff inherent in any hyperbolic embedding. To embed general metric spaces, we propose a hyperbolic generalization of multidimensional scaling (h-MDS). We show how to perform exact recovery of hyperbolic points from distances, provide a perturbation analysis, and give a recovery result that allows us to reduce dimensionality. The h-MDS approach offers consistently low distortion even with few dimensions across several datasets. Finally, we extract lessons from the algorithms and theory above to design a PyTorch-based implementation that can handle incomplete information and is scalable.</ns0:summary>\n    <ns0:category term=\"cs.LG\" scheme=\"http://arxiv.org/schemas/atom\" />\n    <ns0:category term=\"stat.ML\" scheme=\"http://arxiv.org/schemas/atom\" />\n    <ns0:published>2018-04-10T03:39:16Z</ns0:published>\n    <ns1:primary_category term=\"cs.LG\" />\n    <ns0:author>\n      <ns0:name>Christopher De Sa</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Albert Gu</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Christopher Ré</ns0:name>\n    </ns0:author>\n    <ns0:author>\n      <ns0:name>Frederic Sala</ns0:name>\n    </ns0:author>\n  </ns0:entry>\n  </feed>"
+  },
+  {
+   "source": "dblp",
+   "key": "item:doi:10.48550/arxiv.1804.03329",
+   "kind": "positive",
+   "payload": "https://dblp.org/rec/journals/corr/abs-1804-03329"
+  },
+  {
+   "source": "dblp",
+   "key": "item:corr:https://dblp.org/rec/journals/corr/abs-1804-03329",
+   "kind": "positive",
+   "payload": [
+    [
+     "https://dblp.org/rec/conf/icml/SalaSGR18",
+     "ICML",
+     2018
+    ]
+   ]
+  },
+  {
+   "source": "dblp",
+   "key": "item:rec:https://dblp.org/rec/conf/icml/SalaSGR18",
+   "kind": "positive",
+   "payload": [
+    {
+     "pub": "https://dblp.org/rec/conf/icml/SalaSGR18",
+     "title": "Representation Tradeoffs for Hyperbolic Embeddings.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICML",
+     "year": "2018",
+     "primary": "http://proceedings.mlr.press/v80/sala18a.html",
+     "ord": "1",
+     "name": "Frederic Sala"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/icml/SalaSGR18",
+     "title": "Representation Tradeoffs for Hyperbolic Embeddings.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICML",
+     "year": "2018",
+     "primary": "http://proceedings.mlr.press/v80/sala18a.html",
+     "ord": "2",
+     "name": "Christopher De Sa"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/icml/SalaSGR18",
+     "title": "Representation Tradeoffs for Hyperbolic Embeddings.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICML",
+     "year": "2018",
+     "primary": "http://proceedings.mlr.press/v80/sala18a.html",
+     "ord": "3",
+     "name": "Albert Gu"
+    },
+    {
+     "pub": "https://dblp.org/rec/conf/icml/SalaSGR18",
+     "title": "Representation Tradeoffs for Hyperbolic Embeddings.",
+     "type": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings",
+     "venue": "ICML",
+     "year": "2018",
+     "primary": "http://proceedings.mlr.press/v80/sala18a.html",
+     "ord": "4",
+     "name": "Christopher Ré"
+    }
+   ]
+  }
+ ],
+ "recorded": {
+  "rules": [],
+  "verdict": "verified"
+ }
+}

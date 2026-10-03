@@ -662,3 +662,17 @@ source = "real_papers:2607.06872v2"
 key = "aasist_repo"
 expect = []
 note = "was REF013: the GitHub repository (2021), bound to the ICASSP 2022 paper"
+
+[[case]]
+name = "fp-sala2018representation"
+source = "real_papers:2607.07047v3"
+key = "sala2018representation"
+expect = []
+note = "was REF011: an ICML 2018 entry with Sala first, as ICML has it, compared with arXiv 1804.03329, which lists De Sa first"
+
+[[case]]
+name = "fp-cheng2025emergence"
+source = "real_papers:2607.07047v3"
+key = "cheng2025emergence"
+expect = []
+note = "guard: an ICLR 2025 entry naming 'Jade Yu' as arXiv 2405.15471 does, where ICLR has 'Lei Yu'"
