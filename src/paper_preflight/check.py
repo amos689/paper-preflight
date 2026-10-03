@@ -24,6 +24,7 @@ from paper_preflight.hygiene import (
 )
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.rules import make_finding
+from paper_preflight.sources.base import SourceStats
 from paper_preflight.tex.auxdata import find_build_data
 from paper_preflight.tex.cites import command_table
 from paper_preflight.tex.project import TexProject, load_project
@@ -63,6 +64,7 @@ class CheckResult:
     verification: str = "skipped"  # "online" | "offline" | "skipped"
     verdicts: dict[str, Assessment] = field(default_factory=dict)
     unverified_offline: int = 0  # references without a cached answer in offline mode
+    sources: dict[str, SourceStats] = field(default_factory=dict)  # what each source answered
 
     def count(self, severity: Severity) -> int:
         return sum(1 for f in self.findings if f.severity is severity)
@@ -190,8 +192,11 @@ def first_definitions(bib_files: Iterable[BibFile], keys: set[str] | None = None
 
 async def verify_entries(
     entries: list[BibEntry], options: VerifyOptions
-) -> tuple[dict[str, Evidence], dict[str, Assessment]]:
-    """Gather evidence for ``entries`` and assess each one (docs/adr/0002, 0003)."""
+) -> tuple[dict[str, Evidence], dict[str, Assessment], dict[str, SourceStats]]:
+    """Gather evidence for ``entries`` and assess each one (docs/adr/0002, 0003).
+
+    Also returns what each source did: requests, cache hits, negatives, unavailability.
+    """
     cache = Cache(options.cache_path)
     try:
         # doi.org answers content negotiation with a redirect to the registration agency
@@ -202,18 +207,20 @@ async def verify_entries(
                 fresh_after=time.time() if options.refresh else None,
             )  # fmt: skip
             evidence = await resolve(entries, sources)
+            stats = {client.name: client.stats for client in sources.all_clients()}
     finally:
         cache.close()
     year = options.current_year or datetime.now().year
-    return evidence, assess_all(entries, evidence, current_year=year)
+    return evidence, assess_all(entries, evidence, current_year=year), stats
 
 
 def _verify_into(result: CheckResult, entries: list[BibEntry], options: VerifyOptions) -> None:
     result.verification = "offline" if options.offline else "online"
     if not entries:
         return
-    evidence, verdicts = asyncio.run(verify_entries(entries, options))
+    evidence, verdicts, stats = asyncio.run(verify_entries(entries, options))
     result.verdicts = verdicts
+    result.sources = stats
     # Offline is the user's choice, not a failing source: references without a cached answer
     # are counted once (reporters show the number) instead of one REF090 line each, and they
     # do not make the run incomplete.

@@ -53,6 +53,16 @@ def to_json_dict(
             "mode": result.verification,
             "verdicts": result.verdict_counts(),
             "unverified_offline": result.unverified_offline,
+            "sources": {
+                name: {
+                    "requests": stats.requests,
+                    "cache_hits": stats.cache_hits,
+                    "stale_hits": stats.stale_hits,
+                    "negatives": stats.negatives,
+                    "unavailable": dict(stats.unavailable),
+                }
+                for name, stats in sorted(result.sources.items())
+            },
         },
         "references": [_reference(a, reported) for a in result.verdicts.values()],
         "findings": [f.to_dict(base) for f in findings],
