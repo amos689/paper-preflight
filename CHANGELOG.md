@@ -23,3 +23,5 @@ All notable changes to this project are documented here. The format follows
 - Evaluation harness for the HALLMARK benchmark (`evals/run_hallmark.py`): flag / clean / abstain
   outcomes, fabrication-only and any-issue modes, precision, conservative recall, false-positive
   rate and coverage, broken down by hallucination type.
+- `doctor` checks each source with one uncached request and reports `ok`, `unavailable` (with the
+  reason: rate limit, bot wall, timeout ...) or `skipped`; `--offline` skips the check.
