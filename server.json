@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.amos689/paper-preflight",
+  "title": "paper-preflight",
+  "description": "Checks every LaTeX reference against Crossref, dblp, arXiv, DataCite, PubMed and OpenAlex. No LLM.",
+  "repository": {
+    "url": "https://github.com/amos689/paper-preflight",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "paper-preflight",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "--with",
+          "value": "paper-preflight[mcp]==0.1.0"
+        }
+      ],
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
+    }
+  ]
+}

@@ -80,3 +80,21 @@ def test_skill_frontmatter_and_references(skill: Path) -> None:
             "preflight_bib_lookup",
             "preflight_bib_fix",
         }, tool
+
+
+def test_registry_metadata_matches_the_release() -> None:
+    # The MCP Registry reads server.json and checks ownership through the marker in the PyPI
+    # description (the README) of the very version it registers.
+    from paper_preflight import __version__
+
+    server = load(ROOT / "server.json")
+    (package,) = server["packages"]
+    assert server["name"] == "io.github.amos689/paper-preflight"
+    assert 1 <= len(server["description"]) <= 100
+    assert server["version"] == package["version"] == __version__
+    assert package["identifier"] == "paper-preflight"
+    assert package["runtimeArguments"][0]["value"] == f"paper-preflight[mcp]=={__version__}"
+    assert package["packageArguments"] == [{"type": "positional", "value": "mcp"}]
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert f"<!-- mcp-name: {server['name']} -->" in readme
+    assert load(ROOT / "glama.json")["maintainers"] == ["amos689"]

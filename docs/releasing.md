@@ -25,9 +25,10 @@ and PyPI attaches [PEP 740](https://peps.python.org/pep-0740/) attestations to e
 
 ## Each release
 
-1. Open a pull request that sets `__version__` in `src/paper_preflight/__init__.py`, turns the
-   CHANGELOG's *Unreleased* heading into `## [X.Y.Z] - YYYY-MM-DD`, and updates the README's
-   status note. Merge it when CI is green.
+1. Open a pull request that sets `__version__` in `src/paper_preflight/__init__.py` and the
+   three versions in `server.json` (a test keeps them equal), turns the CHANGELOG's
+   *Unreleased* heading into `## [X.Y.Z] - YYYY-MM-DD`, and updates the README's status note.
+   Merge it when CI is green.
 2. Publish the release from `main` (the notes can come from a file):
 
    ```bash
@@ -36,6 +37,18 @@ and PyPI attaches [PEP 740](https://peps.python.org/pep-0740/) attestations to e
 
 3. Watch the *Release* workflow, then check <https://pypi.org/project/paper-preflight/> and
    `uvx paper-preflight --version`.
+4. Publish the new version to the [MCP Registry](https://github.com/modelcontextprotocol/registry)
+   from the repository root. The registry checks ownership through the
+   `<!-- mcp-name: io.github.amos689/paper-preflight -->` line at the top of the README, which
+   must therefore be in the PyPI description of that very version:
+
+   ```bash
+   mcp-publisher login github      # once per machine: a device code on github.com
+   mcp-publisher publish           # reads server.json
+   ```
+
+   Check it with
+   `curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.amos689/paper-preflight"`.
 
 A release whose tag does not match `__version__` stops before anything is uploaded; fix the
 version, delete the release and its tag, and publish again. PyPI never accepts the same version

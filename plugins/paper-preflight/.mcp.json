@@ -4,7 +4,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "paper-preflight[mcp] @ git+https://github.com/amos689/paper-preflight",
+        "paper-preflight[mcp]>=0.1",
         "paper-preflight",
         "mcp",
         "--root",
