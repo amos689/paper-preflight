@@ -1,6 +1,6 @@
 # Real papers (dev batch)
 
-- **Tool:** paper-preflight 0.1.2 candidate, commit f84e119 (main after #91)
+- **Tool:** paper-preflight 0.1.2 candidate, commit 43a5544 (main after #98)
 - **Papers:** 20 arXiv papers first submitted 2026-07-01..07, chosen mechanically (`evals/real_papers.py`, manifest `evals/real_papers.toml`)
 - **Run:** 2026-10-03, live sources (answers cached for the day, so a rerun with fixed code asks again only what changed; a cold run of 20 papers takes about 20 minutes)
 - **Flags:** warnings and errors about references; every one reviewed by hand (`evals/real_papers_review.toml`)

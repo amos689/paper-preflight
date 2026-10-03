@@ -76,31 +76,30 @@ and error is then reviewed by hand and recorded in `evals/real_papers_review.tom
 lookup can confirm.
 
 ```bash
-uv run python evals/real_papers.py collect --batch heldout2   # pick and download the papers
-uv run python evals/real_papers.py run --batch heldout2       # check them against live sources
-uv run python evals/real_papers.py report --batch heldout2    # combine with the manual review
+uv run python evals/real_papers.py collect --batch heldout3   # pick and download the papers
+uv run python evals/real_papers.py run --batch heldout3       # check them against live sources
+uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are three batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are four batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
-studied, which makes it development data for the next release. The numbers below are the 0.1.2
-candidate's (main f84e119):
+studied, which makes it development data for the next round. The numbers below are the 0.1.2
+candidate's (main 43a5544):
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
 | `dev` | 2026-07-01..07 | studied for 0.1.1 (#58-#69) | 924 | 73 | 66 | 1 | 6 | 0.1 |
-| `heldout` | 2026-07-08..14 | held out for 0.1.1; studied for 0.1.2 (#78-#91) | 921 | 95 | 85 | 6 | 4 | 0.7 |
-| `heldout2` | 2026-07-15..21 | held out for 0.1.2 | 983 | 80 | 46 | 29 | 5 | 3.0 |
+| `heldout` | 2026-07-08..14 | held out for 0.1.1; studied for 0.1.2 (#78-#91) | 921 | 94 | 85 | 6 | 3 | 0.7 |
+| `heldout2` | 2026-07-15..21 | held out for #78-#91 (3.0 as it came out); studied (#94-#98) | 983 | 55 | 46 | 4 | 5 | 0.4 |
+| `heldout3` | 2026-07-22..28 | held out for #94-#98 | 814 | 107 | 92 | 14 | 1 | 1.7 |
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
 - **On `heldout`**, 0.1.1 found 2.3 false positives per 100 references; the fixes for 0.1.2 bring
   that to 0.7, with one more real problem found.
-- **On `heldout2`**, 20 of the 46 real problems are cited preprints that have since been
-  published (REF015, advice) and 16 are DOIs written as URLs or placeholders (REF017); the rest
-  are a wrong DOI, invented or misspelt authors, a title typo and wrong years (NeurIPS 2025
-  papers cited as 2026). The 29 false positives are a wider spread than before:
+- **On `heldout2`**, as it came out (main f84e119): 46 real problems and 29 false positives, 3.0
+  per 100 references. The false positives were a wider spread than before:
   - registry records with errors of their own (a misspelt or reordered author, a footnote
     mark, AAS title markup, Semantic Scholar dropping a word);
   - author names written another way (teams, consortia, a Vietnamese name order, a given name
@@ -109,11 +108,23 @@ candidate's (main f84e119):
   - a DOI with angle brackets cut short, and a book's DOI on a chapter;
   - three real works no source indexes (REF003: a workshop paper, an anonymous OpenReview
     submission, a 1996 book chapter).
+
+  #94-#98 removed 25 of the 29, and no real problem. The four left are registry errors: a
+  misspelt and a reordered author on Crossref, a dblp alias, JMLR's volume year.
+- **On `heldout3`**, 62 of the 92 real problems are published preprints (REF015). The other 30
+  are invented, misspelt or misordered authors (18), DOIs written as URLs (3), titles with a
+  typo or a wrong word (3), a wrong DOI and a wrong arXiv ID, NeurIPS papers cited a year late
+  (2), a wrong venue and an invented paper. Of the 14 false positives:
+  - 3 cite an earlier arXiv version with its own title and authors (two REF001s, one REF011);
+  - 3 bind a book to a review of it in a journal (REF010, REF011, REF013);
+  - 4 are titles a registry mangled: a roman numeral, a footnote mark, a dropped solar symbol,
+    "(with Discussion)" (REF012);
+  - and one each of a nickname (Gary for Garrison), a volume year, a web publication no source
+    indexes and a garbled subscript on Crossref.
 - **A held-out batch's flags are reviewed, not used to change a rule** until its numbers are
   reported. Measuring the fixes they lead to needs a new week of papers.
 - The sources are not committed (arXiv's default licence does not allow redistribution); the
-  manifests `evals/real_papers.toml`, `evals/real_papers_heldout.toml` and
-  `evals/real_papers_heldout2.toml` list the IDs.
+  manifests `evals/real_papers.toml` and `evals/real_papers_heldout*.toml` list the IDs.
 
 ## Head-to-head: Badalova & Mayr (2026)
 

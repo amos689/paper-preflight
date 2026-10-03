@@ -1,6 +1,6 @@
 # Head-to-head: Badalova & Mayr (2026)
 
-- **Tool:** paper-preflight 0.1.2 candidate, commit f84e119 (main after #91)
+- **Tool:** paper-preflight 0.1.2 candidate, commit 43a5544 (main after #98)
 - **Data:** 104 references from three documents, checked by hand (71 verified, 33 problematic); the five tools' results as published (Zenodo 10.5281/zenodo.21457492, CC BY 4.0). Transcribed to BibTeX as written: `evals/badalova_mayr.bib`
 - **Run:** 2026-10-03, 0.0 min, live sources
 
@@ -13,7 +13,7 @@
 | Hallucinator | 57 | 29 | 28 | 50.9% [38.3%, 63.4%] | 87.9% | 39.4 |
 | HalRef | 77 | 24 | 53 | 31.2% [21.9%, 42.2%] | 72.7% | 74.6 |
 | RefChecker | 68 | 32 | 36 | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
-| **paper-preflight** (warnings and errors) | 41 | 29 | 12 | 70.7% [55.5%, 82.4%] | 87.9% | 16.9 |
+| **paper-preflight** (warnings and errors) | 40 | 29 | 11 | 72.5% [57.2%, 83.9%] | 87.9% | 15.5 |
 | paper-preflight (also "cannot determine") | 55 | 33 | 22 | 60.0% [46.8%, 71.9%] | 100.0% | 31.0 |
 
 ## References with a real error counted as problematic
@@ -27,8 +27,8 @@ The study labels a reference verified when the work exists. Reviewing paper-pref
 | Hallucinator | 57 | 31 | 26 | 54.4% [41.6%, 66.6%] | 81.6% | 39.4 |
 | HalRef | 77 | 28 | 49 | 36.4% [26.5%, 47.5%] | 73.7% | 74.2 |
 | RefChecker | 68 | 34 | 34 | 50.0% [38.4%, 61.6%] | 89.5% | 51.5 |
-| **paper-preflight** (warnings and errors) | 41 | 34 | 7 | 82.9% [68.7%, 91.5%] | 89.5% | 10.6 |
-| paper-preflight (warnings and errors, without REF015 advice) | 35 | 34 | 1 | 97.1% [85.5%, 99.5%] | 89.5% | 1.5 |
+| **paper-preflight** (warnings and errors) | 40 | 34 | 6 | 85.0% [70.9%, 92.9%] | 89.5% | 9.1 |
+| paper-preflight (warnings and errors, without REF015 advice) | 34 | 34 | 0 | 100.0% [89.8%, 100.0%] | 89.5% | 0.0 |
 
 The study's sample is small and was chosen to contain problems (one of the documents came from GPTZero's list of NeurIPS 2025 papers with hallucinated references), so the recall here is not representative; precision and false flags on verified references are the comparison that matters.
 
@@ -38,7 +38,6 @@ The study's sample is small and was chosen to contain problems (one of the docum
 |---|---|---|---|
 | P1R1 | REF015 | advice | arXiv 2507.19457 (GEPA) was published at ICLR 2026. |
 | P1R20 | REF015 | advice | arXiv 2505.15948 has a published version (WOOC 2025, 10.5281/zenodo.16367716). |
-| P2R3 | REF003 | false_positive | A poster abstract at the 1st SciNLP workshop (2020) that no queried source indexes; the study's manual check found it. |
 | P2R7 | REF011 | metadata_error | The first author of 10.1371/journal.pone.0157989 is Geraint Duck; the reference says 'Goran Duck'. |
 | P3R3 | REF015 | advice | arXiv 1904.09751 (The Curious Case of Neural Text Degeneration) is ICLR 2020. |
 | P3R12 | REF011 | metadata_error | DeBERTa (ICLR 2021) is by He, Xiaodong Liu, Gao and Chen; the reference says 'Weizhu Liu'. |
@@ -79,7 +78,7 @@ The study's sample is small and was chosen to contain problems (one of the docum
 | P1R24 | verified | verified |  |
 | P2R1 | problematic | identifier_conflict | REF001 |
 | P2R2 | verified | verified |  |
-| P2R3 | verified | not_found | REF003 |
+| P2R3 | verified | cannot_determine | REF090 |
 | P2R4 | verified | verified |  |
 | P2R5 | verified | verified |  |
 | P2R6 | problematic | cannot_determine | REF002, REF090 |
