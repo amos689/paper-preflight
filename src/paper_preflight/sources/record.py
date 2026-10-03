@@ -15,6 +15,18 @@ def collapse(text: str) -> str:
 
 
 _TAG_RE = re.compile(r"<[^<>]+>")
+# Markup tags by name, for text where a bare "<" may be a less-than sign: JATS and MathML from
+# registries, ADS's <ASTROBJ> in exported BibTeX.
+MARKUP_TAG_RE = re.compile(
+    r"</?(?:title|i|b|em|strong|sub|sup|scp|sc|italic|bold|tt|u|inline-formula|named-content|"
+    r"astrobj|(?:mml|jats):[\w-]+)(?:\s[^<>]*)?/?>",
+    re.IGNORECASE,
+)
+# A whole LaTeX document around one formula, as some Crossref titles carry it (10.1086/308445:
+# "\documentclass{aastex} ... \begin{document} \landscape $z=0.33$ \end{document}").
+_EMBEDDED_DOCUMENT_RE = re.compile(
+    r"\\documentclass.*?\\begin\{document\}(.*?)\\end\{document\}", re.DOTALL
+)
 
 
 def plain_title(text: str) -> str:
@@ -22,7 +34,9 @@ def plain_title(text: str) -> str:
     math. A HALLMARK VALID entry was flagged because Crossref's title was
     "$${{\mathrm {Latent}}Out}$$: an unsupervised deep anomaly detection approach ...".
     """
-    text = html.unescape(_TAG_RE.sub("", text))
+    # tags may also arrive escaped ("&lt;title&gt;HIRES ...&lt;/title&gt;", 10.1117/12.176725)
+    text = MARKUP_TAG_RE.sub("", html.unescape(_TAG_RE.sub("", text)))
+    text = _EMBEDDED_DOCUMENT_RE.sub(r" \1 ", text)
     if "$" in text or "\\" in text:
         from paper_preflight.bib.parse import latex_to_text
 

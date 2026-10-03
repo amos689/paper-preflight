@@ -456,3 +456,10 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     assert not check_authors(
         parse_authors("Adler, Steven and Achiam, Josh"), record
     ).first_author_match
+
+
+def test_a_solar_symbol_is_the_word_sun() -> None:
+    # ADS writes "M$_{sun}$" where Crossref has "M_⊙" (Girardi et al. 2000, real paper)
+    entry = "Isochrones for low- and intermediate-mass stars: From 0.15 to 7 M_sun"
+    record = "Isochrones for low- and intermediate-mass stars: From 0.15 to 7 M_\u2299"
+    assert changed_words(entry, record) == ()
