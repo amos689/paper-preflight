@@ -1,0 +1,26 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "t"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/KingmaB14"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Adam: A Method for Stochastic Optimization."
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 5,
+  "result-size-total": 1
+ }
+}
