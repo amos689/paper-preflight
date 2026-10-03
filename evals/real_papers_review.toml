@@ -640,8 +640,8 @@ verdict = "correct"
 note = "arXiv 2005.04208 (\"Condensed Movies: Story Based Retrieval with Contextual Embeddings\") was published in ACCV (5) (2021), DOI 10.1007/978-3-030-69541-5_28 (dblp)."
 
 [finding."2607.06875v1:gengLabelDistributionLearning2016:REF015"]
-verdict = "false_positive"
-note = "Wrong published version: arXiv 1408.6027 (Xin Geng) is IEEE TKDE 28(7), 2016; the ICDM Workshops 2013 paper of that title is by Geng and Ji."
+verdict = "correct"
+note = "arXiv 1408.6027 (Xin Geng) is IEEE TKDE 28(7), 2016, which the finding now names. Re-checked: it first named the ICDM Workshops 2013 paper of that title by Geng and Ji (false positive, fixed by choosing the version by the preprint's authors)."
 
 [finding."2607.06875v1:meister2411benchmarking:REF015"]
 verdict = "correct"

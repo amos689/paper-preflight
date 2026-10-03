@@ -35,6 +35,7 @@ from paper_preflight.match import (
     evaluate,
     is_preprint,
     related_words,
+    surname_key,
     venue_words,
     wrong_paper,
 )
@@ -604,6 +605,18 @@ def cites_preprint(evidence: Evidence) -> bool:
     )
 
 
+def _version_distance(preprint: SourceRecord, version: SourceRecord) -> tuple[int, int, int]:
+    """How unlike a published version of a preprint ``version`` is: other people first, then an
+    earlier year. dblp finds every paper of the first author with the title: arXiv 1408.6027, Xin
+    Geng's "Label Distribution Learning" (2014), is his TKDE 2016 article, not the ICDM Workshops
+    2013 paper of that title by Geng and Ji.
+    """
+    people = {surname_key(p) for p in preprint.authors}
+    others = {surname_key(p) for p in version.authors} != people
+    year, published = preprint.year or 0, version.year or 0
+    return int(others), int(published < year), abs(published - year)
+
+
 def _published_version(
     entry: BibEntry, evidence: Evidence, bound: SourceRecord | None
 ) -> Finding | None:
@@ -613,6 +626,8 @@ def _published_version(
     versions = list(evidence.published_versions)
     if bound is not None and not is_preprint(bound):
         versions.append(bound)  # the title search found the published version itself
+    elif bound is not None:
+        versions.sort(key=lambda version: _version_distance(bound, version))
     for version in versions:
         m = evaluate(evidence.info, version, preprint_pair=True)
         if m.title.status == "mismatch" or m.authors.status in {"mismatch", "unknown"}:
