@@ -125,6 +125,25 @@ def surname_key(person: Person) -> str:
     return words[-1].strip("'-") if words else ""
 
 
+_TRANSCRIPTIONS = (("ae", "a"), ("oe", "o"), ("ue", "u"), ("ss", "s"))
+
+
+def loose_surname(key: str) -> str:
+    """A looser key for one surname spelled differently by different sources.
+
+    Covers umlaut transcriptions (Müller/Mueller) and ß (Reiß/Reiss/Reis: Crossref has "Reis"
+    for a HALLMARK VALID entry). General doubled letters are not collapsed, so distinct surnames
+    such as Lee and Le, or Chen and Cheng, stay distinct.
+    """
+    for written, plain in _TRANSCRIPTIONS:
+        key = key.replace(written, plain)
+    return key
+
+
+def same_surname(a: str, b: str) -> bool:
+    return a == b or loose_surname(a) == loose_surname(b)
+
+
 @dataclass(frozen=True)
 class AuthorCheck(FieldCheck):
     overlap: float = 0.0
@@ -134,24 +153,32 @@ class AuthorCheck(FieldCheck):
 
 
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
-    entry_keys = [k for k in (surname_key(p) for p in authors.people) if k]
+    entry = [(person, key) for person in authors.people if (key := surname_key(person))]
     record_keys = [k for k in (surname_key(p) for p in record.authors) if k]
-    if not entry_keys or not record_keys:
+    if not entry or not record_keys:
         return AuthorCheck("unknown")
+    # exact surnames first, then spelling variants, so a variant never takes an exact match
     pool = list(record_keys)
-    matched = 0
-    missing: list[str] = []
-    for person, key in zip(authors.people, entry_keys, strict=False):
+    unmatched: list[tuple[Person, str]] = []
+    for person, key in entry:
         if key in pool:
             pool.remove(key)
-            matched += 1
+        else:
+            unmatched.append((person, key))
+    loose_pool = [loose_surname(k) for k in pool]
+    missing: list[str] = []
+    for person, key in unmatched:
+        if loose_surname(key) in loose_pool:
+            loose_pool.remove(loose_surname(key))
         else:
             missing.append(person.display)
-    overlap = matched / len(entry_keys)
+    matched = len(entry) - len(missing)
+    overlap = matched / len(entry)
+    first_key = entry[0][1]
     if record.authors_ordered:
-        first = entry_keys[0] == record_keys[0]
+        first = same_surname(first_key, record_keys[0])
     else:
-        first = entry_keys[0] in record_keys
+        first = any(same_surname(first_key, k) for k in record_keys)
     missing_names = tuple(missing)
 
     def result(status: Status, note: str = "", *, disjoint: bool = False) -> AuthorCheck:
@@ -164,7 +191,7 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         return result("mismatch", "no author in common", disjoint=True)
     if overlap == 1.0 and first:
         omitted = (
-            len(entry_keys) < len(record_keys) and not authors.truncated and record.authors_complete
+            len(entry) < len(record_keys) and not authors.truncated and record.authors_complete
         )
         return result("variant", "some authors omitted") if omitted else result("match")
     if overlap >= 0.5 and first:
