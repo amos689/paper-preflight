@@ -902,3 +902,325 @@ note = "Zel'dovich & Kompaneets (1950), in the collection for A. F. Ioffe's 70th
 [finding."2607.07425v1:bluman1969general:REF003"]
 verdict = "false_positive"
 note = "Bluman & Cole, 'The general similarity solution of the heat equation', J. Math. Mech. 18 (1969) 1025-1042: real; not found by the queried sources."
+
+# Third batch (held out from 0.1.2 on): papers first submitted 2026-07-15..21, reviewed 2026-10-04.
+
+[finding."2607.13342v1:Figueredo:2009dg:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.13342v1:menon2026monolithic:REF011"]
+verdict = "false_positive"
+note = "arXiv 2603.16048 lists this author as 'De Luo'; the entry adds his given name, 'De Luo, Henry'. All of the record's name is in the entry's."
+
+[finding."2607.13342v1:pagano2019cryogenic:REF013"]
+verdict = "false_positive"
+note = "Quantum Sci. Technol. 4(1) 014004 is in the 2019 volume; Crossref has only the online date, 9 October 2018. The volume year is a legitimate year to cite."
+
+[finding."2607.13342v1:schroer2026data:REF017"]
+verdict = "correct"
+note = "doi = {10.XXXX}: a placeholder, not a DOI."
+
+[finding."2607.13343v1:kerawala2001relocating:REF002"]
+verdict = "false_positive"
+note = "The entry's DOI 10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V is right (Crossref has it); the tool cut it at '<' and looked up the stump."
+
+[finding."2607.13343v1:kerawala2001relocating:REF017"]
+verdict = "false_positive"
+note = "Same cut DOI: the suggested 'canonical form' 10.1002/1097-0347(200103)23:3 is a broken DOI."
+
+[finding."2607.13343v1:kshithi2022formalin:REF011"]
+verdict = "false_positive"
+note = "Crossref files the author as given 'Vijendra Shenoy', family 'S'; the entry's 'Shenoy, Vijendra S.' is the same name."
+
+[finding."2607.13343v1:yang2026all:REF015"]
+verdict = "correct"
+note = "arXiv 2603.29495 appeared at MICCAI 2026, DOI 10.1007/978-3-032-38236-8_3."
+
+[finding."2607.13344v1:coh08:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (doi.ieeecomputersociety.org)."
+
+[finding."2607.13344v1:Bartholomew2014:REF012"]
+verdict = "false_positive"
+note = "Springer's own @Inbook export: the paper's title is in 'chapter', 'title' is the JELIA 2014 volume. The chapter title matches the record."
+
+[finding."2607.13344v1:jan06:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (doi.acm.org)."
+
+[finding."2607.13344v1:sch95:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (dx.doi.org)."
+
+[finding."2607.13344v1:een03:REF013"]
+verdict = "false_positive"
+note = "Eén & Sörensson, SAT 2003 (the booktitle says so); the LNCS 2919 proceedings appeared in 2004. The conference year is a legitimate year to cite."
+
+[finding."2607.13345v2:thompson1995:REF001"]
+verdict = "false_positive"
+note = "10.4324/9781315807041 is the book the chapter is in (Attitude Strength, Routledge's 2014 edition of the 1995 volume); the entry's booktitle names it."
+
+[finding."2607.13345v2:thompson1995:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.13345v2:delatorre2024heartsteps:REF011"]
+verdict = "false_positive"
+note = "The entry names the first author by family name only, 'De La Torre and others'; BibTeX reads 'De La' as a given name. Steven A. De La Torre is the record's first author."
+
+[finding."2607.13351v1:gottesman1997stabilizer:REF001"]
+verdict = "correct"
+note = "10.7907/97v4-ye48 is Gibson's 1997 Caltech thesis on geotechnical modelling, not Gottesman's."
+
+[finding."2607.13351v1:sstmacro2017:REF011"]
+verdict = "false_positive"
+note = "Crossref misspells Rolf Riesen as 'R. Risen'; the entry is right."
+
+[finding."2607.13361v1:sam3:REF010"]
+verdict = "correct"
+note = "SAM 3 (arXiv 2511.16719) has named authors (Carion et al.), as in Meta's own BibTeX; 'Meta AI' is not on the byline."
+
+[finding."2607.13361v1:shi2025viso:REF015"]
+verdict = "correct"
+note = "VISO-Grasp (arXiv 2503.12609) appeared at IROS 2025, DOI 10.1109/iros60139.2025.11246329."
+
+[finding."2607.13361v1:he2026sample:REF015"]
+verdict = "correct"
+note = "arXiv 2606.06041 appeared at ICANN 2026, DOI 10.1007/978-3-032-38404-1_15."
+
+[finding."2607.13361v1:groundingdino:REF015"]
+verdict = "correct"
+note = "Grounding DINO (arXiv 2303.05499) appeared at ECCV 2024."
+
+[finding."2607.13361v1:sui2025grounding:REF015"]
+verdict = "correct"
+note = "arXiv 2505.15685 appeared in Findings of EMNLP 2025."
+
+[finding."2607.13361v1:sam2:REF015"]
+verdict = "correct"
+note = "SAM 2 (arXiv 2408.00714) appeared at ICLR 2025."
+
+[finding."2607.13361v1:openvla:REF011"]
+verdict = "unclear"
+note = "Grace Lam is on the arXiv version (2406.09246) but not on the CoRL 2024 version in PMLR/dblp; the entry cites CoRL with the arXiv author list."
+
+[finding."2607.13361v1:maniskill3:REF011"]
+verdict = "correct"
+note = "arXiv 2410.00425 has Xander Hinrichsen, Xiaodi Yuan, Tongzhou Mu and Yulin Liu; the entry's Xander Hu, Michael Yuan, Tongzhou Xie and Xiao Liu are not authors."
+
+[finding."2607.13380v1:qi2025training:REF003"]
+verdict = "false_positive"
+note = "Real: Qi, Lukasiewicz & Salvatori, ICLR 2025 Workshop on New Frontiers in Associative Memories (iclr.cc/virtual/2025/33186); no queried source indexes it."
+
+[finding."2607.13380v1:goemaere2025epc:REF011"]
+verdict = "correct"
+note = "The first author of arXiv 2505.20137 is Cédric Goemaere, not Cornelius."
+
+[finding."2607.13389v1:genrm2025:REF003"]
+verdict = "false_positive"
+note = "An anonymous OpenReview submission (author 'Anonymous Authors') that exists; no registry indexes anonymous submissions."
+
+[finding."2607.13389v1:scalerl2025:REF015"]
+verdict = "correct"
+note = "arXiv 2510.13786 appeared at ICLR 2026."
+
+[finding."2607.13389v1:rlmathscaling2025:REF015"]
+verdict = "correct"
+note = "arXiv 2509.25300 appeared at ACL 2026, DOI 10.18653/v1/2026.acl-long.1444."
+
+[finding."2607.13389v1:yao2023tree:REF015"]
+verdict = "correct"
+note = "Tree of Thoughts appeared at NeurIPS 2023."
+
+[finding."2607.13389v1:liang2023code:REF015"]
+verdict = "correct"
+note = "Code as Policies appeared at ICRA 2023."
+
+[finding."2607.13389v1:driess2023palme:REF015"]
+verdict = "correct"
+note = "PaLM-E appeared at ICML 2023."
+
+[finding."2607.13389v1:brohan2022rt1:REF015"]
+verdict = "correct"
+note = "RT-1 appeared at RSS 2023, DOI 10.15607/rss.2023.xix.025."
+
+[finding."2607.13389v1:kim2024openvla:REF015"]
+verdict = "correct"
+note = "OpenVLA appeared at CoRL 2024."
+
+[finding."2607.13394v1:guo2025deepseek:REF010"]
+verdict = "false_positive"
+note = "The entry cites the Nature 645 paper, whose byline names Daya Guo et al.; it was compared with dblp's CoRR record, whose only author is 'DeepSeek-AI'."
+
+[finding."2607.13394v1:pavlova2024automatedredteaminggoat:REF014"]
+verdict = "false_positive"
+note = "The entry cites the ICLR 2025 BuildingTrust workshop version (OpenReview 6uyczU6S2M); the same paper later appeared at ICML 2025, which dblp records."
+
+[finding."2607.13394v1:sun2025advllmiterativeselftuningllms:REF015"]
+verdict = "correct"
+note = "arXiv 2410.18469 appeared at NAACL 2025, DOI 10.18653/v1/2025.naacl-long.297."
+
+[finding."2607.13394v1:team2025kimi:REF011"]
+verdict = "false_positive"
+note = "'Kimi-Team' is arXiv's 'Kimi Team' with a hyphen."
+
+[finding."2607.13394v1:Tucker2017REBARLU:REF011"]
+verdict = "false_positive"
+note = "The NeurIPS 2017 byline (and the entry, NeurIPS's own export) has John Lawson; dblp files him under his other name, Dieterich Lawson."
+
+[finding."2607.13395v1:fu2026mme:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-4899 is 2025. Same as xu2026mem."
+
+[finding."2607.13395v1:yu2024unveiling:REF015"]
+verdict = "correct"
+note = "arXiv 2406.15765 appeared at ICML 2024."
+
+[finding."2607.13395v1:noori2026test:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-2510 is 2025."
+
+[finding."2607.13395v1:you2026spark:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-0800 is 2025."
+
+[finding."2607.13396v2:xiaomi2026mimo:REF010"]
+verdict = "false_positive"
+note = "The entry's '{LLM-Core Xiaomi}' is arXiv's first author, 'Xiaomi LLM-Core Team', reworded."
+
+[finding."2607.13396v2:deepseek2026v4:REF010"]
+verdict = "false_positive"
+note = "The entry's '{DeepSeek-AI}' is the first author of arXiv 2606.19348."
+
+[finding."2607.13396v2:hao2025vlmwcst:REF015"]
+verdict = "correct"
+note = "arXiv 2505.22112 appeared in IEEE TCDS, DOI 10.1109/tcds.2025.3590165."
+
+[finding."2607.13396v2:shinn2023reflexion:REF011"]
+verdict = "unclear"
+note = "Edward Berman is on the arXiv version of Reflexion (2303.11366) but not on the NeurIPS 2023 version; the entry cites NeurIPS with the arXiv author list."
+
+[finding."2607.13399v1:dapo:REF015"]
+verdict = "correct"
+note = "DAPO (arXiv 2503.14476) appeared at NeurIPS 2025."
+
+[finding."2607.13399v1:lu2025onpolicydistillation:REF011"]
+verdict = "false_positive"
+note = "'Kevin Lu and Thinking Machines Lab' is the citation the publisher asks for; the lab is an organisation, not a missing person."
+
+[finding."2607.13399v1:kd-from-strong-1:REF015"]
+verdict = "correct"
+note = "arXiv 2205.10536 appeared at NeurIPS 2022."
+
+[finding."2607.13402v1:moulin2004fair:REF013"]
+verdict = "unclear"
+note = "MIT Press: hardcover January 2003 (Crossref), paperback 2004; the entry's 2004 may be the paperback."
+
+[finding."2607.13414v1:baillon_bruck_1996:REF003"]
+verdict = "false_positive"
+note = "Real: Baillon & Bruck, Lecture Notes in Pure and Applied Mathematics 178 (Dekker, 1996), pp. 51-81; no queried source indexes it."
+
+[finding."2607.13414v1:konda_tsitsiklis_2004:REF013"]
+verdict = "correct"
+note = "SIAM J. Control Optim. 42(4), 1143-1166 is the 2003 volume (Crossref print 2003, dblp 2003); 2006 is the date it went online."
+
+[finding."2607.13414v1:facchinei_pang_2003:REF013"]
+verdict = "unclear"
+note = "Springer's book carries copyright 2003; Crossref records 2004. Either year is cited."
+
+[finding."2607.13414v1:baydin_pearlmutter_radul_siskind_2018:REF013"]
+verdict = "false_positive"
+note = "JMLR 18(153) was published in 2018 (jmlr.org lists 2018); dblp files volume 18 under 2017."
+
+[finding."2607.13711v2:sanders1971:REF012"]
+verdict = "false_positive"
+note = "The title starts with 'An' (A&A 14, 226; ADS); Semantic Scholar's record drops it."
+
+[finding."2607.13739v1:1999AJ....118.2646M:REF012"]
+verdict = "false_positive"
+note = "The entry has the journal title of 10.1086/301140; it was compared with the arXiv preprint's title ('Seyfert 2s') because Crossref's title is full of AAS markup ([ITAL], [CLC])."
+
+[finding."2607.13739v1:1937AnLun...6....1H:REF012"]
+verdict = "false_positive"
+note = "Semantic Scholar's title ends in '. Plates.', the plates section ADS lists separately; the entry is right."
+
+[finding."2607.13739v1:1991rc3..book.....D:REF011"]
+verdict = "correct"
+note = "'{Corwin}, Herold G., Jr.' misspells Harold and puts 'Jr.' where BibTeX reads a given name."
+
+[finding."2607.14163v1:tabulasapiens2022:REF010"]
+verdict = "false_positive"
+note = "Crossref's first author is 'The Tabula Sapiens Consortium*', with a footnote mark; the entry is that consortium."
+
+[finding."2607.14163v1:combat2022covid:REF010"]
+verdict = "false_positive"
+note = "Cell's byline (and PubMed) credit the COMBAT Consortium; Crossref lists its members instead."
+
+[finding."2607.15309v1:Kokkinidis12enzymology:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.15309v1:hospital2015molecular:REF011"]
+verdict = "false_positive"
+note = "The article's byline is Hospital, Goñi, Orozco, Gelpí (PubMed); Crossref lists Gelpi first."
+
+[finding."2607.15309v1:bioemu2025:REF011"]
+verdict = "correct"
+note = "'Stimper Vincent' has no comma: BibTeX reads given name Stimper, family name Vincent. The author is Vincent Stimper."
+
+[finding."2609.11941v1:elisseev_agentic_2025:REF003"]
+verdict = "unclear"
+note = "A lightning talk at WORKS 2025, the SC25 workflows workshop; nothing citable is published, and the entry names SC25 itself."
+
+[finding."2609.11941v1:guo_llm_cae_2026:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.11941v1:jasak_openfoam_2009:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.11941v1:fan_chatcfd_2025:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.13158v1:llavaov:REF015"]
+verdict = "correct"
+note = "LLaVA-OneVision (arXiv 2408.03326) appeared in TMLR 2025."
+
+[finding."2609.13158v1:exams:REF012"]
+verdict = "correct"
+note = "'Fmahmultilingual' is a typo for 'Multilingual'."
+
+[finding."2609.13158v1:MATH:REF015"]
+verdict = "correct"
+note = "The MATH dataset paper appeared in NeurIPS 2021 Datasets and Benchmarks."
+
+[finding."2609.13158v1:chartqa:REF011"]
+verdict = "false_positive"
+note = "Do Xuan Long (family name Do) is the entry's 'Do, Xuan Long'; Crossref files him as given 'Do', family 'Long'."
+
+[finding."2609.13158v1:Novak03:REF017"]
+verdict = "correct"
+note = "10.945/woot07-S422 is not a DOI (a DOI prefix has at least four digits)."
+
+[finding."2609.13158v1:384253:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (doi.acm.org)."
+
+[finding."2609.13158v1:1555162:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (dx.doi.org)."
+
+[finding."2609.13158v1:2004:ITE:1009386.1010128:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (dx.doi.org)."
+
+[finding."2609.13158v1:Kirschmer:2010:AEI:1958016.1958018:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.13158v1:Lee:1978:TQA:800025.1198348:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL (doi.acm.org)."

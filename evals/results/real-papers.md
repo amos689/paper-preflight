@@ -1,6 +1,6 @@
 # Real papers (dev batch)
 
-- **Tool:** paper-preflight 0.1.0, commit 97e72da (main after #74)
+- **Tool:** paper-preflight 0.1.2 candidate, commit f84e119 (main after #91)
 - **Papers:** 20 arXiv papers first submitted 2026-07-01..07, chosen mechanically (`evals/real_papers.py`, manifest `evals/real_papers.toml`)
 - **Run:** 2026-10-03, live sources (answers cached for the day, so a rerun with fixed code asks again only what changed; a cold run of 20 papers takes about 20 minutes)
 - **Flags:** warnings and errors about references; every one reviewed by hand (`evals/real_papers_review.toml`)
@@ -9,7 +9,7 @@
 
 | References checked | Flags | Real problems | False positives | Unclear | False positives per 100 references | Cannot determine |
 |---|---|---|---|---|---|---|
-| 924 | 72 | 65 | 1 | 6 | 0.1 | 6% |
+| 924 | 73 | 66 | 1 | 6 | 0.1 | 6% |
 
 ## By paper
 
@@ -29,7 +29,7 @@
 | 2607.00320v1 | stat.ML | 59 | 0 | 0 | 0 | 0 | 8% |
 | 2607.00877v1 | stat.ML | 45 | 4 | 4 | 0 | 0 | 2% |
 | 2607.01749v1 | q-bio.QM | 65 | 0 | 0 | 0 | 0 | 0% |
-| 2607.02103v1 | q-bio.QM | 25 | 2 | 2 | 0 | 0 | 12% |
+| 2607.02103v1 | q-bio.QM | 25 | 3 | 3 | 0 | 0 | 12% |
 | 2607.00284v1 | quant-ph | 46 | 1 | 1 | 0 | 0 | 7% |
 | 2607.00307v1 | quant-ph | 35 | 6 | 6 | 0 | 0 | 3% |
 | 2607.00291v1 | astro-ph.GA | 105 | 3 | 0 | 1 | 2 | 1% |
@@ -45,5 +45,6 @@
 | REF011 | 7 | 1 | 1 |
 | REF012 | 4 | 0 | 3 |
 | REF013 | 5 | 0 | 2 |
+| REF014 | 1 | 0 | 0 |
 | REF015 | 40 | 0 | 0 |
 | REF017 | 5 | 0 | 0 |

@@ -1,6 +1,6 @@
 # Head-to-head: Badalova & Mayr (2026)
 
-- **Tool:** paper-preflight 0.1.0, commit 97e72da (main after #74)
+- **Tool:** paper-preflight 0.1.2 candidate, commit f84e119 (main after #91)
 - **Data:** 104 references from three documents, checked by hand (71 verified, 33 problematic); the five tools' results as published (Zenodo 10.5281/zenodo.21457492, CC BY 4.0). Transcribed to BibTeX as written: `evals/badalova_mayr.bib`
 - **Run:** 2026-10-03, 0.0 min, live sources
 
@@ -13,8 +13,8 @@
 | Hallucinator | 57 | 29 | 28 | 50.9% [38.3%, 63.4%] | 87.9% | 39.4 |
 | HalRef | 77 | 24 | 53 | 31.2% [21.9%, 42.2%] | 72.7% | 74.6 |
 | RefChecker | 68 | 32 | 36 | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
-| **paper-preflight** (warnings and errors) | 39 | 27 | 12 | 69.2% [53.6%, 81.4%] | 81.8% | 16.9 |
-| paper-preflight (also "cannot determine") | 54 | 32 | 22 | 59.3% [46.0%, 71.3%] | 97.0% | 31.0 |
+| **paper-preflight** (warnings and errors) | 41 | 29 | 12 | 70.7% [55.5%, 82.4%] | 87.9% | 16.9 |
+| paper-preflight (also "cannot determine") | 55 | 33 | 22 | 60.0% [46.8%, 71.9%] | 100.0% | 31.0 |
 
 ## References with a real error counted as problematic
 
@@ -27,8 +27,8 @@ The study labels a reference verified when the work exists. Reviewing paper-pref
 | Hallucinator | 57 | 31 | 26 | 54.4% [41.6%, 66.6%] | 81.6% | 39.4 |
 | HalRef | 77 | 28 | 49 | 36.4% [26.5%, 47.5%] | 73.7% | 74.2 |
 | RefChecker | 68 | 34 | 34 | 50.0% [38.4%, 61.6%] | 89.5% | 51.5 |
-| **paper-preflight** (warnings and errors) | 39 | 32 | 7 | 82.1% [67.3%, 91.0%] | 84.2% | 10.6 |
-| paper-preflight (warnings and errors, without REF015 advice) | 33 | 32 | 1 | 97.0% [84.7%, 99.5%] | 84.2% | 1.5 |
+| **paper-preflight** (warnings and errors) | 41 | 34 | 7 | 82.9% [68.7%, 91.5%] | 89.5% | 10.6 |
+| paper-preflight (warnings and errors, without REF015 advice) | 35 | 34 | 1 | 97.1% [85.5%, 99.5%] | 89.5% | 1.5 |
 
 The study's sample is small and was chosen to contain problems (one of the documents came from GPTZero's list of NeurIPS 2025 papers with hallucinated references), so the recall here is not representative; precision and false flags on verified references are the comparison that matters.
 
@@ -68,7 +68,7 @@ The study's sample is small and was chosen to contain problems (one of the docum
 | P1R13 | verified | verified |  |
 | P1R14 | verified | verified |  |
 | P1R15 | verified | verified | REF016 |
-| P1R16 | problematic | verified | REF016 |
+| P1R16 | problematic | metadata_mismatch | REF014, REF016 |
 | P1R17 | verified | cannot_determine | REF090 |
 | P1R18 | verified | verified |  |
 | P1R19 | verified | cannot_determine | REF090 |
@@ -110,7 +110,7 @@ The study's sample is small and was chosen to contain problems (one of the docum
 | P3R16 | verified | verified |  |
 | P3R17 | verified | verified |  |
 | P3R18 | verified | cannot_determine | REF090 |
-| P3R19 | problematic | cannot_determine | REF090 |
+| P3R19 | problematic | metadata_mismatch | REF011, REF013, REF014 |
 | P3R20 | problematic | not_found | REF003 |
 | P3R21 | problematic | not_found | REF003 |
 | P3R22 | problematic | not_found | REF003 |

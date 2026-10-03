@@ -76,32 +76,42 @@ and error is then reviewed by hand and recorded in `evals/real_papers_review.tom
 lookup can confirm.
 
 ```bash
-uv run python evals/real_papers.py collect --batch heldout   # pick and download the papers
-uv run python evals/real_papers.py run --batch heldout       # check them against live sources
-uv run python evals/real_papers.py report --batch heldout    # combine with the manual review
+uv run python evals/real_papers.py collect --batch heldout2   # pick and download the papers
+uv run python evals/real_papers.py run --batch heldout2       # check them against live sources
+uv run python evals/real_papers.py report --batch heldout2    # combine with the manual review
 ```
 
-There are two batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
-stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1):
+There are three batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
+the batches before it led to, and reported as it came out; its own false positives were then
+studied, which makes it development data for the next release. The numbers below are the 0.1.2
+candidate's (main f84e119):
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
-| `dev` | 2026-07-01..07 | its false positives were studied and fixed (#58–#69) | 924 | 72 | 65 | 1 | 6 | 0.1 |
-| `heldout` | 2026-07-08..14 | collected after those fixes, reported as it came out | 921 | 109 | 84 | 21 | 4 | 2.3 |
+| `dev` | 2026-07-01..07 | studied for 0.1.1 (#58-#69) | 924 | 73 | 66 | 1 | 6 | 0.1 |
+| `heldout` | 2026-07-08..14 | held out for 0.1.1; studied for 0.1.2 (#78-#91) | 921 | 95 | 85 | 6 | 4 | 0.7 |
+| `heldout2` | 2026-07-15..21 | held out for 0.1.2 | 983 | 80 | 47 | 28 | 5 | 2.8 |
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
-- **On `heldout`**, 56 of the 84 real problems are cited preprints that have since been
-  published (REF015, advice); the other 28 are errors in the entry: wrong or invented authors,
-  DOIs that do not exist or belong to another paper, wrong titles, a DOI written as a URL. Of
-  the 21 false positives, 7 are real works no source indexes (a talk, papers from the 1950s and
-  60s: REF003), and most others are records of a related publication of the same title (a thesis
-  abstract, a technical report, the arXiv order of authors: REF011-REF013). The first run of
-  this batch, before #72-#74, found 2.4 false positives per 100 references.
-- **The held-out flags were reviewed, not used to change a rule.** Fixing what they show would
-  make this batch a development batch; measuring those fixes will need a new week of papers.
+- **On `heldout`**, 0.1.1 found 2.3 false positives per 100 references; the fixes for 0.1.2 bring
+  that to 0.7, with one more real problem found.
+- **On `heldout2`**, 20 of the 47 real problems are cited preprints that have since been
+  published (REF015, advice) and 16 are DOIs written as URLs or placeholders (REF017); the rest
+  are a wrong DOI, invented or misspelt authors, a title typo and wrong years (NeurIPS 2025
+  papers cited as 2026). The 28 false positives are a wider spread than before: registry
+  records with errors of their own (a misspelt or reordered author, a footnote mark, AAS title markup, Semantic
+  Scholar dropping a word), author names written another way (teams, consortia, a Vietnamese
+  name order, a given name added), years that are legitimate but not the record's (a volume
+  year, a conference year), a DOI with angle brackets cut short, a book DOI on a chapter, and
+  three real works no source indexes (REF003: a workshop paper, an anonymous OpenReview
+  submission, a 1996 book chapter).
+- **A held-out batch's flags are reviewed, not used to change a rule** until its numbers are
+  reported. Measuring the fixes they lead to needs a new week of papers.
 - The sources are not committed (arXiv's default licence does not allow redistribution); the
-  manifests `evals/real_papers.toml` and `evals/real_papers_heldout.toml` list the IDs.
+  manifests `evals/real_papers.toml`, `evals/real_papers_heldout.toml` and
+  `evals/real_papers_heldout2.toml` list the IDs.
 
 ## Head-to-head: Badalova & Mayr (2026)
 
