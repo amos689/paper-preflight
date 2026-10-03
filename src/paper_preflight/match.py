@@ -311,9 +311,17 @@ def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = Fal
     return Match(record, title, authors, year, venue, suspicious, acceptable)
 
 
-def best_candidate(info: EntryInfo, records: list[SourceRecord]) -> Match | None:
-    """The best acceptable candidate, or None when no candidate (or more than one) qualifies."""
-    matches = [m for m in (evaluate(info, r) for r in records) if m.acceptable]
+def best_candidate(
+    info: EntryInfo, records: list[SourceRecord], *, preprint_pair: bool = False
+) -> Match | None:
+    """The best acceptable candidate, or None when no candidate (or more than one) qualifies.
+
+    ``preprint_pair``: the entry cites a preprint, so a published version may be a year or two
+    later.
+    """
+    matches = [
+        m for m in (evaluate(info, r, preprint_pair=preprint_pair) for r in records) if m.acceptable
+    ]
     if not matches:
         return None
     matches.sort(key=lambda m: (m.title.score or 0.0, m.authors.overlap), reverse=True)

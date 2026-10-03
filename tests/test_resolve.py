@@ -6,8 +6,6 @@ import pytest
 from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.cache import Cache
 from paper_preflight.resolve import Evidence, Sources, resolve
-from paper_preflight.sources import base
-from paper_preflight.sources.base import SourcePolicy
 
 from .fake_web import FakeWeb
 
@@ -23,21 +21,7 @@ def anyio_backend() -> str:
     return "asyncio"
 
 
-@pytest.fixture(autouse=True)
-def fast(monkeypatch: pytest.MonkeyPatch) -> None:
-    async def instant(_: float) -> None:
-        return None
-
-    monkeypatch.setattr(base.asyncio, "sleep", instant)
-    original_init = base.SourceClient.__init__
-
-    def init(
-        self: base.SourceClient, policy: SourcePolicy, *args: object, **kwargs: object
-    ) -> None:
-        policy.min_interval = 0.0
-        original_init(self, policy, *args, **kwargs)  # type: ignore[arg-type]
-
-    monkeypatch.setattr(base.SourceClient, "__init__", init)
+pytestmark = pytest.mark.usefixtures("fast")
 
 
 async def run(web: FakeWeb) -> dict[str, Evidence]:

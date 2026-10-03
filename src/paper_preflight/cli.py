@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import io
 import locale
 import os
@@ -93,6 +94,14 @@ def resolve_lang(lang: Lang) -> str:
     return "zh" if any(n.lower().startswith(("zh", "chinese")) for n in names) else "en"
 
 
+def _progress_message(language: str, offline: bool) -> str:
+    if language == "zh":
+        return "正在用本地缓存核查参考文献…" if offline else "正在向学术数据源核查参考文献…"
+    if offline:
+        return "Verifying references from the local cache…"
+    return "Verifying references against Crossref, dblp, arXiv, DataCite and OpenAlex…"
+
+
 def _safe_stdout() -> None:
     """Never crash on characters the console encoding cannot represent."""
     stream = sys.stdout
@@ -129,9 +138,16 @@ def check(
         typer.Option("--cite-command", help="Extra citation macro, e.g. --cite-command mycite."),
     ] = None,
     hide_info: Annotated[bool, typer.Option("--hide-info", help="Hide info findings.")] = False,
+    offline: Annotated[
+        bool,
+        typer.Option(
+            "--offline",
+            help="Do not use the network: verify references from cached answers only.",
+        ),
+    ] = False,
 ) -> None:
     """Check a LaTeX project (or a .bib file) and report problems with its references."""
-    from paper_preflight.check import run_check
+    from paper_preflight.check import VerifyOptions, run_check
     from paper_preflight.report.jsonout import render_json
     from paper_preflight.report.sarif import render_sarif
     from paper_preflight.report.text import render_text
@@ -139,8 +155,18 @@ def check(
 
     _safe_stdout()
     language = resolve_lang(lang)
+    verify = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    progress = Console(stderr=True)
+    status: contextlib.AbstractContextManager[object] = (
+        progress.status(_progress_message(language, offline))
+        if progress.is_terminal  # never animate into logs or CI output
+        else contextlib.nullcontext()
+    )
     try:
-        result = run_check(path, main=main_file, extra_bib=bib, cite_commands=cite_command)
+        with status:
+            result = run_check(
+                path, main=main_file, extra_bib=bib, cite_commands=cite_command, verify=verify
+            )
     except ProjectError as exc:
         typer.echo(f"paper-preflight: {exc}", err=True)
         raise typer.Exit(EXIT_USAGE) from exc
