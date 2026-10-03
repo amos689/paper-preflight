@@ -89,8 +89,31 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 
 ## How accurate is it?
 
-paper-preflight is measured on [HALLMARK](https://github.com/rpatrik96/hallmark), a public
-benchmark of real and hallucinated BibTeX entries, against the live sources.
+Two measurements, both against the live sources: the bibliographies of real papers and a
+public benchmark.
+
+### On real papers
+
+The bibliographies of 20 arXiv papers from July 2026 (cs, stat, q-bio, quant-ph and astro-ph),
+chosen mechanically and collected after the fixes a first batch prompted, with every warning
+and error reviewed by hand:
+
+| References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
+|---|---|---|---|---|---|
+| 921 | 109 | 84 | 21 | 4 | 2.3 |
+
+- **About one false alarm per paper** (46 references on average), against 84 real problems:
+  28 errors in the entries (wrong or invented authors, DOIs that do not exist or name another
+  paper, wrong titles) and 56 cited preprints that have since been published.
+- **The false alarms are mostly real works no source indexes** (a conference talk, papers from
+  the 1950s and 60s) and records of a related publication of the same title.
+- **A first batch of 20 papers was used to find false positives:** on it, 0.1.0 had 4.5 per 100
+  references, the fixed code 0.1. Details in [`evals/README.md`](evals/README.md#real-papers).
+
+### On a benchmark: HALLMARK
+
+[HALLMARK](https://github.com/rpatrik96/hallmark) is a public benchmark of real and hallucinated
+BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
