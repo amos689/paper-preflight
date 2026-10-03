@@ -88,14 +88,20 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 paper-preflight is measured on [HALLMARK](https://github.com/rpatrik96/hallmark), a public
 benchmark of real and hallucinated BibTeX entries, against the live sources.
 
-| Mode | Precision | Recall | False-positive rate | Coverage |
-|---|---|---|---|---|
-| Fabrication: wrong identifier, not found, no author in common | 98.1% | 52.5% | 1.0% | 98.3% |
-| Any issue: also wrong authors, title, year or venue | 97.6% | 90.5% | 2.1% | 98.3% |
+| Split | Mode | Precision | Recall | False-positive rate | Coverage |
+|---|---|---|---|---|---|
+| `test_public`: 831 entries, never used during development | Any issue | 97.9% | 88.4% | 2.6% | 96.7% |
+| | Fabrication | 99.0% | 48.6% | 0.6% | 96.7% |
+| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.5% | 2.1% | 98.3% |
+| | Fabrication | 98.1% | 52.5% | 1.0% | 98.3% |
 
-HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
+HALLMARK v1.2.3, every entry of both public splits, run on 2026-10-03. *Fabrication* counts a
+wrong identifier, a work not found and no author in common; *any issue* also counts wrong
+authors, title, year or venue.
 
-- **Every flag on an entry labelled VALID was checked by hand.** The 11 that remain are not
+- **The held-out split confirms the development numbers:** the same precision and two points
+  less recall on entries no rule was ever tuned on.
+- **Every flag on a `dev_public` entry labelled VALID was checked by hand.** The 11 that remain are not
   correct citations: DOIs that belong to other papers, author lists naming people who did not
   write the paper, a shifted year and a truncated title.
 - **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
@@ -103,8 +109,7 @@ HALLMARK v1.2.3 `dev_public`, all 1,119 entries, run on 2026-10-03.
   [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
 - **What is still missed:** invented venues on papers known only as preprints (an arXiv record
   cannot contradict a venue) and author lists that merely leave people out. See
-  [`evals/results/hallmark-dev_public.md`](evals/results/hallmark-dev_public.md) for every
-  hallucination type.
+  [`evals/results/`](evals/results/) for every hallucination type.
 
 Precision comes first: a reference is called fabricated only on positive evidence, and an
 unanswered or ambiguous lookup is reported as "cannot determine", never as "not found". The
