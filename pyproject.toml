@@ -78,6 +78,8 @@ extend-exclude = [".spikes", "evals/.data", "tests/fixtures"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "C4", "PT"]
+# SIM905: whitespace-separated word lists (`"""a b c""".split()`) are clearer for command tables.
+ignore = ["SIM905"]
 
 [tool.ruff.format]
 line-ending = "lf"

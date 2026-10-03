@@ -1,0 +1,151 @@
+# paper-preflight benchmark dataset lock (spike S8).
+# Paths in `files` are relative to evals/.data/ (git-ignored). Regenerate with .spikes/datasets/write_lock.py.
+lock_version = 1
+generated_at = "2026-10-03"
+
+[[dataset]]
+name = "hallmark"
+version = "v1.2.3"
+commit = "75e39a08b69aa2dc2caf0d7d9d9f216325bc676c"
+source_urls = [
+  "https://github.com/rpatrik96/hallmark/tree/v1.2.3",
+  "https://raw.githubusercontent.com/rpatrik96/hallmark/75e39a08b69aa2dc2caf0d7d9d9f216325bc676c/",
+  "https://media.githubusercontent.com/media/rpatrik96/hallmark/75e39a08b69aa2dc2caf0d7d9d9f216325bc676c/ (Git LFS: bibtexupdater_raw_dev_public.jsonl)",
+]
+license = "MIT"
+retrieved_at = "2026-10-03"
+redistributable = true
+notes = "Latest release v1.2.3 (2026-09-02). Public splits dev_public (1119: 513 VALID/606 HALLUCINATED), test_public (831: 312/519), stress_test (122: 1 canary VALID + 121 HALLUCINATED). test_hidden (454) is not public. Data files carry a 'do not train' canary; skip bibtex_key starting with '__canary__'. main@7b9fbfa8 has one post-release data commit (7c3559b580) that changes subtests only (29 dev / 28 test entries); labels, types and fields are identical to v1.2.3. baseline_results/*.json are aggregate EvaluationResult objects, not per-entry predictions; bibtexupdater_raw_dev_public.jsonl (LFS) is per-entry raw btu output. doi_only_dev_public.json was computed on a stale 1068-entry dev split; manifest.json f1 values are stale. Code files (schema.py, metrics.py, loader.py, baselines/*.py) are pinned for reference only."
+files = [
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/bibtexupdater_dev_public.json", sha256 = "ffc80199709b72e5afb6e4b8d45476b3746ccde8f9825c43b59b7ab5191aed8b", bytes = 13316 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/bibtexupdater_raw_dev_public.jsonl", sha256 = "8867ecd8277d84b053ae66ad008eb7a0e809d4949d6622ae51c4d25107cc03ab", bytes = 210618 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/bibtexupdater_test_public.json", sha256 = "6cd2f9acc540179a88f8b94875433ff313a9f33b3ecf97247b5e7209ff55b82f", bytes = 13311 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/doi_only_dev_public.json", sha256 = "07b735f2e4aeed45c88e54c1669abcf05f2defd7bf918e38501ce476338bd7f5", bytes = 3779 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/doi_only_test_public.json", sha256 = "01b17dca247bdd80613355482f31f5853ad0013711af27f41e45fb3537f2a631", bytes = 3917 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/manifest.json", sha256 = "68fdab8d7c79d7037b53c43e4168a32116b050f3dd1a8e06f372e7825fe48717", bytes = 5401 },
+  { path = "hallmark/v1.2.3/data/v1.2/baseline_results/results_matrix_dev_public.csv", sha256 = "0811e9a63be4f5d5998d8e9087da79cdda00175b68d5f7439688a6e3e8e4ffe1", bytes = 30287 },
+  { path = "hallmark/v1.2.3/data/v1.2/dev_public.jsonl", sha256 = "d04a19f469765345febd5ca1a8c45edbe07c1937734edd695fd87f6184890a27", bytes = 1037041 },
+  { path = "hallmark/v1.2.3/data/v1.2/metadata.json", sha256 = "ea4f34bc80e844823b9604d880b0b4a7dec63cb1c193014969f6d7fe972751a0", bytes = 15102 },
+  { path = "hallmark/v1.2.3/data/v1.2/stress_test.jsonl", sha256 = "af3a11606948fea8edccbbd5c512e6efd69c1f9056032d446f01c66950da07d3", bytes = 101061 },
+  { path = "hallmark/v1.2.3/data/v1.2/test_public.jsonl", sha256 = "b06821c91398da9aecf35ce4cba0baf8eea6632f384e9984530e10bbd27ce45b", bytes = 772456 },
+  { path = "hallmark/v1.2.3/hallmark/baselines/bibtexupdater.py", sha256 = "d4b2a4709cd84c7fe1883ec13e5157f2368c22f5f7fa59a02bdd21d22d8a02f6", bytes = 21284 },
+  { path = "hallmark/v1.2.3/hallmark/baselines/doi_only.py", sha256 = "4cf6c4ac8b4ca496cb9365cd638be2442891db3235aeeb500a1dfbfcbe5f18a9", bytes = 4434 },
+  { path = "hallmark/v1.2.3/hallmark/dataset/loader.py", sha256 = "02eb93bbdccebedc4f3290912f3a57e9753da9da64bcd40d30dd1d9de68b9a9a", bytes = 10051 },
+  { path = "hallmark/v1.2.3/hallmark/dataset/schema.py", sha256 = "81ceb2fb8ad557c1644c9f760794b435b01321b2a0e1753095b657e60ce906e9", bytes = 29954 },
+  { path = "hallmark/v1.2.3/hallmark/evaluation/metrics.py", sha256 = "5c97c5c2725b73323698a4c7e541281184dad55d12f9f537cbb4917e444d490e", bytes = 108076 },
+  { path = "hallmark/v1.2.3/hf/README.md", sha256 = "843dd79dc1b954e962db875c4dd759d50531f31700755e56ff3c5999a6dfb05d", bytes = 16836 },
+  { path = "hallmark/v1.2.3/LICENSE", sha256 = "bafef485d0aafc08cbadb6cbb0b2c8745ffd9ea20a61fe74597dddb1ab0369f8", bytes = 1073 },
+  { path = "hallmark/v1.2.3/README.md", sha256 = "048e71978eab2ac835dc02aa51226c7f6bdb15e05d62d76d91fea82e33c2e3f4", bytes = 27650 },
+]
+
+[[dataset]]
+name = "hallmark-selective-eval-code"
+version = "main (unreleased)"
+commit = "7b9fbfa82228849915361fbef2fa01e8ba701900"
+source_urls = [
+  "https://github.com/rpatrik96/hallmark/blob/7b9fbfa82228849915361fbef2fa01e8ba701900/hallmark/evaluation/selective.py",
+]
+license = "MIT"
+retrieved_at = "2026-10-03"
+redistributable = true
+notes = "hallmark/evaluation/selective.py does NOT exist at v1.2.3; it was added on main 2026-09-04 (f8e47b1100, last changed 4bff6171d1 2026-09-06). Risk-coverage/AURC, Brier decomposition, abstention_breakdown. Self-described as 'staged, not wired' (no published result uses it)."
+files = [
+  { path = "hallmark/main-7b9fbfa8/hallmark/evaluation/selective.py", sha256 = "88fbf32d4c5cbcf0ea3a413072846e6cd5ca615b2e30015685943366e92f0ef4", bytes = 29273 },
+]
+
+[[dataset]]
+name = "badalova-mayr-2026"
+version = "1.0.0"
+commit = "zenodo record 21457492 (concept 10.5281/zenodo.21457491)"
+doi = "10.5281/zenodo.21457492"
+source_urls = [
+  "https://zenodo.org/api/records/21457492",
+  "https://zenodo.org/api/records/21457492/files/manual_reference_verification_dataset.csv/content",
+  "https://zenodo.org/api/records/21457492/files/README.md/content",
+  "https://arxiv.org/abs/2607.22693v2 (paper)",
+]
+license = "CC-BY-4.0"
+retrieved_at = "2026-10-03"
+redistributable = true
+notes = "Zenodo md5 verified: CSV 60ac48331f119aeb1cc944fad7254239, README 044a050af9633ac572ab9d9d36bf8f8e. CSV encoding is cp850 (DOS Latin-1), NOT cp1252 (byte 0x81 is undefined in cp1252) and not UTF-8; CRLF line ends. Export was lossy: 90 literal '?' in 58 references replace en-dashes, curly quotes, ellipses and non-cp850 letters. 104 refs (71 verified/33 problematic); recomputed TP/FP/FN/TN equal paper Table 4 for all 5 tools. zenodo_record_21457492.json is the API metadata snapshot. Redistribution requires attribution (CC BY 4.0)."
+files = [
+  { path = "badalova_mayr/manual_reference_verification_dataset.csv", sha256 = "46bacd05613159795fc62afe51f9b66aaaee35b587fce9b820cb4740a97cd627", bytes = 46760 },
+  { path = "badalova_mayr/README.md", sha256 = "aee4add494ad7f0d10e0f39a081a044ed6fed9d5f3d0ba89892bd4a403f3d2fa", bytes = 4595 },
+  { path = "badalova_mayr/zenodo_record_21457492.json", sha256 = "fd0ee3c5c7637a9b64a61cd31e4d67d9e638395734be556812037941d16800f2", bytes = 9631 },
+]
+
+[[dataset]]
+name = "citetracer-synthetic-v2"
+version = "main"
+commit = "0483831f017433b8361f2abf0567f075dd86ce70"
+source_urls = [
+  "https://github.com/aaFrostnova/CiteTracer/tree/0483831f017433b8361f2abf0567f075dd86ce70/data/synthetic_data/v2",
+  "https://huggingface.co/datasets/Afrostnova/Hallucinated_Citation (revision 0e36cb80c250e76c02a7aff8760823620adf3078; top-level files are git-blob-identical to GitHub data/synthetic_data/v2/)",
+]
+license = "MIT"
+retrieved_at = "2026-10-03"
+redistributable = true
+notes = "No tags/releases: pinned by commit. 2,450 citations: REAL 1023 (R1 338, R2 342, R3 343), POTENTIAL_HALLUCINATED 271 (P1 91, P3 180; P2 absent), HALLUCINATED 1156 (H1 200, H2 198, H3 197, H4 195, H5 200, H6 166). Ground truth in meta.json keyed by citation_id; _all_test.json is the concatenation of the 11 per-subtype files. citation_id prefix and _source=='' (all 180 P3) leak labels; strip before running. GitHub repo is ~1.3 GB (history); do not clone, fetch files by commit."
+files = [
+  { path = "citetracer/data/synthetic_data/v2/_all_test.json", sha256 = "7be694790d87d88a70927d349c6dc0a367dcd5310e049345a8b65cca23dc78d5", bytes = 1543920 },
+  { path = "citetracer/data/synthetic_data/v2/H1.json", sha256 = "08875812ee2ddcbc47236330c45bc7af32049e38269a37db773ca44fa1c200ca", bytes = 125747 },
+  { path = "citetracer/data/synthetic_data/v2/H2.json", sha256 = "a282c767956cf396b8f235ece7470b7751542b43552c2206770713b8fe22d31f", bytes = 124896 },
+  { path = "citetracer/data/synthetic_data/v2/H3.json", sha256 = "718d660719878b9ddcfeea4c7a7a55030b8935644e06fa93cefea95893d9d093", bytes = 114386 },
+  { path = "citetracer/data/synthetic_data/v2/H4.json", sha256 = "a67bcfd72107f86bdb926963a665dbb4bc3502518ef7a39d23fb34b75de6616d", bytes = 122805 },
+  { path = "citetracer/data/synthetic_data/v2/H5.json", sha256 = "3595330fb3cf22fe23e8f40c7ece52b09b0544eaacb3da60b5cad02636397ec3", bytes = 137903 },
+  { path = "citetracer/data/synthetic_data/v2/H6.json", sha256 = "fda45f851e6c22ec15085aace886fe89424c7200f0d3da1de230637cf533b6c7", bytes = 107514 },
+  { path = "citetracer/data/synthetic_data/v2/meta.json", sha256 = "2a9e8ce8b6cf8eef26c67e022c1ce4bbf8c6137fae5f58e5f70f2dbc71016a08", bytes = 2490920 },
+  { path = "citetracer/data/synthetic_data/v2/P1.json", sha256 = "74bb8749277d622f8b089b1523fff756f04c41d9f8b3ce2b7e74f9035795cc24", bytes = 55233 },
+  { path = "citetracer/data/synthetic_data/v2/P3.json", sha256 = "381f25e722b0bdab000b4a082b04925982470948fc3dc0be2ef58ce04a24af5c", bytes = 108481 },
+  { path = "citetracer/data/synthetic_data/v2/R1.json", sha256 = "efe84314482733a0e176e4e9d1cb3a4e88228990ed19b0955d84de7edcbe0351", bytes = 220950 },
+  { path = "citetracer/data/synthetic_data/v2/R2.json", sha256 = "f4e5fe995370dd5e497fec4b741a840c656a3e9daad52b2d77cc8cbc9fb26eb5", bytes = 216622 },
+  { path = "citetracer/data/synthetic_data/v2/R3.json", sha256 = "0fc3b2e7722fa4429a080bd689f94056f9a549bb20353b218b8a7b309e960ca5", bytes = 209403 },
+  { path = "citetracer/docs/metric_guide.md", sha256 = "a349bbd21903ad049aa72e90c280c55cfcf29ffda04e00db49fb266265f66384", bytes = 10498 },
+  { path = "citetracer/docs/taxonomy.md", sha256 = "0b64b648f50a761edcd37ff37f9f6a1cc673ce5b2dc8ea1cc3c611dc81c81912", bytes = 7349 },
+  { path = "citetracer/LICENSE", sha256 = "f1c31059c405e9a14ea3aa85e1faafa68c1fb236e93392ad6ea4bf071e62c2c8", bytes = 1067 },
+  { path = "citetracer/packages/eval/benchmarks.py", sha256 = "1574462aeaf9f24d82e0c4f4e55afe0d03218ee6cc300aca79d4da303dcd3304", bytes = 3601 },
+  { path = "citetracer/packages/eval/datasets.py", sha256 = "5d98dcfe2b89356748433b68271ecaaa0f79ce0af8c507a423b0eae8f939580f", bytes = 2182 },
+  { path = "citetracer/packages/eval/metrics.py", sha256 = "866507c993cdf863983274f0a24947e8abe8c65640f73e3dbc7ef80fb75bc7e1", bytes = 1970 },
+  { path = "citetracer/README.md", sha256 = "abb68bd58c0d41ecd64ad89429404a2406fe0690305bee0cd88d4fae2309e491", bytes = 15128 },
+  { path = "citetracer/scripts/score_all.py", sha256 = "1a122878f541e4259edd46290ae0b1acb1efab2e37dfa3d9e9b277fe9a12db0d", bytes = 10172 },
+]
+
+[[dataset]]
+name = "citetracer-iclr2026-realworld"
+version = "main"
+commit = "0483831f017433b8361f2abf0567f075dd86ce70"
+source_urls = [
+  "https://github.com/aaFrostnova/CiteTracer/tree/0483831f017433b8361f2abf0567f075dd86ce70/data/iclr2026_hallucinated",
+]
+license = "MIT (repository license); content names identifiable ICLR 2026 desk-rejected submissions"
+retrieved_at = "2026-10-03"
+redistributable = false
+notes = "Downloaded for inspection only; project policy: do not redistribute, describe only in aggregate, fetch at runtime. 647 desk-rejected submissions, 807 structured hallucinated citations (README claims 957 incl. ACM CCS 2026; the CCS part is not in this snapshot). Positives only (no negatives): recall-only evaluation."
+files = [
+  { path = "citetracer/data/iclr2026_hallucinated/hallucinated_refs.json", sha256 = "9adae1e618f022542960d9cab41c3936589f9fab4114917dabe28e295fad9aed", bytes = 459135 },
+  { path = "citetracer/data/iclr2026_hallucinated/hallucinated_refs_structured.json", sha256 = "d8861bbec7e09117b6ae2c8e37b85ea99cbdaa3e7af991151fa504fd6aecca0a", bytes = 1893871 },
+  { path = "citetracer/data/iclr2026_hallucinated/hallucinated_refs_summary.csv", sha256 = "1a084725f6bb69271dbe94e85ea3af1cbe762e3814176cf8bebf1a2e910e46eb", bytes = 408612 },
+]
+
+[[dataset]]
+name = "citeaudit"
+version = "main"
+commit = "99744f032ad3b42a1d09929ddcf7f3379e7320d5"
+source_urls = [
+  "https://github.com/shiiiikw/CiteAudit",
+]
+license = "NONE (no LICENSE file; GitHub license API returns 404) - all rights reserved by default"
+retrieved_at = "2026-10-03"
+redistributable = false
+notes = "fetch at runtime only. Not downloaded. Single commit (2026-04-30); repo size 754 KB. Pin data/benchmark.json by git blob SHA-1 (sha256 unknown until first runtime fetch). README: 9,442 citations under key 'data' {source_type realworld(3356)|generated(6086), citation, GT, Predict}; GT true = REAL, false = fake (inverted polarity vs our positive class). 'Predict' is undocumented."
+files = []
+remote_files = [
+  { path = ".gitignore", git_blob_sha1 = "2fae9a464da1cc831d5294334d039ee1e9d138ee", bytes = 234 },
+  { path = "README.md", git_blob_sha1 = "0a35c7d7dd68759cd9efe7aff1eba2d575615047", bytes = 2749 },
+  { path = "config.py", git_blob_sha1 = "a74f24ce8bd5a0917818ffff87e6d75a7e2bb16f", bytes = 611 },
+  { path = "data/benchmark.json", git_blob_sha1 = "90a83ef665fa3fde4146e3f93e8718838b4d7080", bytes = 2757992 },
+  { path = "pdf_processor.py", git_blob_sha1 = "0b168a929c6133069099b6b7e68c914e91878c49", bytes = 2663 },
+  { path = "requirements.txt", git_blob_sha1 = "6ebdb7fd57f891ef9ea615a7f0d7d52575078b7b", bytes = 105 },
+  { path = "serp_verify.py", git_blob_sha1 = "aa2981591f177d3c741038dbc572fb8a2d171c5b", bytes = 27682 },
+  { path = "test_serp.py", git_blob_sha1 = "6e5253aae99fb6785441bc400f41035ef5d24fed", bytes = 8041 },
+]

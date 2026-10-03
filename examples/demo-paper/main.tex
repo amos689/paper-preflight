@@ -1,0 +1,36 @@
+% Demo paper for paper-preflight.
+% It deliberately contains reference problems so that the tool has something to find.
+% All fabricated entries in refs.bib use FICTIONAL author names.
+\documentclass{article}
+\usepackage[numbers]{natbib}
+
+\title{A Tiny Study of Pre-Submission Checks}
+\author{Anonymous}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Transformers~\citep{vaswani2017attention} and residual networks~\citep{he2016deep}
+changed deep learning. Many papers still cite the residual-network preprint
+\citep{he2015residual} even though it was formally published.
+\citet{devlin2019bert} pre-trained bidirectional encoders, optimized with
+Adam~\cite{kingma2015adam} and GELU activations~\citep[see][Sec.~2]{hendrycks2016gelu}.
+
+Recent work on sparse experts~\citep{lindqvist2024quantum} claims large gains.
+We also discuss a retracted study~\citep{wakefield1998ileal} as a cautionary example,
+the classic textbook~\citep{goodfellow2016deep}, a Chinese textbook~\citep{zhou2016ml},
+and a TACL article~\citep{tacl2019example}.
+
+% \citep{commented_out_key} must be ignored.
+\iffalse
+\citep{inside_iffalse_key} must be ignored too.
+\fi
+
+Finally, this sentence cites a key that is missing from the bibliography~\citep{nonexistent2023}.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}
