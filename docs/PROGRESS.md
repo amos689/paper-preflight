@@ -48,28 +48,46 @@
 - [x] CI 全绿：lint，以及 Linux 4 个 Python 版本、Windows 2 个、macOS 1 个
   - Action 按提交 SHA 锁定，因为 setup-uv 没有 v10 浮动标签
   - 私有期间矩阵已精简；公开后恢复 3 × 4 全矩阵
-- [ ] 用户（不阻塞开发）：
-  - 注册 PyPI（2FA），W1 末发 0.0.1 占名
-  - 申请 OpenAlex、S2 免费 key
-  - 提供测试邮箱（只放本机环境变量）
+- [x] 2026-10-03 仓库改为公开；此后每个功能或修复走一个 PR（合并提交），CI 恢复 3 系统 × 4 Python 全矩阵
+- [x] 2026-10-03 用户已在本机设好 `PAPER_PREFLIGHT_EMAIL`、`OPENALEX_API_KEY`、`S2_API_KEY`（只在环境变量里），三者都已验证可用
+- [ ] 用户（不阻塞开发）：注册 PyPI（2FA），发 0.0.1 占名
 
-## W1–W2（进行中，已提前开始）
+## W1–W2：引用核查主干（2026-10-03 完成，提前）
 
-- [x] 数据源适配器：
-  - doi.org（doiRA 路由、Handle、CSL）、Crossref（批量 DOI、书目检索、撤稿）、DataCite（批量）
-  - arXiv（Atom、批量、各版本标题、撤回）、dblp SPARQL（前缀检索、完整记录、DOI 批量、CoRR→正式版）、OpenAlex（免费单条、批量）
-  - 统一的 SourceRecord 模型
-  - 解析器用真实响应夹具测试，请求层用 respx 测试，共 98 个测试
-- [ ] 路由器：标识符优先，按 ADR-0003；请求预算；可疑前缀黑名单（10.65215）作为数据文件
-- [ ] REF017（DOI 中的 LaTeX 转义，离线即可检测）
-- [ ] `doctor` 加入连通性检查
-- [ ] W3：匹配（标题键、作者、年份、venue、错配守卫）与判决（ADR-0002）；评测框架（HALLMARK dev_public 首跑）
+| PR | 内容 |
+|---|---|
+| #2 | REF017：DOI/arXiv 中的 LaTeX 转义、前缀与格式错误（离线） |
+| #3 | 匹配：标题（含副标题、旧版本标题）、作者、年份（不设 ±1 容差）、venue、错配守卫、10.65215 黑名单 |
+| #5 | 修复：来源冷却不会被第一次拒绝重置 |
+| #6 | 解析器：标识符优先，按来源批量；记录"谁答了没有、谁不可用" |
+| #7 | 修复：跨文件重复键时以第一个定义为准 |
+| #8 | 判定引擎（ADR-0002）：五种判定 + REF001–005、REF010–015、REF018、REF090、RUN001 |
+| #9 | `check` 默认联网核查被引文献；`--offline` 只用缓存；退出码 2；JSON 增加 `verification` 与 `references` |
+| #10 | arXiv 拒绝请求时改走 DataCite（`10.48550/arXiv.<id>`） |
+| #11 | Semantic Scholar 补救来源（仅有 key 时）；客户端支持 429 指数退避 |
+
+- 共 180 个测试；ruff、mypy strict 全过。测试从不联网：`tests/conftest.py` 把 `check` 指向录制的响应，并清空凭据变量
+- 2026-10-03 实跑示例论文（真实来源、空缓存、带 key）：20 秒，运行完整，11 条判定全部符合 `examples/demo-paper/EXPECTED.md`
+
+## 下一步
+
+- [ ] 评测框架：HALLMARK dev_public 首跑，标签映射，按"仅伪造 / 任一问题"两种口径算精确率、召回率与覆盖率
+- [ ] `doctor` 加入数据源连通性检查（不打印凭据）
+- [ ] Crossref 不可用时，用 S2 批量接口按 DOI/arXiv 兜底（需要客户端支持 POST）
+- [ ] REF016（可补充的标识符）、REF019（条目类型不符）；流水线里的 CFG001（未使用的抑制注释）
+- [ ] 运行清单（run manifest）；`--refresh`、`--final`、`--record/--replay`
+- [ ] `bib fetch` / `bib fix`
+- [ ] Agent Skills、MCP 服务、插件清单、pre-commit 钩子
+- [ ] README 使用说明与演示（发布前）
 
 ## 已知问题与备忘
 
 - 本机跑测试要加 `--basetemp=.pytest_tmp`：沙箱不允许写系统临时目录。CI 不受影响。
 - Windows 保留设备名（aux、con、nul、prn、com1……）不能当文件名，所以模块叫 `auxdata.py`。
 - 后台任务运行期间，提交只用显式路径 `git add <path>`，不要用 `git add -A`。
+- arXiv API 常限流（429 或超时）。#10 之后会自动改走 DataCite，但报告仍会注明 arXiv 不可用（撤回状态只有 arXiv 知道）。
+- S2 key 的条款：所有接口合计每秒不超过 1 次。适配器按 1.1 秒间隔单连接请求；同时开两个进程会共用 key，可能合计超限。
+- 实跑验证时用临时缓存：设 `PAPER_PREFLIGHT_CACHE_DIR` 指向草稿目录，避免污染真实缓存；不要打印凭据的值。
 - 在 Claude 应用内运行时，平台缓存目录（`AppData\Local\paper-preflight`）也会被沙箱重定向；在你自己的终端里运行时位置不同，属正常现象。
 - 使用 uv 前，Git Bash 中需要：
 
