@@ -89,6 +89,8 @@ class FakeWeb:
             )
         if host == "sparql.dblp.org":
             return self._dblp(request)
+        if host == "eutils.ncbi.nlm.nih.gov":
+            return self._pubmed(request)
         if host == "api.semanticscholar.org" and request.url.path.endswith("/search/match"):
             paper = self.s2_papers.get(request.url.params.get("query", "").lower())
             if paper is None:
@@ -107,6 +109,17 @@ class FakeWeb:
             else:
                 answers.append({"DOI": doi, "status": "DOI does not exist"})
         return httpx.Response(200, json=answers)
+
+    def _pubmed(self, request: httpx.Request) -> httpx.Response:
+        # recorded summaries of 9500320 (retracted) and 31452104; any other PMID is unknown
+        recorded = _load("pubmed/esummary_three.json")
+        uids = request.url.params.get("id", "").split(",")
+        result: dict[str, Any] = {"uids": uids}
+        for uid in uids:
+            result[uid] = recorded["result"].get(
+                uid, {"uid": uid, "error": "cannot get document summary"}
+            )
+        return httpx.Response(200, json={"header": recorded["header"], "result": result})
 
     def _datacite(self, request: httpx.Request) -> httpx.Response:
         wanted = set(request.url.params.get("ids", "").lower().split(","))

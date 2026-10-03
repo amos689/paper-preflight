@@ -11,7 +11,8 @@ No LLM guessing, no false accusations.**
 
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
 and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
-arXiv, DataCite and OpenAlex (and Semantic Scholar, if you have a key) about every cited work:
+arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key) about every cited
+work:
 
 - Does it exist?
 - Does it match what you wrote?
@@ -250,8 +251,9 @@ and more complete; their values are never printed or logged.
    `\includeonly` are respected, `.aux` files are used when they are fresh, and the first
    definition of a duplicated key wins, as in BibTeX.
 2. **Identifier-first routing.** DOIs go to their registration agency (doi.org tells which:
-   Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback. Entries without
-   identifiers are searched by title in dblp and Crossref.
+   Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback, and PMIDs to
+   PubMed (which also marks retracted articles). Entries without identifiers are searched by
+   title in dblp and Crossref.
 3. **Field-by-field matching with guards.** It compares titles (including earlier arXiv version
    titles), authors (tolerating transcriptions such as Reiß/Reis), year and venue. A search
    result is used only when enough of these agree and no other work fits as well; known fake

@@ -9,7 +9,7 @@
 **投稿前，把 LaTeX 论文的每一条参考文献拿到真实学术数据库里核对一遍。不靠大模型猜，不乱扣"伪造"的帽子。**
 
 大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
-读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite 和 OpenAlex（配置
+读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
 了 key 的话还有 Semantic Scholar）：
 
 - 它真的存在吗？
@@ -240,8 +240,8 @@ claude plugin install paper-preflight@paper-preflight
 1. **源码优先。** 按 LaTeX 的方式读取项目：会跳过注释和 `\iffalse` 块，遵守 `\includeonly`，`.aux`
    文件新鲜时直接采用；键重复时以第一个定义为准，和 BibTeX 一致。
 2. **标识符优先的路由。** DOI 交给它的注册机构（由 doi.org 告诉我们是 Crossref、DataCite 还是
-   其他）；arXiv 编号交给 arXiv，arXiv 限流时改走 DataCite；没有标识符的条目按标题在 dblp 和
-   Crossref 中检索。
+   其他）；arXiv 编号交给 arXiv，arXiv 限流时改走 DataCite；PMID 交给 PubMed（它也会标出已撤稿的
+   文章）；没有标识符的条目按标题在 dblp 和 Crossref 中检索。
 3. **逐字段比对，带防护。** 比对标题（包括 arXiv 早期版本的标题）、作者（容忍 Reiß/Reis 这类转写
    差异）、年份和发表场所。检索结果只有在足够多字段一致、且没有其他作品同样吻合时才会被采用；已
    知的假冒 DOI 副本会被跳过。

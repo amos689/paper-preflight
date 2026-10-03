@@ -33,6 +33,7 @@ from paper_preflight.sources import (
     dblp,
     doiorg,
     openalex,
+    pubmed,
     semanticscholar,
 )
 from paper_preflight.sources.base import (
@@ -68,6 +69,7 @@ class Evidence:
     # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
     optional_unavailable: dict[str, str] = field(default_factory=dict)
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
+    pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
 
     def mark_unavailable(self, error: SourceUnavailable) -> None:
         self.unavailable.setdefault(error.source, error.reason.value)
@@ -81,6 +83,7 @@ class Sources:
     arxiv: SourceClient
     dblp: SourceClient
     openalex: SourceClient
+    pubmed: SourceClient
     mailto: str | None = None
     openalex_key: str | None = None
     s2: SourceClient | None = None  # only with an API key (docs/spikes/S5)
@@ -112,6 +115,7 @@ class Sources:
             arxiv=client(arxiv.POLICY),
             dblp=client(dblp.POLICY),
             openalex=client(openalex.POLICY),
+            pubmed=client(pubmed.POLICY),
             mailto=env.get("PAPER_PREFLIGHT_EMAIL") or None,
             openalex_key=env.get("OPENALEX_API_KEY") or None,
             s2=client(semanticscholar.POLICY) if s2_key else None,
@@ -119,7 +123,8 @@ class Sources:
         )
 
     def all_clients(self) -> list[SourceClient]:
-        clients = [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex]
+        clients = [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex,
+                   self.pubmed]  # fmt: skip
         return clients + ([self.s2] if self.s2 is not None else [])
 
 
@@ -265,21 +270,49 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
                 elif arxiv_id not in unanswered:
                     item.arxiv_missing.append(arxiv_id)
 
-    # 3. Published versions of cited preprints via dblp (CoRR record -> venue record).
+    # 3. PMIDs: PubMed is their registry, so its record anchors the entry and a PMID it does
+    # not know does not exist.
+    await _pubmed(evidence, sources)
+
+    # 4. Published versions of cited preprints via dblp (CoRR record -> venue record).
     await _published_versions(evidence, by_arxiv, ax_records or {}, sources)
 
-    # 4. Title search for entries without any anchored record.
+    # 5. Title search for entries without any anchored record.
     # A wrong or dead identifier does not mean the work does not exist, so entries whose
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
     await asyncio.gather(*(_title_search(item, sources) for item in unanchored))
 
-    # 5. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
+    # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
     if sources.s2 is not None and sources.s2_key:
         s2, key = sources.s2, sources.s2_key
         lost = [i for i in unanchored if not i.candidates and word_count(i.info.title) >= 3]
         await asyncio.gather(*(_search_s2(item, s2, key) for item in lost))
     return evidence
+
+
+async def _pubmed(evidence: dict[str, Evidence], sources: Sources) -> None:
+    by_pmid: dict[str, list[Evidence]] = {}
+    for item in evidence.values():
+        for ident in item.identifiers:
+            if ident.scheme == "pmid":
+                by_pmid.setdefault(ident.value, []).append(item)
+    if not by_pmid:
+        return
+    records = await _guard(
+        [e for items in by_pmid.values() for e in items],
+        lambda: pubmed.by_pmids(sources.pubmed, list(by_pmid), email=sources.mailto),
+        owners_of=lambda pmid: by_pmid.get(pmid, []),
+    )
+    if records is None:
+        return
+    for pmid, items in by_pmid.items():
+        record = records.get(pmid)
+        for item in items:
+            if record is not None:
+                item.anchored.append(record)
+            elif "pubmed" not in item.unavailable:  # unanswered is not "no such PMID"
+                item.pmid_missing.append(pmid)
 
 
 async def _with_version_titles(

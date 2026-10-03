@@ -22,7 +22,7 @@ from enum import StrEnum
 from paper_preflight.bib.ids import Identifier
 from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry
-from paper_preflight.bibtex import escape, format_authors, protect_title
+from paper_preflight.bibtex import SOURCE_NAMES, escape, format_authors, protect_title
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
     VENUE_FIELDS,
@@ -91,11 +91,9 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
     ),
 }  # fmt: skip
 
-SOURCE_NAMES = {
-    "crossref": "Crossref", "datacite": "DataCite", "doiorg": "doi.org", "arxiv": "arXiv",
-    "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar",
+SOURCE_PRIORITY = {
+    "crossref": 0, "pubmed": 1, "datacite": 1, "doiorg": 2, "dblp": 3, "openalex": 4, "arxiv": 5,
 }  # fmt: skip
-SOURCE_PRIORITY = {"crossref": 0, "datacite": 1, "doiorg": 2, "dblp": 3, "openalex": 4, "arxiv": 5}
 # Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
 # entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
 AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2"})
@@ -167,6 +165,8 @@ def _anchor(record: SourceRecord, identifiers: Iterable[Identifier]) -> Identifi
         if ident.scheme == "doi" and doi and ident.value == doi:
             return ident
         if ident.scheme == "arxiv" and arxiv_id and ident.value == arxiv_id:
+            return ident
+        if ident.scheme == "pmid" and ident.value == record.identifiers.get("pmid"):
             return ident
         if ident.scheme == "doi" and arxiv_id and ident.value == f"10.48550/arxiv.{arxiv_id}":
             return ident
@@ -520,6 +520,8 @@ def _dead_identifiers(entry: BibEntry, evidence: Evidence) -> tuple[list[Finding
             authority = "doi.org"
         elif ident.scheme == "arxiv" and ident.value in evidence.arxiv_missing:
             authority = "arXiv"
+        elif ident.scheme == "pmid" and ident.value in evidence.pmid_missing:
+            authority = "PubMed"
         else:
             continue
         dead.add(ident.value)
@@ -695,7 +697,9 @@ def _abstention_reasons(
     if non_latin(info.title):
         reasons.append(Reason.NON_LATIN_UNSUPPORTED)
     live_ids = [
-        i for i in evidence.identifiers if i.scheme in {"doi", "arxiv"} and i.value not in dead
+        i
+        for i in evidence.identifiers
+        if i.scheme in {"doi", "arxiv", "pmid"} and i.value not in dead
     ]
     if info.entry_type in GREY_TYPES and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)
