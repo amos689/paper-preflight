@@ -24,6 +24,7 @@ SELECT = ",".join(
         "DOI", "title", "subtitle", "type", "author", "issued", "published-print",
         "published-online", "container-title", "event", "updated-by", "relation", "volume",
         "issue", "page", "publisher", "member", "prefix", "URL", "created",
+        "short-container-title", "ISSN",
     ]
 )  # fmt: skip
 
@@ -91,11 +92,15 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     if embedded and years and 0 < min(years) - int(embedded.group(1)) <= 3:
         years.add(int(embedded.group(1)))
     venue = None
-    containers = item.get("container-title") or []
+    containers = [collapse(str(c)) for c in item.get("container-title") or [] if c]
     if containers:
-        venue = collapse(str(containers[0]))
+        venue = containers[0]
     elif (item.get("event") or {}).get("name"):
         venue = collapse(str(item["event"]["name"]))
+    # a chapter's book series and its book ("Lecture Notes in Computer Science", "Research and
+    # Advanced Technology for Digital Libraries"), a journal's ISO 4 abbreviation
+    shorts = [collapse(str(c)) for c in item.get("short-container-title") or [] if c]
+    aliases = tuple(dict.fromkeys(a for a in containers[1:] + shorts if a != venue))
 
     status: set[str] = set()
     status_sources: list[str] = []
@@ -140,6 +145,8 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         pages=str(item["page"]) if item.get("page") else None,
         publisher=item.get("publisher"),
         url=item.get("URL"),
+        venue_aliases=aliases,
+        issns=frozenset(str(i).upper() for i in item.get("ISSN") or []),
     )
 
 

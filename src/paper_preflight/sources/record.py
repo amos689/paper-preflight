@@ -128,6 +128,8 @@ class SourceRecord:
     pages: str | None = None
     publisher: str | None = None
     url: str | None = None
+    venue_aliases: tuple[str, ...] = ()  # other names of the venue: abbreviations, book series
+    issns: frozenset[str] = frozenset()
 
     @property
     def all_years(self) -> frozenset[int]:
