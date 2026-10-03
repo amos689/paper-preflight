@@ -29,7 +29,7 @@
 
 ```text
 $ paper-preflight check examples/demo-paper --lang zh
-paper-preflight 0.0.1.dev0 · main.tex · 12 条参考文献，12 个被引用的键
+paper-preflight 0.1.1 · main.tex · 12 条参考文献，12 个被引用的键
 
 错误    CIT001 main.tex:31
     引用键 'nonexistent2023' 未在任何参考文献文件中定义（共被引用 1 次）。
@@ -46,7 +46,7 @@ paper-preflight 0.0.1.dev0 · main.tex · 12 条参考文献，12 个被引用�
 警告    CIT004 refs.bib:37
     条目 'devlin2019bert' 与 'he2016deep' 疑似同一篇文献（DOI相同）。
 警告    REF013 refs.bib:51
-    条目 'kingma2015adam' 的年份是 2016，但 dblp 记录为 2015。
+    条目 'kingma2015adam' 的年份是 2016，但 dblp 记录为 2014, 2015。
 警告    REF017 refs.bib:111
     条目 'tacl2019example' 的 doi 包含 LaTeX 转义符：'10.1162/tacl\_a\_00276'。应写为：10.1162/tacl_a_00276
 提示    REF005 refs.bib:73

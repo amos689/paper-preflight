@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-03
+
+Fewer false alarms on real bibliographies. On the references of 20 arXiv papers used to find
+them, false positives fell from 4.5 to 0.1 per 100 references with every real problem still
+found; on 20 papers collected afterwards, 2.3 per 100. Next to five published tools on Badalova
+& Mayr's hand-checked references, precision is 69.2% [53.6%, 81.4%] (the best of the five:
+50.9%). HALLMARK results are unchanged.
+
 ### Fixed
 
 - Early-access journal articles: when Crossref has no online date, the year the DOI was
@@ -28,6 +36,35 @@ All notable changes to this project are documented here. The format follows
 - A name written family name first without a comma ("Zhang C.", which BibTeX reads as given
   name Zhang) or filed that way by a registry ("Shwetha S") is matched as meant, instead of
   being reported as other authors (REF010/REF011).
+- An apostrophe's form does not make another person: Crossref's curly "O’Connell" is the
+  entry's "O'Connell" (REF010/REF011).
+- Registry names are read as written: a family name repeated in its original script
+  ("Lin 林, Lihwai 俐 暉" on Crossref) or carrying a suffix ("Davidson Jr.") is the
+  same person, and co-authors sharing a surname are paired by given name as a whole, so one
+  Lin no longer takes the Lin another needs (REF011).
+- Titles lose the markup registries and ADS exports carry: tags escaped as entities, ADS's
+  `<ASTROBJ>`, a whole LaTeX document around a formula, `\raisebox`, and the TeX that arXiv
+  keeps in titles; the solar symbol ⊙ reads as "sun" (REF012).
+- A record with the same title and authors but another venue and year is the same authors'
+  other publication ("The Solar Chemical Composition": ASP Conf. Ser. 2005 and Nuclear Physics
+  A 2006), not the cited one with a wrong year (REF013).
+- An entry linking to a site no source indexes (a society's own proceedings site) is no longer
+  called not found when no source knows it: it is `cannot_determine` with the new reason
+  `UNINDEXED_LINK` (REF003).
+- The year in a dblp key counts when it is next to the recorded one: a workshop filed under the
+  year its proceedings appeared (BIR 2024 in dblp as 2025, key `conf/birws/AtanassovaB24`)
+  may be cited with the workshop's year (REF013).
+- A team is one author named by its project: arXiv's "Gemma Team" is the entry's `{Gemma}`,
+  `Gemma Team` or `Team, Gemma`, DataCite's "Euclid Collaboration" its `Collaboration, Euclid`
+  (REF010/REF011).
+
+### Added
+
+- Two evaluations on real data: the bibliographies of 40 arXiv papers from July 2026 in two
+  batches, every flag reviewed by hand (`evals/real_papers.py`), and a head-to-head with five
+  published tools on Badalova & Mayr's references (`evals/run_badalova_mayr.py`). The README's
+  accuracy section leads with them.
+- A demo GIF of a real run in the README, made by `docs/demo/make_gif.py`.
 
 ## [0.1.0] - 2026-10-03
 
@@ -110,5 +147,6 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/amos689/paper-preflight/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/amos689/paper-preflight/releases/tag/v0.1.0

@@ -33,7 +33,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.0.1.dev0 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.1.1 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -50,7 +50,7 @@ warning REF015 refs.bib:31
 warning CIT004 refs.bib:37
     Entries 'devlin2019bert' and 'he2016deep' look like the same work (same DOI).
 warning REF013 refs.bib:51
-    'kingma2015adam' gives the year 2016, but dblp records 2015.
+    'kingma2015adam' gives the year 2016, but dblp records 2014, 2015.
 warning REF017 refs.bib:111
     The doi of 'tacl2019example' contains LaTeX escapes: '10.1162/tacl\_a\_00276'. Write it as: 10.1162/tacl_a_00276
 info    REF005 refs.bib:73
