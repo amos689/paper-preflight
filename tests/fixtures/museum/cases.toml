@@ -907,3 +907,24 @@ source = "real_papers:2609.13158v1"
 key = "exams"
 expect = ["REF012"]
 note = "real problem: 'Fmahmultilingual' for 'Multilingual'"
+
+[[case]]
+name = "fp-pagano2019cryogenic-volume-year"
+source = "real_papers:2607.13342v1"
+key = "pagano2019cryogenic"
+expect = []
+note = "guard: Quantum Sci. Technol. 4(1), online October 2018 with no print date, cited with its volume's year 2019 (REF013)"
+
+[[case]]
+name = "fp-een03-meeting-year"
+source = "real_papers:2607.13344v1"
+key = "een03"
+expect = []
+note = "guard: 'Proceedings of SAT-2003', year 2003; the LNCS volume appeared in 2004 (REF013)"
+
+[[case]]
+name = "real-konda-tsitsiklis-2004-year"
+source = "real_papers:2607.13414v1"
+key = "konda_tsitsiklis_2004"
+expect = ["REF013"]
+note = "real problem: SIAM J. Control Optim. 42(4) is the 2003 volume, cited as 2004"

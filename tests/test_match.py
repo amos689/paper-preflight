@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -227,6 +228,20 @@ def test_year_has_no_blanket_tolerance(demo: dict[str, EntryInfo]) -> None:
         source="arxiv", source_id="x", title="t", year=2015, work_type="preprint"
     )
     assert check_year(2016, preprint).status == "variant"
+
+
+def test_a_meetings_year_named_by_its_venue() -> None:
+    # Een & Sorensson, SAT 2003: the LNCS volume appeared in 2004 (Crossref, a book chapter)
+    record = SourceRecord(
+        source="crossref", source_id="10.1007/978-3-540-24605-3_37", title="An Extensible",
+        year=2004, years=frozenset({2004}), work_type="book-chapter",
+    )  # fmt: skip
+    assert check_year(2003, record, venue="Proceedings of SAT-2003").status == "match"
+    assert check_year(2003, record, venue="Proc. SAT'03").status == "match"
+    assert check_year(2003, record, venue="Proceedings of SAT").status == "mismatch"
+    assert check_year(2002, record, venue="Proceedings of SAT-2002").status == "mismatch"
+    article = replace(record, work_type="journal-article")
+    assert check_year(2003, article, venue="Journal of SAT 2003").status == "mismatch"
 
 
 @pytest.mark.parametrize(

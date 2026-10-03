@@ -584,13 +584,36 @@ def is_preprint(record: SourceRecord) -> bool:
     )
 
 
+# Records of proceedings, whose volume may appear the year after the meeting
+_PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inproceedings"})
+
+
+def _names_year(venue: str | None, year: int) -> bool:
+    """The venue names the year: "Proceedings of SAT-2003", "ICML 2019", "NeurIPS'19"."""
+    if not venue:
+        return False
+    short = f"{year % 100:02d}"
+    return bool(re.search(rf"(?<!\d){year}(?!\d)|['’]{short}\b", venue))
+
+
 def check_year(
-    year: int | None, record: SourceRecord, *, preprint_pair: bool = False
+    year: int | None,
+    record: SourceRecord,
+    *,
+    preprint_pair: bool = False,
+    venue: str | None = None,
 ) -> FieldCheck:
     years = record.all_years
     if year is None or not years:
         return FieldCheck("unknown")
     if year in years:  # any registered year counts (online-first, print, preprint versions)
+        return FieldCheck("match")
+    if (
+        year + 1 in years
+        and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
+        and _names_year(venue, year)
+    ):
+        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
         return FieldCheck("match")
     # No general ±1 tolerance: refchecker dropped it because it silently hid real year errors.
     # Only preprint/published pairs legitimately differ by a year or two.
@@ -820,7 +843,7 @@ def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = Fal
         authors = check_authors(info.authors, replace(record, authors_ordered=False))
     else:
         authors = check_authors(info.authors, record)
-    year = check_year(info.year, record, preprint_pair=preprint_pair)
+    year = check_year(info.year, record, preprint_pair=preprint_pair, venue=info.venue)
     venue = check_venue(
         info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS,
         journal=info.venue_field in {"journal", "journaltitle"}, issns=info.issns,
