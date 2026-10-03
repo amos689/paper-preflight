@@ -9,6 +9,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
 from typing import Any
 
@@ -27,6 +28,7 @@ SELECT = ",".join(
 )  # fmt: skip
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
+_WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
 
 UPDATE_STATUS = {
     "retraction": "retracted",
@@ -82,6 +84,12 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     printed = ((item.get("published-print") or {}).get("date-parts") or [[None]])[0]
     if len(printed) >= 2 and printed[0] and printed[1] == 12:
         years.add(int(printed[0]) + 1)
+    # Wiley and Blackwell DOIs carry the year the article was published ("10.1046/j.1365-8711.
+    # 2000.03658.x", MNRAS 319(3), December 2000); a backfile deposit may give only the year it
+    # went online (2002). The DOI's year counts when it is a few years before the registered ones.
+    embedded = _WILEY_YEAR.match(doi)
+    if embedded and years and 0 < min(years) - int(embedded.group(1)) <= 3:
+        years.add(int(embedded.group(1)))
     venue = None
     containers = item.get("container-title") or []
     if containers:

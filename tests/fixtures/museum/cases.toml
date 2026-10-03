@@ -683,3 +683,10 @@ source = "real_papers:2607.06922v1"
 key = "DLSurvey"
 expect = []
 note = "was REF013: ACM Comput. Surv. 51(5) is in dblp as 2019 (its issue) and online in 2018, the year ACM's own export gives"
+
+[[case]]
+name = "fp-corbett-00"
+source = "real_papers:2607.06902v1"
+key = "Corbett+00"
+expect = []
+note = "was REF013: MNRAS 319(3), December 2000 (the DOI says 2000); Crossref's backfile deposit gives 2002"

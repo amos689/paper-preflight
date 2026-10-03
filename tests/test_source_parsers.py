@@ -308,3 +308,20 @@ CROSSREF_WORKS_SELECTS = set(
 
 def test_crossref_selects_only_fields_the_route_accepts() -> None:
     assert set(crossref.SELECT.split(",")) <= CROSSREF_WORKS_SELECTS
+
+
+@pytest.mark.parametrize(
+    ("doi", "issued", "years"),
+    [
+        # MNRAS 319(3), December 2000; Crossref's backfile deposit says 2002
+        ("10.1046/j.1365-8711.2000.03658.x", 2002, {2000, 2002}),
+        ("10.1111/j.1467-9868.2005.00503.x", 2005, {2005}),  # the same year adds nothing
+        ("10.1111/j.1467-9868.1995.tb02031.x", 1995, {1995}),  # no year in this form
+        ("10.1046/j.1365-8711.1995.03658.x", 2002, {2002}),  # too far: not this record's year
+        ("10.1016/j.acha.2006.03.004", 2007, {2007}),  # Elsevier's pattern is not Wiley's
+    ],
+)
+def test_crossref_wiley_doi_year(doi: str, issued: int, years: set[int]) -> None:
+    item = {"DOI": doi, "type": "journal-article", "title": ["t"],
+            "issued": {"date-parts": [[issued, 4, 4]]}}  # fmt: skip
+    assert crossref.parse_work(item).years == years
