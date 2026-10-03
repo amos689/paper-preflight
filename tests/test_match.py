@@ -17,6 +17,7 @@ from paper_preflight.match import (
     check_year,
     evaluate,
     given_names_differ,
+    surname_key,
     suspicious_reason,
     title_score,
 )
@@ -471,6 +472,24 @@ def test_family_name_then_initials_without_a_comma() -> None:
     )  # fmt: skip
     swapped = check_authors(parse_authors("Mondal, Ishani and Shwetha, S"), crossref)
     assert (swapped.status, swapped.missing) == ("match", ())
+
+
+def test_a_team_is_one_author_named_by_its_project() -> None:
+    # arXiv 2503.19786 lists "Gemma Team" first; papers cite it as "Gemma" or "Gemma Team"
+    record = SourceRecord(
+        source="arxiv", source_id="2503.19786", title="Gemma 3 Technical Report",
+        authors=(Person.from_display("Gemma Team"), Person("Kamath", "Aishwarya")),
+    )  # fmt: skip
+    assert record.authors[0].literal == "Gemma Team"
+    for written in ("{Gemma} and Kamath, A.", "{Gemma Team} and Kamath, A."):
+        check = check_authors(parse_authors(written), record)
+        assert (check.status, check.missing, check.first_author_match) == ("match", (), True)
+    ligo = Person("The LIGO Scientific Collaboration", literal="The LIGO Scientific Collaboration")
+    assert surname_key(ligo) == surname_key(Person("LIGO Scientific", literal="LIGO Scientific"))
+    # a person is still a person, and another team another author
+    assert Person.from_display("Ann Teamson") == Person("Teamson", "Ann")
+    other = check_authors(parse_authors("{Llama Team} and Kamath, A."), record)
+    assert not other.first_author_match
 
 
 def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:

@@ -24,7 +24,7 @@ from rapidfuzz.distance import Levenshtein
 from paper_preflight.bib.names import AuthorList, parse_authors
 from paper_preflight.bib.normalize import fold, title_key, word_count
 from paper_preflight.bib.parse import BibEntry
-from paper_preflight.sources.record import Person, SourceRecord
+from paper_preflight.sources.record import COLLECTIVE_WORDS, Person, SourceRecord
 
 Status = Literal["match", "variant", "mismatch", "unknown"]
 
@@ -207,7 +207,12 @@ def surname_key(person: Person) -> str:
     Apostrophes are dropped, so O'Connell and O’Connell (as Crossref writes it) are one key.
     """
     if person.literal:
-        return " ".join(re.findall(r"\w+", fold(_APOSTROPHES.sub("", person.literal))))
+        words = re.findall(r"\w+", fold(_APOSTROPHES.sub("", person.literal)))
+        # "Gemma Team" (arXiv) is the entry's "{Gemma}", "The LIGO Collaboration" its "LIGO"
+        core = words[1:] if len(words) > 1 and words[0] == "the" else words
+        while len(core) > 1 and core[-1] in COLLECTIVE_WORDS:
+            core.pop()
+        return " ".join(core)
     words = re.findall(r"[\w-]+", fold(_APOSTROPHES.sub("", person.family)))
     return words[-1].strip("-") if words else ""
 
