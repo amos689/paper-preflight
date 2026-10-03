@@ -528,6 +528,41 @@ def test_title_only_binding_stays_narrow(change: tuple[str, str], why: str) -> N
     assert "REF010" not in rules(result), why
 
 
+OTHERS = (Person("Wu", "Dan"), Person("Ito", "Ken"))
+
+
+def test_similar_titles_by_other_people_do_not_make_an_entry_ambiguous() -> None:
+    # HALLMARK hybrid and plausible fabrications: an invented entry that resembles real papers
+    entry = bib(NO_DOI)
+    other_work = record(
+        "Robust Sparse Attention for Long Video Summarization", authors=OTHERS, source="dblp"
+    )
+    result = assess(entry, search_result(entry, other_work), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.NOT_FOUND, {"REF003"})
+    (finding,) = result.findings
+    assert "dblp" in finding.message.en
+
+
+@pytest.mark.parametrize(
+    "candidate",
+    [
+        # the same title by other people: perhaps the cited work with wrong authors
+        record(authors=OTHERS, source="dblp", year=2016),
+        # another title by the same people: perhaps the cited work with a wrong title
+        record("Robust Sparse Attention for Long Video Summarization", source="dblp", year=2016),
+        # Semantic Scholar's author lists are not trusted to tell people apart
+        record("Robust Sparse Attention for Long Video Summarization", authors=OTHERS, source="s2"),
+    ],
+)
+def test_results_that_may_be_the_cited_work_stay_ambiguous(candidate: SourceRecord) -> None:
+    entry = bib(NO_DOI)
+    item = evidence_for(entry, candidates=[candidate], searched={"dblp", "crossref"},
+                        negative={"crossref"})  # fmt: skip
+    result = assess(entry, item, current_year=YEAR)
+    assert result.verdict is Verdict.CANNOT_DETERMINE
+    assert result.reasons == (Reason.AMBIGUOUS_CANDIDATES,)
+
+
 def test_semantic_scholar_authors_never_raise_a_finding() -> None:
     # S2 author lists mix initials, orders and duplicates: they confirm a work, never accuse
     entry = bib(NO_DOI)

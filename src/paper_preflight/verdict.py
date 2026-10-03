@@ -597,7 +597,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         reasons = _abstention_reasons(evidence, dead, corrupted, current_year)
         if not reasons:
             verdict = Verdict.NOT_FOUND
-            sources = [source_name(s) for s in sorted(evidence.negative)]
+            sources = [source_name(s) for s in sorted(_answered_no(evidence))]
             findings.append(
                 make_finding(
                     "REF003", _location(entry, "title"), key=entry.key,
@@ -629,6 +629,35 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     )
 
 
+def _other_works(evidence: Evidence) -> list[SourceRecord]:
+    """Search results that cannot be the cited work: no author in common and another title.
+
+    Similar titles by other people ("Multiview Diffusion Models for High-Resolution Image
+    Synthesis" for an invented "Diffusion Models for ...") do not make an entry ambiguous. The
+    same title by other people does (wrong authors?), and so does any Semantic Scholar result,
+    whose author lists are not trusted (AUTHORS_NOT_CHECKED_AGAINST).
+    """
+    info = evidence.info
+    if not any(not person.literal for person in info.authors.people):
+        return []
+    others = []
+    for record in evidence.candidates:
+        if record.source in AUTHORS_NOT_CHECKED_AGAINST:
+            continue
+        m = evaluate(info, record)
+        if m.authors.disjoint and m.title.status != "match":
+            others.append(record)
+    return others
+
+
+def _answered_no(evidence: Evidence) -> set[str]:
+    """Sources that answered "no such work": nothing similar, or only other works."""
+    others = _other_works(evidence)
+    if len(others) < len(evidence.candidates):
+        return set(evidence.negative)
+    return evidence.negative | {record.source for record in others}
+
+
 def _abstention_reasons(
     evidence: Evidence, dead: set[str], corrupted: bool, current_year: int
 ) -> list[Reason]:
@@ -657,12 +686,12 @@ def _abstention_reasons(
         reasons.append(Reason.TOO_NEW)
     if any(i.scheme == "doi" and i.value in evidence.doi_agency for i in live_ids):
         reasons.append(Reason.IDENTIFIER_EXISTS_NO_METADATA)
-    if evidence.candidates:
+    if len(_other_works(evidence)) < len(evidence.candidates):
         reasons.append(Reason.AMBIGUOUS_CANDIDATES)
     if reasons:
         return reasons
     required = {"crossref"} | ({"dblp"} if looks_cs(info) else set())
-    answered_no = bool(evidence.searched) and evidence.searched | required <= evidence.negative
+    answered_no = bool(evidence.searched) and evidence.searched | required <= _answered_no(evidence)
     if word_count(info.title) < MIN_NOT_FOUND_WORDS or not answered_no:
         return [Reason.INSUFFICIENT_METADATA]
     return []
