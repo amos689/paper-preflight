@@ -325,3 +325,17 @@ def test_crossref_wiley_doi_year(doi: str, issued: int, years: set[int]) -> None
     item = {"DOI": doi, "type": "journal-article", "title": ["t"],
             "issued": {"date-parts": [[issued, 4, 4]]}}  # fmt: skip
     assert crossref.parse_work(item).years == years
+
+
+def test_datacite_github_release_title_is_the_repository() -> None:
+    (record,) = datacite.parse_dois(
+        {"data": {"id": "10.5281/zenodo.593816", "attributes": {
+            "doi": "10.5281/zenodo.593816", "titles": [{"title": "pyRiemann/pyRiemann: v0.10"}],
+            "publicationYear": 2026, "publisher": "Zenodo"}}}
+    )  # fmt: skip
+    assert record.title == "pyRiemann"
+    assert record.alt_titles == ("pyRiemann/pyRiemann: v0.10",)
+    (other,) = datacite.parse_dois(
+        {"data": {"id": "x", "attributes": {"titles": [{"title": "Data for: A Study: v2"}]}}}
+    )
+    assert other.title == "Data for: A Study: v2"

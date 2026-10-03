@@ -99,14 +99,23 @@ def title_score(a: str, b: str) -> float:
 
 
 def _subtitle_variant(a: str, b: str) -> bool:
-    """One title is the other without its subtitle (``Title: Subtitle``)."""
+    """One title is the other without its subtitle (``Title: Subtitle``).
+
+    ``a`` is the entry's title, ``b`` the record's. A record title shorter than usual counts when
+    it is all of the entry's part before the colon: Crossref has "Optical Nanofibers" for the
+    chapter "Optical Nanofibers: A New Platform for Quantum Optics". A short entry title does not
+    ("Natural Questions" may be another work).
+    """
     ka, kb = title_key(a), title_key(b)
     short, long_ = sorted((ka, kb), key=len)
-    return (
-        len(short) >= MIN_PREFIX_CHARS
-        and long_.startswith(short)
-        and (":" in a or ":" in b or " - " in a or " - " in b)
-    )
+    if not (":" in a or ":" in b or " - " in a or " - " in b):
+        return False
+    if len(short) >= MIN_PREFIX_CHARS and long_.startswith(short):
+        return True
+    if len(kb) >= len(ka):
+        return False
+    head = re.split(r":| - ", a, maxsplit=1)[0]
+    return len(kb.split()) >= 2 and title_key(head) == kb
 
 
 # British spellings and their American forms ("optimisation", "modelling", "behaviour").
@@ -137,6 +146,13 @@ _SYMBOL_WORDS = {"\u2299": "sun", "\u2609": "sun", "\u2295": "earth", "\u2641": 
 _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 
 
+# A registry's section label after the title ("... Future Directions [Review Article]", IEEE)
+_SECTION_LABEL = re.compile(r"\s*\[[^\[\]]{3,40}\]\s*$")
+# A letter a registry lost: U+FFFD in "Berechnung der nat\ufffdrlichen Linienbreite" (Crossref)
+_LOST = "\ufffd"
+_LOST_MARK = "zzlostzz"
+
+
 def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
     """Where two titles differ word for word: (entry's words, record's words) per place.
 
@@ -145,7 +161,7 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
     """
     record_title = _SYMBOL_WORDS_RE.sub(
         lambda m: f" {_SYMBOL_WORDS[m.group(0)]} ", _EDITORIAL_PREFIX.sub("", record_title)
-    )
+    ).replace(_LOST, _LOST_MARK)
     entry_title = _SYMBOL_WORDS_RE.sub(lambda m: f" {_SYMBOL_WORDS[m.group(0)]} ", entry_title)
     ours = title_key(entry_title.replace("&", " and ")).split()
     theirs = title_key(record_title.replace("&", " and ")).split()
@@ -164,6 +180,10 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
             continue
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
+        if _LOST_MARK in recorded and re.fullmatch(
+            ".{1,2}".join(map(re.escape, recorded.split(_LOST_MARK))), mine
+        ):
+            continue  # the letter the registry lost is the entry's
         changes.append((mine, recorded))
     return tuple(changes)
 
@@ -177,7 +197,9 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
-    for candidate, note in [(record.title, "")] + [(t, EARLIER_VERSION) for t in record.alt_titles]:
+    labelled = _SECTION_LABEL.sub("", record.title)
+    titles = [(record.title, "")] + ([(labelled, "")] if labelled != record.title else [])
+    for candidate, note in titles + [(t, EARLIER_VERSION) for t in record.alt_titles]:
         score = title_score(entry_title, candidate)
         if score > best:
             best, best_note = score, note
