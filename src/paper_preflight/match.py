@@ -74,11 +74,16 @@ class EntryInfo:
         match = re.search(r"\d{4}", year_text or "")
         venue_field = next((f for f in VENUE_FIELDS if entry.text(f)), None)
         venue = entry.text(venue_field) if venue_field else None
+        title = entry.text("title") or ""
+        chapter = entry.text("chapter") or ""
+        if entry.entry_type == "inbook" and len(re.findall(r"[^\W\d_]{2,}", chapter)) >= 3:
+            # Springer's export: the paper in "chapter", the volume it is in as the title
+            title, venue, venue_field = chapter, title, "booktitle"
         links = " ".join(entry.text(f) or "" for f in ("url", "howpublished", "note"))
         hosts = (urlsplit(url).hostname or "" for url in _LINK_RE.findall(links))
         return cls(
             key=entry.key,
-            title=entry.text("title") or "",
+            title=title,
             authors=parse_authors(author_field.value if author_field else None),
             year=int(match.group(0)) if match else None,
             venue=venue,
@@ -149,8 +154,10 @@ _SYMBOL_WORDS = {"\u2299": "sun", "\u2609": "sun", "\u2295": "earth", "\u2641": 
 _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 
 
-# A registry's section label after the title ("... Future Directions [Review Article]", IEEE)
-_SECTION_LABEL = re.compile(r"\s*\[[^\[\]]{3,40}\]\s*$")
+# A registry's section label after the title ("... Future Directions [Review Article]", IEEE),
+# or the plates section ADS lists apart, in Semantic Scholar's title (". Plates.")
+_SECTION_LABEL = re.compile(r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$", re.I)
+_ARTICLES = frozenset({"a", "an", "the"})
 # A letter a registry lost: U+FFFD in "Berechnung der nat\ufffdrlichen Linienbreite" (Crossref)
 _LOST = "\ufffd"
 _LOST_MARK = "zzlostzz"
@@ -183,6 +190,8 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
             continue
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
+        if i1 == j1 == 0 and not (mine and recorded) and (mine or recorded) in _ARTICLES:
+            continue  # an article one side starts with: Semantic Scholar's "Improved Method ..."
         if _LOST_MARK in recorded and re.fullmatch(
             ".{1,2}".join(map(re.escape, recorded.split(_LOST_MARK))), mine
         ):
