@@ -695,3 +695,31 @@ def test_no_doi_offer_when_there_is_nothing_to_add() -> None:
     arxiv_doi = replace(record(), identifiers={"doi": "10.48550/arxiv.2101.00001"})
     entry = bib(NO_DOI)
     assert "REF016" not in rules(assess(entry, search_result(entry, arxiv_doi), current_year=YEAR))
+
+
+@pytest.mark.parametrize(
+    ("venue", "year", "reported"),
+    [
+        ("CoRR", 2022, False),  # dblp only has the preprint yet: the entry's later year is right
+        ("CoRR", 2020, True),  # three years before the entry is not the same publication
+        ("ACL", 2022, True),  # the published record itself says another year
+    ],
+)
+def test_a_preprint_record_does_not_correct_the_published_year(
+    venue: str, year: int, reported: bool
+) -> None:
+    entry = bib(NO_DOI)  # ACL 2023
+    found = record(source="dblp", year=year, venue=venue)
+    result = assess(entry, search_result(entry, found), current_year=YEAR)
+    assert result.record is not None
+    assert ("REF013" in rules(result)) is reported
+
+
+def test_a_known_published_version_keeps_the_year_check() -> None:
+    # HALLMARK: "IJCAI 2023" for a NeurIPS 2021 paper whose arXiv copy is from 2022. With the
+    # published record known, the later year is no "not indexed yet".
+    entry = bib(NO_DOI)  # ACL 2023
+    preprint = record(source="dblp", year=2022, venue="CoRR")
+    published = replace(record(source="dblp", year=2021, venue="NeurIPS"), source_id="conf/x")
+    result = assess(entry, search_result(entry, preprint, published), current_year=YEAR)
+    assert "REF013" in rules(result)

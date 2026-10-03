@@ -24,10 +24,10 @@ from paper_preflight.bib.ids import normalize_doi
 from paper_preflight.bib.parse import parse_bib_text
 from paper_preflight.bibtex import render
 from paper_preflight.cache import Cache
-from paper_preflight.match import title_score
+from paper_preflight.match import is_preprint, title_score
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.sources.record import SourceRecord
-from paper_preflight.verdict import SOURCE_PRIORITY, assess, is_preprint
+from paper_preflight.verdict import SOURCE_PRIORITY, assess
 
 _ARXIV_RE = re.compile(
     r"^(?:arxiv:|https?://arxiv\.org/(?:abs|pdf)/)?"

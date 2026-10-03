@@ -32,6 +32,7 @@ from paper_preflight.match import (
     best_candidate,
     canonical_venue,
     evaluate,
+    is_preprint,
     wrong_paper,
 )
 from paper_preflight.resolve import GREY_TYPES, Evidence, looks_cs
@@ -142,14 +143,6 @@ def _authors_text(record: SourceRecord) -> str:
     if len(people) == 2:
         return f"{first} and {people[1].family or people[1].display}"
     return f"{first} et al."
-
-
-def is_preprint(record: SourceRecord) -> bool:
-    return (
-        record.source == "arxiv"
-        or record.work_type in {"preprint", "posted-content"}
-        or canonical_venue(record.venue) == "arxiv"
-    )
 
 
 def non_latin(text: str) -> bool:
@@ -304,6 +297,17 @@ def _bind_candidate(
     return min(same_title, key=_rank)
 
 
+def _published_later(year: int | None, record: SourceRecord) -> bool:
+    """The entry's year is a year or two after a preprint's: the published version's year.
+
+    dblp lists an ICLR 2026 paper as a 2025 CoRR preprint until it adds the conference, and the
+    entry citing ICLR 2026 is right. Only a preprint record, only a later year, and only while no
+    published record of the work is known (the caller checks that).
+    """
+    years = record.all_years
+    return is_preprint(record) and year is not None and bool(years) and 0 < year - max(years) <= 2
+
+
 def _describe_changes(changes: tuple[tuple[str, str], ...], lang: str) -> str:
     parts = []
     for mine, recorded in changes:
@@ -340,7 +344,14 @@ def _year_gap(year: int | None, record: SourceRecord) -> int:
 # ---------------------------------------------------------------- findings
 
 
-def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]:
+def _field_findings(
+    entry: BibEntry, info: EntryInfo, m: Match, *, published_known: bool = True
+) -> list[Finding]:
+    """Findings on the fields of a bound entry.
+
+    ``published_known``: a published (non-preprint) record of the bound work is known; without
+    one, a preprint record cannot correct the year of a published version.
+    """
     key, record = entry.key, m.record
     source = source_name(record.source)
     out: list[Finding] = []
@@ -419,7 +430,7 @@ def _field_findings(entry: BibEntry, info: EntryInfo, m: Match) -> list[Finding]
                 detail_zh=f"条目只列出了 {total} 位作者中的 {listed} 位，且没有写 'and others'",
             )
         )  # fmt: skip
-    if m.year.status == "mismatch":
+    if m.year.status == "mismatch" and (published_known or not _published_later(info.year, record)):
         years = ", ".join(str(y) for y in sorted(record.all_years))
         out.append(
             make_finding(
@@ -634,7 +645,12 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     flags: set[str] = set()
     reasons: list[Reason] = []
     if bound is not None:
-        findings.extend(_field_findings(entry, info, bound))
+        same_work = title_key(bound.record.title)
+        published_known = any(
+            not is_preprint(r) and title_key(r.title) == same_work
+            for r in (*evidence.anchored, *evidence.candidates, *evidence.published_versions)
+        )
+        findings.extend(_field_findings(entry, info, bound, published_known=published_known))
         same_records = [m.record for m in same] or [bound.record]
         status_findings, flags = _status_findings(entry, same_records, evidence.status_records)
         findings.extend(status_findings)

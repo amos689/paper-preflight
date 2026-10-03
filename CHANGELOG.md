@@ -13,6 +13,9 @@ All notable changes to this project are documented here. The format follows
   telling it to cite the published version it already cites.
 - An entry citing an earlier arXiv version (matched through that version's title) is no longer
   reported for its author order when a later version reordered the authors (REF011).
+- A published version's year a year or two after the only record found, a preprint (dblp lists
+  ICLR 2026 papers as 2025 CoRR preprints until it adds the conference), is no longer
+  reported; with a published record of the work known, the year is checked as before.
 - A given name in another language's form ("Grigoris" for Gregory, "Giorgos" for George) or a
   Polish diminutive ("Tomek" for Tomasz) is the same person, not another author (REF011).
 - A name written family name first without a comma ("Zhang C.", which BibTeX reads as given

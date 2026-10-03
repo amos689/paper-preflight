@@ -423,6 +423,14 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
 # ---------------------------------------------------------------- year and venue
 
 
+def is_preprint(record: SourceRecord) -> bool:
+    return (
+        record.source == "arxiv"
+        or record.work_type in {"preprint", "posted-content"}
+        or canonical_venue(record.venue) == "arxiv"
+    )
+
+
 def check_year(
     year: int | None, record: SourceRecord, *, preprint_pair: bool = False
 ) -> FieldCheck:
