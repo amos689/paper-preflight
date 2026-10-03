@@ -92,10 +92,14 @@ async def test_rate_limit_makes_source_unavailable_then_cooldown(http: httpx.Asy
     with pytest.raises(SourceUnavailable) as first:
         await client.get_json(URL)
     assert first.value.reason is UnavailableReason.RATE_LIMITED
-    with pytest.raises(SourceUnavailable) as second:
-        await client.get_json(URL, params={"other": 1})
-    assert second.value.reason is UnavailableReason.COOLDOWN
-    assert route.call_count == 1  # no hammering during cooldown
+    for attempt in range(3):
+        with pytest.raises(SourceUnavailable) as later:
+            await client.get_json(URL, params={"other": attempt})
+        # the original reason is kept, so reports say *why* the source is unavailable
+        assert later.value.reason is UnavailableReason.RATE_LIMITED
+        assert later.value.detail == "cooling down"
+    assert route.call_count == 1  # no hammering during cooldown, however many calls follow
+    assert client.stats.unavailable == {"rate_limited": 1, "cooldown": 3}
 
 
 @pytest.mark.anyio
