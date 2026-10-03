@@ -115,6 +115,26 @@ def parse_full_records(payload: Any) -> dict[str, SourceRecord]:
     return records_from_rows(_bindings(payload))
 
 
+_KEY_YEAR_RE = re.compile(r"(\d{2})[a-z]?$")
+
+
+def key_year(key: str, year: int | None) -> int | None:
+    """The year in a dblp key ("conf/birws/AtanassovaB24") when it is next to the recorded one.
+
+    dblp records a workshop under the year its proceedings appeared, which may be the year after
+    the workshop (BIR 2024, published 2025), while its key keeps the year the entry was made
+    for. Authors cite either.
+    """
+    match = _KEY_YEAR_RE.search(key.rsplit("/", 1)[-1])
+    if match is None or year is None:
+        return None
+    century = year - year % 100
+    for candidate in (c + int(match.group(1)) for c in (century, century - 100, century + 100)):
+        if abs(candidate - year) == 1:  # 1999 and "...00" too
+            return candidate
+    return None
+
+
 def records_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, SourceRecord]:
     grouped: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -145,7 +165,7 @@ def records_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, SourceRecord]
             authors=authors,
             authors_complete=True,
             year=year,
-            years=frozenset({year} if year else set()),
+            years=frozenset(y for y in (year, key_year(key, year)) if y),
             venue=row.get("venue") or None,
             work_type=work_type,
             identifiers=identifiers,
