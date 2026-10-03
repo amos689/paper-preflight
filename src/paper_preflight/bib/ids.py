@@ -19,8 +19,9 @@ from dataclasses import dataclass
 from paper_preflight.bib.parse import BibEntry
 
 # Modern DOIs: 10.<registrant>/<suffix>. The suffix may contain almost anything; we stop at
-# whitespace, quotes, angle brackets and trailing punctuation.
-_DOI_RE = re.compile(r"\b(10\.\d{4,9}/[^\s\"<>{}]+)", re.IGNORECASE)
+# whitespace, quotes, braces, a lone angle bracket and trailing punctuation. Wiley's old SICI
+# DOIs keep a bracketed part: 10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V.
+_DOI_RE = re.compile(r"\b(10\.\d{4,9}/(?:[^\s\"<>{}]|<[^\s\"<>{}]+>)+)", re.IGNORECASE)
 _DOI_PREFIX_RE = re.compile(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE)
 _NEW_ARXIV_RE = re.compile(r"(?<![\d.])(\d{4}\.\d{4,5})(v\d+)?(?![\d])")
 _OLD_ARXIV_RE = re.compile(r"\b([a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7})(v\d+)?\b")
