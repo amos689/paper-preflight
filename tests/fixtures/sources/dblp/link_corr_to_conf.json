@@ -1,0 +1,111 @@
+{
+ "head": {
+  "vars": [
+   "corr",
+   "other",
+   "otitle",
+   "venue",
+   "year"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "corr": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/HeZRS15"
+    },
+    "other": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "otitle": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    }
+   },
+   {
+    "corr": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-2503-11651"
+    },
+    "other": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "otitle": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    }
+   },
+   {
+    "corr": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/abs-1810-04805"
+    },
+    "other": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "otitle": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    }
+   },
+   {
+    "corr": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "other": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "otitle": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 62,
+  "result-size-total": 4
+ }
+}

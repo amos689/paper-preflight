@@ -1,0 +1,26 @@
+{
+ "meta": {
+  "count": 0,
+  "db_response_time_ms": 9,
+  "page": 1,
+  "per_page": 8,
+  "groups_count": null,
+  "x_query": {
+   "oql": "works where title has (Quantum Gradient Folding for Sparse Mixture-of-Experts Transformers)",
+   "oqo": {
+    "get_rows": "works",
+    "filter_rows": [
+     {
+      "column_id": "display_name.search",
+      "value": "Quantum Gradient Folding for Sparse Mixture-of-Experts Transformers",
+      "operator": "has"
+     }
+    ]
+   },
+   "url": "/works?filter=display_name.search:Quantum Gradient Folding for Sparse Mixture-of-Experts Transformers&per_page=8"
+  },
+  "cost_usd": 0.001
+ },
+ "results": [],
+ "group_by": []
+}

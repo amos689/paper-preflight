@@ -1,0 +1,16 @@
+{
+ "responseCode": 1,
+ "handle": "10.1109/CVPR.2016.90",
+ "values": [
+  {
+   "index": 1,
+   "type": "URL",
+   "data": {
+    "format": "string",
+    "value": "http://ieeexplore.ieee.org/document/7780459/"
+   },
+   "ttl": 86400,
+   "timestamp": "2016-12-13T01:40:03Z"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "t"
+  ]
+ },
+ "results": {
+  "bindings": []
+ },
+ "meta": {
+  "query-time-ms": 1,
+  "result-size-total": 0
+ }
+}

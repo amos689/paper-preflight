@@ -1,0 +1,162 @@
+{
+ "status": "ok",
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "message": {
+  "indexed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     2
+    ]
+   ],
+   "date-time": "2026-10-02T14:36:26Z",
+   "timestamp": 1790951786332,
+   "version": "4.1.0"
+  },
+  "publisher-location": "Stroudsburg, PA, USA",
+  "reference-count": 0,
+  "publisher": "Association for Computational Linguistics",
+  "short-container-title": [],
+  "published-print": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "DOI": "10.18653/v1/n19-1423",
+  "type": "proceedings-article",
+  "created": {
+   "date-parts": [
+    [
+     2019,
+     7,
+     21
+    ]
+   ],
+   "date-time": "2019-07-21T13:26:41Z",
+   "timestamp": 1563715601000
+  },
+  "page": "4171-4186",
+  "source": "Crossref",
+  "is-referenced-by-count": 10068,
+  "title": [
+   "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+  ],
+  "prefix": "10.18653",
+  "author": [
+   {
+    "given": "Jacob",
+    "family": "Devlin",
+    "sequence": "first",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Ming-Wei",
+    "family": "Chang",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Kenton",
+    "family": "Lee",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Kristina",
+    "family": "Toutanova",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   }
+  ],
+  "member": "1643",
+  "event": {
+   "name": "Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)",
+   "location": "Minneapolis, Minnesota",
+   "start": {
+    "date-parts": [
+     [
+      2019,
+      6
+     ]
+    ]
+   },
+   "end": {
+    "date-parts": [
+     [
+      2019,
+      6
+     ]
+    ]
+   }
+  },
+  "container-title": [
+   "Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)"
+  ],
+  "original-title": [],
+  "deposited": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     31
+    ]
+   ],
+   "date-time": "2026-08-31T16:02:17Z",
+   "timestamp": 1788192137000
+  },
+  "score": 1,
+  "resource": {
+   "primary": {
+    "URL": "https://aclanthology.org/N19-1423"
+   }
+  },
+  "subtitle": [],
+  "short-title": [],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "references-count": 0,
+  "URL": "https://doi.org/10.18653/v1/n19-1423",
+  "relation": {},
+  "subject": [],
+  "published": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  }
+ }
+}

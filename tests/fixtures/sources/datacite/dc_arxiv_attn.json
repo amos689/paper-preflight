@@ -1,0 +1,581 @@
+{
+ "data": {
+  "id": "10.48550/arxiv.1706.03762",
+  "type": "dois",
+  "attributes": {
+   "doi": "10.48550/arxiv.1706.03762",
+   "prefix": "10.48550",
+   "suffix": "arxiv.1706.03762",
+   "identifiers": [
+    {
+     "identifier": "1706.03762",
+     "identifierType": "arXiv"
+    }
+   ],
+   "alternateIdentifiers": [
+    {
+     "alternateIdentifierType": "arXiv",
+     "alternateIdentifier": "1706.03762"
+    }
+   ],
+   "creators": [
+    {
+     "name": "Vaswani, Ashish",
+     "nameType": "Personal",
+     "givenName": "Ashish",
+     "familyName": "Vaswani",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Shazeer, Noam",
+     "nameType": "Personal",
+     "givenName": "Noam",
+     "familyName": "Shazeer",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Parmar, Niki",
+     "nameType": "Personal",
+     "givenName": "Niki",
+     "familyName": "Parmar",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Uszkoreit, Jakob",
+     "nameType": "Personal",
+     "givenName": "Jakob",
+     "familyName": "Uszkoreit",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Jones, Llion",
+     "nameType": "Personal",
+     "givenName": "Llion",
+     "familyName": "Jones",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Gomez, Aidan N.",
+     "nameType": "Personal",
+     "givenName": "Aidan N.",
+     "familyName": "Gomez",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Kaiser, Lukasz",
+     "nameType": "Personal",
+     "givenName": "Lukasz",
+     "familyName": "Kaiser",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Polosukhin, Illia",
+     "nameType": "Personal",
+     "givenName": "Illia",
+     "familyName": "Polosukhin",
+     "affiliation": [],
+     "nameIdentifiers": []
+    }
+   ],
+   "titles": [
+    {
+     "title": "Attention Is All You Need"
+    }
+   ],
+   "publisher": "arXiv",
+   "container": {},
+   "publicationYear": 2017,
+   "subjects": [
+    {
+     "lang": "en",
+     "subject": "Computation and Language (cs.CL)",
+     "subjectScheme": "arXiv"
+    },
+    {
+     "lang": "en",
+     "subject": "Machine Learning (cs.LG)",
+     "subjectScheme": "arXiv"
+    },
+    {
+     "subject": "FOS: Computer and information sciences",
+     "subjectScheme": "Fields of Science and Technology (FOS)"
+    },
+    {
+     "subject": "FOS: Computer and information sciences",
+     "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+     "subjectScheme": "Fields of Science and Technology (FOS)"
+    }
+   ],
+   "contributors": [],
+   "dates": [
+    {
+     "date": "2017-06-12T17:57:34Z",
+     "dateType": "Submitted",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2017-06-13T00:13:31Z",
+     "dateType": "Updated",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2017-06-19T16:49:45Z",
+     "dateType": "Submitted",
+     "dateInformation": "v2"
+    },
+    {
+     "date": "2017-06-20T00:14:05Z",
+     "dateType": "Updated",
+     "dateInformation": "v2"
+    },
+    {
+     "date": "2017-06-20T05:20:02Z",
+     "dateType": "Submitted",
+     "dateInformation": "v3"
+    },
+    {
+     "date": "2017-06-21T00:04:53Z",
+     "dateType": "Updated",
+     "dateInformation": "v3"
+    },
+    {
+     "date": "2017-06-30T17:29:30Z",
+     "dateType": "Submitted",
+     "dateInformation": "v4"
+    },
+    {
+     "date": "2017-07-03T00:08:10Z",
+     "dateType": "Updated",
+     "dateInformation": "v4"
+    },
+    {
+     "date": "2017-12-06T03:30:32Z",
+     "dateType": "Submitted",
+     "dateInformation": "v5"
+    },
+    {
+     "date": "2017-12-07T01:03:11Z",
+     "dateType": "Updated",
+     "dateInformation": "v5"
+    },
+    {
+     "date": "2023-07-24T00:48:54Z",
+     "dateType": "Submitted",
+     "dateInformation": "v6"
+    },
+    {
+     "date": "2023-07-25T00:34:06Z",
+     "dateType": "Updated",
+     "dateInformation": "v6"
+    },
+    {
+     "date": "2023-08-02T00:41:18Z",
+     "dateType": "Submitted",
+     "dateInformation": "v7"
+    },
+    {
+     "date": "2023-08-03T00:07:25Z",
+     "dateType": "Updated",
+     "dateInformation": "v7"
+    },
+    {
+     "date": "2017-06",
+     "dateType": "Available",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2017",
+     "dateType": "Issued"
+    }
+   ],
+   "language": null,
+   "types": {
+    "ris": "GEN",
+    "bibtex": "misc",
+    "citeproc": "article",
+    "schemaOrg": "CreativeWork",
+    "resourceType": "Article",
+    "resourceTypeGeneral": "Preprint"
+   },
+   "relatedIdentifiers": [],
+   "relatedItems": [],
+   "sizes": [],
+   "formats": [],
+   "version": "7",
+   "rightsList": [
+    {
+     "rights": "arXiv.org perpetual, non-exclusive license",
+     "rightsUri": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+    }
+   ],
+   "descriptions": [
+    {
+     "description": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.",
+     "descriptionType": "Abstract"
+    },
+    {
+     "description": "15 pages, 5 figures",
+     "descriptionType": "Other"
+    }
+   ],
+   "geoLocations": [],
+   "fundingReferences": [],
+   "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODU1MC9BUlhJVi4xNzA2LjAzNzYyPC9pZGVudGlmaWVyPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJhclhpdiI+MTcwNi4wMzc2MjwvYWx0ZXJuYXRlSWRlbnRpZmllcj4KICA8L2FsdGVybmF0ZUlkZW50aWZpZXJzPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5WYXN3YW5pLCBBc2hpc2g8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkFzaGlzaDwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5WYXN3YW5pPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNoYXplZXIsIE5vYW08L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk5vYW08L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+U2hhemVlcjwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5QYXJtYXIsIE5pa2k8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPk5pa2k8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+UGFybWFyPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlVzemtvcmVpdCwgSmFrb2I8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkpha29iPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPlVzemtvcmVpdDwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5Kb25lcywgTGxpb248L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkxsaW9uPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkpvbmVzPC9mYW1pbHlOYW1lPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkdvbWV6LCBBaWRhbiBOLjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+QWlkYW4gTi48L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+R29tZXo8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+S2Fpc2VyLCBMdWthc3o8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkx1a2FzejwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5LYWlzZXI8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+UG9sb3N1a2hpbiwgSWxsaWE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPklsbGlhPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPlBvbG9zdWtoaW48L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPkF0dGVudGlvbiBJcyBBbGwgWW91IE5lZWQ8L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+YXJYaXY8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMTc8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdCB4bWw6bGFuZz0iZW4iIHN1YmplY3RTY2hlbWU9ImFyWGl2Ij5Db21wdXRhdGlvbiBhbmQgTGFuZ3VhZ2UgKGNzLkNMKTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHhtbDpsYW5nPSJlbiIgc3ViamVjdFNjaGVtZT0iYXJYaXYiPk1hY2hpbmUgTGVhcm5pbmcgKGNzLkxHKTwvc3ViamVjdD4KICAgIDxzdWJqZWN0IHN1YmplY3RTY2hlbWU9IkZpZWxkcyBvZiBTY2llbmNlIGFuZCBUZWNobm9sb2d5IChGT1MpIj5GT1M6IENvbXB1dGVyIGFuZCBpbmZvcm1hdGlvbiBzY2llbmNlczwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxkYXRlcz4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjEiPjIwMTctMDYtMTJUMTc6NTc6MzRaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjEiPjIwMTctMDYtMTNUMDA6MTM6MzFaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2MiI+MjAxNy0wNi0xOVQxNjo0OTo0NVo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2MiI+MjAxNy0wNi0yMFQwMDoxNDowNVo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIiBkYXRlSW5mb3JtYXRpb249InYzIj4yMDE3LTA2LTIwVDA1OjIwOjAyWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIiBkYXRlSW5mb3JtYXRpb249InYzIj4yMDE3LTA2LTIxVDAwOjA0OjUzWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjQiPjIwMTctMDYtMzBUMTc6Mjk6MzBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjQiPjIwMTctMDctMDNUMDA6MDg6MTBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2NSI+MjAxNy0xMi0wNlQwMzozMDozMlo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2NSI+MjAxNy0xMi0wN1QwMTowMzoxMVo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIiBkYXRlSW5mb3JtYXRpb249InY2Ij4yMDIzLTA3LTI0VDAwOjQ4OjU0WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIiBkYXRlSW5mb3JtYXRpb249InY2Ij4yMDIzLTA3LTI1VDAwOjM0OjA2WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjciPjIwMjMtMDgtMDJUMDA6NDE6MThaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjciPjIwMjMtMDgtMDNUMDA6MDc6MjVaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSIgZGF0ZUluZm9ybWF0aW9uPSJ2MSI+MjAxNy0wNjwvZGF0ZT4KICA8L2RhdGVzPgogIDxyZXNvdXJjZVR5cGUgcmVzb3VyY2VUeXBlR2VuZXJhbD0iUHJlcHJpbnQiPkFydGljbGU8L3Jlc291cmNlVHlwZT4KICA8dmVyc2lvbj43PC92ZXJzaW9uPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHA6Ly9hcnhpdi5vcmcvbGljZW5zZXMvbm9uZXhjbHVzaXZlLWRpc3RyaWIvMS4wLyI+YXJYaXYub3JnIHBlcnBldHVhbCwgbm9uLWV4Y2x1c2l2ZSBsaWNlbnNlPC9yaWdodHM+CiAgPC9yaWdodHNMaXN0PgogIDxkZXNjcmlwdGlvbnM+CiAgICA8ZGVzY3JpcHRpb24gZGVzY3JpcHRpb25UeXBlPSJBYnN0cmFjdCI+VGhlIGRvbWluYW50IHNlcXVlbmNlIHRyYW5zZHVjdGlvbiBtb2RlbHMgYXJlIGJhc2VkIG9uIGNvbXBsZXggcmVjdXJyZW50IG9yIGNvbnZvbHV0aW9uYWwgbmV1cmFsIG5ldHdvcmtzIGluIGFuIGVuY29kZXItZGVjb2RlciBjb25maWd1cmF0aW9uLiBUaGUgYmVzdCBwZXJmb3JtaW5nIG1vZGVscyBhbHNvIGNvbm5lY3QgdGhlIGVuY29kZXIgYW5kIGRlY29kZXIgdGhyb3VnaCBhbiBhdHRlbnRpb24gbWVjaGFuaXNtLiBXZSBwcm9wb3NlIGEgbmV3IHNpbXBsZSBuZXR3b3JrIGFyY2hpdGVjdHVyZSwgdGhlIFRyYW5zZm9ybWVyLCBiYXNlZCBzb2xlbHkgb24gYXR0ZW50aW9uIG1lY2hhbmlzbXMsIGRpc3BlbnNpbmcgd2l0aCByZWN1cnJlbmNlIGFuZCBjb252b2x1dGlvbnMgZW50aXJlbHkuIEV4cGVyaW1lbnRzIG9uIHR3byBtYWNoaW5lIHRyYW5zbGF0aW9uIHRhc2tzIHNob3cgdGhlc2UgbW9kZWxzIHRvIGJlIHN1cGVyaW9yIGluIHF1YWxpdHkgd2hpbGUgYmVpbmcgbW9yZSBwYXJhbGxlbGl6YWJsZSBhbmQgcmVxdWlyaW5nIHNpZ25pZmljYW50bHkgbGVzcyB0aW1lIHRvIHRyYWluLiBPdXIgbW9kZWwgYWNoaWV2ZXMgMjguNCBCTEVVIG9uIHRoZSBXTVQgMjAxNCBFbmdsaXNoLXRvLUdlcm1hbiB0cmFuc2xhdGlvbiB0YXNrLCBpbXByb3Zpbmcgb3ZlciB0aGUgZXhpc3RpbmcgYmVzdCByZXN1bHRzLCBpbmNsdWRpbmcgZW5zZW1ibGVzIGJ5IG92ZXIgMiBCTEVVLiBPbiB0aGUgV01UIDIwMTQgRW5nbGlzaC10by1GcmVuY2ggdHJhbnNsYXRpb24gdGFzaywgb3VyIG1vZGVsIGVzdGFibGlzaGVzIGEgbmV3IHNpbmdsZS1tb2RlbCBzdGF0ZS1vZi10aGUtYXJ0IEJMRVUgc2NvcmUgb2YgNDEuOCBhZnRlciB0cmFpbmluZyBmb3IgMy41IGRheXMgb24gZWlnaHQgR1BVcywgYSBzbWFsbCBmcmFjdGlvbiBvZiB0aGUgdHJhaW5pbmcgY29zdHMgb2YgdGhlIGJlc3QgbW9kZWxzIGZyb20gdGhlIGxpdGVyYXR1cmUuIFdlIHNob3cgdGhhdCB0aGUgVHJhbnNmb3JtZXIgZ2VuZXJhbGl6ZXMgd2VsbCB0byBvdGhlciB0YXNrcyBieSBhcHBseWluZyBpdCBzdWNjZXNzZnVsbHkgdG8gRW5nbGlzaCBjb25zdGl0dWVuY3kgcGFyc2luZyBib3RoIHdpdGggbGFyZ2UgYW5kIGxpbWl0ZWQgdHJhaW5pbmcgZGF0YS48L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iT3RoZXIiPjE1IHBhZ2VzLCA1IGZpZ3VyZXM8L2Rlc2NyaXB0aW9uPgogIDwvZGVzY3JpcHRpb25zPgo8L3Jlc291cmNlPg==",
+   "url": "https://arxiv.org/abs/1706.03762",
+   "contentUrl": null,
+   "metadataVersion": 2,
+   "schemaVersion": "http://datacite.org/schema/kernel-4",
+   "source": "mds",
+   "isActive": true,
+   "state": "findable",
+   "reason": null,
+   "viewCount": 0,
+   "viewsOverTime": [],
+   "downloadCount": 0,
+   "downloadsOverTime": [],
+   "referenceCount": 2,
+   "citationCount": 65,
+   "citationsOverTime": [
+    {
+     "year": "2022",
+     "total": 21
+    },
+    {
+     "year": "2024",
+     "total": 8
+    },
+    {
+     "year": "2025",
+     "total": 8
+    },
+    {
+     "year": "2026",
+     "total": 28
+    }
+   ],
+   "partCount": 0,
+   "partOfCount": 0,
+   "versionCount": 0,
+   "versionOfCount": 0,
+   "created": "2022-03-04T06:13:33.000Z",
+   "registered": "2022-03-04T06:13:34.000Z",
+   "published": "2017",
+   "updated": "2025-04-09T22:52:25.000Z"
+  },
+  "relationships": {
+   "client": {
+    "data": {
+     "id": "arxiv.content",
+     "type": "clients"
+    }
+   },
+   "provider": {
+    "data": {
+     "id": "arxiv",
+     "type": "providers"
+    }
+   },
+   "media": {
+    "data": {
+     "id": "10.48550/arxiv.1706.03762",
+     "type": "media"
+    }
+   },
+   "references": {
+    "data": [
+     {
+      "id": "10.5281/zenodo.17459697",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.17459696",
+      "type": "dois"
+     }
+    ]
+   },
+   "citations": {
+    "data": [
+     {
+      "id": "10.5281/zenodo.17193256",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22962074",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.20328350",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22799689",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22778602",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22778603",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.19847348",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.20347695",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.20347694",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.20328351",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.19490262",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.21916913",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.21916912",
+      "type": "dois"
+     },
+     {
+      "id": "10.60797/irj.2026.167.100.3",
+      "type": "dois"
+     },
+     {
+      "id": "10.60797/irj.2026.167.100",
+      "type": "dois"
+     },
+     {
+      "id": "10.60797/irj.2026.167.100.2",
+      "type": "dois"
+     },
+     {
+      "id": "10.60797/irj.2026.167.100.1",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.20024213",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.19847349",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.19490263",
+      "type": "dois"
+     },
+     {
+      "id": "10.17175/sb007_005",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18383733",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18553990",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18501161",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18445696",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18383734",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18295747",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.18295746",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.17696100",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.14607601",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.17193257",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.15185971",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.14894877",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.14894878",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.14608740",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.14607602",
+      "type": "dois"
+     },
+     {
+      "id": "10.4230/oasics.dx.2024.29",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.26607052",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.26607052.v1",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.26595608.v1",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.26595608",
+      "type": "dois"
+     },
+     {
+      "id": "10.4230/lipics.icdt.2024.1",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.21563913.v1",
+      "type": "dois"
+     },
+     {
+      "id": "10.6084/m9.figshare.21563913",
+      "type": "dois"
+     },
+     {
+      "id": "10.1007/s12652-022-03860-7",
+      "type": "dois"
+     },
+     {
+      "id": "10.1016/j.media.2022.102474",
+      "type": "dois"
+     },
+     {
+      "id": "10.1016/j.energy.2022.124179",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3396956.3397001",
+      "type": "dois"
+     },
+     {
+      "id": "10.3390/s22093283",
+      "type": "dois"
+     },
+     {
+      "id": "10.1080/09540091.2022.2061915",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3485447.3512026",
+      "type": "dois"
+     },
+     {
+      "id": "10.1007/s10489-022-03523-2",
+      "type": "dois"
+     },
+     {
+      "id": "10.3390/electronics11081275",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3524086.3524092",
+      "type": "dois"
+     },
+     {
+      "id": "10.1155/2022/5024399",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3529388",
+      "type": "dois"
+     },
+     {
+      "id": "10.1007/s13042-022-01548-0",
+      "type": "dois"
+     },
+     {
+      "id": "10.1007/s43681-022-00148-6",
+      "type": "dois"
+     },
+     {
+      "id": "10.2196/preprints.37897",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3412841.3441977",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3508230.3508250",
+      "type": "dois"
+     },
+     {
+      "id": "10.1038/s41598-022-07846-5",
+      "type": "dois"
+     },
+     {
+      "id": "10.1145/3446132.3446403",
+      "type": "dois"
+     },
+     {
+      "id": "10.1073/pnas.2113348119",
+      "type": "dois"
+     },
+     {
+      "id": "10.1073/pnas.2102421118",
+      "type": "dois"
+     }
+    ]
+   },
+   "parts": {
+    "data": []
+   },
+   "partOf": {
+    "data": []
+   },
+   "versions": {
+    "data": []
+   },
+   "versionOf": {
+    "data": []
+   }
+  }
+ }
+}

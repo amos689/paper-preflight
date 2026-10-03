@@ -1,0 +1,229 @@
+{
+ "status": "ok",
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "message": {
+  "indexed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     2
+    ]
+   ],
+   "date-time": "2026-10-02T17:33:53Z",
+   "timestamp": 1790962433219,
+   "version": "4.1.0"
+  },
+  "posted": {
+   "date-parts": [
+    [
+     2025,
+     8,
+     23
+    ]
+   ]
+  },
+  "reference-count": 0,
+  "publisher": "Shenzhen Medical Academy of Research and Translation",
+  "short-container-title": [],
+  "DOI": "10.65215/ysbyhc05",
+  "type": "posted-content",
+  "created": {
+   "date-parts": [
+    [
+     2025,
+     11,
+     12
+    ]
+   ],
+   "date-time": "2025-11-12T09:40:48Z",
+   "timestamp": 1762940448000
+  },
+  "source": "Crossref",
+  "is-referenced-by-count": 24,
+  "title": [
+   "Attention Is All You Need"
+  ],
+  "prefix": "10.65215",
+  "author": [
+   {
+    "given": "Ashish",
+    "family": "Vaswani",
+    "sequence": "first",
+    "affiliation": [
+     {
+      "name": "Google Brain"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Noam",
+    "family": "Shazeer",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Brain"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Niki",
+    "family": "Parmar",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Jakob",
+    "family": "Uszkoreit",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Llion",
+    "family": "Jones",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Aidan",
+    "family": "N.Gomez",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "University of Toronto"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Lukasz",
+    "family": "Kaiser",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Brain"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Illia",
+    "family": "Polosukhin",
+    "sequence": "additional",
+    "affiliation": [],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   }
+  ],
+  "member": "54718",
+  "container-title": [],
+  "original-title": [],
+  "deposited": {
+   "date-parts": [
+    [
+     2025,
+     11,
+     13
+    ]
+   ],
+   "date-time": "2025-11-13T02:40:31Z",
+   "timestamp": 1763001631000
+  },
+  "score": 1,
+  "resource": {
+   "primary": {
+    "URL": "https://langtaosha.org.cn/index.php/lts/preprint/view/10"
+   }
+  },
+  "subtitle": [],
+  "short-title": [],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     8,
+     23
+    ]
+   ]
+  },
+  "references-count": 0,
+  "URL": "https://doi.org/10.65215/ysbyhc05",
+  "relation": {
+   "is-version-of": [
+    {
+     "id-type": "doi",
+     "id": "10.65215/r5bs2d54",
+     "asserted-by": "subject"
+    }
+   ]
+  },
+  "subject": [],
+  "published": {
+   "date-parts": [
+    [
+     2025,
+     8,
+     23
+    ]
+   ]
+  },
+  "subtype": "preprint"
+ }
+}

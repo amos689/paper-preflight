@@ -1,0 +1,400 @@
+{
+ "status": "ok",
+ "message-type": "work",
+ "message-version": "1.0.0",
+ "message": {
+  "indexed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     2
+    ]
+   ],
+   "date-time": "2026-10-02T17:02:20Z",
+   "timestamp": 1790960540738,
+   "version": "4.1.0"
+  },
+  "reference-count": 25,
+  "publisher": "MIT Press",
+  "short-container-title": [
+   "Transactions of the Association for Computational Linguistics"
+  ],
+  "published-print": {
+   "date-parts": [
+    [
+     2019,
+     11
+    ]
+   ]
+  },
+  "DOI": "10.1162/tacl_a_00276",
+  "type": "journal-article",
+  "created": {
+   "date-parts": [
+    [
+     2019,
+     8,
+     2
+    ]
+   ],
+   "date-time": "2019-08-02T14:32:33Z",
+   "timestamp": 1564756353000
+  },
+  "page": "453-466",
+  "source": "Crossref",
+  "is-referenced-by-count": 1113,
+  "title": [
+   "Natural Questions: A Benchmark for Question Answering                     Research"
+  ],
+  "prefix": "10.1162",
+  "volume": "7",
+  "author": [
+   {
+    "given": "Tom",
+    "family": "Kwiatkowski",
+    "sequence": "first",
+    "affiliation": [
+     {
+      "name": "Google Research."
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Jennimaria",
+    "family": "Palomaki",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Olivia",
+    "family": "Redfield",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Michael",
+    "family": "Collins",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Ankur",
+    "family": "Parikh",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Chris",
+    "family": "Alberti",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Danielle",
+    "family": "Epstein",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Illia",
+    "family": "Polosukhin",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Jacob",
+    "family": "Devlin",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Kenton",
+    "family": "Lee",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Kristina",
+    "family": "Toutanova",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Llion",
+    "family": "Jones",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Matthew",
+    "family": "Kelcey",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Ming-Wei",
+    "family": "Chang",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Andrew M.",
+    "family": "Dai",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Jakob",
+    "family": "Uszkoreit",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Quoc",
+    "family": "Le",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   },
+   {
+    "given": "Slav",
+    "family": "Petrov",
+    "sequence": "additional",
+    "affiliation": [
+     {
+      "name": "Google Research"
+     }
+    ],
+    "role": [
+     {
+      "vocabulary": "crossref",
+      "role": "author"
+     }
+    ]
+   }
+  ],
+  "member": "281",
+  "container-title": [
+   "Transactions of the Association for Computational Linguistics"
+  ],
+  "original-title": [],
+  "language": "en",
+  "deposited": {
+   "date-parts": [
+    [
+     2021,
+     3,
+     12
+    ]
+   ],
+   "date-time": "2021-03-12T16:39:25Z",
+   "timestamp": 1615567165000
+  },
+  "score": 1,
+  "resource": {
+   "primary": {
+    "URL": "https://direct.mit.edu/tacl/article/43518"
+   }
+  },
+  "subtitle": [],
+  "short-title": [],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     11
+    ]
+   ]
+  },
+  "references-count": 25,
+  "alternative-id": [
+   "10.1162/tacl_a_00276"
+  ],
+  "URL": "https://doi.org/10.1162/tacl_a_00276",
+  "relation": {},
+  "ISSN": [
+   "2307-387X"
+  ],
+  "issn-type": [
+   {
+    "value": "2307-387X",
+    "type": "electronic"
+   }
+  ],
+  "subject": [],
+  "published": {
+   "date-parts": [
+    [
+     2019,
+     11
+    ]
+   ]
+  }
+ }
+}

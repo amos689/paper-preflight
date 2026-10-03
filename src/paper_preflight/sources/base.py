@@ -144,6 +144,37 @@ class SourceClient:
         negative_statuses: tuple[int, ...] = (404,),
         cache_key: str | None = None,
     ) -> Fetched:
+        """GET a JSON document (``data`` is the decoded JSON)."""
+        return await self._get(
+            url, params, headers, classify, negative_statuses, cache_key, expect_json=True
+        )
+
+    async def get_text(
+        self,
+        url: str,
+        *,
+        params: Mapping[str, Any] | None = None,
+        headers: Mapping[str, str] | None = None,
+        classify: Classifier = lambda _: EntryKind.POSITIVE,
+        negative_statuses: tuple[int, ...] = (404,),
+        cache_key: str | None = None,
+    ) -> Fetched:
+        """GET a non-JSON document such as an Atom feed (``data`` is the text)."""
+        return await self._get(
+            url, params, headers, classify, negative_statuses, cache_key, expect_json=False
+        )
+
+    async def _get(
+        self,
+        url: str,
+        params: Mapping[str, Any] | None,
+        headers: Mapping[str, str] | None,
+        classify: Classifier,
+        negative_statuses: tuple[int, ...],
+        cache_key: str | None,
+        *,
+        expect_json: bool,
+    ) -> Fetched:
         key = cache_key or request_key(url, params)
         cached = self.cache.get(self.name, key, allow_stale=self.offline)
         if cached is not None:
@@ -160,7 +191,8 @@ class SourceClient:
         if time.monotonic() < self._cooldown_until:
             raise self._unavailable(UnavailableReason.COOLDOWN, cool=0)
 
-        merged_headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+        accept = "application/json" if expect_json else "application/atom+xml, application/xml"
+        merged_headers = {"User-Agent": USER_AGENT, "Accept": accept}
         merged_headers.update(headers or {})
         attempt = 0
         while True:
@@ -180,7 +212,9 @@ class SourceClient:
                     continue
                 except httpx.HTTPError as exc:
                     raise self._unavailable(UnavailableReason.NETWORK, type(exc).__name__) from exc
-            result = self._interpret(response, key, classify, negative_statuses, attempt)
+            result = self._interpret(
+                response, key, classify, negative_statuses, attempt, expect_json
+            )
             if result is not None:
                 return result
             attempt += 1
@@ -200,6 +234,7 @@ class SourceClient:
         classify: Classifier,
         negative_statuses: tuple[int, ...],
         attempt: int,
+        expect_json: bool = True,
     ) -> Fetched | None:
         status = response.status_code
         content_type = response.headers.get("content-type", "").lower()
@@ -231,10 +266,14 @@ class SourceClient:
         if looks_html:
             # Bot walls such as Anubis answer 200 with an HTML page: not data, not a negative.
             raise self._unavailable(UnavailableReason.CHALLENGE, "HTML instead of JSON")
-        try:
-            data = response.json()
-        except (json.JSONDecodeError, ValueError) as exc:
-            raise self._unavailable(UnavailableReason.BAD_RESPONSE, "invalid JSON") from exc
+        data: Any
+        if expect_json:
+            try:
+                data = response.json()
+            except (json.JSONDecodeError, ValueError) as exc:
+                raise self._unavailable(UnavailableReason.BAD_RESPONSE, "invalid JSON") from exc
+        else:
+            data = response.text
         kind = classify(data)
         self.cache.put(self.name, key, data, kind, exportable=self.policy.exportable)
         if kind is EntryKind.NEGATIVE:

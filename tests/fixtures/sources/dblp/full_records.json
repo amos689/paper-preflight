@@ -1,0 +1,1972 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "title",
+   "type",
+   "venue",
+   "book",
+   "journal",
+   "year",
+   "doi",
+   "ee",
+   "primary",
+   "ord",
+   "name",
+   "creator",
+   "orcid"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Kaiming He"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/34/7659"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Xiangyu Zhang 0005"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/95/3760-5"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Shaoqing Ren"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/147/5182"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/HeZRS16"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Deep Residual Learning for Image Recognition."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2016"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR.2016.90"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jian Sun 0001"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/68/4942-1"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jianyuan Wang"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/173/9779"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Minghao Chen"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/39/332"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Nikita Karaev"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/346/0265"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Andrea Vedaldi"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/99/2825"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "5"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Christian Rupprecht 0001"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/76/744-1"
+    },
+    "orcid": {
+     "type": "uri",
+     "value": "https://orcid.org/0000-0003-3994-8045"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/cvpr/WangCKV0N25"
+    },
+    "title": {
+     "type": "literal",
+     "value": "VGGT: Visual Geometry Grounded Transformer."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "CVPR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2025"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.1109/CVPR52734.2025.00499"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openaccess.thecvf.com/content/CVPR2025/html/Wang_VGGT_Visual_Geometry_Grounded_Transformer_CVPR_2025_paper.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "6"
+    },
+    "name": {
+     "type": "literal",
+     "value": "David Novotný"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/161/9863"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/DarcetOMB24"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Vision Transformers Need Registers."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2024"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=2dnO3LLiJ1"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Timothée Darcet"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/344/5814"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/DarcetOMB24"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Vision Transformers Need Registers."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2024"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=2dnO3LLiJ1"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Maxime Oquab"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/151/8880"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/DarcetOMB24"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Vision Transformers Need Registers."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2024"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=2dnO3LLiJ1"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Julien Mairal"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/49/6555"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/DarcetOMB24"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Vision Transformers Need Registers."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2024"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=2dnO3LLiJ1"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Piotr Bojanowski"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/142/2542"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Edward J. Hu"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/295/8436"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Yelong Shen"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/37/9376"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Phillip Wallis"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/241/6270"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Zeyuan Allen-Zhu"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/10/7536"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "5"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Yuanzhi Li"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/73/3628"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "6"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Shean Wang"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/295/8592"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "7"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Lu Wang"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/49/3800"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/iclr/HuSWALWWC22"
+    },
+    "title": {
+     "type": "literal",
+     "value": "LoRA: Low-Rank Adaptation of Large Language Models."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "book": {
+     "type": "literal",
+     "value": "ICLR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2022"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://openreview.net/forum?id=nZeVKeeFYf9"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "8"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Weizhu Chen"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/79/2536"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "title": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jacob Devlin"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/116/0575"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "title": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Ming-Wei Chang"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/69/4618"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "title": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Kenton Lee"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/121/7560"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/naacl/DevlinCLT19"
+    },
+    "title": {
+     "type": "literal",
+     "value": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NAACL-HLT (1)"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2019"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.18653/V1/N19-1423"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Kristina Toutanova"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/25/1520"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Ashish Vaswani"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/26/9012"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Noam Shazeer"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/80/4668"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Niki Parmar"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/202/2051"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jakob Uszkoreit"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/87/4805"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "5"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Llion Jones"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/184/3736"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "6"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Aidan N. Gomez"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/202/2262"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "7"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Lukasz Kaiser"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/39/1762"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/conf/nips/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention is All you Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Inproceedings"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "book": {
+     "type": "literal",
+     "value": "NIPS"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "8"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Illia Polosukhin"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/184/3747"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "1"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Ashish Vaswani"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/26/9012"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "2"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Noam Shazeer"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/80/4668"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "3"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Niki Parmar"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/202/2051"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "4"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Jakob Uszkoreit"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/87/4805"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "5"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Llion Jones"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/184/3736"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "6"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Aidan N. Gomez"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/202/2262"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "7"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Lukasz Kaiser"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/39/1762"
+    },
+    "orcid": {
+     "type": "uri",
+     "value": "https://orcid.org/0000-0003-1092-6010"
+    }
+   },
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/VaswaniSPUJGKP17"
+    },
+    "title": {
+     "type": "literal",
+     "value": "Attention Is All You Need."
+    },
+    "type": {
+     "type": "uri",
+     "value": "http://purl.org/net/nknouf/ns/bibtex#Article"
+    },
+    "venue": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "journal": {
+     "type": "literal",
+     "value": "CoRR"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#gYear",
+     "type": "literal",
+     "value": "2017"
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "primary": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1706.03762"
+    },
+    "ord": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "8"
+    },
+    "name": {
+     "type": "literal",
+     "value": "Illia Polosukhin"
+    },
+    "creator": {
+     "type": "uri",
+     "value": "https://dblp.org/pid/184/3747"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 63,
+  "result-size-total": 42
+ }
+}

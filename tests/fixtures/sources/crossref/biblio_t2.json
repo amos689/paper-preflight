@@ -1,0 +1,546 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {},
+  "total-results": 4642782,
+  "items": [
+   {
+    "publisher": "Wiley",
+    "DOI": "10.22541/au.170666177.72403547/v1",
+    "type": "posted-content",
+    "title": [
+     "Multiple butterflies recognition based on deep residual learning and image analyze"
+    ],
+    "prefix": "10.22541",
+    "author": [
+     {
+      "ORCID": "https://orcid.org/0000-0001-9619-3721",
+      "authenticated-orcid": false,
+      "given": "Tianyu",
+      "family": "Xi",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "University of the Chinese Academy of Sciences"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Jiangning",
+      "family": "Wang",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Institute of Zoology, Chinese Academy of Sciences"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Yan",
+      "family": "Han",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Institute of Zoology Chinese Academy of Sciences"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "ORCID": "https://orcid.org/0000-0002-4979-7618",
+      "authenticated-orcid": false,
+      "given": "Congtian",
+      "family": "Lin",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Institute of Zoology Chinese Academy of Sciences"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Liqiang",
+      "family": "Ji",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Institute of Zoology, Chinese Academy of Sciences"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "311",
+    "score": 31.97221,
+    "issued": {
+     "date-parts": [
+      [
+       2024,
+       1,
+       31
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "MDPI AG",
+    "DOI": "10.3390/app12188972",
+    "type": "journal-article",
+    "title": [
+     "Deep Residual Learning for Image Recognition: A Survey"
+    ],
+    "prefix": "10.3390",
+    "author": [
+     {
+      "given": "Muhammad",
+      "family": "Shafiq",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Cyberspace Institute of Advanced Technology, Guangzhou University, Guangzhou 510006, China"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "ORCID": "https://orcid.org/0000-0001-7546-852X",
+      "authenticated-orcid": false,
+      "given": "Zhaoquan",
+      "family": "Gu",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Department of New Networks, Peng Cheng Laboratory, Shenzhen 518055, China"
+       },
+       {
+        "name": "Department of Computer Science and Technology, Harbin Institute of Technology, Shenzhen 518055, China"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "1968",
+    "container-title": [
+     "Applied Sciences"
+    ],
+    "score": 31.923895,
+    "issued": {
+     "date-parts": [
+      [
+       2022,
+       9,
+       7
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "IEEE",
+    "DOI": "10.1109/cvpr.2016.90",
+    "type": "proceedings-article",
+    "title": [
+     "Deep Residual Learning for Image Recognition"
+    ],
+    "prefix": "10.1109",
+    "author": [
+     {
+      "given": "Kaiming",
+      "family": "He",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Xiangyu",
+      "family": "Zhang",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Shaoqing",
+      "family": "Ren",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jian",
+      "family": "Sun",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "263",
+    "container-title": [
+     "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)"
+    ],
+    "score": 31.896755,
+    "issued": {
+     "date-parts": [
+      [
+       2016,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "SCITEPRESS - Science and Technology Publications",
+    "DOI": "10.5220/0011270400003277",
+    "type": "proceedings-article",
+    "title": [
+     "RRConvNet: Recursive-residual Network for Real-life Character Image Recognition"
+    ],
+    "prefix": "10.5220",
+    "author": [
+     {
+      "given": "Tadele",
+      "family": "Mengiste",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Faculty of Computing, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Birhanu",
+      "family": "Belay",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Faculty of Computing, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Bezawork",
+      "family": "Tilahun",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Faculty of Computing, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Tsiyon",
+      "family": "Worku",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Faculty of Computing, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Tesfa",
+      "family": "Tegegne",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Faculty of Computing, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       },
+       {
+        "name": "ICT4D Research Center, Bahir Dar Institute of Technology, Bahir Dar, Ethiopia, --- Select a Country ---"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "3171",
+    "container-title": [
+     "Proceedings of the 3rd International Conference on Deep Learning Theory and Applications"
+    ],
+    "score": 31.111713,
+    "issued": {
+     "date-parts": [
+      [
+       2022
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "IEEE",
+    "DOI": "10.1109/cvidl58838.2023.10167244",
+    "type": "proceedings-article",
+    "title": [
+     "EEG-based Drowsiness and Alertness Recognition Using Feature Fusion and Deep Residual Networks"
+    ],
+    "prefix": "10.1109",
+    "author": [
+     {
+      "given": "Wei",
+      "family": "Lu",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "City University of Macau,Faculty of Data Science,Taipa,Macau,China"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "Wenjian",
+      "family": "Liu",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "City University of Macau,Faculty of Data Science,Taipa,Macau,China"
+       }
+      ],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "263",
+    "container-title": [
+     "2023 4th International Conference on Computer Vision, Image and Deep Learning (CVIDL)"
+    ],
+    "score": 29.94213,
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       5,
+       12
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "IEEE",
+    "DOI": "10.1109/cvprw.2018.00116",
+    "type": "proceedings-article",
+    "title": [
+     "Recursive Deep Residual Learning for Single Image Dehazing"
+    ],
+    "prefix": "10.1109",
+    "author": [
+     {
+      "given": "Yixin",
+      "family": "Du",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Xin",
+      "family": "Li",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "263",
+    "container-title": [
+     "2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)"
+    ],
+    "score": 29.813183,
+    "issued": {
+     "date-parts": [
+      [
+       2018,
+       6
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "CRC Press",
+    "DOI": "10.1201/9781003366249-1",
+    "type": "book-chapter",
+    "title": [
+     "Medical Image Detection and Recognition Using Machine Learning and Deep Learning"
+    ],
+    "prefix": "10.1201",
+    "author": [
+     {
+      "given": "M.",
+      "family": "Arun Anoop",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "P.",
+      "family": "Karthikeyan",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     },
+     {
+      "given": "S.",
+      "family": "Poonkuntran",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "role": "author",
+        "vocabulary": "crossref"
+       }
+      ]
+     }
+    ],
+    "member": "301",
+    "container-title": [
+     "Machine Learning and Deep Learning Techniques for Medical Image Recognition"
+    ],
+    "score": 29.611485,
+    "issued": {
+     "date-parts": [
+      [
+       2023,
+       10,
+       16
+      ]
+     ]
+    }
+   },
+   {
+    "publisher": "Elsevier",
+    "DOI": "10.1016/c2024-0-02169-8",
+    "type": "edited-book",
+    "title": [
+     "Deep Learning for Image Recognition"
+    ],
+    "prefix": "10.1016",
+    "member": "78",
+    "score": 29.591307,
+    "issued": {
+     "date-parts": [
+      [
+       2026
+      ]
+     ]
+    }
+   }
+  ],
+  "items-per-page": 8,
+  "query": {
+   "start-index": 0,
+   "search-terms": null
+  }
+ }
+}

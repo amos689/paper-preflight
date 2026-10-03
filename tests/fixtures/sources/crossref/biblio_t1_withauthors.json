@@ -1,0 +1,1234 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message-version": "1.0.0",
+ "message": {
+  "facets": {},
+  "total-results": 7342952,
+  "items": [
+   {
+    "DOI": "10.65215/r5bs2d54",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       11,
+       13
+      ]
+     ]
+    },
+    "score": 85.74885,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/mdcm8z23",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 85.5664,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/nxvz2v36",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 85.5664,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/pc26a033",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 85.24421,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/ysbyhc05",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 85.07878,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/2q58a426",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 85.05373,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.65215/ctdc8e75",
+    "title": [
+     "Attention Is All You Need"
+    ],
+    "type": "posted-content",
+    "author": [
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "first",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Research"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Aidan",
+      "family": "N.Gomez",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "University of Toronto"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [
+       {
+        "name": "Google Brain"
+       }
+      ],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Illia",
+      "family": "Polosukhin",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2025,
+       8,
+       23
+      ]
+     ]
+    },
+    "score": 83.60264,
+    "publisher": "Shenzhen Medical Academy of Research and Translation"
+   },
+   {
+    "DOI": "10.18653/v1/p18-1008",
+    "title": [
+     "The Best of Both Worlds: Combining Recent Advances in Neural Machine Translation"
+    ],
+    "type": "proceedings-article",
+    "author": [
+     {
+      "given": "Mia Xu",
+      "family": "Chen",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Orhan",
+      "family": "Firat",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ankur",
+      "family": "Bapna",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Melvin",
+      "family": "Johnson",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Wolfgang",
+      "family": "Macherey",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "George",
+      "family": "Foster",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Llion",
+      "family": "Jones",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Mike",
+      "family": "Schuster",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Noam",
+      "family": "Shazeer",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Niki",
+      "family": "Parmar",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Ashish",
+      "family": "Vaswani",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Jakob",
+      "family": "Uszkoreit",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Lukasz",
+      "family": "Kaiser",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Zhifeng",
+      "family": "Chen",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Yonghui",
+      "family": "Wu",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "Macduff",
+      "family": "Hughes",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2018
+      ]
+     ]
+    },
+    "score": 34.32772,
+    "publisher": "Association for Computational Linguistics"
+   }
+  ],
+  "items-per-page": 8,
+  "query": {
+   "start-index": 0,
+   "search-terms": null
+  }
+ }
+}

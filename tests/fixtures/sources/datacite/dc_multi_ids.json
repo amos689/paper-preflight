@@ -1,0 +1,38 @@
+{
+ "data": [
+  {
+   "id": "10.48550/arxiv.1706.03762",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.48550/arxiv.1706.03762",
+    "titles": [
+     {
+      "title": "Attention Is All You Need"
+     }
+    ]
+   },
+   "relationships": {}
+  },
+  {
+   "id": "10.48550/arxiv.1810.04805",
+   "type": "dois",
+   "attributes": {
+    "doi": "10.48550/arxiv.1810.04805",
+    "titles": [
+     {
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+     }
+    ]
+   },
+   "relationships": {}
+  }
+ ],
+ "meta": {
+  "total": 2,
+  "totalPages": 1,
+  "page": 1
+ },
+ "links": {
+  "self": "https://api.datacite.org/dois?ids=10.48550%2Farxiv.1706.03762%2C10.48550%2Farxiv.1810.04805&page%5Bsize%5D=10&fields%5Bdois%5D=doi%2Ctitles"
+ }
+}

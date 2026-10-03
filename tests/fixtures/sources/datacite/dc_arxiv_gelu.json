@@ -1,0 +1,255 @@
+{
+ "data": {
+  "id": "10.48550/arxiv.1606.08415",
+  "type": "dois",
+  "attributes": {
+   "doi": "10.48550/arxiv.1606.08415",
+   "prefix": "10.48550",
+   "suffix": "arxiv.1606.08415",
+   "identifiers": [
+    {
+     "identifier": "1606.08415",
+     "identifierType": "arXiv"
+    }
+   ],
+   "alternateIdentifiers": [
+    {
+     "alternateIdentifierType": "arXiv",
+     "alternateIdentifier": "1606.08415"
+    }
+   ],
+   "creators": [
+    {
+     "name": "Hendrycks, Dan",
+     "nameType": "Personal",
+     "givenName": "Dan",
+     "familyName": "Hendrycks",
+     "affiliation": [],
+     "nameIdentifiers": []
+    },
+    {
+     "name": "Gimpel, Kevin",
+     "nameType": "Personal",
+     "givenName": "Kevin",
+     "familyName": "Gimpel",
+     "affiliation": [],
+     "nameIdentifiers": []
+    }
+   ],
+   "titles": [
+    {
+     "title": "Gaussian Error Linear Units (GELUs)"
+    }
+   ],
+   "publisher": "arXiv",
+   "container": {},
+   "publicationYear": 2016,
+   "subjects": [
+    {
+     "lang": "en",
+     "subject": "Machine Learning (cs.LG)",
+     "subjectScheme": "arXiv"
+    },
+    {
+     "subject": "FOS: Computer and information sciences",
+     "subjectScheme": "Fields of Science and Technology (FOS)"
+    },
+    {
+     "subject": "FOS: Computer and information sciences",
+     "schemeUri": "http://www.oecd.org/science/inno/38235147.pdf",
+     "subjectScheme": "Fields of Science and Technology (FOS)"
+    }
+   ],
+   "contributors": [],
+   "dates": [
+    {
+     "date": "2016-06-27T19:20:40Z",
+     "dateType": "Submitted",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2016-06-28T00:20:49Z",
+     "dateType": "Updated",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2016-07-08T18:32:46Z",
+     "dateType": "Submitted",
+     "dateInformation": "v2"
+    },
+    {
+     "date": "2016-07-11T00:10:11Z",
+     "dateType": "Updated",
+     "dateInformation": "v2"
+    },
+    {
+     "date": "2018-11-11T07:40:32Z",
+     "dateType": "Submitted",
+     "dateInformation": "v3"
+    },
+    {
+     "date": "2018-11-13T01:11:20Z",
+     "dateType": "Updated",
+     "dateInformation": "v3"
+    },
+    {
+     "date": "2020-07-08T16:41:42Z",
+     "dateType": "Submitted",
+     "dateInformation": "v4"
+    },
+    {
+     "date": "2020-07-09T00:19:32Z",
+     "dateType": "Updated",
+     "dateInformation": "v4"
+    },
+    {
+     "date": "2023-06-06T01:53:32Z",
+     "dateType": "Submitted",
+     "dateInformation": "v5"
+    },
+    {
+     "date": "2023-06-07T00:07:34Z",
+     "dateType": "Updated",
+     "dateInformation": "v5"
+    },
+    {
+     "date": "2016-06",
+     "dateType": "Available",
+     "dateInformation": "v1"
+    },
+    {
+     "date": "2016",
+     "dateType": "Issued"
+    }
+   ],
+   "language": null,
+   "types": {
+    "ris": "GEN",
+    "bibtex": "misc",
+    "citeproc": "article",
+    "schemaOrg": "CreativeWork",
+    "resourceType": "Article",
+    "resourceTypeGeneral": "Preprint"
+   },
+   "relatedIdentifiers": [],
+   "relatedItems": [],
+   "sizes": [],
+   "formats": [],
+   "version": "5",
+   "rightsList": [
+    {
+     "rights": "arXiv.org perpetual, non-exclusive license",
+     "rightsUri": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+    }
+   ],
+   "descriptions": [
+    {
+     "description": "We propose the Gaussian Error Linear Unit (GELU), a high-performing neural network activation function. The GELU activation function is $xΦ(x)$, where $Φ(x)$ the standard Gaussian cumulative distribution function. The GELU nonlinearity weights inputs by their value, rather than gates inputs by their sign as in ReLUs ($x\\mathbf{1}_{x&gt;0}$). We perform an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations and find performance improvements across all considered computer vision, natural language processing, and speech tasks.",
+     "descriptionType": "Abstract"
+    },
+    {
+     "description": "Trimmed version of 2016 draft",
+     "descriptionType": "Other"
+    }
+   ],
+   "geoLocations": [],
+   "fundingReferences": [],
+   "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjMvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC40ODU1MC9BUlhJVi4xNjA2LjA4NDE1PC9pZGVudGlmaWVyPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJhclhpdiI+MTYwNi4wODQxNTwvYWx0ZXJuYXRlSWRlbnRpZmllcj4KICA8L2FsdGVybmF0ZUlkZW50aWZpZXJzPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5IZW5kcnlja3MsIERhbjwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+RGFuPC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkhlbmRyeWNrczwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5HaW1wZWwsIEtldmluPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5LZXZpbjwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5HaW1wZWw8L2ZhbWlseU5hbWU+CiAgICA8L2NyZWF0b3I+CiAgPC9jcmVhdG9ycz4KICA8dGl0bGVzPgogICAgPHRpdGxlPkdhdXNzaWFuIEVycm9yIExpbmVhciBVbml0cyAoR0VMVXMpPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPmFyWGl2PC9wdWJsaXNoZXI+CiAgPHB1YmxpY2F0aW9uWWVhcj4yMDE2PC9wdWJsaWNhdGlvblllYXI+CiAgPHN1YmplY3RzPgogICAgPHN1YmplY3QgeG1sOmxhbmc9ImVuIiBzdWJqZWN0U2NoZW1lPSJhclhpdiI+TWFjaGluZSBMZWFybmluZyAoY3MuTEcpPC9zdWJqZWN0PgogICAgPHN1YmplY3Qgc3ViamVjdFNjaGVtZT0iRmllbGRzIG9mIFNjaWVuY2UgYW5kIFRlY2hub2xvZ3kgKEZPUykiPkZPUzogQ29tcHV0ZXIgYW5kIGluZm9ybWF0aW9uIHNjaWVuY2VzPC9zdWJqZWN0PgogIDwvc3ViamVjdHM+CiAgPGRhdGVzPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2MSI+MjAxNi0wNi0yN1QxOToyMDo0MFo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2MSI+MjAxNi0wNi0yOFQwMDoyMDo0OVo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIiBkYXRlSW5mb3JtYXRpb249InYyIj4yMDE2LTA3LTA4VDE4OjMyOjQ2WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIiBkYXRlSW5mb3JtYXRpb249InYyIj4yMDE2LTA3LTExVDAwOjEwOjExWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJTdWJtaXR0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjMiPjIwMTgtMTEtMTFUMDc6NDA6MzJaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlVwZGF0ZWQiIGRhdGVJbmZvcm1hdGlvbj0idjMiPjIwMTgtMTEtMTNUMDE6MTE6MjBaPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2NCI+MjAyMC0wNy0wOFQxNjo0MTo0Mlo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iVXBkYXRlZCIgZGF0ZUluZm9ybWF0aW9uPSJ2NCI+MjAyMC0wNy0wOVQwMDoxOTozMlo8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iU3VibWl0dGVkIiBkYXRlSW5mb3JtYXRpb249InY1Ij4yMDIzLTA2LTA2VDAxOjUzOjMyWjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJVcGRhdGVkIiBkYXRlSW5mb3JtYXRpb249InY1Ij4yMDIzLTA2LTA3VDAwOjA3OjM0WjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJBdmFpbGFibGUiIGRhdGVJbmZvcm1hdGlvbj0idjEiPjIwMTYtMDY8L2RhdGU+CiAgPC9kYXRlcz4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlByZXByaW50Ij5BcnRpY2xlPC9yZXNvdXJjZVR5cGU+CiAgPHZlcnNpb24+NTwvdmVyc2lvbj4KICA8cmlnaHRzTGlzdD4KICAgIDxyaWdodHMgcmlnaHRzVVJJPSJodHRwOi8vYXJ4aXYub3JnL2xpY2Vuc2VzL25vbmV4Y2x1c2l2ZS1kaXN0cmliLzEuMC8iPmFyWGl2Lm9yZyBwZXJwZXR1YWwsIG5vbi1leGNsdXNpdmUgbGljZW5zZTwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPldlIHByb3Bvc2UgdGhlIEdhdXNzaWFuIEVycm9yIExpbmVhciBVbml0IChHRUxVKSwgYSBoaWdoLXBlcmZvcm1pbmcgbmV1cmFsIG5ldHdvcmsgYWN0aXZhdGlvbiBmdW5jdGlvbi4gVGhlIEdFTFUgYWN0aXZhdGlvbiBmdW5jdGlvbiBpcyAkeM6mKHgpJCwgd2hlcmUgJM6mKHgpJCB0aGUgc3RhbmRhcmQgR2F1c3NpYW4gY3VtdWxhdGl2ZSBkaXN0cmlidXRpb24gZnVuY3Rpb24uIFRoZSBHRUxVIG5vbmxpbmVhcml0eSB3ZWlnaHRzIGlucHV0cyBieSB0aGVpciB2YWx1ZSwgcmF0aGVyIHRoYW4gZ2F0ZXMgaW5wdXRzIGJ5IHRoZWlyIHNpZ24gYXMgaW4gUmVMVXMgKCR4XG1hdGhiZnsxfV97eCZndDswfSQpLiBXZSBwZXJmb3JtIGFuIGVtcGlyaWNhbCBldmFsdWF0aW9uIG9mIHRoZSBHRUxVIG5vbmxpbmVhcml0eSBhZ2FpbnN0IHRoZSBSZUxVIGFuZCBFTFUgYWN0aXZhdGlvbnMgYW5kIGZpbmQgcGVyZm9ybWFuY2UgaW1wcm92ZW1lbnRzIGFjcm9zcyBhbGwgY29uc2lkZXJlZCBjb21wdXRlciB2aXNpb24sIG5hdHVyYWwgbGFuZ3VhZ2UgcHJvY2Vzc2luZywgYW5kIHNwZWVjaCB0YXNrcy48L2Rlc2NyaXB0aW9uPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iT3RoZXIiPlRyaW1tZWQgdmVyc2lvbiBvZiAyMDE2IGRyYWZ0PC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=",
+   "url": "https://arxiv.org/abs/1606.08415",
+   "contentUrl": null,
+   "metadataVersion": 1,
+   "schemaVersion": "http://datacite.org/schema/kernel-4",
+   "source": "mds",
+   "isActive": true,
+   "state": "findable",
+   "reason": null,
+   "viewCount": 0,
+   "viewsOverTime": [],
+   "downloadCount": 0,
+   "downloadsOverTime": [],
+   "referenceCount": 0,
+   "citationCount": 6,
+   "citationsOverTime": [
+    {
+     "year": "2022",
+     "total": 2
+    },
+    {
+     "year": "2026",
+     "total": 4
+    }
+   ],
+   "partCount": 0,
+   "partOfCount": 0,
+   "versionCount": 0,
+   "versionOfCount": 0,
+   "created": "2022-03-06T03:18:29.000Z",
+   "registered": "2022-03-06T03:18:30.000Z",
+   "published": "2016",
+   "updated": "2023-06-07T01:16:23.000Z"
+  },
+  "relationships": {
+   "client": {
+    "data": {
+     "id": "arxiv.content",
+     "type": "clients"
+    }
+   },
+   "provider": {
+    "data": {
+     "id": "arxiv",
+     "type": "providers"
+    }
+   },
+   "media": {
+    "data": {
+     "id": "10.48550/arxiv.1606.08415",
+     "type": "media"
+    }
+   },
+   "references": {
+    "data": []
+   },
+   "citations": {
+    "data": [
+     {
+      "id": "10.5281/zenodo.22683762",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22684460",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22640407",
+      "type": "dois"
+     },
+     {
+      "id": "10.5281/zenodo.22640408",
+      "type": "dois"
+     },
+     {
+      "id": "10.1371/journal.pcbi.1010050",
+      "type": "dois"
+     },
+     {
+      "id": "10.1021/acs.jctc.1c00821",
+      "type": "dois"
+     }
+    ]
+   },
+   "parts": {
+    "data": []
+   },
+   "partOf": {
+    "data": []
+   },
+   "versions": {
+    "data": []
+   },
+   "versionOf": {
+    "data": []
+   }
+  }
+ }
+}

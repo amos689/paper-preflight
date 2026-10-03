@@ -1,0 +1,31 @@
+{
+ "head": {
+  "vars": [
+   "pub",
+   "t",
+   "doi"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "pub": {
+     "type": "uri",
+     "value": "https://dblp.org/rec/journals/corr/HendrycksG16"
+    },
+    "t": {
+     "type": "literal",
+     "value": "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units."
+    },
+    "doi": {
+     "type": "uri",
+     "value": "https://doi.org/10.48550/ARXIV.1606.08415"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 5,
+  "result-size-total": 1
+ }
+}
