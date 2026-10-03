@@ -130,3 +130,25 @@ def test_offline_after_adding_an_entry_keeps_every_other_verdict(tmp_path: Path)
     assert {k: after[k] for k in before} == before
     assert after["added2025new"] == "cannot_determine"
     assert offline["verification"]["unverified_offline"] == 1
+
+
+def test_offline_after_adding_a_preprint_keeps_published_versions(tmp_path: Path) -> None:
+    # dblp's batch lookups (arXiv DOI -> CoRR record -> published version) are cached per item
+    # too, so a new preprint does not hide the published versions of the others offline.
+    bib = tmp_path / "refs.bib"
+    bib.write_text((DEMO / "refs.bib").read_text(encoding="utf-8"), encoding="utf-8")
+    _, online = check_json(tmp_path, str(bib))
+    added = [
+        "",
+        "@misc{added2025preprint, title = {A Newly Added Preprint With A Long Title},",
+        "  author = {Doe, Jane}, year = {2025}, eprint = {2501.00001}, archiveprefix = {arXiv}}",
+        "",
+    ]
+    with bib.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(added))
+    _, offline = check_json(tmp_path, str(bib), "--offline")
+    before = {r["key"]: r["flags"] for r in online["references"]}
+    after = {r["key"]: r["flags"] for r in offline["references"]}
+    assert before["he2015residual"] == ["preprint_published"]
+    assert {k: after[k] for k in before} == before
+    assert "REF015" in [f["rule"] for f in offline["findings"]]

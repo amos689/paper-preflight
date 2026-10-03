@@ -341,13 +341,38 @@ async def _published_versions(
         return
     owners = [e for items in by_arxiv.values() for e in items]
     arxiv_dois = {f"10.48550/arxiv.{a}".lower(): a for a in by_arxiv}
-    corr_pubs = await _guard(owners, lambda: dblp.by_dois(sources.dblp, list(arxiv_dois)))
+
+    def doi_owners(doi: str) -> list[Evidence]:
+        return by_arxiv.get(arxiv_dois.get(doi, ""), [])
+
+    corr_pubs = await _guard(
+        owners, lambda: dblp.by_dois(sources.dblp, list(arxiv_dois)), owners_of=doi_owners
+    )
     if not corr_pubs:
         return
-    corr_values = list(corr_pubs.values())
-    links = await _guard(owners, lambda: dblp.published_versions(sources.dblp, corr_values)) or {}
-    venue_pubs = {pub for found in links.values() for pub, _, _ in found}
-    records = await _guard(owners, lambda: dblp.full_records(sources.dblp, venue_pubs)) or {}
+    corr_owners: dict[str, list[Evidence]] = {}
+    for doi, corr_pub in corr_pubs.items():
+        corr_owners.setdefault(corr_pub, []).extend(doi_owners(doi))
+    links = (
+        await _guard(
+            owners,
+            lambda: dblp.published_versions(sources.dblp, list(corr_owners)),
+            owners_of=lambda corr: corr_owners.get(corr, []),
+        )
+        or {}
+    )
+    pub_owners: dict[str, list[Evidence]] = {}
+    for corr, found in links.items():
+        for pub, _, _ in found:
+            pub_owners.setdefault(pub, []).extend(corr_owners.get(corr, []))
+    records = (
+        await _guard(
+            owners,
+            lambda: dblp.full_records(sources.dblp, list(pub_owners)),
+            owners_of=lambda pub: pub_owners.get(pub, []),
+        )
+        or {}
+    )
     for doi, corr_pub in corr_pubs.items():
         arxiv_id = arxiv_dois.get(doi)
         for pub, _, _ in links.get(corr_pub, []):
