@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- An entry citing an earlier arXiv version (matched through that version's title) is no longer
+  reported for its author order when a later version reordered the authors (REF011).
+
 ## [0.1.0] - 2026-10-03
 
 The first release.

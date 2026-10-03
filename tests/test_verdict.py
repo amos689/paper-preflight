@@ -464,6 +464,22 @@ def test_an_earlier_arxiv_version_title_is_fine() -> None:
     assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
 
 
+def test_an_earlier_version_keeps_its_own_author_order() -> None:
+    # arXiv 2508.03341: v1 "Nemori: ..." by Nan, Ma, Wu, Chen; v4 renamed and Ma listed first
+    entry = bib(ARXIV_ENTRY)
+    renamed = replace(
+        arxiv_record(alt_titles=(TITLE, "A Later Title")), title="A Later Title",
+        authors=(BOB, ANN, CAROL),
+        identifiers={"arxiv": "2101.00001", "arxiv_version": "v4"},
+    )  # fmt: skip
+    result = assess(entry, evidence_for(entry, anchored=[renamed]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
+    # with the latest title, the latest order counts
+    reordered = replace(arxiv_record(), authors=(BOB, ANN, CAROL))
+    result = assess(entry, evidence_for(entry, anchored=[reordered]), current_year=YEAR)
+    assert "REF011" in rules(result)
+
+
 NO_DOI = CS_ENTRY.replace("  doi = {10.1234/acl.2023.1},\n", "")
 
 
