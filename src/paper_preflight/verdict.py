@@ -435,6 +435,23 @@ def _published_version(
     return None
 
 
+def _addable_doi(entry: BibEntry, evidence: Evidence, record: SourceRecord) -> Finding | None:
+    """REF016 when the entry has no DOI and the record it is bound to has one.
+
+    Not for preprint citations (REF015 covers the published version) and never for arXiv's
+    DataCite DOIs, which add nothing to an eprint field.
+    """
+    doi = record.doi
+    if not doi or doi.startswith("10.48550/") or cites_preprint(evidence):
+        return None
+    if any(i.scheme == "doi" for i in evidence.identifiers):
+        return None
+    return make_finding(
+        "REF016", _location(entry), key=entry.key, field="doi",
+        source=source_name(record.source), doi=doi, suggestion=doi,
+    )  # fmt: skip
+
+
 def _dead_identifiers(entry: BibEntry, evidence: Evidence) -> tuple[list[Finding], set[str]]:
     findings: list[Finding] = []
     dead: set[str] = set()
@@ -513,6 +530,9 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         if published is not None:
             findings.append(published)
             flags.add("preprint_published")
+        addable = _addable_doi(entry, evidence, bound.record)
+        if addable is not None:
+            findings.append(addable)
         field_problem = any(
             f.rule_id in {"REF010", "REF011", "REF012", "REF013", "REF014"}
             and f.severity is not Severity.INFO
