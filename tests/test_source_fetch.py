@@ -72,6 +72,42 @@ async def test_doira_chunks_and_quotes(http: httpx.AsyncClient) -> None:
 
 @pytest.mark.anyio
 @respx.mock
+async def test_doira_error_is_settled_by_the_handle_api(http: httpx.AsyncClient) -> None:
+    # Answers recorded on 2026-10-03: doiRA says only "Error" for a DOI whose prefix is not
+    # registered; the Handle API says the prefix "doesn't live here" (HTTP 400, code 301).
+    respx.get(url__startswith=doiorg.DOIRA_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json=[
+                {"DOI": "10.77771/conf/5520200", "status": "Error"},
+                {"DOI": "10.5555/registered.but.doira.failed", "status": "Error"},
+                {"DOI": "10.1109/CVPR.2016.90", "RA": "Crossref"},
+            ],
+        )
+    )
+    unregistered = respx.get(url__startswith=doiorg.HANDLE_URL + "10.77771/").mock(
+        return_value=httpx.Response(
+            400,
+            json={"responseCode": 301, "message": "That prefix doesn't live here",
+                  "handle": "10.77771/conf/5520200"},
+        )
+    )  # fmt: skip
+    respx.get(url__startswith=doiorg.HANDLE_URL + "10.5555/").mock(
+        return_value=httpx.Response(200, json={"responseCode": 1, "handle": "10.5555/x"})
+    )
+    client = client_for(doiorg.POLICY, http, Cache(None))
+    answers = await doiorg.registration_agencies(
+        client,
+        ["10.77771/conf/5520200", "10.5555/registered.but.doira.failed", "10.1109/CVPR.2016.90"],
+    )
+    assert unregistered.call_count == 1
+    assert answers["10.77771/conf/5520200"].exists is False
+    assert "10.5555/registered.but.doira.failed" not in answers  # exists: agency still unknown
+    assert answers["10.1109/cvpr.2016.90"].agency == "Crossref"
+
+
+@pytest.mark.anyio
+@respx.mock
 async def test_arxiv_by_ids_uses_text_and_caches(http: httpx.AsyncClient) -> None:
     feed = (FIXTURES / "arxiv/idlist_multi.xml").read_text(encoding="utf-8")
     route = respx.get(arxiv.API_URL).mock(
