@@ -269,10 +269,25 @@ def test_crossref_december_print_counts_the_next_year() -> None:
         "issued": {"date-parts": [[2020, 11, 17]]},
         "published-online": {"date-parts": [[2020, 11, 17]]},
         "published-print": {"date-parts": [[2020, 12, 10]]},
-        "journal-issue": {"issue": "4", "published-print": {"date-parts": [[2020, 12, 10]]}},
     }  # fmt: skip
     assert crossref.parse_work(item).years == {2020, 2021}
-    item["published-print"] = item["journal-issue"]["published-print"] = {
-        "date-parts": [[2020, 11]]
-    }
+    item["published-print"] = {"date-parts": [[2020, 11]]}
     assert crossref.parse_work(item).years == {2020}
+
+
+# Crossref's answer to an unknown select: "Valid selects for this route are: ..." (2026-10-03).
+# A field outside this list makes every /works request fail with 400.
+CROSSREF_WORKS_SELECTS = set(
+    "abstract URL resource member posted score created degree update-policy short-title license "
+    "ISSN container-title issued update-to issue prefix approved indexed article-number "
+    "clinical-trial-number accepted author group-title DOI is-referenced-by-count updated-by "
+    "event chair standards-body original-title funder translator published archive "
+    "published-print alternative-id subject subtitle published-online publisher-location "
+    "content-domain reference title link type publisher volume references-count ISBN issn-type "
+    "assertion deposited page contributor content-created short-container-title relation "
+    "editor".split()
+)
+
+
+def test_crossref_selects_only_fields_the_route_accepts() -> None:
+    assert set(crossref.SELECT.split(",")) <= CROSSREF_WORKS_SELECTS
