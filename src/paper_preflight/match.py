@@ -253,8 +253,51 @@ _NICKNAMES = {
         "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
-        "yura/yuri"
+        "yura/yuri "
+        # Polish diminutives
+        "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
+        "staszek/stanislaw kasia/katarzyna gosia/malgorzata"
     ).split()
+}
+
+
+# One given name in the forms different languages give it (a Greek author's "Grigoris" is
+# "Gregory" in dblp). Each line is one name; forms are folded like _given_words folds them.
+_COGNATE_GROUPS = """
+gregory gregor grigoris grigorios grigory grigorii grzegorz gregorio gregoire
+george georg georgios giorgos giorgio jorge jerzy jiri yuri yury jurgen
+john johann johannes johan jan jean juan giovanni ioannis yannis ivan joao jon jens hans
+james jacob jakob jacques giacomo jaime jakub iakovos
+peter pierre pedro pietro piotr petr petros pieter
+paul pablo paolo pavel pawel paulo pavlos
+michael michel miguel michele mikhail michal michalis mikael
+nicholas nicolas nicola nikolai nikolay nikolaos nikos niklas mikolaj
+alexander alexandre alessandro alejandro alexandr alexandros
+andrew andre andreas andrea andres andrei andrey andrzej andrej
+stephen steven stefan stephane stefano esteban stepan stefanos
+thomas tomas tommaso tomasz
+joseph josef jose giuseppe jozef iosif
+william wilhelm guillaume guillermo guglielmo willem
+charles carl karl carlos carlo karol
+henry heinrich henri enrique enrico henrik
+matthew matthias mathieu mateo matteo mateusz matvei
+mark marc marco marcos markus marek
+luke lucas luca lukas lukasz luc
+anthony antonio antoine anton antonios
+dimitri dimitrios dmitry dmitri demetrios
+constantine konstantinos konstantin costantino kostas
+emmanuel manuel emanuele manolis
+christopher christoph christophe cristobal krzysztof
+francis francois francesco francisco franz frantisek
+vincent vincenzo vicente
+elizabeth elisabeth isabel elisabetta
+catherine katherine katharina caterina ekaterina katerina
+helen helena elena eleni
+"""
+_COGNATES = {
+    name.replace("ks", "x"): index
+    for index, line in enumerate(_COGNATE_GROUPS.strip().splitlines())
+    for name in line.split()
 }
 
 
@@ -268,7 +311,8 @@ def given_names_differ(a: Person, b: Person) -> bool:
 
     Only full names count: an initial ("J."), a prefix ("Alex", "Chris"), a middle name used
     as the first ("Alp" for Durmus Alp Emre), hyphenation ("Jun-Yan", "Junyan"), a typo or a
-    transcription ("Aleksandr") and common nicknames ("Bill") all agree.
+    transcription ("Aleksandr"), common nicknames ("Bill") and one name's forms in other
+    languages ("Grigoris" for Gregory) all agree.
     """
     if a.literal or b.literal:
         return False
@@ -283,6 +327,8 @@ def given_names_differ(a: Person, b: Person) -> bool:
     if first_a.startswith(first_b) or first_b.startswith(first_a):
         return False
     if frozenset((first_a, first_b)) in _NICKNAMES:
+        return False
+    if first_a in _COGNATES and _COGNATES[first_a] == _COGNATES.get(first_b):
         return False
     return fuzz.ratio(first_a, first_b) < 75 and Levenshtein.distance(first_a, first_b) > 1
 
