@@ -34,6 +34,7 @@ Inside Claude Code the same commands are `/plugin marketplace add amos689/paper-
 |---|---|---|
 | `preflight_check` | Verifies every cited reference of a LaTeX project (or a `.bib` file) and checks citation keys. Returns a summary (counts, one verdict per reference, whether the run was complete) and the findings, most severe first, `max_findings` at a time; `next_offset` pages through the rest. Options: `path`, `offline`, `max_findings`, `offset`, `include_info`, `lang` (`en`/`zh`). | read-only, idempotent, open world |
 | `preflight_bib_lookup` | Returns a BibTeX entry for a DOI, an arXiv ID or a title, built from the registry record instead of written from memory; lists candidates when a title is ambiguous. A published preprint comes back as its published version with the eprint kept. | read-only, idempotent, open world |
+| `preflight_bib_fix` | Proposes edits to the .bib files from the verified records as a unified diff, without writing anything: `level` `safe` (identifier formatting, missing DOIs) or `unsafe` (also authors, title, year, venue, wrong identifiers); `keys` limits it to some entries. | read-only, idempotent, open world |
 | `preflight_explain` | Explains a rule (`REF003`, `CIT001`, ...): what it detects, its severity, its message and whether a fix is safe. | read-only, idempotent |
 
 - **Nothing in the workspace is written.** The only state is the local response cache, shared

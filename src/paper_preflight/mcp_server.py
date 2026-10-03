@@ -27,6 +27,7 @@ from paper_preflight import __version__
 from paper_preflight.check import CheckResult, VerifyOptions, run_check
 from paper_preflight.fetch import identifier_query, lookup, title_query, to_dict
 from paper_preflight.findings import Severity
+from paper_preflight.fixes import edits, plan
 from paper_preflight.rules import RULES, describe
 from paper_preflight.tex.project import ProjectError
 
@@ -46,6 +47,13 @@ def _inside(root: Path, path: str) -> Path:
     if not target.exists():
         raise ToolError(f"'{path}' does not exist in the workspace.")
     return target
+
+
+def _relative(root: Path, path: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return path.as_posix()
 
 
 def _finding(finding: Any, root: Path, lang: str) -> dict[str, Any]:
@@ -173,5 +181,53 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
             lookup(query, cache_path=cache_path, offline=offline, prefer_published=prefer_published)
         )
         return to_dict(result)
+
+    @server.tool(
+        annotations=ToolAnnotations(
+            title="Propose fixes for a bibliography",
+            read_only_hint=True,
+            idempotent_hint=True,
+            open_world_hint=True,
+        )
+    )
+    def preflight_bib_fix(
+        path: str = ".",
+        level: Literal["safe", "unsafe"] = "safe",
+        keys: list[str] | None = None,
+        offline: bool = False,
+    ) -> dict[str, Any]:
+        """Propose edits to the .bib files, taken from the verified records, as a unified diff.
+        Nothing is written: apply the diff with your own editing tools.
+
+        `level="safe"` only fixes identifiers written so that links break and adds DOIs the
+        registry has; `level="unsafe"` also rewrites authors, title, year and venue from the
+        record and removes identifiers that point to another work. Show unsafe diffs to the user
+        before applying them. References nobody could find are never "fixed".
+        """
+        target = _inside(root, path)
+        try:
+            result = run_check(target, verify=VerifyOptions(offline=offline, cache_path=cache_path))
+        except ProjectError as error:
+            raise ToolError(str(error)) from error
+        fixes = plan(
+            result.findings, result.bib_files, level=level, keys=set(keys) if keys else None
+        )
+        file_edits = edits(result.bib_files, fixes)
+        return {
+            "fixes": [
+                {
+                    "file": _relative(root, f.file),
+                    "key": f.key,
+                    "rule": f.rule,
+                    "field": f.field,
+                    "action": f.action,
+                    "old": f.old,
+                    "new": f.new,
+                    "level": f.level,
+                }
+                for f in fixes
+            ],
+            "diff": "".join(edit.diff(root) for edit in file_edits),
+        }
 
     return server

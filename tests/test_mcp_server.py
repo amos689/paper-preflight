@@ -39,7 +39,12 @@ async def call(root: Path, tool: str, **arguments: Any) -> Any:
 async def test_tools_are_few_and_read_only(workspace: Path) -> None:
     async with Client(create_server(workspace)) as client:
         tools = {tool.name: tool for tool in await client.list_tools()}
-    assert set(tools) == {"preflight_check", "preflight_explain", "preflight_bib_lookup"}
+    assert set(tools) == {
+        "preflight_check",
+        "preflight_explain",
+        "preflight_bib_lookup",
+        "preflight_bib_fix",
+    }
     for tool in tools.values():
         assert tool.annotations is not None
         assert tool.annotations.read_only_hint is True
@@ -130,7 +135,12 @@ async def test_stdio_server_speaks_only_the_protocol(workspace: Path) -> None:
     async with Client(transport) as client:
         names = {tool.name for tool in await client.list_tools()}
         explained = await client.call_tool("preflight_explain", {"rule_id": "CIT001"})
-    assert names == {"preflight_check", "preflight_explain", "preflight_bib_lookup"}
+    assert names == {
+        "preflight_check",
+        "preflight_explain",
+        "preflight_bib_lookup",
+        "preflight_bib_fix",
+    }
     assert explained.data["rule"] == "CIT001"
 
 
@@ -159,3 +169,19 @@ async def test_bib_lookup_needs_exactly_one_query(workspace: Path) -> None:
         await call(workspace, "preflight_bib_lookup")
     with pytest.raises(ToolError, match="not a DOI"):
         await call(workspace, "preflight_bib_lookup", identifier="hello")
+
+
+@pytest.mark.anyio
+async def test_bib_fix_proposes_a_diff_and_writes_nothing(workspace: Path) -> None:
+    before = (workspace / "paper" / "refs.bib").read_bytes()
+    safe = await call(workspace, "preflight_bib_fix", path="paper")
+    assert [f["rule"] for f in safe["fixes"]] == ["REF017"]
+    assert safe["fixes"][0]["file"] == "paper/refs.bib"
+    assert "+  doi     = {10.1162/tacl_a_00276}," in safe["diff"]
+    unsafe = await call(workspace, "preflight_bib_fix", path="paper", level="unsafe")
+    assert {"REF001", "REF013", "REF017"} <= {f["rule"] for f in unsafe["fixes"]}
+    only = await call(
+        workspace, "preflight_bib_fix", path="paper", level="unsafe", keys=["kingma2015adam"]
+    )
+    assert [(f["key"], f["new"]) for f in only["fixes"]] == [("kingma2015adam", "2015")]
+    assert (workspace / "paper" / "refs.bib").read_bytes() == before
