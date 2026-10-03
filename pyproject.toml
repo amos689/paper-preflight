@@ -79,7 +79,8 @@ extend-exclude = [".spikes", "evals/.data", "tests/fixtures"]
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "C4", "PT"]
 # SIM905: whitespace-separated word lists (`"""a b c""".split()`) are clearer for command tables.
-ignore = ["SIM905"]
+# RUF001-003: Chinese messages legitimately use full-width punctuation.
+ignore = ["SIM905", "RUF001", "RUF002", "RUF003"]
 
 [tool.ruff.format]
 line-ending = "lf"
