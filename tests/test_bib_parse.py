@@ -98,3 +98,14 @@ def test_crlf_bom_and_gb18030_files(tmp_path: Path) -> None:
 def test_unreadable_file(tmp_path: Path) -> None:
     result = parse_bib_file(tmp_path / "missing.bib")
     assert [i.kind for i in result.issues] == ["unreadable"]
+
+
+def test_html_entities_from_web_pages_are_decoded() -> None:
+    # dblp-scraped HALLMARK entries carry "&apos;"; LaTeX would read "&" as an alignment tab
+    bib = (
+        "@inproceedings{k, title = {Tom &amp; Jerry: A &#8220;Case&#8221; Study},\n"
+        "  author = {Francesco d&apos;Amore and Shin-Fang Ch&apos;ng}}"
+    )
+    (entry,) = parse_bib_text(bib, Path("refs.bib")).entries
+    assert entry.text("title") == "Tom & Jerry: A \u201cCase\u201d Study"
+    assert entry.text("author") == "Francesco d'Amore and Shin-Fang Ch'ng"
