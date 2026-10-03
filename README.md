@@ -210,6 +210,10 @@ read-only and confined to your workspace; see [docs/mcp.md](docs/mcp.md).
 **pre-commit** — check citation keys and cached verdicts on every commit in seconds; see
 [docs/pre-commit.md](docs/pre-commit.md).
 
+**GitHub Actions** — `uses: amos689/paper-preflight@main` checks the paper on every push, with
+the report in the job summary and optional code-scanning alerts; see
+[docs/github-action.md](docs/github-action.md).
+
 ## Better results with free credentials
 
 paper-preflight works without any account. These optional environment variables make it faster
@@ -256,7 +260,7 @@ or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- A GitHub Action, and the first PyPI release (v0.1)
+- The first PyPI release (v0.1)
 - Chinese-language references (v0.2)
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the

@@ -202,6 +202,9 @@ claude plugin install paper-preflight@paper-preflight
 **pre-commit**：每次提交时几秒内检查引用键和缓存中的核查结果，见
 [docs/pre-commit.md](docs/pre-commit.md)。
 
+**GitHub Actions**：`uses: amos689/paper-preflight@main` 在每次推送时检查论文，报告写进任务摘要页，
+也可以生成代码扫描告警，见 [docs/github-action.md](docs/github-action.md)。
+
 ## 配置免费凭据，效果更好
 
 不注册任何账号也能用。下面这些环境变量是可选的，能让核查更快、更完整；它们的值永远不会被打印或
@@ -245,7 +248,7 @@ claude plugin install paper-preflight@paper-preflight
 
 ## 路线图
 
-- GitHub Action，以及首个 PyPI 版本（v0.1）
+- 首个 PyPI 版本（v0.1）
 - 中文参考文献（v0.2）
 
 进度见 [docs/PROGRESS.md](docs/PROGRESS.md) 和[更新日志](CHANGELOG.md)。
