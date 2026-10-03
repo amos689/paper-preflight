@@ -3,7 +3,7 @@
 > 每次会话开始先读这里，结束前更新。
 > 开发计划见工作区 `plans/paper-preflight 开发计划.md`（不在本仓库内）。
 
-## 当前阶段：W0（2026-10-05 – 10-11）搭建与技术验证
+## W0（2026-10-05 – 10-11）搭建与技术验证（提前于 10-03 完成）
 
 ### 已完成
 
@@ -40,21 +40,30 @@
 - [x] SARIF 2.1.0 输出（用官方 schema 校验）；SQLite 缓存；数据源客户端基座（限流、冷却、来源不可用识别、离线回放）。共 80 个测试
 - [x] 示例论文 `examples/demo-paper/`（main.tex、refs.bib、EXPECTED.md）。离线阶段的预期发现已全部命中
 
-### W0 状态：开发侧全部完成
+### W0 状态：完成
 
-- [x] 2026-10-03 用户决定：不建组织，仓库放个人账号 `amos689/paper-preflight`（私有）；提交改用 GitHub noreply 邮箱（只在本仓库设置）
-- [ ] 前 13 个提交里的作者邮箱仍是旧邮箱。改写 git 历史被权限系统拦截，**需要用户自己执行或授权**（命令见对话）；在此之前不推送
-- [ ] 用户：注册 PyPI（2FA）；申请 OpenAlex、S2 免费 key；提供测试邮箱（只放本机环境变量）
-- [ ] 推送到 GitHub，确认 CI 全绿
-  - 私有期间 CI 矩阵已精简：Linux 跑 4 个版本，Windows 2 个，macOS 1 个，以节省 Actions 分钟
-  - 公开后恢复 3 × 4 全矩阵
+- [x] 2026-10-03 用户决定：
+  - 不建组织，仓库放在个人账号下的私有仓库 https://github.com/amos689/paper-preflight
+  - 提交邮箱改用 noreply（只在本仓库设置）；用户已在本机执行 filter-branch，14 个历史提交全部改好
+- [x] CI 全绿：lint，以及 Linux 4 个 Python 版本、Windows 2 个、macOS 1 个
+  - Action 按提交 SHA 锁定，因为 setup-uv 没有 v10 浮动标签
+  - 私有期间矩阵已精简；公开后恢复 3 × 4 全矩阵
+- [ ] 用户（不阻塞开发）：
+  - 注册 PyPI（2FA），W1 末发 0.0.1 占名
+  - 申请 OpenAlex、S2 免费 key
+  - 提供测试邮箱（只放本机环境变量）
 
-## 下一步：W1–W2（已提前开始）
+## W1–W2（进行中，已提前开始）
 
-- [ ] 各数据源适配器（doiRA、Crossref、DataCite、arXiv、dblp SPARQL、OpenAlex；S2 可选），带 respx 契约测试
-- [ ] 路由器与请求预算；`doctor` 加入连通性检查
+- [x] 数据源适配器：
+  - doi.org（doiRA 路由、Handle、CSL）、Crossref（批量 DOI、书目检索、撤稿）、DataCite（批量）
+  - arXiv（Atom、批量、各版本标题、撤回）、dblp SPARQL（前缀检索、完整记录、DOI 批量、CoRR→正式版）、OpenAlex（免费单条、批量）
+  - 统一的 SourceRecord 模型
+  - 解析器用真实响应夹具测试，请求层用 respx 测试，共 98 个测试
+- [ ] 路由器：标识符优先，按 ADR-0003；请求预算；可疑前缀黑名单（10.65215）作为数据文件
 - [ ] REF017（DOI 中的 LaTeX 转义，离线即可检测）
-- [ ] 匹配与判决（W3），评测框架（W3）
+- [ ] `doctor` 加入连通性检查
+- [ ] W3：匹配（标题键、作者、年份、venue、错配守卫）与判决（ADR-0002）；评测框架（HALLMARK dev_public 首跑）
 
 ## 已知问题与备忘
 
