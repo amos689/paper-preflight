@@ -843,3 +843,24 @@ def test_an_entry_naming_its_venue_fits_either_version(
         entry, anchored=[replace(arxiv_record(), authors=on_arxiv)], published_versions=[published]
     )
     assert rules(assess(entry, item, current_year=YEAR)) == set()
+
+
+def test_the_published_version_is_the_one_by_the_preprints_authors() -> None:
+    # arXiv 1408.6027 (Xin Geng, 2014) is his TKDE 2016 article; dblp also has an ICDM Workshops
+    # 2013 paper of the same title by Geng and Ji, found first
+    entry = bib(ARXIV_ENTRY.replace("2021", "2014"))
+    workshop = replace(
+        record(authors=(ANN, BOB, CAROL, Person("Ji", "Rongzi")), year=2013, source="dblp",
+               venue="ICDM Workshops"),
+        source_id="conf/icdm/workshop13",
+    )  # fmt: skip
+    journal = replace(
+        record(year=2016, source="dblp", venue="IEEE Trans. Knowl. Data Eng."),
+        source_id="journals/tkde/x16",
+    )
+    preprint = replace(arxiv_record(), year=2014, years=frozenset({2014}))
+    item = evidence_for(entry, anchored=[preprint], published_versions=[workshop, journal])
+    (finding,) = [
+        f for f in assess(entry, item, current_year=YEAR).findings if f.rule_id == "REF015"
+    ]
+    assert finding.data["published_id"] == "journals/tkde/x16"
