@@ -21,7 +21,7 @@ arXiv, DataCite and OpenAlex (and Semantic Scholar, if you have a key) about eve
 When it cannot tell, it says so instead of guessing.
 
 > **Status: early release.** The checks below work today; install from GitHub until the first
-> PyPI release (v0.1, planned for November 2026). `bib fix` is next.
+> PyPI release (v0.1, planned for November 2026).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
 purpose. A real run, against the live sources:
@@ -162,6 +162,34 @@ paper-preflight bib fetch 1810.04805
 - **Retractions:** a retracted work comes with a warning.
 - **Agents:** `--format json` is for scripts and agents.
 
+## Fix the bibliography
+
+`bib fix` turns findings into edits of your `.bib` files, taken from the verified records. It
+prints a diff and changes nothing until you add `--apply`:
+
+```bash
+paper-preflight bib fix path/to/paper --level unsafe
+```
+
+```diff
+--- a/refs.bib
++++ b/refs.bib
+@@ -48,7 +47,7 @@
+   title     = {Adam: A Method for Stochastic Optimization},
+   author    = {Kingma, Diederik P. and Ba, Jimmy},
+   booktitle = {International Conference on Learning Representations (ICLR)},
+-  year      = {2016},
++  year      = {2015},
+ }
+```
+
+- `--level safe` (the default) only fixes what cannot change which work is cited: identifiers
+  written so that links break, and DOIs the registry has but the entry lacks.
+- `--level unsafe` also rewrites authors, title, year and venue from the record, and removes
+  identifiers that point to another work. Review the diff first.
+- Only the affected fields change; comments, formatting, line endings and encoding are kept.
+  A reference nobody could find is never "fixed": only you can say what was meant.
+
 ## Use it from your coding agent
 
 **Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
@@ -228,7 +256,6 @@ or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- `bib fix` (reviewable patches that apply the verified records)
 - A GitHub Action, and the first PyPI release (v0.1)
 - Chinese-language references (v0.2)
 

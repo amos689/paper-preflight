@@ -365,3 +365,92 @@ def bib_fetch(
     if result.status == "found":
         return
     raise typer.Exit(EXIT_INCOMPLETE if result.status == "unavailable" else EXIT_FINDINGS)
+
+
+@bib_app.command("fix")
+def bib_fix(
+    path: Annotated[
+        Path, typer.Argument(help="Project directory, main .tex file, or a .bib file.")
+    ] = Path("."),
+    level: Annotated[
+        str,
+        typer.Option(
+            "--level",
+            help="'safe' (identifier formatting, missing DOIs) or 'unsafe' (also authors, "
+            "title, year, venue and wrong identifiers, from the record).",
+        ),
+    ] = "safe",
+    keys: Annotated[
+        str | None, typer.Option("--keys", help="Only these entries (comma-separated keys).")
+    ] = None,
+    write: Annotated[
+        bool, typer.Option("--apply", help="Write the changes instead of printing a diff.")
+    ] = False,
+    main_file: Annotated[
+        Path | None, typer.Option("--main", help="Main .tex file if it cannot be detected.")
+    ] = None,
+    output_format: Annotated[
+        OutputFormat, typer.Option("--format", "-f", help="'text' (a diff) or 'json'.")
+    ] = OutputFormat.TEXT,
+    offline: Annotated[
+        bool, typer.Option("--offline", help="Answer from the local cache only.")
+    ] = False,
+) -> None:
+    """Fix the .bib files from the verified records: a diff by default, --apply to write."""
+    import json
+
+    from paper_preflight.check import VerifyOptions, run_check
+    from paper_preflight.fixes import edits, plan
+    from paper_preflight.tex.project import ProjectError
+
+    _safe_stdout()
+    if level not in {"safe", "unsafe"}:
+        typer.echo("paper-preflight: --level is 'safe' or 'unsafe'", err=True)
+        raise typer.Exit(EXIT_USAGE)
+    verify = VerifyOptions(offline=offline, cache_path=Path(cache_dir()) / "cache.sqlite3")
+    try:
+        result = run_check(path, main=main_file, verify=verify)
+    except ProjectError as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
+    wanted = {k.strip() for k in keys.split(",") if k.strip()} if keys else None
+    fixes = plan(result.findings, result.bib_files, level="unsafe" if level == "unsafe" else "safe",
+                 keys=wanted)  # fmt: skip
+    file_edits = edits(result.bib_files, fixes)
+    diff = "".join(e.diff(result.root) for e in file_edits)
+
+    if output_format is OutputFormat.JSON:
+        payload = {
+            "applied": write,
+            "fixes": [
+                {
+                    "file": f.file.as_posix(),
+                    "key": f.key,
+                    "rule": f.rule,
+                    "field": f.field,
+                    "action": f.action,
+                    "old": f.old,
+                    "new": f.new,
+                    "level": f.level,
+                }
+                for f in fixes
+            ],
+            "diff": diff,
+        }
+        typer.echo(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+        typer.echo(diff, nl=False)
+    if write:
+        for edit in file_edits:
+            edit.write()
+    files = len(file_edits)
+    if not fixes:
+        typer.echo(f"paper-preflight: nothing to fix at level '{level}'", err=True)
+    elif write:
+        typer.echo(f"paper-preflight: {len(fixes)} fix(es) written to {files} file(s)", err=True)
+    else:
+        typer.echo(
+            f"paper-preflight: {len(fixes)} fix(es) in {files} file(s); "
+            "review the diff, then run with --apply to write them",
+            err=True,
+        )

@@ -104,6 +104,14 @@ def _person(person: Person) -> str:
     return escape(person.family)
 
 
+def format_authors(record: SourceRecord) -> str:
+    """The record's authors as a BibTeX author field ("Family, Given and ... [and others]")."""
+    names = [_person(p) for p in record.authors]
+    if names and not record.authors_complete:
+        names.append("others")
+    return " and ".join(names)
+
+
 def _pages(pages: str) -> str:
     return re.sub(r"\s*[-–—]+\s*", "--", pages.strip())
 
@@ -113,10 +121,7 @@ def render(record: SourceRecord, *, key: str | None = None, today: date | None =
     kind = entry_type(record)
     fields: list[tuple[str, str]] = [("title", protect_title(record.title))]
     if record.authors:
-        names = [_person(p) for p in record.authors]
-        if not record.authors_complete:
-            names.append("others")
-        fields.append(("author", " and ".join(names)))
+        fields.append(("author", format_authors(record)))
     venue = escape(record.venue) if record.venue else None
     if venue and kind == "article":
         fields.append(("journal", venue))
