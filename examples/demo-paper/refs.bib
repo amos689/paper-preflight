@@ -1,0 +1,131 @@
+% Demo bibliography for paper-preflight.
+% Several entries are WRONG ON PURPOSE; the comment above each entry says what the tool should find.
+% Fabricated entries use FICTIONAL authors. Metadata of correct entries was checked against
+% dblp, Crossref, DataCite and arXiv on 2026-10-03 (docs/spikes/S1-S5).
+
+% Correct. NeurIPS 2017 has no Crossref DOI; dblp conf/nips/VaswaniSPUJGKP17.
+@inproceedings{vaswani2017attention,
+  title     = {Attention Is All You Need},
+  author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and
+               Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
+  booktitle = {Advances in Neural Information Processing Systems 30},
+  pages     = {5998--6008},
+  year      = {2017},
+}
+
+% Correct. CVPR 2016, Crossref DOI.
+@inproceedings{he2016deep,
+  title     = {Deep Residual Learning for Image Recognition},
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {770--778},
+  year      = {2016},
+  doi       = {10.1109/CVPR.2016.90},
+}
+
+% Expected: preprint already formally published (CVPR 2016) -> REF015.
+@misc{he2015residual,
+  title         = {Deep Residual Learning for Image Recognition},
+  author        = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  year          = {2015},
+  eprint        = {1512.03385},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+}
+
+% Expected: the DOI belongs to a different work (the ResNet paper) -> REF001.
+@inproceedings{devlin2019bert,
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle = {Proceedings of NAACL-HLT 2019},
+  pages     = {4171--4186},
+  year      = {2019},
+  doi       = {10.1109/CVPR.2016.90},
+}
+
+% Expected: wrong year, the paper appeared at ICLR 2015 -> REF013.
+@inproceedings{kingma2015adam,
+  title     = {Adam: A Method for Stochastic Optimization},
+  author    = {Kingma, Diederik P. and Ba, Jimmy},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2016},
+}
+
+% Correct. The arXiv title changed between versions (v1: "Bridging Nonlinearities and
+% Stochastic Regularizers with Gaussian Error Linear Units"); dblp still has the v1 title.
+@misc{hendrycks2016gelu,
+  title         = {Gaussian Error Linear Units ({GELUs})},
+  author        = {Hendrycks, Dan and Gimpel, Kevin},
+  year          = {2016},
+  eprint        = {1606.08415},
+  archivePrefix = {arXiv},
+}
+
+% Expected: FABRICATED (fictional authors, no such paper) -> REF003 not found.
+@inproceedings{lindqvist2024quantum,
+  title     = {Quantum Gradient Folding for Sparse Mixture-of-Experts Transformers},
+  author    = {Lindqvist, Aurelio and Okonkwo-Reyes, Tamsin},
+  booktitle = {Advances in Neural Information Processing Systems 37},
+  year      = {2024},
+}
+
+% Expected: retracted in 2010 -> REF004.
+@article{wakefield1998ileal,
+  title   = {Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive
+             developmental disorder in children},
+  author  = {Wakefield, A. J. and Murch, S. H. and Anthony, A. and others},
+  journal = {The Lancet},
+  volume  = {351},
+  number  = {9103},
+  pages   = {637--641},
+  year    = {1998},
+  doi     = {10.1016/S0140-6736(97)11096-0},
+}
+
+% Expected: a book without any identifier is grey literature -> REF090 cannot determine.
+@book{goodfellow2016deep,
+  title     = {Deep Learning},
+  author    = {Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
+  publisher = {MIT Press},
+  year      = {2016},
+}
+
+% Expected: Chinese-language reference without identifier -> REF090 (supported in v0.2-zh).
+@book{zhou2016ml,
+  title     = {机器学习},
+  author    = {周志华},
+  publisher = {清华大学出版社},
+  address   = {北京},
+  year      = {2016},
+}
+
+% Expected: DOI contains LaTeX escapes (common in Google Scholar exports); the link breaks -> REF017.
+@article{tacl2019example,
+  title   = {Natural Questions: A Benchmark for Question Answering Research},
+  author  = {Kwiatkowski, Tom and Palomaki, Jennimaria and Redfield, Olivia and Collins, Michael
+             and others},
+  journal = {Transactions of the Association for Computational Linguistics},
+  volume  = {7},
+  pages   = {452--466},
+  year    = {2019},
+  doi     = {10.1162/tacl\_a\_00276},
+}
+
+% Expected: never cited in main.tex -> CIT003.
+@article{lecun1998gradient,
+  title   = {Gradient-based learning applied to document recognition},
+  author  = {LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick},
+  journal = {Proceedings of the IEEE},
+  volume  = {86},
+  number  = {11},
+  pages   = {2278--2324},
+  year    = {1998},
+  doi     = {10.1109/5.726791},
+}
+
+% Expected: duplicate key, BibTeX ignores this second definition -> CIT002.
+@misc{kingma2015adam,
+  title  = {Adam (duplicate entry)},
+  author = {Kingma, Diederik P. and Ba, Jimmy},
+  year   = {2014},
+}
