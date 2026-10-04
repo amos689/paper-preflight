@@ -165,10 +165,18 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 - Badalova & Mayr：精确率 72.5% [57.2%, 83.9%]，召回率 87.9%
 - HALLMARK test_public any_issue：精确率 97.9%、误报率 2.6%（不变），召回率 88.9%
 
+## v0.2.0（2026-10-04）：不需要 .bib 也能检查
+
+| PR | 内容 |
+|---|---|
+| #92 | D1：项目没有 `.bib` 时读取编译生成的 `.bbl`（biblatex、natbib、IEEEtran、LNCS、Elsevier、AAS 等）；6 篇论文上与 `.bib` 结论一致 91% |
+| #101 | D2：`check references.txt` / `check -` 读取纯文本参考文献列表；Badalova & Mayr 104 条：标题 103、第一作者 103、年份 104、标识符 48/48 与人工转录一致，实时核查 102/104 结论一致 |
+| #102 | D3：`check paper.pdf`（`[pdf]` 扩展，pypdf）；dev 批 20 篇 PDF：找到 .bib 中 88% 的文献，其中 92% 结论一致 |
+| #103 | D4：`check arxiv:<id>` 下载源码到临时目录、检查后删除 |
+
 ## 下一步
 
 - [ ] 0.1.3：修第四批的误报，再用第五批（07-29..08-04）验证：引用 arXiv 早期版本（v1 的标题与作者，REF001/REF011）；书被绑定到期刊里的书评（REF010/REF011/REF013）；登记处标题杂质（罗马数字、脚注数字、丢失的 ⊙、"(with Discussion)"）；昵称 Gary/Garrison；卷年份；网络出版物（Transformer Circuits Thread）
-- [ ] 0.2.0（分支已叠在 #92 上）：D1 `.bbl`（#92）、D2 纯文本参考文献列表、D3 PDF（`[pdf]` extra）、D4 `check arxiv:<id>`
 - [ ] 源码里没有 `\bibliography` 但目录里只有一个 `.bib` 时，回退使用它（第四批 2607.20215v1）
 - [ ] 召回率：只有预印本记录的论文上编造/错误的会议名；只漏掉部分作者的作者列表
 - [ ] 需要用户操作：MCP Registry 发布新版本（`mcp-publisher login github` 后 `mcp-publisher publish`）；投稿 awesome 列表

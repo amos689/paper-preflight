@@ -1,3 +1,3 @@
 """paper-preflight: a pre-submission integrity gate for LaTeX papers."""
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
