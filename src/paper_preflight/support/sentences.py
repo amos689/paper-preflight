@@ -136,11 +136,17 @@ _TEXTUAL = frozenset(
     "citet Citet citealt Citealt citeauthor Citeauthor citefullauthor textcite Textcite "
     "textcites Textcites citeA citeasnoun citeN citename possessivecite fullcite".split()
 )
-# A parenthetical citation after a preposition is a noun too ("the benchmark of [12]")
-_NOUN_PLACE = re.compile(
-    r"(?:\b(?:of|by|in|from|following|to|with|on|than|references?)|\brefs?\.)\s*$", re.IGNORECASE
-)
 CITED_WORK = "[cited work]"
+# A parenthetical citation is a noun too after a preposition ("the benchmark of [12]"), a verb
+# that names works ("the closest are [12] and [13]"), or another cited work
+_NOUN_PLACE = re.compile(
+    r"(?:\b(?:of|by|in|from|following|to|with|on|than|references?|are|is|were|was|includes?"
+    r"|including|namely)|\brefs?\.|" + re.escape(CITED_WORK) + r"\s*(?:,|,?\s*(?:and|or)))\s*$",
+    re.IGNORECASE,
+)
+# ... and as a sentence's subject: first in the sentence, a verb after it ("[12] shows that")
+_SENTENCE_END = re.compile(r"[.!?]['\")\]]*$")
+_LOWERCASE_NEXT = re.compile(r"[\s~]*[a-z]")
 
 _NEWCOMMAND_RE = re.compile(
     r"\\(?:newcommand|renewcommand|providecommand)\*?\s*\{?\\([A-Za-z]+)\}?\s*\{"
@@ -273,8 +279,13 @@ class _Converter:
                 if not cite.is_nocite:
                     self.current.cites.append((len(self.current.chars), cite))
                     # a citation the sentence uses as a noun ("We follow \citet{x}", "the
-                    # benchmark of \cite{y}") leaves a hole: name it
-                    if cite.command in _TEXTUAL or _NOUN_PLACE.search(self.current.text):
+                    # benchmark of \cite{y}", "\cite{z} shows") leaves a hole: name it
+                    before = self.current.text
+                    if (
+                        cite.command in _TEXTUAL
+                        or _NOUN_PLACE.search(before)
+                        or (_starts_sentence(before) and _LOWERCASE_NEXT.match(text, cite.end, end))
+                    ):
                         self.current.emit(f" {CITED_WORK} ")
                 i = cite.end
                 continue
@@ -449,9 +460,7 @@ def _sentence_spans(text: str) -> list[tuple[int, int]]:
         following = text[end : end + 1]
         if not following or not (following.isupper() or following.isdigit() or following in '"(['):
             continue
-        before = text[start : match.start()].split()
-        last = before[-1].lower().rstrip(".") if before else ""
-        if last in _ABBREVIATIONS or (len(last) == 1 and last.isalpha()):
+        if _ends_with_abbreviation(text[start : match.start()]):
             continue  # "et al.", "Fig.", an initial
         spans.append((start, end))
         start = end
@@ -494,18 +503,45 @@ def _claims(text: str, start: int, end: int, places: list[int]) -> dict[int, str
     return claims
 
 
+def _ends_with_abbreviation(text: str) -> bool:
+    """Whether the text's last word is an abbreviation or an initial ("et al.", "Fig.", "J.")."""
+    words = text.split()
+    last = words[-1].lower().rstrip(".") if words else ""
+    return last in _ABBREVIATIONS or (len(last) == 1 and last.isalpha())
+
+
+def _starts_sentence(before: str) -> bool:
+    """Whether what comes next starts a sentence of the paragraph whose text so far is
+    ``before``: it is empty or ends a sentence ("Liu et al." does not)."""
+    before = before.rstrip()
+    return not before or bool(_SENTENCE_END.search(before) and not _ends_with_abbreviation(before))
+
+
+def _sentence_of(place: int, spans: list[tuple[int, int]], text: str) -> int:
+    """The sentence a citation belongs to. One set after a sentence's full stop that is not the
+    next sentence's subject ("... generalise well. \\cite{x} They ...") belongs to the sentence
+    it follows."""
+    for k, (start, end) in enumerate(spans):
+        if start <= place < end or place == end == len(text):
+            if place == start and k > 0 and not text.startswith(CITED_WORK, place):
+                return k - 1
+            return k
+    return len(spans) - 1
+
+
 def _paragraph_sentences(
     paragraph: _Paragraph, path: Path, index: LineIndex
 ) -> list[CitationSentence]:
     text = paragraph.text
+    spans = _sentence_spans(text)
+    owned: dict[int, list[tuple[int, CiteCommand]]] = {}
+    for place, command in paragraph.cites:
+        owned.setdefault(_sentence_of(place, spans, text), []).append((place, command))
     out: list[CitationSentence] = []
     previous = ""
-    for start, end in _sentence_spans(text):
+    for k, (start, end) in enumerate(spans):
         sentence = _clean(text[start:end])
-        cites = sorted(
-            ((p, c) for p, c in paragraph.cites if start <= p < end or p == end == len(text)),
-            key=lambda place: (place[0], place[1].offset),
-        )
+        cites = sorted(owned.get(k, []), key=lambda place: (place[0], place[1].offset))
         claims = _claims(text, start, end, sorted({p for p, _ in cites}))
         for position, command in cites:
             claim = claims.get(position, sentence)

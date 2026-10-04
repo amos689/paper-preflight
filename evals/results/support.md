@@ -96,7 +96,7 @@ Genuine citations often paraphrase loosely, cite a dataset or method by name, or
 - **Small and AI-labelled.** The confidence intervals are wide, and the labels are not experts'.
 - **Mostly computer science and physics.** The papers are recent arXiv papers, and their cited works are mostly on arXiv too. Fields where cited works are paywalled will see far more "only the abstract" answers.
 - **Abstracts rarely confirm anything.** Of the 79 real pairs with only an abstract, 2 were confirmed.
-- **Claims come from LaTeX.** A citation used as a noun in some styles ("as \cite{x} shows") loses its subject, which makes its claim harder to confirm.
+- **A claim is the sentence, or the clause, around the citation.** A citation that only names a method or dataset ("trained with Adam \cite{x} on ImageNet \cite{y}") is asked to support the whole clause, which its work seldom says.
 
 ## Speed
 
