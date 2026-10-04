@@ -33,7 +33,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.1.1 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.1.2 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -95,20 +95,22 @@ head-to-head with published tools, and a public benchmark.
 ### On real papers
 
 The bibliographies of 20 arXiv papers from July 2026 (cs, stat, q-bio, quant-ph and astro-ph),
-chosen mechanically and collected after the fixes a first batch prompted, with every warning
-and error reviewed by hand:
+chosen mechanically and collected only after every fix in this release, with every warning and
+error reviewed by hand:
 
 | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|
-| 921 | 109 | 84 | 21 | 4 | 2.3 |
+| 814 | 107 | 92 | 14 | 1 | 1.7 |
 
-- **About one false alarm per paper** (46 references on average), against 84 real problems:
-  28 errors in the entries (wrong or invented authors, DOIs that do not exist or name another
-  paper, wrong titles) and 56 cited preprints that have since been published.
-- **The false alarms are mostly real works no source indexes** (a conference talk, papers from
-  the 1950s and 60s) and records of a related publication of the same title.
-- **A first batch of 20 papers was used to find false positives:** on it, 0.1.0 had 4.5 per 100
-  references, the fixed code 0.1. Details in [`evals/README.md`](evals/README.md#real-papers).
+- **Fewer than one false alarm per paper** (41 references on average), against 92 real
+  problems: 30 errors in the entries (invented or misspelt authors, wrong DOIs and arXiv IDs,
+  wrong titles, years and venues) and 62 cited preprints that have since been published.
+- **The false alarms are mostly records the registries got wrong** (a garbled title, a book
+  review filed under the book's title) and entries citing an earlier arXiv version as it was.
+- **Three earlier batches of 20 papers were used to find false positives,** each first measured
+  as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; this release before its last
+  fixes: 3.0). On all three, this release has 0.1 to 0.7. Details in
+  [`evals/README.md`](evals/README.md#real-papers).
 
 ### Next to other tools
 
@@ -122,7 +124,7 @@ and published what five tools flagged. On the same references, with their labels
 | Hallucinator | 50.9% [38.3%, 63.4%] | 87.9% | 39.4 |
 | HalRef | 31.2% [21.9%, 42.2%] | 72.7% | 74.6 |
 | RefChecker | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
-| **paper-preflight** | **69.2% [53.6%, 81.4%]** | 81.8% | **16.9** |
+| **paper-preflight** | **72.5% [57.2%, 83.9%]** | 87.9% | **15.5** |
 
 The sample is small, so the intervals are wide. Some flags count as false here because the study
 labels a reference correct when the work exists: five of paper-preflight's flags on such
@@ -138,10 +140,10 @@ BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 97.9% | 88.4% | 2.6% | 96.7% |
-| | Fabrication | 99.0% | 48.6% | 0.6% | 96.7% |
-| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.5% | 2.1% | 98.3% |
-| | Fabrication | 98.1% | 52.5% | 1.0% | 98.3% |
+| `test_public`: 831 entries, never used during development | Any issue | 97.9% | 88.9% | 2.6% | 97.0% |
+| | Fabrication | 99.0% | 49.0% | 0.6% | 97.0% |
+| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.7% | 2.1% | 98.4% |
+| | Fabrication | 98.1% | 52.7% | 1.0% | 98.4% |
 
 HALLMARK v1.2.3, every entry of both public splits, run on 2026-10-03. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
