@@ -21,6 +21,10 @@ All notable changes to this project are documented here. The format follows
   ("Manifold-Constrained Hyper-Connections" for "mHC: Manifold-Constrained Hyper-Connections").
 - A record with only the latest title and another author order (DataCite's arXiv DOIs) is
   "cannot determine" rather than an identifier conflict while the versions are unknown.
+- Registry title artefacts are not reported as rewording: a part's number in roman numerals
+  for digits ("Seyfert Nuclei. II." for "... 2:"), a footnote mark on the last word
+  ("Absorption1"), a symbol dropped after a one-letter quantity ("Z$_{solar}$" for "Z"), and a
+  journal's "(with Discussion)" note.
 
 ## [0.2.0] - 2026-10-04
 

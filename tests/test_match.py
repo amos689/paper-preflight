@@ -158,6 +158,16 @@ def test_earlier_version_title_is_a_variant() -> None:
         ("An improved method for computing membership probabilities",
          "IMPROVED METHOD FOR COMPUTING MEMBERSHIP PROBABILITIES", ()),
         ("A method for the cluster", "A method for an cluster", (("the", "an"),)),
+        # a part's number in roman numerals (ApJS 98, 477), but no other word for a digit
+        ("Seyfert Nuclei. II. An Optical Atlas", "Seyfert nuclei. 2: an optical atlas", ()),
+        ("Seyfert Nuclei. III. An Atlas", "Seyfert nuclei. 2: an atlas", (("iii", "2"),)),
+        # a footnote mark on the record's last word (PASP 115, 389), only there
+        ("Correcting Spectra for Absorption", "Correcting Spectra for Absorption1", ()),
+        ("Absorption Spectra of Stars", "Absorption1 Spectra of Stars",
+         (("absorption", "absorption1"),)),
+        # a symbol the registry dropped after a one-letter quantity (ApJ 573, 81)
+        ("Ionizing fluxes from 0.05 to 2 Z$_{solar}$", "Ionizing fluxes from 0.05 to 2 Z", ()),
+        ("A solar model of fluxes", "A model of fluxes", (("solar", ""),)),
     ],
 )  # fmt: skip
 def test_changed_words(ours: str, theirs: str, changes: tuple[tuple[str, str], ...]) -> None:
@@ -610,6 +620,10 @@ def test_apostrophes_do_not_make_another_person(written: str, recorded: str) -> 
          "Berechnung der nat\ufffdrlichen Linienbreite auf Grund der Diracschen Lichttheorie"),
         # Crossref keeps only the main title (10.1016/bs.aamop.2017.02.003)
         ("Optical Nanofibers: A New Platform for Quantum Optics", "Optical Nanofibers"),
+        # the journal's note that discussions follow (Bayesian Analysis 16, 667)
+        ("Rank-normalization, folding, and localization: An improved R for assessing "
+         "convergence of MCMC", "Rank-Normalization, Folding, and Localization: An Improved R "
+         "for Assessing Convergence of MCMC (with Discussion)"),
     ],
 )  # fmt: skip
 def test_registry_title_artefacts_are_not_differences(entry: str, recorded: str) -> None:

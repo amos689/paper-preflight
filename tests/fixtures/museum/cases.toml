@@ -991,3 +991,31 @@ source = "real_papers:2607.19692v1"
 key = "hampel1986"
 expect = []
 note = "was REF011: the entry cites Hampel et al.'s book (Wiley 1986); the title search bound it to Law's one-page review of it (The Statistician)"
+
+[[case]]
+name = "fp-ho1995-roman-part"
+source = "real_papers:2607.19640v1"
+key = "ho1995"
+expect = []
+note = "was REF012: 'Seyfert Nuclei. II.' is Crossref's 'Seyfert nuclei. 2:' (a roman numeral for the part's number)"
+
+[[case]]
+name = "fp-vacca2003-footnote-mark"
+source = "real_papers:2607.19640v1"
+key = "vacca2003"
+expect = []
+note = "was REF012: Crossref's title ends in 'Absorption1', a footnote mark"
+
+[[case]]
+name = "fp-smith2002-dropped-solar"
+source = "real_papers:2607.19717v2"
+key = "Smith2002"
+expect = []
+note = "was REF012: the entry's 'Z$_{solar}$' is the title's Z with the solar symbol, which Crossref dropped"
+
+[[case]]
+name = "fp-vehtari2021-with-discussion"
+source = "real_papers:2607.20044v1"
+key = "vehtari2021rank"
+expect = []
+note = "was REF012: Crossref's title adds '(with Discussion)', the journal's note that discussions follow"
