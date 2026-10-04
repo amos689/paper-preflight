@@ -285,13 +285,18 @@ def _split_names(text: str) -> tuple[list[str], list[str]]:
         if re.fullmatch(r"et al\.?", part):
             names.append("others")
             return names, parts[i + 1 :]
-        if not _INITIALS_NAME.fullmatch(part):
+        # "B. Adcock, N. Dexter, and S. Moraga", "H.-P. Breuer and F. Petruccione"
+        people = [p for p in re.split(r"\s+and\s+", re.sub(r"^and\s+", "", part)) if p]
+        if not people or not all(_INITIALS_NAME.fullmatch(p) for p in people):
             return names, parts[i:]
-        names.append(part)
+        names += people
     return names, []
 
 
 _JOURNAL_LIKE = re.compile(r"\\textbf|^(?:[A-Z][a-z]{0,5}\.\s*){2,}")
+# a journal's name before its volume: every word capitalised or abbreviated ("Numerical Methods
+# for Partial Differential Equations: An International Journal")
+_SHORT_NAME = re.compile(r"(?:(?:[A-Z][\w.&-]*:?|of|the|and|in|for|on|an)\s?){1,12}")
 
 
 _DATED_TITLE = re.compile(r"(?P<title>[^(]+?)\s*\((?:1[89]|20)\d\d[a-z]?\)")
@@ -301,8 +306,8 @@ def _numbered(whole: str, fields: dict[str, str]) -> str | None:
     """Elsevier's numbered style: "B. Zoph, Q. V. Le, Title, in: Venue, 2017." The title runs to
     "in:" or to the first part with a number in it (a volume, a year, an arXiv ID)."""
     names, parts = _split_names(whole)
-    if not names or not parts:
-        return None
+    if not names or not parts or re.match(r"\s*(?:``|“|\")", parts[0]):
+        return None  # a quoted title is IEEE's, read elsewhere
     end = next(
         (
             i
@@ -318,11 +323,13 @@ def _numbered(whole: str, fields: dict[str, str]) -> str | None:
             return None
         fields["author"], fields["title"] = " and ".join(names), dated["title"]
         return "misc"
+    venue = parts[end]
+    if end >= 2 and re.match(r"[\d(]", venue) and _SHORT_NAME.fullmatch(parts[end - 1]):
+        end, venue = end - 1, f"{parts[end - 1]} {venue}"  # SIAM: "Title, Calcolo, 61 (2024)"
     title = ", ".join(parts[:end]).strip()
     if len(title.split()) < 3 or _JOURNAL_LIKE.search(title):
         return None  # "Phys. Rev. Lett. \textbf{78}" is where, not what
     fields["author"], fields["title"] = " and ".join(names), title
-    venue = parts[end]
     if venue.lower().startswith("in:"):
         fields["booktitle"] = venue[3:].strip()
         return "inproceedings"

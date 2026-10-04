@@ -186,6 +186,12 @@ uvx paper-preflight check references.txt
 pbpaste | uvx paper-preflight check -      # or from stdin
 ```
 
+Only the PDF? Its reference list is read too, with the `pdf` extra:
+
+```bash
+uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
+```
+
 | Option | Effect |
 |---|---|
 | `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |

@@ -39,6 +39,21 @@ def test_split_references(text: str, starts: list[tuple[int, str]]) -> None:
     ]
 
 
+def test_wrapped_lines_split_where_authors_start() -> None:
+    text = (
+        "Alain, G. and Bengio, Y. Understanding intermediate\n"
+        "layers using linear classifier probes. arXiv preprint\n"
+        "arXiv:1610.01644, 2016.\n"
+        "Beigi, M., Shen, Y., and Huang, L. Sycophancy mitigation. In\n"
+        "Proceedings of EMNLP, pp. 1-9, November 2025. URL https://aclanthology.org/2025.\n"
+        "emnlp-main.661/. doi: 10.18653/v1/2025.emnlp-main.\n"
+        "661.\n"
+    )
+    found = split_references(text, wrapped=True)
+    assert [line for line, _ in found] == [1, 4]  # not at "Proceedings", nor at "2025."
+    assert "10.18653/v1/2025.emnlp-main.661" in found[1][1]  # the DOI put back whole
+
+
 def test_a_word_broken_at_a_line_end_is_joined() -> None:
     ((_, reference),) = split_references("[1] A. Smith, “Deep lan-\nguage models,” 2020.\n[2] x\n")[
         :1
@@ -139,6 +154,36 @@ def test_a_word_broken_at_a_line_end_is_joined() -> None:
         ("Ilia Kulikov and Jason Weston. Importance of search and evaluation strategies in neural "
          "dialogue modeling. pp. 76–87, 01 2019. doi: 10.18653/v1/W19-8609.",
          {"title": "Importance of search and evaluation strategies in neural dialogue modeling"}),
+        # AAS: no title, the journal and volume after the year
+        ("Abbott, B. P., Abbott, R., et al. 2017, ApJL, 848, L12, doi: 10.3847/2041-8213/aa91c9",
+         {"author": "Abbott, B. P. and Abbott, R. and others", "year": "2017", "journal": "ApJL",
+          "title": None, "doi": "10.3847/2041-8213/aa91c9"}),
+        ("A. Baskin and A. Laor. MNRAS, 474(2):1970-1994, Feb. 2018. doi: 10.1093/mnras/stx2850.",
+         {"author": "A. Baskin and A. Laor", "journal": "MNRAS", "title": None}),
+        # SIAM: the journal before its volume, and "and" before the last author
+        ("B. Adcock, N. Dexter, and S. Moraga, Optimal approximation of infinite-dimensional "
+         "holomorphic functions, Calcolo, 61 (2024), p. 12.",
+         {"author": "B. Adcock and N. Dexter and S. Moraga", "journal": "Calcolo",
+          "title": "Optimal approximation of infinite-dimensional holomorphic functions"}),
+        # APS: two authors joined by "and", a book
+        ("H.-P. Breuer and F. Petruccione, The Theory of Open Quantum Systems (Oxford University "
+         "Press, 2002).",
+         {"author": "H.-P. Breuer and F. Petruccione"}),
+        # a long author list with a name a PDF mangled
+        ("Jerome Ku, Eric Nguyen, David W. Romero, Garyk Brixi, Brandon Yang, Anton V orontsov, "
+         "Ali Taghibakhshi, Amy X. Lu, and Michael Poli. Systems and algorithms for "
+         "convolutional multi-hybrid language models at scale. arXiv preprint arXiv:2503.01868, "
+         "2025.",
+         {"title": "Systems and algorithms for convolutional multi-hybrid language models at "
+                   "scale"}),
+        # "St." is no sentence's end
+        ("Peter St. John, Dejun Lin, and John St. John. BioNeMo framework. arXiv preprint "
+         "arXiv:2411.10548, 2024.",
+         {"author": "Peter St. John and Dejun Lin and John St. John",
+          "title": "BioNeMo framework"}),
+        # a year in parentheses late in another style is not APA's
+        ("J. Preskill, Quantum computing in the NISQ era and beyond, Quantum 2, 79 (2018).",
+         {"author": "J. Preskill", "title": "Quantum computing in the NISQ era and beyond"}),
         # a title with no authors
         ("ANSI/NISO Z39.96-2024: JATS: Journal Article Tag Suite (2024).",
          {"title": "ANSI/NISO Z39.96-2024: JATS: Journal Article Tag Suite", "year": "2024",
@@ -169,6 +214,17 @@ def test_a_list_becomes_derived_entries() -> None:
     assert [(e.key, e.line) for e in bib.entries] == [("ref1", 3), ("ref2", 5)]
     assert bib.entries[1].text("doi") == "10.1007/978-3-642-04346-8_62"
     assert bib.entries[0].fields["title"].line == 3
+
+
+def test_the_same_authors_as_the_reference_before() -> None:
+    text = (
+        "[1] B. Adcock, N. Dexter, and S. Moraga, Optimal approximation of holomorphic functions,"
+        " Calcolo, 61 (2024).\n"
+        "[2] ———, Optimal approximation II: recovery from samples, J. Complexity, 89 (2025).\n"
+    )
+    second = parse_plaintext(text, Path("refs.txt")).entries[1]
+    assert second.text("author") == "B. Adcock and N. Dexter and S. Moraga"
+    assert second.text("title") == "Optimal approximation II: recovery from samples"
 
 
 def test_identifiers_are_read_as_written() -> None:

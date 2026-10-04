@@ -154,3 +154,13 @@ references, its first author for 103, its year for all 104 and every one of its 
 arXiv IDs. Checked against the live sources both ways, 102 of the 104 references are flagged,
 or not, alike; the two others are names whose letters the dataset's CSV lost. The results are
 in [`results/plaintext-badalova-mayr.md`](results/plaintext-badalova-mayr.md).
+
+## PDF reference lists: the real papers' PDFs
+
+`check paper.pdf` (the `pdf` extra) reads the reference list out of a PDF. `evals/pdf_agreement.py`
+reads the PDF arXiv serves for each paper of a real-paper batch and compares it with the check of
+the paper's own `.bib`. A `.bib` reference is found in the PDF when the PDF's list has its DOI or
+arXiv ID, a title 90% alike, or, in a style that prints no titles, the only reference with its
+first author and year. On the 20 papers of `dev` (924 references), the PDF gives 814 of them
+(88%), with the same first author for 98% and the same year for 95%, and the same verdict for
+749 (92%). The results, paper by paper, are in [`results/pdf-dev.md`](results/pdf-dev.md).
