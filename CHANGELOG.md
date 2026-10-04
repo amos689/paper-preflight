@@ -6,6 +6,88 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-04
+
+Fewer false alarms again, measured on two more weeks of papers. On 20 arXiv papers collected
+after every fix in this release, false positives are 1.7 per 100 references, with 92 real
+problems found (0.1.1 measured 2.3 on its own held-out batch); on the three earlier batches,
+used to find false positives, 0.1 to 0.7. Next to five published tools on Badalova & Mayr's
+hand-checked references, precision is 72.5% [57.2%, 83.9%]. HALLMARK precision is unchanged,
+recall slightly higher. Checks show their progress, and a cold check of a paper with 50
+references takes 52 s instead of 140 s.
+
+### Fixed
+
+- A work from before 1990 that no source knows is no longer called not found: it is
+  `cannot_determine` with the new reason `OLD_WORK` (REF003; real papers of the 1950s and 60s
+  in mechanics and physics are in no index).
+- Another kind of publication of the same title is not taken for the cited one: a thesis is no
+  journal article, a book chapter no conference paper, software no paper (REF013).
+- An entry naming its venue but carrying an arXiv URL is compared with whichever version it
+  fits, the preprint or the published version at that venue and year (REF011: an ICML entry
+  lists the ICML author order, not arXiv's).
+- A dblp record a year or two off the entry gets Crossref's record as well, which knows when a
+  journal article appeared online (REF013: ACM Comput. Surv., online 2018, issue 2019).
+- REF015 names the published version by the preprint's own authors, not a paper of the same
+  title by the first author with others.
+- A Wiley or Blackwell DOI's year counts when Crossref's backfile deposit is later (REF013:
+  10.1046/j.1365-8711.2000.03658.x is MNRAS, December 2000; Crossref says 2002).
+- Titles lose more registry artefacts: IEEE's "[Review Article]", a letter Crossref lost
+  (U+FFFD), a record without the entry's subtitle, Zenodo's "owner/repo: v0.10" (REF012).
+- The pattern of venue names that still mean a preprint had backspace characters where `\b`
+  was meant; a test now fails on any control character in the source.
+- Wiley's SICI DOIs keep their bracketed part
+  (`10.1002/1097-0347(200103)23:3<230::AID-HED1023>3.0.CO;2-V`): cut at `<`, they were
+  reported as not existing (REF002) and given a broken canonical form (REF017).
+- A group of authors written another way is the group: word order, hyphens and footnote marks
+  do not count (`{LLM-Core Xiaomi}` is arXiv's "Xiaomi LLM-Core Team"; `Kimi-Team`; Crossref's
+  "The Tabula Sapiens Consortium*") (REF010/REF011).
+- A consortium credited for the people a record lists (Cell's COMBAT Consortium), or a record
+  naming only an organisation (dblp's "DeepSeek-AI"), leaves the authors uncompared instead of
+  "no author in common" (REF010); a lab the entry names next to its author is no missing
+  person ("Kevin Lu and Thinking Machines Lab") (REF011).
+- One person's name split another way, or with a name left out, is that person: Crossref's
+  given name "Do", family name "Long" for Do Xuan Long, arXiv's "De Luo" for "De Luo, Henry",
+  "De La Torre" with no given name (REF011).
+- Titles lose more registry artefacts: the AAS journals' old markup in Crossref titles
+  (`[ITAL]`, `[CLC]`), Semantic Scholar's ". Plates." and the leading article it drops; and
+  Springer's @Inbook export, which keeps the paper's title in `chapter`, is read as meant
+  (REF012).
+- An article online in October to December with no print date may be cited with next year's
+  volume; a proceedings volume a year after the meeting matches when the entry's venue names
+  the meeting's year ("Proceedings of SAT-2003") (REF013).
+- A book reached through a chapter's DOI is the book the chapter is in, not another work
+  (REF001); a workshop at another meeting is the work's workshop version, not a wrong venue
+  (REF014).
+
+### Added
+
+- Two reasons for "cannot determine" instead of "not found" (REF003): `UNINDEXED_VENUE`, a
+  workshop paper or a book chapter from before 2000 that no source knows, and `ANONYMOUS`, an
+  anonymous submission under review ("Anonymous Authors" at OpenReview).
+- A journal named in an entry is compared with the record's even when neither is recognised:
+  another venue only if the names share no word or abbreviation (REF014). Crossref's ISO 4
+  abbreviations and ISSNs count as names of the venue.
+- A title of eight words or more, word for word one work's, binds that work even a few years
+  off and by other authors, so references with invented authors, venue and year are reported
+  instead of left undecided (REF010/REF011, REF013, REF014).
+- Progress while references are searched: the CLI's status line counts them and estimates the
+  time left; the MCP tool sends progress notifications.
+- A false-positive museum: real references paper-preflight once got wrong, and real problems it
+  must keep finding, replayed offline as tests (`tests/fixtures/museum/`).
+- Two more batches of real papers in the evaluation (first submitted 2026-07-15..21 and
+  07-22..28), each collected after the fixes before it and reported as it came out; every flag
+  is reviewed by hand in `evals/real_papers_review.toml`.
+- A weekly check of the demo paper against the live sources, also run on pull requests that
+  change how the sources are asked (`.github/workflows/live.yml`).
+
+### Changed
+
+- dblp is asked ten titles to a query and fifty records to a query: a paper with 50
+  references takes 52 s on a cold cache instead of 140 s.
+- Crossref is asked for container abbreviations and ISSNs too; every cached Crossref answer is
+  fetched once more.
+
 ## [0.1.1] - 2026-10-03
 
 Fewer false alarms on real bibliographies. On the references of 20 arXiv papers used to find
@@ -147,6 +229,7 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/amos689/paper-preflight/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/amos689/paper-preflight/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/amos689/paper-preflight/releases/tag/v0.1.0

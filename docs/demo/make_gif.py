@@ -19,6 +19,7 @@ from rich.segment import Segment
 from rich.style import Style
 
 from paper_preflight.check import VerifyOptions, run_check
+from paper_preflight.cli import cache_dir
 from paper_preflight.report.text import render_text
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -84,7 +85,8 @@ def colour(style: Style | None) -> tuple[tuple[int, int, int], bool]:
 
 def report_lines() -> list[list[Span]]:
     """The demo paper's report as the CLI prints it, line by line, with each span's colour."""
-    result = run_check(ROOT / "examples" / "demo-paper", verify=VerifyOptions())
+    cache = Path(cache_dir()) / "cache.sqlite3"  # the CLI's cache, as `check` uses it
+    result = run_check(ROOT / "examples" / "demo-paper", verify=VerifyOptions(cache_path=cache))
     console = Console(
         file=io.StringIO(), width=COLUMNS, record=True, force_terminal=True,
         color_system="truecolor",
