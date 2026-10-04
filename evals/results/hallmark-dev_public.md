@@ -1,8 +1,8 @@
 # HALLMARK evaluation
 
-- **Tool:** paper-preflight 0.1.2 candidate, commit 43a5544 (main after #98)
+- **Tool:** paper-preflight 0.2.0
 - **Data:** HALLMARK v1.2.3, split `dev_public`
-- **Run:** 2026-10-03, live sources (answers from the local cache of earlier live runs)
+- **Run:** 2026-10-04, 0.0 min, offline (cache only)
 - **Unavailable during the run:** none
 - **Unparsed entries:** 0
 
