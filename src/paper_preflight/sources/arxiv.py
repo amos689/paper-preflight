@@ -1,8 +1,8 @@
 """arXiv API adapter (Atom feed). One connection, at least 3 s between calls (arXiv terms).
 
 * ``by_ids`` batches up to 50 IDs; results come back unordered and missing IDs are just absent.
-* ``version_titles`` fetches every version of a paper, because titles change between versions
-  (GELU) and a citation may legitimately use an older title.
+* ``versions`` fetches every version of a paper, because titles and author lists change between
+  versions (GELU, AstroCLIP) and a citation may legitimately use an older one.
 * Withdrawal is only visible as free text in ``arxiv:comment``.
 """
 
@@ -116,8 +116,9 @@ async def by_ids(client: SourceClient, ids: Iterable[str]) -> dict[str, SourceRe
     return _from_entries(entries)
 
 
-def split_feed(xml_text: str) -> dict[str, str]:
-    """Each entry of an Atom feed as a stand-alone feed, keyed by base arXiv ID (for caching)."""
+def split_feed(xml_text: str, *, versioned: bool = False) -> dict[str, str]:
+    """Each entry of an Atom feed as a stand-alone feed, keyed by base arXiv ID (for caching),
+    or by versioned ID (``2310.03024v1``)."""
     try:
         root = ET.fromstring(xml_text)
     except ET.ParseError:
@@ -126,29 +127,57 @@ def split_feed(xml_text: str) -> dict[str, str]:
     for entry in root.findall("atom:entry", NS):
         match = _ID_RE.search(_text(entry, "atom:id") or "")
         if match:
-            out[match.group("id")] = (
-                f'<feed xmlns="{NS["atom"]}">{ET.tostring(entry, encoding="unicode")}</feed>'
-            )
+            version = (match.group("version") or "") if versioned else ""
+            key = match.group("id") + version
+            out[key] = f'<feed xmlns="{NS["atom"]}">{ET.tostring(entry, encoding="unicode")}</feed>'
     return out
 
 
-def _from_entries(entries: dict[str, Any]) -> dict[str, SourceRecord]:
+def _from_entries(entries: dict[str, Any], *, versioned: bool = False) -> dict[str, SourceRecord]:
     found: dict[str, SourceRecord] = {}
     for feed in entries.values():
         for record in parse_feed(str(feed)):
-            found[record.source_id] = record
+            version = record.identifiers.get("arxiv_version", "") if versioned else ""
+            found[record.source_id + version] = record
     return found
 
 
-async def version_titles(client: SourceClient, base_id: str, latest: int) -> list[str]:
-    """Titles of versions v1..v<latest> in order (duplicates removed)."""
-    ids = ",".join(f"{base_id}v{n}" for n in range(1, latest + 1))
-    feed = await _feed(client, {"id_list": ids, "max_results": latest})
-    titles: list[str] = []
-    for record in parse_feed(feed):
-        if record.title not in titles:
-            titles.append(record.title)
-    return titles
+async def versions(client: SourceClient, latest: dict[str, int]) -> dict[str, list[SourceRecord]]:
+    """Versions v1..vN of each paper (``{base ID: N}``), in order, keyed by base ID.
+
+    Each version has its own title and authors: titles change between versions (GELU's v1 had
+    another), and so do author lists (AstroCLIP's v2 put Parker before Lanusse). The versions of
+    all papers share requests, 50 to a request, and each version is cached on its own.
+
+    Old-style IDs are left out: the API answers HTTP 500 for ``astro-ph/0501436v1``, which
+    would fail the whole request.
+    """
+    ids = [
+        f"{base}v{n}"
+        for base, last in latest.items()
+        if "/" not in base
+        for n in range(1, last + 1)
+    ]
+
+    async def fetch_chunk(chunk: list[str]) -> dict[str, Any]:
+        feed = await _feed(client, {"id_list": ",".join(chunk), "max_results": len(chunk)})
+        return split_feed(feed, versioned=True)
+
+    try:
+        entries = await client.batch("version", ids, fetch_chunk, chunk_size=BATCH)
+    except PartialUnavailable as partial:
+        raise partial.with_found(_by_paper(partial.found)) from None
+    return _by_paper(entries)
+
+
+def _by_paper(entries: dict[str, Any]) -> dict[str, list[SourceRecord]]:
+    def number(record: SourceRecord) -> int:
+        return int(record.identifiers.get("arxiv_version", "v0")[1:] or 0)
+
+    papers: dict[str, list[SourceRecord]] = {}
+    for record in _from_entries(entries, versioned=True).values():
+        papers.setdefault(record.source_id, []).append(record)
+    return {base: sorted(found, key=number) for base, found in papers.items()}
 
 
 async def search_title(

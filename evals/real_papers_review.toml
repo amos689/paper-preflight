@@ -627,6 +627,10 @@ note = "arXiv 1712.00479 (\"Image to Image Translation for Domain Adaptation\") 
 verdict = "correct"
 note = "arXiv 1803.08673 (\"Revisiting Single Image Depth Estimation: Toward Higher Resolution Maps with Accurate Object Boundaries\") was published in WACV (2019), DOI 10.1109/wacv.2019.00116 (dblp)."
 
+[finding."2607.06871v1:geirhos2019:REF012"]
+verdict = "correct"
+note = "Every version of arXiv 1811.12231 (and the ICLR 2019 paper) is titled '... biased towards texture; ...'; the entry has 'textures'."
+
 [finding."2607.06872v2:chollet2017xception:REF015"]
 verdict = "correct"
 note = "arXiv 1610.02357 (\"Xception: Deep Learning with Depthwise Separable Convolutions\") was published in CVPR (2017), DOI 10.1109/cvpr.2017.195 (dblp)."
@@ -1360,8 +1364,8 @@ verdict = "correct"
 note = "arXiv 2208.11580 is Frantar et al.'s 'Optimal Brain Compression', not Borji's paper."
 
 [finding."2607.22722v1:nie2025new:REF011"]
-verdict = "correct"
-note = "arXiv 2510.19347 has Caoliang Zhang where the entry has Guojie Xiao."
+verdict = "false_positive"
+note = "Re-reviewed 2026-10-04 (was 'correct'): v1 of arXiv 2510.19347 lists Guojie Xiao, as the entry does; v2 replaced him with Caoliang Zhang. The entry cites v1."
 
 [finding."2607.27230v2:qwen2025qwen3:REF010"]
 verdict = "correct"
@@ -1646,6 +1650,10 @@ note = "arXiv 2505.06708 appeared in NeurIPS (2025)."
 [finding."2607.27230v2:su2024nemotroncc:REF015"]
 verdict = "correct"
 note = "arXiv 2412.02595 appeared in ACL (1) (2025), DOI 10.18653/v1/2025.acl-long.123."
+
+[finding."2607.27230v2:pagliardini2024denseformer:REF012"]
+verdict = "correct"
+note = "Every version of arXiv 2402.02622 ends '... via Depth Weighted Averaging'; the entry has 'Average'."
 
 [finding."2609.17560v1:shekhar2501label:REF015"]
 verdict = "correct"
