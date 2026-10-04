@@ -61,6 +61,12 @@ class Lang(StrEnum):
     ZH = "zh"
 
 
+class Verifier(StrEnum):
+    HHEM = "hhem"
+    MINICHECK = "minicheck"
+    FACTCG = "factcg"
+
+
 def _version_callback(value: bool) -> None:
     if value:
         typer.echo(f"paper-preflight {__version__}")
@@ -148,10 +154,13 @@ def _stdin_file() -> Path:
     return path
 
 
-def _arxiv_source(target: str) -> Path:
+def _arxiv_source(target: str, offline: bool) -> Path:
     """``arxiv:<id>``: the paper's source, downloaded into a folder removed when the run ends."""
     from paper_preflight.arxiv_source import ArxivSourceError, arxiv_target, fetch
 
+    if offline:
+        typer.echo("paper-preflight: arxiv:<id> downloads the paper; drop --offline", err=True)
+        raise typer.Exit(EXIT_USAGE)
     try:
         identifier = arxiv_target(target)
         assert identifier is not None
@@ -222,10 +231,7 @@ def check(
     if str(path) == "-":
         path = _stdin_file()
     elif str(path).lower().startswith("arxiv:"):
-        if offline:
-            typer.echo("paper-preflight: arxiv:<id> downloads the paper; drop --offline", err=True)
-            raise typer.Exit(EXIT_USAGE)
-        path = _arxiv_source(str(path))
+        path = _arxiv_source(str(path), offline)
     language = resolve_lang(lang)
     progress = Console(stderr=True)
     message = _progress_message(language, offline)
@@ -343,6 +349,90 @@ def doctor(
     for probe in asyncio.run(probe_sources()):
         took = f"{probe.seconds:5.2f} s" if probe.seconds is not None else " " * 7
         typer.echo(f"  {source_name(probe.source):<17} {probe.status:<12} {took}  {probe.detail}")
+
+
+@app.command()
+def support(
+    path: Annotated[
+        Path,
+        typer.Argument(
+            help="Project directory, main .tex file, or arxiv:<id> to download an arXiv paper's "
+            "source."
+        ),
+    ] = Path("."),
+    model: Annotated[
+        Verifier, typer.Option("--model", help="The local verifier model.")
+    ] = Verifier.HHEM,
+    output_format: Annotated[
+        OutputFormat, typer.Option("--format", "-f", help="'text' or 'json'.")
+    ] = OutputFormat.TEXT,
+    output: Annotated[
+        Path | None, typer.Option("--output", "-o", help="Write the report to a file.")
+    ] = None,
+    lang: Annotated[Lang, typer.Option("--lang", help="Message language.")] = Lang.AUTO,
+    everything: Annotated[
+        bool, typer.Option("--all", help="Also list the confirmed citations, with their quotes.")
+    ] = False,
+    download_model: Annotated[
+        bool,
+        typer.Option("--download-model", help="Download the verifier's weights if needed."),
+    ] = False,
+    offline: Annotated[
+        bool, typer.Option("--offline", help="Use cached answers and downloads only.")
+    ] = False,
+) -> None:
+    """Experimental: find the passage of each cited work that says what the citation claims.
+
+    Lists the citations it could not confirm, and why. Not confirmed does not mean wrong: the
+    accessible text may say it in other words, or be only an abstract. Needs the support extra
+    (PyTorch, transformers) and a local verifier model, whose weights are downloaded only with
+    --download-model. Cited works' text (arXiv sources, open-access PDFs) is kept in the cache.
+    """
+    from paper_preflight.support import verify
+    from paper_preflight.support.report import render_json
+    from paper_preflight.support.report import render_text as render_support
+    from paper_preflight.support.run import run_support
+    from paper_preflight.tex.project import ProjectError
+
+    _safe_stdout()
+    try:
+        verify._torch()
+    except verify.SupportExtraMissing as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
+    name = model.value
+    if not verify.is_cached(name):
+        if not download_model or offline:
+            typer.echo(
+                f"paper-preflight: support needs the {name} verifier ({verify.SIZES[name]}) from "
+                "Hugging Face; run again with --download-model to fetch it once.",
+                err=True,
+            )
+            raise typer.Exit(EXIT_USAGE)
+        verify.download(name)
+    if str(path).lower().startswith("arxiv:"):
+        path = _arxiv_source(str(path), offline)
+    language = resolve_lang(lang)
+    try:
+        verifier = verify.VERIFIERS[name]()
+        result = run_support(
+            path, verifier, cache_path=Path(cache_dir()) / "cache.sqlite3",
+            folder=Path(cache_dir()) / "support", offline=offline,
+        )  # fmt: skip
+    except ProjectError as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
+    if output_format is OutputFormat.JSON:
+        text = render_json(result, name)
+        if output:
+            output.write_text(text + "\n", encoding="utf-8")
+        else:
+            typer.echo(text)
+    elif output:
+        with output.open("w", encoding="utf-8") as handle:
+            render_support(result, Console(file=handle, width=100), language, everything)
+    else:
+        render_support(result, Console(highlight=False), language, everything)
 
 
 @app.command()

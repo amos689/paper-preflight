@@ -59,6 +59,13 @@ mcp = [
 pdf = [
     "pypdf>=6",
 ]
+# `support`: a local verifier model finds the passages of cited works that confirm citations
+support = [
+    "pypdf>=6",
+    "torch>=2.4",
+    "transformers>=4.44",
+    "sentencepiece>=0.2",
+]
 
 [dependency-groups]
 dev = [
@@ -117,6 +124,11 @@ plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
 module = ["pylatexenc.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# the `support` extra, which CI does not install
+module = ["torch.*", "transformers.*", "safetensors.*", "huggingface_hub.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
