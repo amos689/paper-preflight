@@ -158,6 +158,14 @@ uvx paper-preflight check path/to/paper
 `path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。没有 `.bib` 的项目（很多 arXiv
 源码就是这样）会读取编译生成的 `.bbl`（只检查，不修改）。
 
+没有 LaTeX？纯文本的参考文献列表也可以检查，支持常见格式（APA、IEEE、ACM、Nature、Vancouver、
+Springer、Elsevier、Chicago、MLA），每行一条、每段一条或带编号均可：
+
+```bash
+uvx paper-preflight check references.txt
+pbpaste | uvx paper-preflight check -      # 或从标准输入读取
+```
+
 | 选项 | 作用 |
 |---|---|
 | `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描） |

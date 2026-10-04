@@ -15,6 +15,7 @@ import httpx
 from paper_preflight import __version__
 from paper_preflight.bib.bbl import parse_bbl_file
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
+from paper_preflight.bib.plaintext import parse_plaintext_file
 from paper_preflight.cache import Cache
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
 from paper_preflight.hygiene import (
@@ -83,6 +84,14 @@ class CheckResult:
         return any(f.severity.rank >= fail_on.rank for f in self.findings)
 
 
+# a reference list given on its own: BibTeX, a compiled bibliography or plain text
+_READERS: dict[str, Callable[[Path], BibFile]] = {
+    ".bib": parse_bib_file,
+    ".bbl": parse_bbl_file,
+    ".txt": parse_plaintext_file,
+}
+
+
 def run_check(
     target: Path,
     *,
@@ -96,10 +105,8 @@ def run_check(
     extra = [p.resolve() for p in (extra_bib or [])]
     target = target.resolve()
 
-    if target.is_file() and target.suffix.lower() in {".bib", ".bbl"}:
-        first = (
-            parse_bbl_file(target) if target.suffix.lower() == ".bbl" else parse_bib_file(target)
-        )
+    if target.is_file() and target.suffix.lower() in _READERS:
+        first = _READERS[target.suffix.lower()](target)
         bib_files = [first, *(parse_bib_file(p) for p in extra if p != target)]
         findings, used = check_hygiene_tracked(HygieneInput(bib_files=bib_files))
         result = CheckResult(

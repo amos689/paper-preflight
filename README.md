@@ -177,6 +177,15 @@ uvx paper-preflight check path/to/paper
 A project that ships no `.bib`, as many arXiv sources do, is read from its compiled `.bbl`
 (checked, but never edited).
 
+No LaTeX at all? A reference list as plain text works too, in the common styles (APA, IEEE,
+ACM, Nature, Vancouver, Springer, Elsevier, Chicago, MLA), one reference per line, per
+paragraph or numbered:
+
+```bash
+uvx paper-preflight check references.txt
+pbpaste | uvx paper-preflight check -      # or from stdin
+```
+
 | Option | Effect |
 |---|---|
 | `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |
