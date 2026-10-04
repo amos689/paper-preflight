@@ -136,6 +136,11 @@ def run_check(
         compiled = None if bib_files else _compiled_bibliography(project.main)
         if compiled is not None:
             bib_files = [parse_bbl_file(compiled)]
+        undeclared = None
+        if not bib_files and not project.bib_resources:
+            undeclared = _only_bib_file(project.main)
+            if undeclared is not None:
+                bib_files = [parse_bib_file(undeclared)]
         findings, used = check_hygiene_tracked(
             HygieneInput(
                 bib_files=bib_files,
@@ -171,6 +176,11 @@ def run_check(
             result.notes.append(
                 f"References read from {compiled.name}: no .bib file was found. "
                 "Fixes are not proposed for a compiled bibliography."
+            )
+        if undeclared is not None:
+            result.notes.append(
+                f"References read from {undeclared.name}, the only .bib file next to the main "
+                "file: the LaTeX source declares no bibliography (CIT005)."
             )
 
     if verify is not None:
@@ -211,6 +221,13 @@ def _compiled_bibliography(main: Path) -> Path | None:
         return same_name
     others = sorted(main.parent.glob("*.bbl"))
     return others[0] if len(others) == 1 else None
+
+
+def _only_bib_file(main: Path) -> Path | None:
+    """The one .bib next to a main file that declares no bibliography, if there is one: a
+    source that forgot its \\bibliography line (arXiv 2607.20215v1) still has its references."""
+    found = sorted(main.parent.glob("*.bib"))
+    return found[0] if len(found) == 1 else None
 
 
 def first_definitions(bib_files: Iterable[BibFile], keys: set[str] | None = None) -> list[BibEntry]:
