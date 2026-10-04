@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- An entry citing an earlier arXiv version is checked against that version's title and
+  authors: arXiv records keep every version's author list, not only its title, so a v1 with
+  another first author (AstroCLIP) or two more authors is no identifier conflict or author
+  mismatch. Versions are now fetched whenever an entry does not fit the latest version
+  exactly, for all papers in one request per 50 versions, which also lets reworded preprint
+  titles be reported. Old-style IDs (`astro-ph/0501436`) are left out, as the API fails on
+  them.
+- A reworded title is not reported when the entry leaves out a short name before the colon
+  ("Manifold-Constrained Hyper-Connections" for "mHC: Manifold-Constrained Hyper-Connections").
+- A record with only the latest title and another author order (DataCite's arXiv DOIs) is
+  "cannot determine" rather than an identifier conflict while the versions are unknown.
+
 ## [0.2.0] - 2026-10-04
 
 Check references without a .bib: a compiled `.bbl`, a plain-text list, a PDF, or an arXiv

@@ -148,7 +148,7 @@ async def test_versioned_arxiv_doi_resolves_without_its_version() -> None:
 
 
 @pytest.mark.anyio
-async def test_version_titles_are_fetched_only_when_the_latest_title_disagrees() -> None:
+async def test_versions_are_fetched_only_when_an_entry_does_not_fit_the_latest() -> None:
     # GELU's v1 and v2 were titled differently; an entry may cite either
     v1_title = (
         "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units"
@@ -163,9 +163,44 @@ async def test_version_titles_are_fetched_only_when_the_latest_title_disagrees()
         )
     (record,) = [r for r in evidence["old"].anchored if r.source == "arxiv"]
     assert v1_title in record.alt_titles
+    numbers = [v.identifiers["arxiv_version"] for v in record.versions]
+    assert numbers == ["v1", "v2", "v3", "v4", "v5"]
+    assert record.versions[0].title == v1_title
+    assert [a.family for a in record.versions[0].authors] == ["Hendrycks", "Gimpel"]
     arxiv_calls = [r for r in web.requests if r.url.host == "export.arxiv.org"]
     assert len(arxiv_calls) == 2  # the batch, then the versions of this one paper
 
+    # the latest title, but not the latest authors: an earlier version may have had them
+    bib = "@misc{other, title={Gaussian Error Linear Units (GELUs)}, author={Gimpel, Kevin}, "
+    bib += "year={2016}, eprint={1606.08415}, archivePrefix={arXiv}}"
+    async with httpx.AsyncClient(transport=httpx.MockTransport(FakeWeb())) as http:
+        evidence = await resolve(
+            parse_bib_text(bib, Path("refs.bib")).entries,
+            Sources.create(http, Cache(None), environ={}),
+        )
+    (record,) = [r for r in evidence["other"].anchored if r.source == "arxiv"]
+    assert len(record.versions) == 5
+
     current = await run(FakeWeb())  # the demo cites GELU by its current title
     (gelu,) = [r for r in current["hendrycks2016gelu"].anchored if r.source == "arxiv"]
-    assert gelu.alt_titles == ()  # no extra request when the latest title matches
+    assert gelu.versions == ()  # no extra request when the entry fits the latest version
+
+
+@pytest.mark.anyio
+async def test_a_failed_versions_lookup_marks_only_entries_that_need_it() -> None:
+    v1_title = (
+        "Bridging Nonlinearities and Stochastic Regularizers with Gaussian Error Linear Units"
+    )
+    bib = ""
+    for key, title in [("far", v1_title), ("close", "Gaussian Error Linear Unit (GELUs)")]:
+        bib += f"@misc{{{key}, title={{{title}}}, author={{Hendrycks, Dan and Gimpel, Kevin}}, "
+        bib += "year={2016}, eprint={1606.08415}, archivePrefix={arXiv}}\n"
+    web = FakeWeb()
+    web.fail("1606.08415v1", "429")  # the versions request only
+    async with httpx.AsyncClient(transport=httpx.MockTransport(web)) as http:
+        evidence = await resolve(
+            parse_bib_text(bib, Path("refs.bib")).entries,
+            Sources.create(http, Cache(None), environ={}),
+        )
+    assert evidence["far"].unavailable == {"arxiv": "rate_limited"}  # cannot be judged
+    assert evidence["close"].unavailable == {}  # judged without the reworded-title check

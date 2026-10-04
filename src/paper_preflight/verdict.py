@@ -212,13 +212,14 @@ def versions_known(record: SourceRecord) -> bool:
     """Whether every title a preprint has had is known (titles change between versions).
 
     arXiv records are complete when the paper has one version or when the resolver fetched the
-    version titles (``alt_titles``). Other preprint records (DataCite's arXiv DOIs, dblp CoRR
-    entries, posted content) carry one title only.
+    versions (``versions``, whose titles are also in ``alt_titles``). Other preprint records
+    (DataCite's arXiv DOIs, dblp CoRR entries, posted content) carry one title only.
     """
     if not is_preprint(record):
         return True
     if record.source == "arxiv":
-        return record.identifiers.get("arxiv_version", "v1") == "v1" or bool(record.alt_titles)
+        version = record.identifiers.get("arxiv_version", "v1")
+        return version == "v1" or bool(record.versions or record.alt_titles)
     return False
 
 
@@ -237,6 +238,10 @@ def _relation(m: Match) -> str:
         # Usually the entry's title is wrong (HALLMARK's "chimeric titles": a real DOI and real
         # authors under an invented title). The finding names the recorded title (REF012).
         return "retitled"
+    if not versions_known(m.record) and not m.authors.disjoint and m.authors.overlap >= 0.5:
+        # an earlier version may have had another title and author order as well (AstroCLIP's
+        # v1 had Lanusse first; DataCite and an unanswered version request show only the latest)
+        return "unclear"
     if m.authors.status == "unknown" and (m.title.score or 0.0) >= 0.6:
         return "unclear"  # no authors to tell, and the titles are not far apart
     return "conflict"

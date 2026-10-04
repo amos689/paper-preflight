@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 from collections.abc import Awaitable, Callable, Iterable
 from dataclasses import dataclass, field, replace
 from typing import TypeVar, cast
@@ -25,7 +26,13 @@ from paper_preflight.bib.ids import Identifier, extract_identifiers
 from paper_preflight.bib.normalize import word_count
 from paper_preflight.bib.parse import BibEntry
 from paper_preflight.cache import Cache
-from paper_preflight.match import TITLE_VARIANT, EntryInfo, title_score
+from paper_preflight.match import (
+    TITLE_VARIANT,
+    EntryInfo,
+    check_authors,
+    check_title,
+    title_score,
+)
 from paper_preflight.sources import (
     arxiv,
     crossref,
@@ -287,11 +294,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     if unanswered:
         await _arxiv_via_datacite(unanswered, sources)
     if ax_records is not None:
+        await _with_versions(ax_records, by_arxiv, sources)
         for arxiv_id, items in by_arxiv.items():
             arxiv_record = ax_records.get(arxiv_id)
-            if arxiv_record is not None:
-                arxiv_record = await _with_version_titles(arxiv_record, items, sources)
-                ax_records[arxiv_id] = arxiv_record
             for item in items:
                 if arxiv_record is not None:
                     item.anchored.append(arxiv_record)
@@ -386,25 +391,56 @@ async def _pubmed(evidence: dict[str, Evidence], sources: Sources) -> None:
                 item.pmid_missing.append(pmid)
 
 
-async def _with_version_titles(
-    record: SourceRecord, owners: list[Evidence], sources: Sources
-) -> SourceRecord:
-    """Add every version's title when an entry's title does not match the latest one.
+def _fit_to_latest(info: EntryInfo, record: SourceRecord) -> str:
+    """How an entry fits the latest version: "exact" (its title word for word, and its authors),
+    "close" (a title within a few words, and authors not at odds) or "far"."""
+    title = check_title(info.title, record)
+    authors = check_authors(info.authors, record).status
+    same_title = title.status == "match" and not title.note and not title.changed
+    if same_title and authors not in {"mismatch", "variant"}:
+        return "exact"
+    return "close" if (title.score or 0.0) >= TITLE_VARIANT and authors != "mismatch" else "far"
 
-    arXiv titles change between versions (GELU's v1 and v2 had another title), and an entry may
-    cite any version. Only papers with several versions whose latest title disagrees with an
-    entry cost the extra request. The titles end up in ``alt_titles``; a record with alt titles
-    (or with a single version) is one whose every title is known.
+
+async def _with_versions(
+    records: dict[str, SourceRecord], by_arxiv: dict[str, list[Evidence]], sources: Sources
+) -> None:
+    """Add every version to the papers whose latest version an entry does not fit exactly.
+
+    arXiv titles and author lists change between versions (GELU's v1 had another title,
+    AstroCLIP's v2 put Parker before Lanusse), and an entry may cite any version. Only papers
+    with several versions cost a lookup, and their versions are fetched together. The titles
+    also go to ``alt_titles``; a record with its versions (or with a single version) is one
+    whose every title is known.
+
+    When the lookup fails, only entries far from the latest version are marked: the others are
+    judged without it, as before versions were fetched for them (no reworded-title check).
     """
-    version = record.identifiers.get("arxiv_version") or "v1"
-    latest = int(version[1:]) if version[1:].isdigit() else 1
-    if latest <= 1:
-        return record
-    if all(title_score(item.info.title, record.title) >= TITLE_VARIANT for item in owners):
-        return record
-    base_id = record.identifiers.get("arxiv", record.source_id)
-    titles = await _guard(owners, lambda: arxiv.version_titles(sources.arxiv, base_id, latest))
-    return replace(record, alt_titles=tuple(titles)) if titles else record
+    latest: dict[str, int] = {}
+    far: dict[str, list[Evidence]] = {}
+    for arxiv_id, items in by_arxiv.items():
+        record = records.get(arxiv_id)
+        if record is None:
+            continue
+        version = record.identifiers.get("arxiv_version", "v1")
+        last = int(version[1:]) if version[1:].isdigit() else 1
+        fits = [_fit_to_latest(item.info, record) for item in items]
+        if last > 1 and any(fit != "exact" for fit in fits):
+            latest[arxiv_id] = last
+            far[arxiv_id] = [item for item, fit in zip(items, fits, strict=True) if fit == "far"]
+    if not latest:
+        return
+    found = await _guard(
+        [e for items in far.values() for e in items],
+        lambda: arxiv.versions(sources.arxiv, latest),
+        owners_of=lambda versioned: far.get(re.sub(r"v\d+$", "", versioned), []),
+    )
+    for arxiv_id, versions in (found or {}).items():
+        if arxiv_id in latest and len(versions) == latest[arxiv_id]:  # all of them, or none
+            titles = tuple(dict.fromkeys(v.title for v in versions))
+            records[arxiv_id] = replace(
+                records[arxiv_id], alt_titles=titles, versions=tuple(versions)
+            )
 
 
 async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sources) -> None:

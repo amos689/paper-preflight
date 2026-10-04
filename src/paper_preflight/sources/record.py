@@ -130,6 +130,8 @@ class SourceRecord:
     work_type: str | None = None
     identifiers: dict[str, str] = field(default_factory=dict, hash=False, compare=False)
     alt_titles: tuple[str, ...] = ()  # e.g. earlier arXiv version titles
+    # an arXiv paper's versions v1..vN, each with its own title and authors, when fetched
+    versions: tuple[SourceRecord, ...] = field(default=(), hash=False, compare=False)
     # retracted / partial_retraction / expression_of_concern / correction / withdrawn
     status: frozenset[str] = frozenset()
     # provenance of each status flag, e.g. "crossref:retraction-watch:<notice doi>"

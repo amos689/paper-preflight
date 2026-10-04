@@ -963,3 +963,17 @@ source = "real_papers:2607.13394v1"
 key = "pavlova2024automatedredteaminggoat"
 expect = []
 note = "guard: the ICLR 2025 workshop version of a paper dblp records at ICML 2025 (REF014)"
+
+[[case]]
+name = "fp-astroclip-v1"
+source = "real_papers:2607.19640v1"
+key = "astroclip"
+expect = []
+note = "was REF001 twice (DataCite and arXiv): the entry cites v1 of arXiv 2310.03024, whose title and author order (Lanusse first) v2 changed"
+
+[[case]]
+name = "fp-yu2022quantum-v1-authors"
+source = "real_papers:2607.21647v1"
+key = "yu2022quantum"
+expect = []
+note = "was REF011: the entry cites v1 of arXiv 2212.12913 with its five authors; v2 (retitled) has three"

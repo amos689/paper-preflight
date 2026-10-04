@@ -98,6 +98,27 @@ def test_subtitle_omitted_is_a_variant(cvpr: SourceRecord) -> None:
     )
 
 
+def test_a_title_without_its_leading_name_is_a_variant() -> None:
+    # arXiv 2512.24880 is "mHC: Manifold-Constrained Hyper-Connections"
+    named = SourceRecord(
+        source="arxiv", source_id="2512.24880", title="mHC: Manifold-Constrained Hyper-Connections"
+    )
+    check = check_title("Manifold-Constrained Hyper-Connections", named)
+    assert check.status != "mismatch"
+    assert check.changed == ()  # no word reported missing
+    # what follows the colon must be long enough to name the work on its own
+    short = SourceRecord(source="x", source_id="1", title="GELU: Activation Functions")
+    assert check_title("Activation Functions", short).status == "mismatch"
+    # and the part before it must be a name, not the start of a sentence
+    sentence = SourceRecord(
+        source="x", source_id="2",
+        title="Why Attention Fails: Manifold-Constrained Hyper-Connections Revisited",
+    )  # fmt: skip
+    assert (
+        check_title("Manifold-Constrained Hyper-Connections Revisited", sentence).status != "match"
+    )
+
+
 def test_earlier_version_title_is_a_variant() -> None:
     record = SourceRecord(
         source="arxiv", source_id="1606.08415",

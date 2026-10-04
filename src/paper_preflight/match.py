@@ -120,6 +120,12 @@ def subtitle_variant(a: str, b: str) -> bool:
         return False
     if len(short) >= MIN_PREFIX_CHARS and long_.startswith(short):
         return True
+    # or without the name before the colon: arXiv's "mHC: Manifold-Constrained Hyper-Connections"
+    for full, rest in ((b, ka), (a, kb)):
+        name, colon, tail = full.partition(":")
+        short_name = colon and len(name.split()) <= 2
+        if short_name and len(rest) >= MIN_PREFIX_CHARS and title_key(tail) == rest:
+            return True
     if len(kb) >= len(ka):
         return False
     head = re.split(r":| - ", a, maxsplit=1)[0]
@@ -839,14 +845,43 @@ class Match:
     acceptable: bool  # good enough to bind an unanchored (title-search) candidate
 
 
-def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = False) -> Match:
+_AUTHOR_FIT = {"match": 3, "variant": 2, "unknown": 1, "mismatch": 0}
+
+
+def _fit(title: FieldCheck, authors: AuthorCheck) -> tuple[bool, int, float, float]:
+    return (
+        title.status != "mismatch", _AUTHOR_FIT[authors.status], title.score or 0.0,
+        authors.overlap,
+    )  # fmt: skip
+
+
+def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldCheck, AuthorCheck]:
+    """The title and authors, checked against the version of the work the entry fits best.
+
+    An entry citing an earlier arXiv version lists that version's title and authors: AstroCLIP's
+    v2 (arXiv 2310.03024) changed the title and put Parker before Lanusse, and arXiv 2212.12913's
+    v2 kept three of v1's five authors. With the versions fetched, each is compared in turn;
+    without them, an earlier title's authors are compared in any order (arXiv 2508.03341 put its
+    second author first in v4).
+    """
     title = check_title(info.title, record)
-    # An entry citing an earlier arXiv version lists that version's authors, whose order a later
-    # version may have changed (arXiv 2508.03341 put its second author first in v4).
-    if title.note == EARLIER_VERSION:
+    if title.note == EARLIER_VERSION and not record.versions:
         authors = check_authors(info.authors, replace(record, authors_ordered=False))
     else:
         authors = check_authors(info.authors, record)
+    for version in record.versions:
+        version_title = check_title(info.title, version)
+        version_authors = check_authors(info.authors, version)
+        if _fit(version_title, version_authors) <= _fit(title, authors):
+            continue
+        if version.title != record.title and version_title.status != "mismatch":
+            version_title = replace(version_title, status="variant", note=EARLIER_VERSION)
+        title, authors = version_title, version_authors
+    return title, authors
+
+
+def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = False) -> Match:
+    title, authors = _title_and_authors(info, record)
     year = check_year(info.year, record, preprint_pair=preprint_pair, venue=info.venue)
     venue = check_venue(
         info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS,

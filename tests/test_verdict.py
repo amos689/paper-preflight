@@ -536,6 +536,68 @@ def test_an_earlier_version_keeps_its_own_author_order() -> None:
     assert "REF011" in rules(result)
 
 
+def with_versions(*versions: tuple[str, tuple[Person, ...]]) -> SourceRecord:
+    """The latest version of an arXiv paper whose versions (title, authors) were fetched."""
+    records = []
+    for n, (title, authors) in enumerate(versions, start=1):
+        ids = {"arxiv": "2101.00001", "arxiv_version": f"v{n}"}
+        records.append(replace(arxiv_record(), title=title, authors=authors, identifiers=ids))
+    titles = tuple(dict.fromkeys(r.title for r in records))
+    return replace(records[-1], alt_titles=titles, versions=tuple(records))
+
+
+def test_an_entry_citing_v1_is_checked_against_v1s_authors() -> None:
+    # AstroCLIP (arXiv 2310.03024): v2 changed the title and put the second author first
+    entry = bib(ARXIV_ENTRY)
+    paper = with_versions((TITLE, (ANN, BOB, CAROL)), ("A Later Title", (BOB, ANN, CAROL)))
+    result = assess(entry, evidence_for(entry, anchored=[paper]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
+
+
+def test_authors_a_later_version_dropped_are_not_missing() -> None:
+    # arXiv 2212.12913: v1 had five authors, v2 (retitled) three
+    entry = bib(ARXIV_ENTRY)
+    paper = with_versions((TITLE, (ANN, BOB, CAROL)), ("A Later Title", (ANN,)))
+    result = assess(entry, evidence_for(entry, anchored=[paper]), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.VERIFIED, set())
+
+
+def test_a_reworded_preprint_title_is_reported_once_every_version_is_known() -> None:
+    entry = bib(ARXIV_ENTRY)
+    dense = TITLE.replace("Sparse", "Dense")
+    paper = with_versions((dense, (ANN, BOB, CAROL)), (dense, (ANN, BOB, CAROL)))
+    result = assess(entry, evidence_for(entry, anchored=[paper]), current_year=YEAR)
+    assert "REF012" in rules(result)
+
+
+def test_reordered_authors_under_another_title_are_unclear_while_versions_are_unknown() -> None:
+    # DataCite has only AstroCLIP's latest title and author order; v1 had both as cited
+    entry = bib(ARXIV_ENTRY)
+    latest_only = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2101.00001",
+        title="An Entirely Different Later Title", authors=(BOB, ANN, CAROL), year=2021,
+        years=frozenset({2021}), venue="arXiv", work_type="preprint",
+        identifiers={"doi": "10.48550/arxiv.2101.00001", "arxiv": "2101.00001"},
+    )  # fmt: skip
+    result = assess(entry, evidence_for(entry, anchored=[latest_only]), current_year=YEAR)
+    assert result.verdict is Verdict.CANNOT_DETERMINE
+    assert "REF001" not in rules(result)
+
+
+def test_arxiv_confirming_the_cited_version_answers_for_datacite() -> None:
+    # AstroCLIP's DataCite DOI: DataCite has the latest version, arXiv also the cited one
+    entry = bib(ARXIV_ENTRY.replace("year =", "doi = {10.48550/arXiv.2101.00001},\n  year ="))
+    zed = Person("Other", "Zed")
+    latest = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2101.00001", title="A Later Title",
+        authors=(zed,), year=2021, years=frozenset({2021}), venue="arXiv", work_type="preprint",
+        identifiers={"doi": "10.48550/arxiv.2101.00001"},
+    )  # fmt: skip
+    paper = with_versions((TITLE, (ANN, BOB, CAROL)), ("A Later Title", (zed,)))
+    result = assess(entry, evidence_for(entry, anchored=[latest, paper]), current_year=YEAR)
+    assert "REF001" not in rules(result)
+
+
 NO_DOI = CS_ENTRY.replace("  doi = {10.1234/acl.2023.1},\n", "")
 
 
