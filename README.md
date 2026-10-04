@@ -25,7 +25,7 @@ work:
 
 When it cannot tell, it says so instead of guessing.
 
-> **Status: v0.1, an early release.** False positives are the bugs we most want to hear
+> **Status: v0.2, an early release.** False positives are the bugs we most want to hear
 > about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
@@ -33,7 +33,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.1.2 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.2.0 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -359,8 +359,9 @@ or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- The first PyPI release (v0.1)
-- Chinese-language references (v0.2)
+- Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID (v0.2)
+- Next: fewer false alarms, each round measured on a new week of real papers
+- Later: Chinese-language references
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
 [changelog](CHANGELOG.md).

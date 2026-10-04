@@ -6,6 +6,30 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-04
+
+Check references without a .bib: a compiled `.bbl`, a plain-text list, a PDF, or an arXiv
+paper by its ID. Verdicts are unchanged from 0.1.2.
+
+### Added
+
+- A project that ships no `.bib`, as many arXiv sources do, is read from its compiled `.bbl`
+  (biblatex, natbib, IEEEtran, Springer LNCS, Elsevier, AAS and physics styles); `check
+  refs.bbl` works too. On six real papers that ship both, the `.bbl` gives the `.bib`'s verdict
+  for 286 of 315 references.
+- `check references.txt`, or `check -` from stdin, reads a reference list as plain text:
+  numbered, one per line or paragraph, or wrapped; APA, IEEE, ACM/ACL, natbib, Nature,
+  Vancouver, Springer, Elsevier, SIAM, Chicago, MLA, biblatex and AAS. On Badalova & Mayr's 104
+  references as printed, it reads the hand transcription's title for 103, first author for
+  103, year for all and every DOI and arXiv ID (`evals/plaintext_badalova.py`).
+- `check paper.pdf`, with the new `pdf` extra (pypdf), reads the reference list out of a PDF.
+  On the PDFs of 20 real papers, 88% of the references checked from their `.bib` are found and
+  92% of those get the same verdict (`evals/pdf_agreement.py`).
+- `check arxiv:<id>` downloads an arXiv paper's source into a temporary folder, checks it and
+  deletes it; a paper submitted without source is checked as its PDF.
+- References read from a `.bbl`, text or a PDF are named `ref1`, `ref2`, ... at their lines and
+  are never edited by `bib fix`.
+
 ## [0.1.2] - 2026-10-04
 
 Fewer false alarms again, measured on two more weeks of papers. On 20 arXiv papers collected
@@ -229,7 +253,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/amos689/paper-preflight/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/amos689/paper-preflight/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/amos689/paper-preflight/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/amos689/paper-preflight/releases/tag/v0.1.0
