@@ -15,6 +15,8 @@ All notable changes to this project are documented here. The format follows
   exactly, for all papers in one request per 50 versions, which also lets reworded preprint
   titles be reported. Old-style IDs (`astro-ph/0501436`) are left out, as the API fails on
   them.
+- A cited book is not bound to a journal's review of it, which carries the book's title (a
+  journal article of at most four pages found by title search for a `@book` entry).
 - A reworded title is not reported when the entry leaves out a short name before the colon
   ("Manifold-Constrained Hyper-Connections" for "mHC: Manifold-Constrained Hyper-Connections").
 - A record with only the latest title and another author order (DataCite's arXiv DOIs) is

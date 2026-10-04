@@ -977,3 +977,17 @@ source = "real_papers:2607.21647v1"
 key = "yu2022quantum"
 expect = []
 note = "was REF011: the entry cites v1 of arXiv 2212.12913 with its five authors; v2 (retitled) has three"
+
+[[case]]
+name = "fp-rubinstein2004-book-review"
+source = "real_papers:2607.19659v1"
+key = "rubinstein2004cross"
+expect = []
+note = "was REF010 and REF013: the entry cites Rubinstein & Kroese's book (Springer 2004); the title search bound it to Deng's two-page review of it (Technometrics 2006)"
+
+[[case]]
+name = "fp-hampel1986-book-review"
+source = "real_papers:2607.19692v1"
+key = "hampel1986"
+expect = []
+note = "was REF011: the entry cites Hampel et al.'s book (Wiley 1986); the title search bound it to Law's one-page review of it (The Statistician)"

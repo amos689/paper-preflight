@@ -266,6 +266,7 @@ def _bind_candidate(
     current_year: int | None = None,
 ) -> Match | None:
     """Bind an unanchored entry to one search candidate, or to none when in doubt."""
+    candidates = [r for r in candidates if not book_review(info, r)]
     if not candidates:
         return None
     evaluated = [evaluate(info, r, preprint_pair=preprint_pair) for r in candidates]
@@ -437,6 +438,24 @@ def other_kind(info: EntryInfo, record: SourceRecord) -> bool:
     entry_kind = _ENTRY_KINDS.get(info.entry_type)
     record_kind = _RECORD_KINDS.get((record.work_type or "").lower())
     return record_kind in _NOT_THE_SAME.get(entry_kind or "", set())
+
+
+_PAGE_SPAN = re.compile(r"^\D*(\d+)\D*(?:[-‐-―]+\D*(\d+))?\D*$")
+MAX_REVIEW_PAGES = 4
+
+
+def book_review(info: EntryInfo, record: SourceRecord) -> bool:
+    """A journal article of a few pages for a cited book: a review of the book, which journals
+    title with the book's title (Deng on Rubinstein & Kroese's "The Cross-Entropy Method",
+    Technometrics 2006, pp. 147-148; Law on Hampel et al.'s "Robust Statistics", 1986, p. 565).
+    """
+    if info.entry_type not in {"book", "mvbook"} or record.work_type != "journal-article":
+        return False
+    span = _PAGE_SPAN.match(record.pages or "")
+    if span is None:
+        return False
+    first, last = int(span[1]), int(span[2] or span[1])
+    return 0 <= last - first < MAX_REVIEW_PAGES
 
 
 def _year_gap(year: int | None, record: SourceRecord) -> int:
