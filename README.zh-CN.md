@@ -166,6 +166,12 @@ uvx paper-preflight check references.txt
 pbpaste | uvx paper-preflight check -      # 或从标准输入读取
 ```
 
+任何一篇 arXiv 论文，直接给编号即可：源码会下载到临时目录，检查完即删除。
+
+```bash
+uvx paper-preflight check arxiv:2607.06922
+```
+
 只有 PDF？装上 `pdf` 扩展后，也能读出其中的参考文献列表：
 
 ```bash
