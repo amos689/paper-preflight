@@ -1103,3 +1103,24 @@ source = "real_papers:2607.26414v1"
 key = "gavish2014optimal"
 expect = []
 note = "was REF012: dblp's title keeps TeX math ('4/sqrt 3' between TeX math delimiters)"
+
+[[case]]
+name = "fp-baxter1982-book-not-reprint-chapter"
+source = "real_papers:2607.26367v1"
+key = "baxter1982exactly"
+expect = []
+note = "was REF013: Baxter's 1982 Academic Press book was bound to a 1985 World Scientific chapter of the same title"
+
+[[case]]
+name = "fp-weinberg-volume-2"
+source = "real_papers:2607.26445v1"
+key = "Weinberg:1996:qft_vol_2"
+expect = []
+note = "was REF012: 'The Quantum Theory of Fields. Vol. 2: Modern Applications'; Crossref's title leaves out the volume"
+
+[[case]]
+name = "fp-chow2018-jmlr-volume-year"
+source = "real_papers:2608.14642v1"
+key = "chow2018risk"
+expect = []
+note = "was REF013: JMLR cites 18(167) as 2018; dblp files volume 18 under 2017"

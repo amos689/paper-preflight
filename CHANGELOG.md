@@ -8,6 +8,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- A cited book is no longer bound to a later chapter of the same title that reprints it, a
+  volume of a multi-volume book matches a record that leaves the volume out of its title
+  ("The Quantum Theory of Fields. Vol. 2: ..."), and a JMLR paper may carry the year after
+  dblp's volume year (JMLR cites 18(167) as 2018; dblp files volume 18 under 2017).
 - Names written another way are one person: initials without dots ("Brown, JR" for John R.
   Brown, as Google Scholar exports them), a generational suffix ("Smith IV, David H",
   "David H. Smith IV" against a record's Smith with suffix IV), Danny for Daniel, and an

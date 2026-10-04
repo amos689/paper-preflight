@@ -651,6 +651,15 @@ def test_a_book_is_bound_to_a_long_article_or_the_book_itself() -> None:
         assert rules(result) <= {"REF016"}  # at most: the record has a DOI the entry lacks
 
 
+def test_a_book_is_not_a_later_chapter_of_the_same_title() -> None:
+    # Baxter's 1982 book and a 1985 World Scientific chapter reprinting it (real paper)
+    entry = bib(BOOK)
+    chapter = record(BOOK_TITLE, HAMPEL, 1989, "crossref", work_type="book-chapter")
+    result = assess(entry, search_result(entry, chapter), current_year=YEAR)
+    assert "REF013" not in rules(result)
+    assert result.verdict is Verdict.CANNOT_DETERMINE
+
+
 def test_too_new_means_this_year_or_next() -> None:
     def reasons_for(year: int) -> tuple[Reason, ...]:
         entry = bib(NO_DOI.replace("2023", str(year)))
