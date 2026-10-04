@@ -1082,3 +1082,24 @@ source = "real_papers:2607.26375v1"
 key = "research2026composer"
 expect = []
 note = "was REF011: arXiv lists the organisation 'Cursor Research' first, then the people"
+
+[[case]]
+name = "fp-wilson1977-title-in-book"
+source = "real_papers:2607.26445v1"
+key = "Wilson:1977:quarks_strings"
+expect = []
+note = "was REF012: the title field holds 'Quarks and Strings on a Lattice, in New Phenomena in Subnuclear Physics: Part A' (the chapter and its book)"
+
+[[case]]
+name = "fp-kim2023-title-in-proceedings"
+source = "real_papers:2607.26445v1"
+key = "Kim:2025:cudaq"
+expect = []
+note = "was REF012: the title field holds the paper's title followed by ', in Proceedings of the 60th Annual ACM/IEEE Design Automation Conference'"
+
+[[case]]
+name = "fp-gavish2014-dblp-tex"
+source = "real_papers:2607.26414v1"
+key = "gavish2014optimal"
+expect = []
+note = "was REF012: dblp's title keeps TeX math ('4/sqrt 3' between TeX math delimiters)"

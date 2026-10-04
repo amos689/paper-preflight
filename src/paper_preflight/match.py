@@ -232,9 +232,19 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
 EARLIER_VERSION = "matches an earlier version's title"
 
 
+CONTAINER_IN_TITLE = "the title field also names the book or proceedings"
+# "Quarks and Strings on a Lattice, in New Phenomena in Subnuclear Physics": a chapter's title
+# field that also names its book, a style trick (set with \textup in a real paper's .bib)
+_IN_CONTAINER = re.compile(r"^(?P<head>.{12,}?),\s+in\s+(?P<tail>[A-Z]\S*(?:\s+\S+){2,})$")
+
+
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
+    within = _IN_CONTAINER.match(entry_title)
+    if within and title_score(within["head"], record.title) >= TITLE_SAME:
+        found = check_title(within["head"], record)
+        return replace(found, status="variant", note=found.note or CONTAINER_IN_TITLE)
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
