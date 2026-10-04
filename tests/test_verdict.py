@@ -614,6 +614,43 @@ def test_a_year_in_the_future_is_reported_against_the_real_one() -> None:
     assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF013"})
 
 
+BOOK_TITLE = "Robust Statistics: The Approach Based on Influence Functions"
+BOOK = f"""
+@book{{hampel1986,
+  title = {{{BOOK_TITLE}}},
+  author = {{Hampel, Frank R. and Ronchetti, Elvezio M. and Rousseeuw, Peter J.}},
+  publisher = {{Wiley}},
+  year = {{1986}},
+}}
+"""
+HAMPEL = (Person("Hampel", "F. R."), Person("Ronchetti", "E. M."), Person("Rousseeuw", "P. J."))
+
+
+@pytest.mark.parametrize("pages", ["565", "147-148", "903–906"])
+def test_a_book_is_not_bound_to_a_review_of_it(pages: str) -> None:
+    # Crossref titles book reviews with the book's title (Law, The Statistician 1986, p. 565)
+    entry = bib(BOOK)
+    review = record(
+        BOOK_TITLE, (Person("Law", "John"), *HAMPEL), 1986, "crossref",
+        work_type="journal-article", pages=pages, venue="The Statistician",
+    )  # fmt: skip
+    result = assess(entry, search_result(entry, review), current_year=YEAR)
+    assert result.verdict is Verdict.CANNOT_DETERMINE
+    assert rules(result) == {"REF090"}
+
+
+def test_a_book_is_bound_to_a_long_article_or_the_book_itself() -> None:
+    entry = bib(BOOK)
+    article = record(
+        BOOK_TITLE, HAMPEL, 1986, "crossref", work_type="journal-article", pages="1-40"
+    )
+    book = record(BOOK_TITLE, HAMPEL, 1986, "crossref", work_type="book")
+    for found in (article, book):
+        result = assess(entry, search_result(entry, found), current_year=YEAR)
+        assert result.verdict is Verdict.VERIFIED
+        assert rules(result) <= {"REF016"}  # at most: the record has a DOI the entry lacks
+
+
 def test_too_new_means_this_year_or_next() -> None:
     def reasons_for(year: int) -> tuple[Reason, ...]:
         entry = bib(NO_DOI.replace("2023", str(year)))
