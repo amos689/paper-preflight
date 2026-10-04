@@ -11,6 +11,7 @@ and page numbers are dropped. A scanned PDF has no text to read.
 
 from __future__ import annotations
 
+import logging
 import re
 import unicodedata
 from collections import Counter
@@ -59,6 +60,8 @@ def pdf_text(path: Path) -> str:
         raise PdfUnavailable(
             "reading a PDF needs the pdf extra: pip install 'paper-preflight[pdf]'"
         ) from exc
+    # pypdf logs every font it cannot fully decode ("fontTools is required ..."): noise here
+    logging.getLogger("pypdf").setLevel(logging.ERROR)
     reader = PdfReader(path)
     pages = [page.extract_text() or "" for page in reader.pages]
     return unicodedata.normalize("NFKC", "\n".join(pages))
@@ -101,6 +104,15 @@ def reference_section(text: str) -> tuple[int, str]:
     for pattern, spaced in _SPACES:
         section = pattern.sub(spaced, section)
     return start + 1, section
+
+
+def body_lines(text: str) -> list[str]:
+    """A paper's lines before its (last) reference list heading, without page numbers and
+    running headers: its prose, for citation-support evidence."""
+    lines = text.splitlines()
+    starts = [i for i, line in enumerate(lines) if _heading(line)]
+    end = starts[-1] if starts else len(lines)
+    return _drop_running_lines([line for line in lines[:end] if not _PAGE_NUMBER.match(line)])
 
 
 def _drop_running_lines(lines: list[str]) -> list[str]:

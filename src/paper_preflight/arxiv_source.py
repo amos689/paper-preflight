@@ -51,11 +51,15 @@ def fetch(identifier: str, folder: Path, client: httpx.Client | None = None) -> 
     finally:
         if own:
             http.close()
-    if response.status_code == 404:
+    return store(identifier, response.status_code, response.content, folder)
+
+
+def store(identifier: str, status: int, content: bytes, folder: Path) -> Path:
+    """Unpack a downloaded e-print into ``folder``; the path to check (the folder or a PDF)."""
+    if status == 404:
         raise ArxivSourceError(f"arXiv has no paper {identifier}")
-    if response.status_code != 200:
-        raise ArxivSourceError(f"arXiv answered HTTP {response.status_code} for {identifier}")
-    content = response.content
+    if status != 200:
+        raise ArxivSourceError(f"arXiv answered HTTP {status} for {identifier}")
     if len(content) > MAX_BYTES:
         raise ArxivSourceError(f"the source of {identifier} is larger than {MAX_BYTES} bytes")
     folder.mkdir(parents=True, exist_ok=True)
