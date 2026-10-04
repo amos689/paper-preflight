@@ -33,7 +33,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.2.0 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.2.1 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -94,22 +94,24 @@ head-to-head with published tools, and a public benchmark.
 
 ### On real papers
 
-The bibliographies of 20 arXiv papers from July 2026 (cs, stat, q-bio, quant-ph and astro-ph),
-chosen mechanically and collected only after every fix in this release, with every warning and
-error reviewed by hand:
+The bibliographies of 20 arXiv papers from the turn of July and August 2026 (cs, stat, q-bio,
+quant-ph and astro-ph), chosen mechanically and collected only after every fix in this release,
+with every warning and error reviewed by hand:
 
 | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|
-| 814 | 107 | 92 | 14 | 1 | 1.7 |
+| 1,005 | 88 | 66 | 19 | 3 | 1.9 |
 
-- **Fewer than one false alarm per paper** (41 references on average), against 92 real
-  problems: 30 errors in the entries (invented or misspelt authors, wrong DOIs and arXiv IDs,
-  wrong titles, years and venues) and 62 cited preprints that have since been published.
-- **The false alarms are mostly records the registries got wrong** (a garbled title, a book
-  review filed under the book's title) and entries citing an earlier arXiv version as it was.
-- **Three earlier batches of 20 papers were used to find false positives,** each first measured
-  as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; this release before its last
-  fixes: 3.0). On all three, this release has 0.1 to 0.7. Details in
+- **Fewer than one false alarm per paper** (50 references on average), against 66 real
+  problems: 31 errors in the entries (invented co-authors and given names, wrong or malformed
+  DOIs, wrong titles and years) and 35 cited preprints that have since been published.
+- **The false alarms are mostly names written another way** (initials without dots, a
+  generational suffix, a nickname or an English name) **and records the registries got wrong**
+  (a registry listing 3 of 10 authors, a garbled title). The previous release has 2.1 on
+  these papers.
+- **Four earlier batches of 20 papers were used to find false positives,** each first measured
+  as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; 0.1.2 before its last fixes: 3.0;
+  0.1.2: 1.7). On all four, this release has 0.1 to 0.7. Details in
   [`evals/README.md`](evals/README.md#real-papers).
 
 ### Next to other tools
@@ -140,12 +142,12 @@ BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 97.9% | 88.9% | 2.6% | 97.0% |
+| `test_public`: 831 entries, never used during development | Any issue | 98.1% | 88.9% | 2.2% | 97.0% |
 | | Fabrication | 99.0% | 49.0% | 0.6% | 97.0% |
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.7% | 2.1% | 98.4% |
 | | Fabrication | 98.1% | 52.7% | 1.0% | 98.4% |
 
-HALLMARK v1.2.3, every entry of both public splits, run on 2026-10-03. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run on 2026-10-04. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 

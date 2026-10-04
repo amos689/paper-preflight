@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-04
+
+Fewer false alarms: the fixes for the fourth real-paper batch's false positives. On a fifth
+batch collected afterwards (1,005 references), 1.9 false positives per 100 references
+(0.2.0: 2.1), short of the 1.5 aimed for; on HALLMARK's held-out split, 2.2% false flags on
+valid entries (0.2.0: 2.6%).
+
 ### Fixed
 
 - An entry citing an earlier arXiv version is checked against that version's title and
