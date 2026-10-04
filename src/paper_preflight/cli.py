@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import atexit
 import contextlib
 import io
 import locale
 import os
 import platform
+import shutil
 import sys
+import tempfile
 import time
 from enum import StrEnum
 from pathlib import Path
@@ -136,11 +139,23 @@ def _safe_stdout() -> None:
         stream.reconfigure(errors="replace")
 
 
+def _stdin_file() -> Path:
+    """The reference list piped in, as a file a check can read; removed when the run ends."""
+    folder = Path(tempfile.mkdtemp(prefix="paper-preflight-"))
+    atexit.register(shutil.rmtree, folder, ignore_errors=True)
+    path = folder / "stdin.txt"
+    path.write_bytes(sys.stdin.buffer.read())
+    return path
+
+
 @app.command()
 def check(
     path: Annotated[
         Path,
-        typer.Argument(help="Project directory, main .tex file, a .bib file, or a compiled .bbl."),
+        typer.Argument(
+            help="Project directory, main .tex file, a .bib file, a compiled .bbl, or a "
+            "plain-text reference list (.txt, or - to read it from stdin)."
+        ),
     ] = Path("."),
     main_file: Annotated[
         Path | None, typer.Option("--main", help="Main .tex file if it cannot be detected.")
@@ -178,7 +193,7 @@ def check(
         typer.Option("--refresh", help="Ask every source again instead of using cached answers."),
     ] = False,
 ) -> None:
-    """Check a LaTeX project (or a .bib file) and report problems with its references."""
+    """Check a LaTeX project (or a reference list) and report problems with its references."""
     from paper_preflight.check import VerifyOptions, run_check
     from paper_preflight.report.jsonout import render_json
     from paper_preflight.report.sarif import render_sarif
@@ -187,6 +202,8 @@ def check(
 
     _safe_stdout()
     _no_refresh_offline(refresh, offline)
+    if str(path) == "-":
+        path = _stdin_file()
     language = resolve_lang(lang)
     progress = Console(stderr=True)
     message = _progress_message(language, offline)

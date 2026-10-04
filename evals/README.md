@@ -143,3 +143,14 @@ noise. The results are in [`results/badalova-mayr.md`](results/badalova-mayr.md)
   [47.9%, 75.6%]. Two causes of false flags found then were fixed (#72: the year in a dblp key;
   #73/#74: team authors), and four names whose letters the published CSV lost to its encoding
   were restored from the documents.
+
+## Plain-text references: Badalova & Mayr's strings
+
+`check references.txt` reads a reference list as formatted text. `evals/plaintext_badalova.py`
+measures it on Badalova & Mayr's 104 references as the documents print them (APA, biblatex's
+default style, a natbib author-year style), against the hand transcription
+`evals/badalova_mayr.bib`. The text gives the transcription's title for 103 of 104
+references, its first author for 103, its year for all 104 and every one of its 48 DOIs and
+arXiv IDs. Checked against the live sources both ways, 102 of the 104 references are flagged,
+or not, alike; the two others are names whose letters the dataset's CSV lost. The results are
+in [`results/plaintext-badalova-mayr.md`](results/plaintext-badalova-mayr.md).
