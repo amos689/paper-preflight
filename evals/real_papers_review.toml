@@ -1224,3 +1224,429 @@ note = "The doi field holds a URL."
 [finding."2609.13158v1:Lee:1978:TQA:800025.1198348:REF017"]
 verdict = "correct"
 note = "The doi field holds a URL (doi.acm.org)."
+
+# Fourth batch (held out for 0.1.2's fixes): papers first submitted 2026-07-22..28, reviewed 2026-10-04.
+
+[finding."2607.19640v1:astroclip:REF001"]
+verdict = "false_positive"
+note = "The entry cites v1 of arXiv 2310.03024 as written: v1's title ('AstroCLIP: Cross-Modal Pre-Training for Astronomical Foundation Models') and author order (Lanusse first); v2 retitled it and put Parker first. Reported twice, from DataCite and from arXiv."
+
+[finding."2607.19640v1:jacobs1988:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.19640v1:ho1995:REF012"]
+verdict = "false_positive"
+note = "'Seyfert Nuclei. II.' is Crossref's 'Seyfert nuclei. 2:': a roman numeral for the part's number."
+
+[finding."2607.19640v1:vacca2003:REF012"]
+verdict = "false_positive"
+note = "Crossref's title ends in 'Absorption1', a footnote mark; the entry is right."
+
+[finding."2607.19640v1:baldwin1978:REF012"]
+verdict = "correct"
+note = "'strenghts' is a typo for 'strengths'."
+
+[finding."2607.19640v1:mushotzky1984:REF012"]
+verdict = "correct"
+note = "'Balwin effect' is a typo for 'Baldwin effect'."
+
+[finding."2607.19659v1:rubinstein2004cross:REF010"]
+verdict = "false_positive"
+note = "The entry cites Rubinstein & Kroese's book (Springer 2004); the title search bound it to Deng's 2006 review of the book in Technometrics (10.1198/tech.2006.s353)."
+
+[finding."2607.19659v1:rubinstein2004cross:REF013"]
+verdict = "false_positive"
+note = "Same binding as REF010: the 2006 year is the book review's."
+
+[finding."2607.19659v1:JMLR:v21:19-820:REF011"]
+verdict = "correct"
+note = "'Ali Caner TÃ¼rkmen' is Türkmen garbled by a wrong encoding; BibTeX prints it as written."
+
+[finding."2607.19669v1:pallara2007short:REF011"]
+verdict = "correct"
+note = "The author field is garbled: 'Pallara-F, M Miranda Jr-D and Preunkert, Paronetto-M' for Miranda Jr., Pallara, Paronetto and Preunkert."
+
+[finding."2607.19669v1:pallara2007short:REF013"]
+verdict = "false_positive"
+note = "Ann. Fac. Sci. Toulouse Math. (6) 16(1) is the 2007 volume; Crossref's 2008 and 2009 are later deposits."
+
+[finding."2607.19686v3:zhou2026next:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-1385 is 2025."
+
+[finding."2607.19691v2:soft-thinking:REF011"]
+verdict = "unclear"
+note = "Shuohang Wang and Yelong Shen are on the arXiv version (2505.15778) but not on the NeurIPS 2025 version in dblp; the entry cites NeurIPS with the arXiv author list."
+
+[finding."2607.19692v1:koyuncu2023:REF001"]
+verdict = "correct"
+note = "10.1145/3580305.3599269 is Takeuchi et al.'s KDD 2023 paper on causal effect estimation, not Koyuncu et al.'s."
+
+[finding."2607.19692v1:hampel1986:REF011"]
+verdict = "false_positive"
+note = "The entry cites Hampel et al.'s book (Wiley 1986); the title search bound it to John Law's review of the book in The Statistician (10.2307/2987975)."
+
+[finding."2607.19692v1:desai2019:REF011"]
+verdict = "correct"
+note = "arXiv 1907.04805 is by Rathin Desai and Amit Sharma, not Sameer Desai and Yash Sharma."
+
+[finding."2607.19692v1:hillchaudhuri2025:REF011"]
+verdict = "correct"
+note = "Econometric Reviews 44(5) lists Saraswata Chaudhuri first (Crossref); the entry puts Hill first."
+
+[finding."2607.19692v1:imbens2015causal:REF012"]
+verdict = "correct"
+note = "The book is 'Causal Inference for Statistics, Social, and Biomedical Sciences'; the entry has 'in'."
+
+[finding."2607.19711v1:omnivec2:REF003"]
+verdict = "correct"
+note = "No such paper: OmniVec2 (CVPR 2024, pp. 27412-27424) is Srivastava & Sharma's 'A Novel Transformer based Network for Large Scale Multimodal and Multitask Learning'; the entry's title and seven authors are invented."
+
+[finding."2607.19711v1:fat:REF011"]
+verdict = "correct"
+note = "The NeurIPS 2024 paper is by Miao, Dong, Zhang, Yu, Yang and Gao; the entry's Du, Zheng, Hao Yang, Yuan and Gong are not authors."
+
+[finding."2607.19711v1:pointtransformer:REF014"]
+verdict = "correct"
+note = "Point Transformer (Zhao et al.) is an ICCV 2021 paper; the entry says CVPR."
+
+[finding."2607.19717v2:ODonnell1994:REF012"]
+verdict = "false_positive"
+note = "Crossref's 'Rnu-dependent' is R_V garbled; the entry's 'R v-dependent' is right (ApJ 422, 158)."
+
+[finding."2607.19717v2:Davidson2008:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.19717v2:Smith2002:REF012"]
+verdict = "false_positive"
+note = "The entry's 'Z$_{solar}$' is the title's Z with the solar symbol, which Crossref dropped."
+
+[finding."2607.19767v1:lin2024layoutprompter:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 (2023) cited as 2024; Crossref 10.52202/075280-1902 is 2023."
+
+[finding."2607.19770v1:Quant_net_d_computing_1:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2607.20044v1:egea2014meigo:REF011"]
+verdict = "correct"
+note = "The author is Diana-Patricia Danciu, not Dorin-Paul."
+
+[finding."2607.20044v1:hines2014determination:REF011"]
+verdict = "correct"
+note = "The author is Thomas R. Middendorf, not Tatiana."
+
+[finding."2607.20044v1:mcdonald2023computational:REF011"]
+verdict = "correct"
+note = "The author is Daniel Temko, not Dmytro."
+
+[finding."2607.20044v1:portela2025conformal:REF011"]
+verdict = "correct"
+note = "The first author is Alberto Portela, not Alejandro."
+
+[finding."2607.20044v1:vehtari2021rank:REF012"]
+verdict = "false_positive"
+note = "Crossref's title adds '(with Discussion)', the journal's note that discussions follow; the entry's title is the paper's."
+
+[finding."2607.21647v1:yu2022quantum:REF011"]
+verdict = "false_positive"
+note = "The entry cites v1 of arXiv 2212.12913 as written: v1's title ('Quantum federated learning based on gradient descent') and its five authors; v2 retitled it with three."
+
+[finding."2607.22722v1:borji2022addressing:REF001"]
+verdict = "correct"
+note = "arXiv 2208.11580 is Frantar et al.'s 'Optimal Brain Compression', not Borji's paper."
+
+[finding."2607.22722v1:nie2025new:REF011"]
+verdict = "correct"
+note = "arXiv 2510.19347 has Caoliang Zhang where the entry has Guojie Xiao."
+
+[finding."2607.27230v2:qwen2025qwen3:REF010"]
+verdict = "correct"
+note = "The Qwen3 Technical Report has named authors (An Yang et al.), as in Qwen's own BibTeX; 'Qwen' is not on the byline."
+
+[finding."2607.27230v2:elhage2021mathematical:REF003"]
+verdict = "false_positive"
+note = "Real: Elhage et al., 'A Mathematical Framework for Transformer Circuits', Transformer Circuits Thread (2021), a web publication no queried source indexes."
+
+[finding."2607.27230v2:deepseek2025mhc:REF010"]
+verdict = "correct"
+note = "arXiv 2512.24880 (mHC) has named authors (Xie et al.); 'DeepSeek' is not on the byline. Same as sam3."
+
+[finding."2607.27230v2:pagliardini2024denseformer:REF011"]
+verdict = "correct"
+note = "DenseFormer is by Pagliardini, Mohtashami, Fleuret and Jaggi; Pierre Ablin is not an author."
+
+[finding."2607.27230v2:paperno2016lambada:REF011"]
+verdict = "correct"
+note = "LAMBADA's third author is Angeliki Lazaridou; 'Angeliki Dutta' is not an author."
+
+[finding."2607.27230v2:bachlechner2020rezero:REF011"]
+verdict = "false_positive"
+note = "Garrison W. Cottrell goes by Gary (dblp's 'Gary Cottrell'); one person."
+
+[finding."2607.27230v2:shazeer2017moe:REF011"]
+verdict = "correct"
+note = "The third author is Krzysztof Maziarz; 'Krzysztof Maarten' is not an author."
+
+[finding."2607.27230v2:razzhigaev2024linear:REF011"]
+verdict = "correct"
+note = "The ACL 2024 paper has Nikolai Gerasimenko, Denis Dimitrov and Andrey Kuznetsov; the entry's Ivan Gerasimov, Alexander Korotin and Denis Kuznetsov are not authors."
+
+[finding."2607.27230v2:he2021realformer:REF011"]
+verdict = "correct"
+note = "RealFormer's third author is Bhargav Kanagal; 'Karol Kanber' is not an author."
+
+[finding."2607.27230v2:zhang2026duality:REF011"]
+verdict = "correct"
+note = "arXiv 2603.16039 is by Yifan Zhang alone; the entry adds three authors."
+
+[finding."2607.19640v1:li2021:REF015"]
+verdict = "correct"
+note = "arXiv 2103.13629 appeared in CVPR (2021), DOI 10.1109/cvpr46437.2021.01368."
+
+[finding."2607.19640v1:wu2023:REF015"]
+verdict = "correct"
+note = "arXiv 2311.15211 appeared in ACL (Findings) (2023), DOI 10.18653/v1/2023.findings-acl.482."
+
+[finding."2607.19640v1:chun2024:REF015"]
+verdict = "correct"
+note = "arXiv 2410.18857 appeared in ICLR (2025)."
+
+[finding."2607.19640v1:kong2020:REF015"]
+verdict = "correct"
+note = "arXiv 2008.10546 appeared in ICML (2020)."
+
+[finding."2607.19640v1:guo2017:REF015"]
+verdict = "correct"
+note = "arXiv 1706.04599 appeared in ICML (2017)."
+
+[finding."2607.19640v1:nguyen2014:REF015"]
+verdict = "correct"
+note = "arXiv 1412.1897 appeared in CVPR (2015), DOI 10.1109/cvpr.2015.7298640."
+
+[finding."2607.19640v1:Lakshminarayanan2016:REF015"]
+verdict = "correct"
+note = "arXiv 1612.01474 appeared in NIPS (2017)."
+
+[finding."2607.19640v1:kristiadi2020:REF015"]
+verdict = "correct"
+note = "arXiv 2002.10118 appeared in ICML (2020)."
+
+[finding."2607.19640v1:lewis2019:REF015"]
+verdict = "correct"
+note = "arXiv 1910.13461 appeared in ACL (2020), DOI 10.18653/v1/2020.acl-main.703."
+
+[finding."2607.19640v1:he2021:REF015"]
+verdict = "correct"
+note = "arXiv 2111.06377 appeared in CVPR (2022), DOI 10.1109/cvpr52688.2022.01553."
+
+[finding."2607.19640v1:devlin2018:REF015"]
+verdict = "correct"
+note = "arXiv 1810.04805 appeared in NAACL-HLT (1) (2019), DOI 10.18653/v1/n19-1423."
+
+[finding."2607.19640v1:dosovitskiy2020:REF015"]
+verdict = "correct"
+note = "arXiv 2010.11929 appeared in ICLR (2021)."
+
+[finding."2607.19640v1:xiong2020:REF015"]
+verdict = "correct"
+note = "arXiv 2002.04745 appeared in ICML (2020)."
+
+[finding."2607.19640v1:baevski2018:REF015"]
+verdict = "correct"
+note = "arXiv 1809.10853 appeared in ICLR (Poster) (2019)."
+
+[finding."2607.19640v1:darcet2023:REF015"]
+verdict = "correct"
+note = "arXiv 2309.16588 appeared in ICLR (2024)."
+
+[finding."2607.19640v1:schaipp2025:REF015"]
+verdict = "correct"
+note = "arXiv 2501.18965 appeared in ICML (2025)."
+
+[finding."2607.19640v1:schaul2012:REF015"]
+verdict = "correct"
+note = "arXiv 1206.1106 appeared in ICML (3) (2013)."
+
+[finding."2607.19640v1:transformer:REF015"]
+verdict = "correct"
+note = "arXiv 1706.03762 appeared in NIPS (2017)."
+
+[finding."2607.19640v1:attention:REF015"]
+verdict = "correct"
+note = "arXiv 1406.6247 appeared in NIPS (2014)."
+
+[finding."2607.19653v1:zan2025multiswebench:REF015"]
+verdict = "correct"
+note = "arXiv 2504.02605 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:gso:REF015"]
+verdict = "correct"
+note = "arXiv 2505.23671 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:zhang2025swebenchgoeslive:REF015"]
+verdict = "correct"
+note = "arXiv 2505.23419 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:press2025algotunelanguagemodelsspeed:REF015"]
+verdict = "correct"
+note = "arXiv 2507.15887 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:ouyang2025kernelbenchllmswriteefficient:REF015"]
+verdict = "correct"
+note = "arXiv 2502.10517 appeared in ICML (2025)."
+
+[finding."2607.19653v1:dong2025starkstrategicteamagents:REF015"]
+verdict = "correct"
+note = "arXiv 2510.16996 appeared in ICLR (2026)."
+
+[finding."2607.19653v1:liu2025lessonslearnedmultiagentframework:REF015"]
+verdict = "correct"
+note = "arXiv 2505.23946 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:shypula2024learningperformanceimprovingcodeedits:REF015"]
+verdict = "correct"
+note = "arXiv 2302.07867 appeared in ICLR (2024)."
+
+[finding."2607.19653v1:livecodebenchpro:REF015"]
+verdict = "correct"
+note = "arXiv 2506.11928 appeared in NeurIPS (2025)."
+
+[finding."2607.19653v1:livecodebench:REF015"]
+verdict = "correct"
+note = "arXiv 2403.07974 appeared in ICLR (2025)."
+
+[finding."2607.19653v1:bigcodebench:REF015"]
+verdict = "correct"
+note = "arXiv 2406.15877 appeared in ICLR (2025)."
+
+[finding."2607.19653v1:search_based_llms:REF015"]
+verdict = "correct"
+note = "arXiv 2408.12159 appeared in ICSE (2025), DOI 10.1109/icse55347.2025.00021."
+
+[finding."2607.19653v1:effibench:REF015"]
+verdict = "correct"
+note = "arXiv 2402.02037 appeared in NeurIPS (2024)."
+
+[finding."2607.19653v1:enamel:REF015"]
+verdict = "correct"
+note = "arXiv 2406.06647 appeared in ICLR (2025)."
+
+[finding."2607.19653v1:tritonbench:REF015"]
+verdict = "correct"
+note = "arXiv 2502.14752 appeared in ACL (Findings) (2025), DOI 10.18653/v1/2025.findings-acl.1183."
+
+[finding."2607.19653v1:self_refine:REF015"]
+verdict = "correct"
+note = "arXiv 2303.17651 appeared in NeurIPS (2023)."
+
+[finding."2607.19653v1:peace:REF015"]
+verdict = "correct"
+note = "arXiv 2510.17142 appeared in ASE (2025), DOI 10.1109/ase63991.2025.00153."
+
+[finding."2607.19678v1:bhagavatula2019abductive:REF015"]
+verdict = "correct"
+note = "arXiv 1908.05739 appeared in ICLR (2020)."
+
+[finding."2607.19678v1:shojaee2025llmsrbenchnewbenchmarkscientific:REF015"]
+verdict = "correct"
+note = "arXiv 2504.10415 appeared in ICML (2025)."
+
+[finding."2607.19678v1:zhou2025automatingexpertlevelmedicalreasoning:REF015"]
+verdict = "correct"
+note = "arXiv 2507.07988 appeared in npj Digit. Medicine (2025), DOI 10.1038/s41746-025-02208-7."
+
+[finding."2607.19678v1:lightman2023letsverifystepstep:REF015"]
+verdict = "correct"
+note = "arXiv 2305.20050 appeared in ICLR (2024)."
+
+[finding."2607.19678v1:havaldar2025entailedlinesincorporatingimplication:REF015"]
+verdict = "correct"
+note = "arXiv 2501.07719 appeared in ACL (1) (2025), DOI 10.18653/v1/2025.acl-long.1552."
+
+[finding."2607.19678v1:zuo2025medxpertqa:REF015"]
+verdict = "correct"
+note = "arXiv 2501.18362 appeared in ICML (2025)."
+
+[finding."2607.19678v1:pal2022medmcqalargescalemultisubject:REF015"]
+verdict = "correct"
+note = "arXiv 2203.14371 appeared in CHIL (2022)."
+
+[finding."2607.19678v1:bowman2015largeannotatedcorpuslearning:REF015"]
+verdict = "correct"
+note = "arXiv 1508.05326 appeared in EMNLP (2015), DOI 10.18653/v1/d15-1075."
+
+[finding."2607.19678v1:pandit2025hard2verifysteplevelverificationbenchmark:REF015"]
+verdict = "correct"
+note = "arXiv 2510.13744 appeared in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.1031."
+
+[finding."2607.19686v3:zheng2025continuously:REF015"]
+verdict = "correct"
+note = "arXiv 2510.01329 appeared in ICLR (2026)."
+
+[finding."2607.19686v3:kim2025any:REF015"]
+verdict = "correct"
+note = "arXiv 2509.01025 appeared in ICLR (2026)."
+
+[finding."2607.19689v1:ChenHJL26:REF015"]
+verdict = "correct"
+note = "arXiv 2603.22167 appeared in COLT (2026)."
+
+[finding."2607.19689v1:HuLSS2025efficient:REF015"]
+verdict = "correct"
+note = "arXiv 2511.04907 appeared in COLT (2026)."
+
+[finding."2607.19689v1:HuTY26:REF015"]
+verdict = "correct"
+note = "arXiv 2602.17577 appeared in COLT (2026)."
+
+[finding."2607.19691v2:rot:REF015"]
+verdict = "correct"
+note = "arXiv 2601.14750 appeared in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.2097."
+
+[finding."2607.19691v2:sim-cot:REF015"]
+verdict = "correct"
+note = "arXiv 2509.20317 appeared in ICLR (2026)."
+
+[finding."2607.19691v2:rlvr-incentivizes:REF015"]
+verdict = "correct"
+note = "arXiv 2506.14245 appeared in ICLR (2026)."
+
+[finding."2607.19691v2:efficient-reasoning-survey:REF015"]
+verdict = "correct"
+note = "arXiv 2503.16419 appeared in Trans. Mach. Learn. Res. (2025)."
+
+[finding."2607.19691v2:lepo:REF015"]
+verdict = "correct"
+note = "arXiv 2604.17892 appeared in ACL (Findings) (2026), DOI 10.18653/v1/2026.findings-acl.707."
+
+[finding."2607.27230v2:pagliardini2024denseformer:REF015"]
+verdict = "correct"
+note = "arXiv 2402.02622 appeared in NeurIPS (2024)."
+
+[finding."2607.27230v2:zhu2024hyperconnections:REF015"]
+verdict = "correct"
+note = "arXiv 2409.19606 appeared in ICLR (2025)."
+
+[finding."2607.27230v2:penedo2024fineweb:REF015"]
+verdict = "correct"
+note = "arXiv 2406.17557 appeared in NeurIPS (2024)."
+
+[finding."2607.27230v2:wang2022deepnet:REF015"]
+verdict = "correct"
+note = "arXiv 2203.00555 appeared in IEEE Trans. Pattern Anal. Mach. Intell. (2024), DOI 10.1109/tpami.2024.3386927."
+
+[finding."2607.27230v2:qiu2025gated:REF015"]
+verdict = "correct"
+note = "arXiv 2505.06708 appeared in NeurIPS (2025)."
+
+[finding."2607.27230v2:su2024nemotroncc:REF015"]
+verdict = "correct"
+note = "arXiv 2412.02595 appeared in ACL (1) (2025), DOI 10.18653/v1/2025.acl-long.123."
+
+[finding."2609.17560v1:shekhar2501label:REF015"]
+verdict = "correct"
+note = "arXiv 2501.03568 appeared in WSC (2024), DOI 10.1109/wsc63780.2024.10838628."

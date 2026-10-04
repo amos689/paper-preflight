@@ -1,6 +1,6 @@
 # Real papers (heldout batch)
 
-- **Tool:** paper-preflight 0.1.2 candidate, commit f84e119 (main after #91)
+- **Tool:** paper-preflight 0.1.2 candidate, commit 43a5544 (main after #98)
 - **Papers:** 20 arXiv papers first submitted 2026-07-08..14, chosen mechanically (`evals/real_papers.py`, manifest `evals/real_papers_heldout.toml`)
 - **Run:** 2026-10-03, live sources (answers cached for the day, so a rerun with fixed code asks again only what changed; a cold run of 20 papers takes about 20 minutes)
 - **Flags:** warnings and errors about references; every one reviewed by hand (`evals/real_papers_review.toml`)
@@ -9,7 +9,7 @@
 
 | References checked | Flags | Real problems | False positives | Unclear | False positives per 100 references | Cannot determine |
 |---|---|---|---|---|---|---|
-| 921 | 95 | 85 | 6 | 4 | 0.7 | 7% |
+| 921 | 94 | 85 | 6 | 3 | 0.7 | 7% |
 
 ## By paper
 
@@ -25,7 +25,7 @@
 | 2607.06872v2 | cs.CV | 36 | 1 | 1 | 0 | 0 | 28% |
 | 2607.06875v1 | cs.CV | 40 | 12 | 12 | 0 | 0 | 8% |
 | 2607.20518v1 | cs.AI | 31 | 6 | 6 | 0 | 0 | 29% |
-| 2608.28607v1 | cs.AI | 18 | 4 | 1 | 1 | 2 | 0% |
+| 2608.28607v1 | cs.AI | 18 | 3 | 1 | 1 | 1 | 0% |
 | 2607.07008v1 | stat.ML | 32 | 0 | 0 | 0 | 0 | 22% |
 | 2607.07232v1 | stat.ML | 57 | 2 | 2 | 0 | 0 | 4% |
 | 2608.04024v1 | q-bio.QM | 50 | 7 | 6 | 1 | 0 | 12% |
@@ -46,6 +46,6 @@
 | REF010 | 2 | 0 | 0 |
 | REF011 | 11 | 2 | 1 |
 | REF012 | 3 | 1 | 2 |
-| REF013 | 1 | 0 | 1 |
+| REF013 | 1 | 0 | 0 |
 | REF015 | 57 | 0 | 0 |
 | REF017 | 7 | 0 | 0 |
