@@ -97,9 +97,9 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
         "条目链接的网站不在任何已查询来源的收录范围内，请人工核对该链接",
     ),
     Reason.UNINDEXED_VENUE: (
-        "a workshop paper or an older book chapter, which the indexes often leave out; check it"
-        " by hand",
-        "研讨会论文或较早的图书章节，索引常未收录，请人工核对",
+        "a workshop paper, an older book chapter or a web-only publication, which the indexes"
+        " often leave out; check it by hand",
+        "研讨会论文、较早的图书章节或只在网上发表的文章，索引常未收录，请人工核对",
     ),
     Reason.ANONYMOUS: (
         "an anonymous submission under review, which no index lists",
@@ -942,8 +942,17 @@ def _under_review(info: EntryInfo) -> bool:
     return bool(_UNDER_REVIEW.search(info.venue or "")) or "openreview.net" in info.link_hosts
 
 
+# Publications that appear only on their own sites, cited like journals ("journal =
+# {Transformer Circuits Thread}"); no queried source indexes them
+_WEB_VENUES = re.compile(
+    r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$", re.IGNORECASE
+)
+
+
 def _unindexed_venue(info: EntryInfo) -> bool:
     if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
+        return True
+    if info.venue and _WEB_VENUES.search(info.venue.strip()):
         return True
     chapter = info.entry_type in {"incollection", "inbook"}
     return chapter and info.year is not None and info.year < UNINDEXED_CHAPTER_YEAR

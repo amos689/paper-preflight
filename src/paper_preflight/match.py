@@ -374,7 +374,7 @@ _NICKNAMES = {
         "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
-        "yura/yuri "
+        "yura/yuri gary/garrison "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
         "staszek/stanislaw kasia/katarzyna gosia/malgorzata"

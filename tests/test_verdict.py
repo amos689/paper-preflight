@@ -1023,6 +1023,9 @@ def test_corr_names_a_preprint(venue: str) -> None:
         # a chapter in a 1996 Dekker volume (2607.13414v1, baillon_bruck_1996)
         ({"@inproceedings": "@incollection", "2023": "1996"}, (Reason.UNINDEXED_VENUE,)),
         ({"@inproceedings": "@incollection"}, ()),  # a recent chapter is indexed
+        # a web-only publication cited as a journal (2607.27230v2, elhage2021mathematical)
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {Transformer Circuits Thread}"}, (Reason.UNINDEXED_VENUE,)),
         # an anonymous submission under review (2607.13389v1, genrm2025)
         ({"Smith, Ann and Jones, Bob and Lee, Carol": "Anonymous Authors",
           "Proceedings of ACL": "OpenReview"}, (Reason.ANONYMOUS,)),

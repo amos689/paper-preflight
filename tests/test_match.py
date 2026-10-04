@@ -445,6 +445,7 @@ def test_only_venue_names_are_judged() -> None:
         ("Zhu, Jun-Yan", "Zhu, Junyan", False),
         ("Gates, Bill", "Gates, William", False),
         ("Belkin, Mikhail", "Belkin, Misha", False),
+        ("Cottrell, Garrison W.", "Cottrell, Gary", False),  # dblp's name for him
         ("Karvounarakis, Grigoris", "Karvounarakis, Gregory", False),  # one name, two languages
         ("Papadopoulos, Giorgos", "Papadopoulos, George", False),
         ("Korbak, Tomek", "Korbak, Tomasz", False),  # a Polish diminutive
