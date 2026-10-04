@@ -27,7 +27,7 @@ from paper_preflight.bib import bbl
 from paper_preflight.bib.parse import BibFile, BibIssue, parse_bib_text
 from paper_preflight.textio import read_text
 
-_NUMBERED = re.compile(r"^\s*(?:\[\d{1,4}\]|\d{1,4}[.)](?=\s)|\(\d{1,4}\))\s*")
+_NUMBERED = re.compile(r"^\s*(?:\[(\d{1,4})\]|(\d{1,4})[.)](?=\s)|\((\d{1,4})\))\s*")
 _DOI = re.compile(
     r"\bdoi:\s*(?P<labelled>\S+?)[.,;]?(?=\s|$)|\b(?P<bare>10\.\d{4,9}/[^\s\"<>]+?)(?=[.,;)]?(?:\s|$))",
     re.I,
@@ -64,7 +64,7 @@ _YEAR_AFTER = re.compile(
 # A sentence ends at ". " unless the word before is an initial ("Daniel S. Weld"); it always ends
 # after "et al.", and at a missing space between two words ("Andrew Y. Ng.Dynamic pooling").
 _SENTENCE = re.compile(
-    r"(?<!\b[A-Z])\.\s+(?=[A-Z0-9“\"(]|arXiv|pp?\.\s*\d)|(?<=\bal)\.\s+"
+    r"(?<!\b[A-Z])(?<!\bSt)(?<!\bJr)\.\s+(?=[A-Z0-9“\"(]|arXiv|pp?\.\s*\d)|(?<=\bal)\.\s+"
     r"|(?<=[a-z])\.(?=[A-Z][a-z])"
 )
 _IN = re.compile(r"^In(?::|\s)\s*", re.I)
@@ -101,10 +101,20 @@ def parse_plaintext_file(path: Path) -> BibFile:
     return parse_plaintext(source.text, path, source.encoding)
 
 
-def parse_plaintext(text: str, path: Path, encoding: str = "utf-8") -> BibFile:
+def parse_plaintext(
+    text: str, path: Path, encoding: str = "utf-8", *, wrapped: bool = False
+) -> BibFile:
+    """``wrapped``: the lines are wrapped as on a page (a PDF), not one reference per line."""
     result = BibFile(path=path, encoding=encoding, derived=True)
-    for number, (line, reference) in enumerate(split_references(text), start=1):
-        entry_type, fields = parse_reference(reference)
+    authors = ""
+    for number, (line, reference) in enumerate(split_references(text, wrapped), start=1):
+        ditto = _DITTO.match(reference)
+        if ditto and authors:  # "———, Title" or ", Title": the authors of the reference before
+            entry_type, fields = parse_reference("A. Ditto, " + reference[ditto.end() :])
+            fields["author"] = authors
+        else:
+            entry_type, fields = parse_reference(reference)
+        authors = fields.get("author", "")
         body = ",\n".join(f"  {k} = {{{_escape(k, v)}}}" for k, v in fields.items() if v)
         parsed = parse_bib_text(f"@{entry_type}{{ref{number},\n{body}\n}}\n", path, encoding)
         for entry in parsed.entries:
@@ -113,6 +123,7 @@ def parse_plaintext(text: str, path: Path, encoding: str = "utf-8") -> BibFile:
     return result
 
 
+_DITTO = re.compile(r"\s*(?:[—–_-]{2,}\.?,?|,)\s*")  # the same authors as the reference before
 _IDENTIFIER_FIELDS = frozenset({"doi", "eprint", "url"})
 
 
@@ -123,24 +134,24 @@ def _escape(name: str, value: str) -> str:
     return value if name in _IDENTIFIER_FIELDS else re.sub(r"([&%#_$])", r"\\\1", value)
 
 
-def split_references(text: str) -> list[tuple[int, str]]:
+def split_references(text: str, wrapped: bool = False) -> list[tuple[int, str]]:
     """(first line, reference) for each reference in the list."""
     lines = text.splitlines()
-    numbered = [i for i, line in enumerate(lines) if _NUMBERED.match(line)]
+    numbered = _numbered_starts(lines)
     if len(numbered) >= 2:
         starts = numbered
-    elif any(not line.strip() for line in lines):
+    elif any(not line.strip() for line in lines) and not wrapped:
         starts = [
             i
             for i, line in enumerate(lines)
             if line.strip() and (i == 0 or not lines[i - 1].strip())
         ]
     else:
-        starts = _unmarked_starts(lines)
+        starts = _unmarked_starts(lines, wrapped)
     references = []
     for n, start in enumerate(starts):
         end = starts[n + 1] if n + 1 < len(starts) else len(lines)
-        joined = " ".join(line.strip() for line in lines[start:end] if line.strip())
+        joined = _join(lines[start:end])
         joined = _NUMBERED.sub("", joined, count=1).strip()
         if joined:
             # a word broken at the end of a line: "lan- guage"
@@ -148,17 +159,88 @@ def split_references(text: str) -> list[tuple[int, str]]:
     return references
 
 
+# a DOI or URL broken at the end of a line ("10.18653/v1/2025.emnlp-main." then "661.")
+_BROKEN_LINK = re.compile(r"(?:\b10\.\d{4,9}/|https?://)\S*[./_\-]$")
+
+
+def _join(lines: list[str]) -> str:
+    """A reference's lines as one line; a DOI or URL broken across lines is put back whole."""
+    text = ""
+    for line in (line.strip() for line in lines):
+        if not line:
+            continue
+        if text and _BROKEN_LINK.search(text) and re.match(r"[a-z0-9]", line):
+            text += line
+        else:
+            text = f"{text} {line}" if text else line
+    return text
+
+
+# three lower-case words in a row: a title's, never a list of names ("van der Berg" is two)
+_LOWER_RUN = re.compile(r"(?:\b[a-z][\w-]*[\s,]+){3}")
+
+
+# a journal and its volume where a style prints no title: "ApJ, 795(1):30", "MNRAS, 500, 4749"
+_VENUE_NOT_TITLE = re.compile(r"^[A-Z][\w.&\s]{0,60}?,\s*[A-Z]?\d+(?:\(\d+\))?(?:[:,]|$)")
+# AAS (ApJ, AJ, MNRAS, A&A): "Abbott, B. P., Abbott, R., et al. 2017, ApJL, 848, L12"
+_AAS = re.compile(
+    r"^(?P<authors>.+?),?\s+(?P<year>(?:1[89]|20)\d\d)[a-z]?,\s+"
+    r"(?P<journal>[A-Za-z&][\w&.\s]{0,40}?),\s+(?P<volume>[A-Z]?\d+)(?:,\s+(?P<pages>[A-Z]?\d+))?"
+)
+
+
+def _aas(text: str) -> tuple[str, dict[str, str]] | None:
+    """AAS: authors, year, journal, volume, page; no title, so the DOI or the authors and year
+    tell the work."""
+    match = _AAS.match(text)
+    if match is None or _LOWER_RUN.search(match["authors"]):
+        return None
+    if not _APA_INITIALS.search(match["authors"]):
+        return None
+    fields = {
+        "author": _apa_authors(match["authors"]),
+        "year": match["year"],
+        "journal": match["journal"],
+        "volume": match["volume"],
+        "pages": match["pages"] or "",
+    }
+    return "article", fields
+
+
+def _numbered_starts(lines: list[str]) -> list[int]:
+    """Lines numbered 1, 2, 3 ... in order; a wrapped line that starts "2025. emnlp-main" is no
+    reference's number."""
+    starts: list[int] = []
+    for i, line in enumerate(lines):
+        match = _NUMBERED.match(line)
+        number = int(next(g for g in match.groups() if g)) if match else None
+        if number is not None and number == len(starts) + 1:
+            starts.append(i)
+    return starts
+
+
 _ENDS_REFERENCE = re.compile(r"[.)\]]$|\d$|://\S+$")
 _ENDS_ABBREVIATION = re.compile(r"(?:\b[A-Z]|\bal|\bpp|\bvol|\bno|\bProc|\beds?|\bIn)\.$")
 
 
-def _unmarked_starts(lines: list[str]) -> list[int]:
+# A line that starts a reference: its authors ("Carlini, N.,", "H.-J. Bae and", "Ashish Vaswani,")
+_AUTHOR_START = re.compile(
+    r"(?!(?:In|Proc|Proceedings|Journal|Advances|Conference|International|Transactions|Annual|"
+    r"Workshop|IEEE|ACM|Springer|URL|Available|Preprint|Technical)\b)"
+    r"(?:[A-Z][\w'’\-]+(?:\s(?:van|von|de|der|den|da|di|du|le|la|del)\s[\w'’\-]+)?,\s+[A-Z]"
+    r"|(?:[A-Z]\.[\s-]?)+\s?(?:(?:van|von|de|del|der|den|da|di|du|le|la)\s)?[A-Z][\w'’\-]+"
+    r"|[A-Z][a-z]+(?:\s[A-Z][a-z]*\.?)*\s(?:(?:van|von|de|der|da|di|du|le|la)\s)?[A-Z][\w'’\-]+"
+    r"(?:,|\sand\s|\set\sal))"
+)
+
+
+def _unmarked_starts(lines: list[str], wrapped: bool = False) -> list[int]:
     """Where references start in a list with no numbers and no blank lines: on every line when
-    most lines end one (one reference per line), else after a line ending one (lines wrapped as
-    in a PDF)."""
+    most lines end one (one reference per line), else after a line ending one, at a line that
+    starts with names (lines wrapped as on a page)."""
     filled = [i for i, line in enumerate(lines) if line.strip()]
     ended = [i for i in filled if _ENDS_REFERENCE.search(lines[i].rstrip())]
-    if len(ended) >= 0.6 * len(filled):
+    if not wrapped and len(ended) >= 0.6 * len(filled):
         return filled
     starts = filled[:1]
     for before, here in pairwise(filled):
@@ -166,7 +248,7 @@ def _unmarked_starts(lines: list[str]) -> list[int]:
         if (
             _ENDS_REFERENCE.search(last)
             and not _ENDS_ABBREVIATION.search(last)
-            and re.match(r"[A-Z]", lines[here].lstrip())
+            and _AUTHOR_START.match(lines[here].lstrip())
         ):
             starts.append(here)
     return starts
@@ -179,10 +261,14 @@ def parse_reference(text: str) -> tuple[str, dict[str, str]]:
     plain = _VISITED.sub("", _NUMBERS.sub("", _LINK.sub("", text)))
     plain = re.sub(r"\s+", " ", plain).strip(" .,;")
     entry_type = "misc"
-    for read in (_quoted, _apa, _family_initials, _vancouver, _year_after, _sentences, _numbered):
+    readers = (_quoted, _apa, _aas, _family_initials, _vancouver, _year_after, _sentences)
+    for read in (*readers, _numbered):
         found = read(plain)
-        if found is not None and found[1].get("title"):
+        if found is not None and (found[1].get("title") or read is _aas):
             entry_type, read_fields = found
+            title = read_fields.get("title", "")
+            if _VENUE_NOT_TITLE.match(title):  # "ApJ, 795(1):30": a style without titles
+                read_fields["journal"] = read_fields.pop("title").split(",")[0]
             for key, value in read_fields.items():
                 value = value.strip(" ,;")
                 if value and key not in fields:
@@ -280,10 +366,10 @@ def _quoted(text: str) -> tuple[str, dict[str, str]] | None:
 def _apa(text: str) -> tuple[str, dict[str, str]] | None:
     """APA: Smith, J., & Lee, K. (2020). Title. Journal, 1(2), 3-4."""
     match = _APA.match(text)
-    if match is None:
-        return None
+    if match is None or _LOWER_RUN.search(match["authors"]):
+        return None  # a title's words before a year in parentheses: another style
     if not match["rest"]:  # no authors: "Title (2024)."; not Nature's "... 436 (2015)."
-        if len(_SENTENCE.split(match["authors"])) > 1:
+        if len(_SENTENCE.split(match["authors"])) > 1 or _AUTHOR_START.match(match["authors"]):
             return None
         return "misc", {"title": match["authors"], "year": match["year"]}
     sentences = _SENTENCE.split(match["rest"], maxsplit=1)
@@ -390,4 +476,6 @@ def _looks_like_names(text: str) -> bool:
     parts = [p.strip() for p in re.split(r",|\band\b|&", text) if p.strip()]
     if not parts or len(text) > 3000:
         return False
-    return all(_PERSON.fullmatch(p) or p == "others" for p in parts)
+    # a long list may hold a name a PDF mangled ("Anton V orontsov", "Christopher R ́e")
+    odd = sum(not (_PERSON.fullmatch(p) or p == "others") for p in parts)
+    return odd <= len(parts) // 8

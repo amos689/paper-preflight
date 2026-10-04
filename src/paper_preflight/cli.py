@@ -153,8 +153,9 @@ def check(
     path: Annotated[
         Path,
         typer.Argument(
-            help="Project directory, main .tex file, a .bib file, a compiled .bbl, or a "
-            "plain-text reference list (.txt, or - to read it from stdin)."
+            help="Project directory, main .tex file, a .bib file, a compiled .bbl, a "
+            "plain-text reference list (.txt, or - to read it from stdin), or a PDF (needs "
+            "the pdf extra)."
         ),
     ] = Path("."),
     main_file: Annotated[

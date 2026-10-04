@@ -15,6 +15,7 @@ import httpx
 from paper_preflight import __version__
 from paper_preflight.bib.bbl import parse_bbl_file
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
+from paper_preflight.bib.pdftext import parse_pdf_file
 from paper_preflight.bib.plaintext import parse_plaintext_file
 from paper_preflight.cache import Cache
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
@@ -84,11 +85,12 @@ class CheckResult:
         return any(f.severity.rank >= fail_on.rank for f in self.findings)
 
 
-# a reference list given on its own: BibTeX, a compiled bibliography or plain text
+# a reference list given on its own: BibTeX, a compiled bibliography, plain text or a PDF
 _READERS: dict[str, Callable[[Path], BibFile]] = {
     ".bib": parse_bib_file,
     ".bbl": parse_bbl_file,
     ".txt": parse_plaintext_file,
+    ".pdf": parse_pdf_file,
 }
 
 

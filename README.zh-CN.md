@@ -166,6 +166,12 @@ uvx paper-preflight check references.txt
 pbpaste | uvx paper-preflight check -      # 或从标准输入读取
 ```
 
+只有 PDF？装上 `pdf` 扩展后，也能读出其中的参考文献列表：
+
+```bash
+uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
+```
+
 | 选项 | 作用 |
 |---|---|
 | `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描） |

@@ -48,9 +48,16 @@ Homepage = "https://github.com/amos689/paper-preflight"
 Issues = "https://github.com/amos689/paper-preflight/issues"
 Changelog = "https://github.com/amos689/paper-preflight/blob/main/CHANGELOG.md"
 
+[[tool.uv.index]]
+url = "https://pypi.org/simple"
+default = true
+
 [project.optional-dependencies]
 mcp = [
     "fastmcp>=4.0,<4.1",
+]
+pdf = [
+    "pypdf>=6",
 ]
 
 [dependency-groups]
@@ -64,6 +71,7 @@ dev = [
     "mypy>=1.15",
     "pre-commit>=4",
     "fastmcp>=4.0,<4.1",
+    "pypdf>=6",
 ]
 
 [tool.hatch.version]
