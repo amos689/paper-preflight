@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Names written another way are one person: initials without dots ("Brown, JR" for John R.
+  Brown, as Google Scholar exports them), a generational suffix ("Smith IV, David H",
+  "David H. Smith IV" against a record's Smith with suffix IV), Danny for Daniel, and an
+  organisation named "... Research" first on arXiv ("Cursor Research") is no first author.
+
 ## [0.2.1] - 2026-10-04
 
 Fewer false alarms: the fixes for the fourth real-paper batch's false positives. On a fifth

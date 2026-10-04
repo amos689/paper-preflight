@@ -1033,3 +1033,52 @@ source = "real_papers:2607.27230v2"
 key = "bachlechner2020rezero"
 expect = []
 note = "was REF011: Garrison W. Cottrell goes by Gary (dblp's 'Gary Cottrell'); one person"
+
+[[case]]
+name = "fp-boehm1976-dotless-initials"
+source = "real_papers:2607.26375v1"
+key = "boehm1976quantitative"
+expect = ["REF014"]
+note = "was REF011: 'Brown, JR' is Google Scholar's initials J. R. for John R. Brown (REF014 stays: the entry names a 2007 reprint collection with the 1976 year)"
+
+[[case]]
+name = "fp-krathwohl2002-dotless-initials"
+source = "real_papers:2607.26375v1"
+key = "krathwohl2002revision"
+expect = ["REF012"]
+note = "was REF011 too: 'Krathwohl, DR' is David R. Krathwohl (REF012 stays: the entry drops 'of' from the title)"
+
+[[case]]
+name = "fp-vadaparty2024-suffix-iv"
+source = "real_papers:2607.26375v1"
+key = "vadaparty2024cs1"
+expect = []
+note = "was REF011: Crossref's family name 'Smith IV' against the entry's 'Smith IV, David H'"
+
+[[case]]
+name = "fp-denny2024-suffix-iv"
+source = "real_papers:2607.26375v1"
+key = "denny2024explaining"
+expect = []
+note = "was REF011: Crossref has family 'Smith' with suffix 'IV'; the entry writes 'Smith IV, David H'"
+
+[[case]]
+name = "fp-srinath2025-suffix-iv"
+source = "real_papers:2607.26375v1"
+key = "srinath2025assessing"
+expect = []
+note = "was REF011: arXiv lists 'David H. Smith IV'; the entry's 'David H. Smith IV' keyed as 'IV'"
+
+[[case]]
+name = "fp-shapeconv-danny"
+source = "real_papers:2607.26395v1"
+key = "ShapeConv"
+expect = []
+note = "was REF011: Daniel Cohen-Or goes by Danny (Crossref)"
+
+[[case]]
+name = "fp-composer2-cursor-research"
+source = "real_papers:2607.26375v1"
+key = "research2026composer"
+expect = []
+note = "was REF011: arXiv lists the organisation 'Cursor Research' first, then the people"
