@@ -25,7 +25,7 @@ work:
 
 When it cannot tell, it says so instead of guessing.
 
-> **Status: v0.2, an early release.** False positives are the bugs we most want to hear
+> **Status: v0.3, an early release.** False positives are the bugs we most want to hear
 > about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
@@ -33,7 +33,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.2.1 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.3.0 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).

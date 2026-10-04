@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-05
+
+An experimental evidence finder for citations, and fixes for the fifth real-paper batch's
+false positives. On that batch, 6 of its 19 false positives remain (0.6 per 100 references),
+and all 66 real problems are still flagged. The fixes were made for this batch, so these are
+development numbers; a sixth batch, collected after this release, will measure them held out.
+
 ### Added
 
 - `paper-preflight support` (experimental): for each citation, looks for a passage of the
@@ -314,7 +321,9 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/amos689/paper-preflight/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/amos689/paper-preflight/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/amos689/paper-preflight/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/amos689/paper-preflight/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/amos689/paper-preflight/compare/v0.1.0...v0.1.1

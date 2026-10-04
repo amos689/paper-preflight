@@ -21,7 +21,7 @@
 
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
-> **状态：v0.2，早期版本。** 最希望收到的是误报反馈：请
+> **状态：v0.3，早期版本。** 最希望收到的是误报反馈：请
 > [提交 issue](https://github.com/amos689/paper-preflight/issues)。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
@@ -29,7 +29,7 @@
 
 ```text
 $ paper-preflight check examples/demo-paper --lang zh
-paper-preflight 0.2.1 · main.tex · 12 条参考文献，12 个被引用的键
+paper-preflight 0.3.0 · main.tex · 12 条参考文献，12 个被引用的键
 
 错误    CIT001 main.tex:31
     引用键 'nonexistent2023' 未在任何参考文献文件中定义（共被引用 1 次）。
