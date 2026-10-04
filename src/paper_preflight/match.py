@@ -161,19 +161,39 @@ _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 
 
 # A registry's section label after the title ("... Future Directions [Review Article]", IEEE),
-# or the plates section ADS lists apart, in Semantic Scholar's title (". Plates.")
-_SECTION_LABEL = re.compile(r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$", re.I)
+# the plates section ADS lists apart, in Semantic Scholar's title (". Plates."), or a journal's
+# note that discussions follow ("... of MCMC (with Discussion)", Bayesian Analysis on Crossref)
+_SECTION_LABEL = re.compile(
+    r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$|\s*\(with (discussions?|comments)[^()]*\)\s*$",
+    re.I,
+)
 _ARTICLES = frozenset({"a", "an", "the"})
 # A letter a registry lost: U+FFFD in "Berechnung der nat\ufffdrlichen Linienbreite" (Crossref)
 _LOST = "\ufffd"
 _LOST_MARK = "zzlostzz"
+# A part's number in roman numerals or digits: "Seyfert Nuclei. II." is Crossref's "... 2:"
+_ROMAN = {
+    numeral: str(number)
+    for number, numeral in enumerate(
+        "i ii iii iv v vi vii viii ix x xi xii xiii xiv xv xvi xvii xviii xix xx".split(), start=1
+    )
+}
+# Words an entry gives for a symbol a registry dropped: ADS's "Z$_{solar}$", Crossref's "Z"
+_SYMBOL_NAMES = frozenset({"sun", "solar", "odot", "earth", "oplus", "jup", "jupiter"})
+# A footnote mark a registry kept on the title's last word: Crossref's "... Absorption1"
+_FOOTNOTE_MARK = re.compile(r"([a-z]{3,})\d")
+
+
+def _same_word(a: str, b: str) -> bool:
+    return _american(_ROMAN.get(a, a)) == _american(_ROMAN.get(b, b))
 
 
 def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
     """Where two titles differ word for word: (entry's words, record's words) per place.
 
     Case, punctuation, spacing and hyphenation ("Chain of-Thought", "Pre-training"), "&" for
-    "and", British spellings and a registry's "RETRACTED:" are not differences.
+    "and", British spellings, roman numerals for digits, and a registry's "RETRACTED:", lost
+    symbol or footnote mark are not differences.
     """
     record_title = _SYMBOL_WORDS_RE.sub(
         lambda m: f" {_SYMBOL_WORDS[m.group(0)]} ", _EDITORIAL_PREFIX.sub("", record_title)
@@ -188,12 +208,15 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
         mine, recorded = " ".join(ours[i1:i2]), " ".join(theirs[j1:j2])
         if mine.replace(" ", "") == recorded.replace(" ", "") or (
             i2 - i1 == j2 - j1
-            and all(
-                _american(a) == _american(b)
-                for a, b in zip(ours[i1:i2], theirs[j1:j2], strict=True)
-            )
+            and all(_same_word(a, b) for a, b in zip(ours[i1:i2], theirs[j1:j2], strict=True))
         ):
             continue
+        quantity = i1 > 0 and len(ours[i1 - 1]) == 1 and ours[i1 - 1] not in {"a", "i"}
+        if not recorded and mine in _SYMBOL_NAMES and quantity:
+            continue  # "Z solar" where the registry dropped the symbol after "Z"
+        footnote = _FOOTNOTE_MARK.fullmatch(recorded)
+        if j2 == len(theirs) and footnote and footnote[1] == mine:
+            continue  # the registry kept a footnote mark on the last word
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
         if i1 == j1 == 0 and not (mine and recorded) and (mine or recorded) in _ARTICLES:
