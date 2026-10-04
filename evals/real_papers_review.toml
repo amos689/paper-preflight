@@ -1355,6 +1355,10 @@ note = "The first author is Alberto Portela, not Alejandro."
 verdict = "false_positive"
 note = "Crossref's title adds '(with Discussion)', the journal's note that discussions follow; the entry's title is the paper's."
 
+[finding."2607.20215v1:harshman1970foundations:REF012"]
+verdict = "false_positive"
+note = "The UCLA working paper is '... for an \"explanatory\" multi-modal factor analysis' (NTIS PB197824), as the entry has; Semantic Scholar's 'multi-model' is its own error. Checked only since references are read from the paper's single .bib (A5)."
+
 [finding."2607.21647v1:yu2022quantum:REF011"]
 verdict = "false_positive"
 note = "The entry cites v1 of arXiv 2212.12913 as written: v1's title ('Quantum federated learning based on gradient descent') and its five authors; v2 retitled it with three."

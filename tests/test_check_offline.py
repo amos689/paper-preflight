@@ -186,3 +186,27 @@ def test_project_rules_are_not_judged_on_a_bib_file_alone(tmp_path: Path) -> Non
         encoding="utf-8",
     )
     assert unused(run_check(bib).findings) == []
+
+
+def test_the_only_bib_stands_in_for_a_missing_bibliography_command(tmp_path: Path) -> None:
+    # arXiv 2607.20215v1: a \bibliographystyle, a .bib next to the main file, no \bibliography
+    (tmp_path / "main.tex").write_text(
+        "\\documentclass{article}\\bibliographystyle{plain}"
+        "\\begin{document}\\cite{a}\\cite{missing}\\end{document}\n",
+        encoding="utf-8",
+    )
+    entry = "@article{{{key}, author = {{Doe, Jane}}, title = {{T}}, year = {{2020}}}}\n"
+    (tmp_path / "refs.bib").write_text(entry.format(key="a"), encoding="utf-8")
+    result = run_check(tmp_path)
+    rules = {(f.rule_id, f.key) for f in result.findings}
+    assert result.entries == 1
+    assert ("CIT001", "missing") in rules  # cited, in no bibliography
+    assert ("CIT001", "a") not in rules
+    assert any(f.rule_id == "CIT005" for f in result.findings)  # the source still lacks it
+    assert any("refs.bib" in note for note in result.notes)
+
+    # two .bib files: which one LaTeX would have used is unknown
+    (tmp_path / "other.bib").write_text(entry.format(key="b"), encoding="utf-8")
+    result = run_check(tmp_path)
+    assert result.entries == 0
+    assert result.notes == []
