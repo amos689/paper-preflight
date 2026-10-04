@@ -290,6 +290,34 @@ The verdict stays in the JSON report; only the finding is dropped. A suppression
 nothing is reported as CFG001 (info), so stale comments do not pile up. Reference rules are only
 judged after a complete online run, since offline answers and outages may leave them unrun.
 
+## Experimental: find the passage behind each citation
+
+`support` looks in each cited work for a passage that says what the citing sentence claims. It
+reads the work's text: the arXiv source, an open-access full text or PDF, or else the abstract.
+A small local model (HHEM-2.1-open, 0.4 GB) then scores the passages ranked best for the claim.
+
+```bash
+pip install "paper-preflight[support]"
+```
+
+```bash
+paper-preflight support path/to/paper --download-model --all
+```
+
+`--download-model` fetches the model's weights once. `--all` also lists the confirmed
+citations with their quotes, and `arxiv:<id>` works as a target, as it does for `check`.
+
+- **What it says:** "confirmed", with the passage quoted word for word, or "could not
+  confirm". A citation it could not confirm comes with the reason: no text, only the abstract,
+  or no passage close enough.
+- **It never calls a citation wrong.** On a gold set of 298 citations, 97% of its
+  confirmations were right [95% CI 85%, 99%]. But it confirms only about one real citation in
+  eight, and a low score pointed at a mis-citation less than half the time. The gold set's
+  labels were made by AI models, not experts; see
+  [`evals/results/support.md`](evals/results/support.md).
+- **What leaves your machine:** the claims are scored locally. Only the cited works'
+  identifiers go out, to fetch their text, which is then kept in the local cache.
+
 ## Use it from your coding agent
 
 **Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
@@ -361,8 +389,10 @@ or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID (v0.2)
-- Next: fewer false alarms, each round measured on a new week of real papers
+- Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID
+  (v0.2); an experimental evidence finder for citations, `support` (v0.3)
+- Next: catch more of what is still missed (partial author lists, invented venues), each round
+  measured on a new week of real papers
 - Later: Chinese-language references
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the

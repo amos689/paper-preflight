@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `paper-preflight support` (experimental): for each citation, looks for a passage of the
+  cited work that says what the citing sentence claims. It reads the work's arXiv source, an
+  open-access full text or PDF, or its abstract, and a local model (HHEM-2.1-open by default;
+  `--model minicheck` or `factcg`) scores the passages ranked best for the claim. A citation is
+  either confirmed, with the passage quoted, or not confirmed, with the reason; it is never
+  called wrong. Needs the new `support` extra (PyTorch, transformers); the model's weights are
+  downloaded only with `--download-model`. On an AI-labelled gold set of 298 citations
+  (`evals/support_gold.toml`), 97% of its confirmations are right and it confirms 12% of real
+  citations; see `evals/results/support.md`.
+
 ### Fixed
 
 - A cited book is no longer bound to a later chapter of the same title that reprints it, a

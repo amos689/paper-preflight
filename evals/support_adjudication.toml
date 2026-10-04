@@ -1,0 +1,55 @@
+# Adjudications of the citation-support gold set (evals/support_labels.py final reads them).
+#
+# Spot check (2026-10-04): 37 of the 183 packets annotators A and B agree on (20%, drawn with
+# seed 20261004) were judged again against the evidence; the agreed label stands for 36, one is
+# corrected below. Packets all three annotators disagree on are adjudicated below as well.
+
+[packet."15e5a3055f"]
+label = "supported"
+by = "spot check"
+note = "The sentence names two areas; this citation (Point DETR) is the object-detection example, which its abstract supports. The temporal-action-localization part belongs to the sentence's other citations."
+
+# Three-way splits (A, B and C each chose another label), adjudicated by reading the evidence.
+# Rule used throughout: a citation that names the source of a dataset, method, metric or rule
+# set is supported when the work introduces it; the citing paper's own setup around it is not
+# held against the work.
+
+[packet."b759a87f8f"]
+label = "partially_supported"
+by = "adjudication"
+note = "Abstract only: a proposal for many-body physics with atoms on photonic-crystal waveguides; it backs the many-body item, not breakthroughs in quantum information or networks."
+
+[packet."e953eb23e8"]
+label = "supported"
+by = "adjudication"
+note = "Cited as the source of DAVIS-2017, which the work introduces; frame and clip counts are the citing paper's subset."
+
+[packet."131720ce48"]
+label = "partially_supported"
+by = "adjudication"
+note = "A mis-citation that happens to be on topic: the work shows teacher-student (on-policy) distillation is effective and that its variant costs extra computation, but has no cold-start stage."
+
+[packet."eca3f729f0"]
+label = "supported"
+by = "adjudication"
+note = "Cited for linear bandits as a setting where p-mean objectives are studied, which the work initiates; the k^(q/2) price is the citing paper's own result."
+
+[packet."796032eace"]
+label = "supported"
+by = "adjudication"
+note = "Cited as the source of the MSE loss, which the work defines and motivates; the Ising-machine setup is the citing paper's own."
+
+[packet."dcb113706c"]
+label = "supported"
+by = "adjudication"
+note = "Cited as the source of PanTS, which the work introduces (its 28 classes match); the patch collection and held-out split are the citing paper's own."
+
+[packet."4bccffd39c"]
+label = "not_supported"
+by = "adjudication"
+note = "A mis-citation: the Baldwin-effect study never describes lower-velocity clouds photo-ionised by the accretion disk (searched cloud, velocity, photoioni*, population)."
+
+[packet."b96a1e0e13"]
+label = "supported"
+by = "adjudication"
+note = "Cited as the source of the multiple-choice item-writing rules, a taxonomy the abstract presents; the review outcome is the citing paper's own."

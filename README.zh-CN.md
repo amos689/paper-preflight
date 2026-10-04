@@ -266,6 +266,31 @@ paper-preflight bib fix path/to/paper --level unsafe
 免得过时的注释越积越多。参考文献类规则只在完整的联网核查之后才判断是否被用到，因为离线答复和来源故障
 都可能让这些规则没有运行。
 
+## 实验功能：为每处引用找到原文出处
+
+`support` 会到每篇被引文献里，找一段与引用句的说法相符的原文。它读取被引文献的文本：arXiv 源码、
+开放获取的全文或 PDF，都没有时用摘要。然后由一个本地小模型（HHEM-2.1-open，0.4 GB）给与这句话最相关
+的几个段落打分。
+
+```bash
+pip install "paper-preflight[support]"
+```
+
+```bash
+paper-preflight support path/to/paper --download-model --all
+```
+
+`--download-model` 只在第一次下载模型权重。`--all` 会把已确认的引用和原文一并列出。目标也可以写成
+`arxiv:<编号>`，用法与 `check` 相同。
+
+- **结论只有两种**："已确认"，并逐字引出那段原文；或者"未能确认"，并说明原因：拿不到文本、只有
+  摘要，或者没有足够接近的段落。
+- **它从不说某处引用是错的。** 在 298 处引用的标注集上，它的"已确认"有 97% 是对的（95% 置信区间
+  85%–99%）。但真实引用中它只能确认大约八分之一；而得分低的引用，真是错引的还不到一半。标注集的标签
+  由 AI 模型给出，不是专家标注，详见 [`evals/results/support.md`](evals/results/support.md)。
+- **哪些内容会离开你的电脑**：引用句只在本地打分。发出去的只有被引文献的标识符，用来获取它们的文本；
+  拿到的文本保存在本地缓存里。
+
 ## 在编码助手里使用
 
 **Claude Code**：安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考
@@ -331,8 +356,9 @@ claude plugin install paper-preflight@paper-preflight
 
 ## 路线图
 
-- 已完成：发布到 PyPI（v0.1）；从 `.bbl`、纯文本、PDF 或 arXiv 编号读取参考文献（v0.2）
-- 下一步：继续减少误报，每一轮都用新一周的真实论文来衡量
+- 已完成：发布到 PyPI（v0.1）；从 `.bbl`、纯文本、PDF 或 arXiv 编号读取参考文献（v0.2）；
+  实验性的引用原文查找 `support`（v0.3）
+- 下一步：查出更多目前漏掉的问题（作者列表不全、编造的会议或期刊），每一轮都用新一周的真实论文来衡量
 - 之后：中文参考文献
 
 进度见 [docs/PROGRESS.md](docs/PROGRESS.md) 和[更新日志](CHANGELOG.md)。

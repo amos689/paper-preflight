@@ -164,3 +164,17 @@ arXiv ID, a title 90% alike, or, in a style that prints no titles, the only refe
 first author and year. On the 20 papers of `dev` (924 references), the PDF gives 814 of them
 (88%), with the same first author for 98% and the same year for 95%, and the same verdict for
 749 (92%). The results, paper by paper, are in [`results/pdf-dev.md`](results/pdf-dev.md).
+
+## Citation support: the gold set
+
+`support` (experimental) looks in each cited work for a passage that says what the citing
+sentence claims. `evals/support_gold.toml` holds 298 pairs of a sentence and a cited work. The
+sentences come from 55 arXiv papers of July 2026 under CC BY, CC BY-SA or CC0. 48 of the pairs
+are mis-citations made on purpose, with the cited work swapped for another one the paper cites.
+AI models labelled the pairs, as [`support_guidelines.md`](support_guidelines.md) describes:
+two annotators, a third for disagreements, then an adjudication.
+
+`evals/support_eval.py` scores the verifiers and reports how often "supported" is right and how
+many citations it confirms. With HHEM, 97% of its confirmations are right, and it confirms 12%
+of the real citations. Every number, and why `support` never says "not supported", is in
+[`results/support.md`](results/support.md).
