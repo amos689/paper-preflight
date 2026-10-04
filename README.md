@@ -186,6 +186,13 @@ uvx paper-preflight check references.txt
 pbpaste | uvx paper-preflight check -      # or from stdin
 ```
 
+Any arXiv paper, by its ID: the source is downloaded to a temporary folder, checked, and
+deleted.
+
+```bash
+uvx paper-preflight check arxiv:2607.06922
+```
+
 Only the PDF? Its reference list is read too, with the `pdf` extra:
 
 ```bash

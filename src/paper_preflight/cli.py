@@ -148,14 +148,30 @@ def _stdin_file() -> Path:
     return path
 
 
+def _arxiv_source(target: str) -> Path:
+    """``arxiv:<id>``: the paper's source, downloaded into a folder removed when the run ends."""
+    from paper_preflight.arxiv_source import ArxivSourceError, arxiv_target, fetch
+
+    try:
+        identifier = arxiv_target(target)
+        assert identifier is not None
+        folder = Path(tempfile.mkdtemp(prefix="paper-preflight-arxiv-"))
+        atexit.register(shutil.rmtree, folder, ignore_errors=True)
+        typer.echo(f"paper-preflight: downloading the source of arXiv {identifier}", err=True)
+        return fetch(identifier, folder / identifier.replace("/", "_"))
+    except ArxivSourceError as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
+
+
 @app.command()
 def check(
     path: Annotated[
         Path,
         typer.Argument(
             help="Project directory, main .tex file, a .bib file, a compiled .bbl, a "
-            "plain-text reference list (.txt, or - to read it from stdin), or a PDF (needs "
-            "the pdf extra)."
+            "plain-text reference list (.txt, or - to read it from stdin), a PDF (needs "
+            "the pdf extra), or arxiv:<id> to download an arXiv paper's source and check it."
         ),
     ] = Path("."),
     main_file: Annotated[
@@ -205,6 +221,11 @@ def check(
     _no_refresh_offline(refresh, offline)
     if str(path) == "-":
         path = _stdin_file()
+    elif str(path).lower().startswith("arxiv:"):
+        if offline:
+            typer.echo("paper-preflight: arxiv:<id> downloads the paper; drop --offline", err=True)
+            raise typer.Exit(EXIT_USAGE)
+        path = _arxiv_source(str(path))
     language = resolve_lang(lang)
     progress = Console(stderr=True)
     message = _progress_message(language, offline)
