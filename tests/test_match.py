@@ -648,6 +648,12 @@ def test_apostrophes_do_not_make_another_person(written: str, recorded: str) -> 
         ("Rank-normalization, folding, and localization: An improved R for assessing "
          "convergence of MCMC", "Rank-Normalization, Folding, and Localization: An Improved R "
          "for Assessing Convergence of MCMC (with Discussion)"),
+        # a chapter's title field that also names its book, set with \textup (real paper)
+        ("\\textup{Quarks and Strings on a Lattice, in} New Phenomena in Subnuclear Physics",
+         "Quarks and Strings on a Lattice"),
+        # a word in typewriter type is a word
+        ("\\texttt{torch.compile}: Faster Training with Graph Capture",
+         "torch.compile: Faster Training with Graph Capture"),
     ],
 )  # fmt: skip
 def test_registry_title_artefacts_are_not_differences(entry: str, recorded: str) -> None:
@@ -656,6 +662,19 @@ def test_registry_title_artefacts_are_not_differences(entry: str, recorded: str)
     check = check_title(parsed.text("title"), record)
     assert check.status in {"match", "variant"}
     assert not check.changed
+
+
+def test_only_a_named_book_after_in_is_the_container() -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="Learning in High Dimension")
+    assert check_title("Learning in High Dimension, in particular for deep nets", record).changed
+
+
+def test_dblp_titles_lose_their_tex() -> None:
+    from paper_preflight.sources.dblp import clean_title
+
+    title = clean_title("The Optimal Hard Threshold for Singular Values is \\(4/\\sqrt {3}\\).")
+    assert "\\" not in title
+    assert not title.endswith(".")
 
 
 def test_a_lost_letter_matches_only_its_place() -> None:

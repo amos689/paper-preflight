@@ -56,10 +56,16 @@ _WALKER_CONTEXT.add_context_category(
     "paper-preflight", prepend=True, macros=[macrospec.MacroSpec("raisebox", "{[[{")]
 )
 _TEXT_CONTEXT = latex2text.get_default_latex_context_db()
+# Text-style macros whose argument the default context drops ("\texttt{torch}" lost its word;
+# a real paper's chapter title was set in \textup{...})
+_KEEP_ARGUMENT = ("textup", "textmd", "textsf", "texttt", "mbox")
 _TEXT_CONTEXT.add_context_category(
     "paper-preflight",
     prepend=True,
-    macros=[latex2text.MacroTextSpec("raisebox", simplify_repl="%(4)s")],  # its text only
+    macros=[
+        latex2text.MacroTextSpec("raisebox", simplify_repl="%(4)s"),  # its text only
+        *(latex2text.MacroTextSpec(name, simplify_repl="%(1)s") for name in _KEEP_ARGUMENT),
+    ],
 )
 _latex2text = latex2text.LatexNodes2Text(
     math_mode="text", strict_latex_spaces=True, latex_context=_TEXT_CONTEXT

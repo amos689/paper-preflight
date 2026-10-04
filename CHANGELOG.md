@@ -12,6 +12,11 @@ All notable changes to this project are documented here. The format follows
   Brown, as Google Scholar exports them), a generational suffix ("Smith IV, David H",
   "David H. Smith IV" against a record's Smith with suffix IV), Danny for Daniel, and an
   organisation named "... Research" first on arXiv ("Cursor Research") is no first author.
+- Titles lost the words set with `\texttt`, `\textsf`, `\textup`, `\textmd` or `\mbox`
+  ("\texttt{torch.compile}: ..." was read as ": ..."); they are kept now.
+- A chapter's title field that also names its book or proceedings ("Quarks and Strings on a
+  Lattice, in New Phenomena in Subnuclear Physics") is not a reworded title, and TeX math left
+  in dblp's titles is converted before comparing.
 
 ## [0.2.1] - 2026-10-04
 

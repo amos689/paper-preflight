@@ -17,7 +17,7 @@ from typing import Any
 from paper_preflight.bib.normalize import fold
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
-from paper_preflight.sources.record import Person, SourceRecord, collapse
+from paper_preflight.sources.record import Person, SourceRecord, collapse, plain_title
 
 SPARQL_URL = "https://sparql.dblp.org/sparql"
 PREFIX = "PREFIX dblp: <https://dblp.org/rdf/schema#>\n"
@@ -115,8 +115,9 @@ def _bindings(payload: Any) -> list[dict[str, str]]:
 
 
 def clean_title(title: str) -> str:
-    """dblp titles end with a period that is not part of the title."""
-    title = collapse(title)
+    """dblp titles end with a period that is not part of the title, and may keep TeX math
+    ("The Optimal Hard Threshold for Singular Values is \\(4/\\sqrt {3}\\)")."""
+    title = plain_title(collapse(title))
     return title[:-1] if title.endswith(".") and not title.endswith("..") else title
 
 
