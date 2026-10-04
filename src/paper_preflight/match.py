@@ -292,6 +292,9 @@ def surname_key(person: Person) -> str:
         # "Team": the group the record calls "Chameleon Team"
         return _group_key(f"{person.given} {person.family}")
     words = re.findall(r"[\w-]+", fold(_APOSTROPHES.sub("", person.family)))
+    # a generational suffix is no surname: BibTeX's "Smith IV, David H" is Crossref's Smith
+    while len(words) > 1 and words[-1] in {"jr", "sr", "ii", "iii", "iv"}:
+        words.pop()
     return words[-1].strip("-") if words else ""
 
 
@@ -374,7 +377,7 @@ _NICKNAMES = {
         "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
-        "yura/yuri gary/garrison "
+        "yura/yuri gary/garrison danny/daniel "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
         "staszek/stanislaw kasia/katarzyna gosia/malgorzata"
@@ -423,6 +426,9 @@ _COGNATES = {
 
 
 def _given_words(person: Person) -> list[str]:
+    # initials written without dots, as Google Scholar exports them: "Brown, JR" is J. R. Brown
+    if re.fullmatch(r"[A-Z]{2,3}", person.given.strip()):
+        return list(person.given.strip().lower())
     # "ks" and "x" are one sound in transcriptions (Aleksandar, Alexander)
     return re.findall(r"[a-z]+", fold(person.given).replace("ks", "x"))
 

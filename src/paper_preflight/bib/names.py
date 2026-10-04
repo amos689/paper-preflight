@@ -82,6 +82,9 @@ def _words(text: str) -> list[str]:
     return words
 
 
+_GENERATIONAL = frozenset({"jr", "sr", "ii", "iii", "iv"})
+
+
 def _is_von(word: str) -> bool:
     stripped = word.lstrip("{\\")
     return bool(stripped) and stripped[0].islower()
@@ -103,10 +106,15 @@ def parse_name(raw: str) -> Person:
     words = _words(raw)
     if len(words) == 1:
         return Person(family=latex_to_text(words[0]))
+    # "David H. Smith IV": a generational suffix stays with the family name ("Smith IV"), which
+    # BibTeX alone would take for the whole of it
+    suffix = []
+    if len(words) >= 3 and words[-1].lower().rstrip(".") in _GENERATIONAL:
+        suffix = [words.pop()]
     # First von Last: von part starts at the first lower-case word that is not the last word
     von_start = next((i for i, w in enumerate(words[:-1]) if _is_von(w)), len(words) - 1)
     given = " ".join(words[:von_start])
-    family = " ".join(words[von_start:])
+    family = " ".join(words[von_start:] + suffix)
     return Person(family=latex_to_text(family), given=latex_to_text(given))
 
 

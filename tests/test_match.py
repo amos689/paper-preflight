@@ -56,6 +56,9 @@ def cvpr() -> SourceRecord:
         ('M{\\"u}ller, J{\\"o}rg', "Müller", "Jörg"),
         ("Gomez, Aidan N.", "Gomez", "Aidan N."),
         ("{World Health Organization}", "World Health Organization", ""),
+        # a generational suffix stays with the family name, which BibTeX alone takes it for
+        ("David H. Smith IV", "Smith IV", "David H."),
+        ("Martin Luther King Jr.", "King Jr.", "Martin Luther"),
     ],
 )
 def test_parse_name(raw: str, family: str, given: str) -> None:
@@ -446,6 +449,9 @@ def test_only_venue_names_are_judged() -> None:
         ("Gates, Bill", "Gates, William", False),
         ("Belkin, Mikhail", "Belkin, Misha", False),
         ("Cottrell, Garrison W.", "Cottrell, Gary", False),  # dblp's name for him
+        ("Cohen-Or, Daniel", "Cohen-Or, Danny", False),  # Crossref's name for him
+        ("Brown, JR", "Brown, John R.", False),  # Google Scholar's initials, without dots
+        ("Krathwohl, DR", "Krathwohl, David R.", False),
         ("Karvounarakis, Grigoris", "Karvounarakis, Gregory", False),  # one name, two languages
         ("Papadopoulos, Giorgos", "Papadopoulos, George", False),
         ("Korbak, Tomek", "Korbak, Tomasz", False),  # a Polish diminutive
@@ -570,6 +576,17 @@ def test_a_team_written_as_a_name_is_the_team(written: str, recorded: str) -> No
     assert (check.missing, check.disjoint) == ((), False)
 
 
+def test_a_generational_suffix_in_the_family_name_is_no_surname() -> None:
+    # Crossref has family "Smith IV" in one record and family "Smith", suffix "IV" in another;
+    # the entry writes "Smith IV, David H" (real papers, ITiCSE 2024)
+    record = SourceRecord(
+        source="crossref", source_id="10.1145/3649217.3653587", title="T",
+        authors=(Person("Denny", "Paul"), Person("Smith", "David H.")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Denny, Paul and Smith IV, David H"), record)
+    assert (check.status, check.missing) == ("match", ())
+
+
 def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     # arXiv 2303.08774 (GPT-4 Technical Report) lists "OpenAI", then Josh Achiam, ...
     record = SourceRecord(
@@ -583,6 +600,12 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     assert not check_authors(
         parse_authors("Adler, Steven and Achiam, Josh"), record
     ).first_author_match
+    # "Cursor Research" on arXiv 2603.24477 is an organisation too
+    cursor = SourceRecord(
+        source="arxiv", source_id="2603.24477", title="Composer 2 Technical Report",
+        authors=(Person.from_display("Cursor Research"), Person.from_display("Aaron Chan")),
+    )  # fmt: skip
+    assert check_authors(parse_authors("Aaron Chan"), cursor).first_author_match
 
 
 def test_a_solar_symbol_is_the_word_sun() -> None:
