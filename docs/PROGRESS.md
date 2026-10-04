@@ -174,12 +174,30 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #102 | D3：`check paper.pdf`（`[pdf]` 扩展，pypdf）；dev 批 20 篇 PDF：找到 .bib 中 88% 的文献，其中 92% 结论一致 |
 | #103 | D4：`check arxiv:<id>` 下载源码到临时目录、检查后删除 |
 
+## v0.2.1（2026-10-04）：第四批误报的修复
+
+| PR | 内容 |
+|---|---|
+| #105 | A1：arXiv 每个版本的标题和作者都取回（批量，每次请求 50 个版本），条目与最贴合的版本比较；旧式编号（astro-ph/0501436）不取（API 报 500）；取版本失败时只标记离最新版很远的条目 |
+| #106 | A2：`@book` 条目不再绑定到期刊里同名的书评（不超过四页的期刊文章） |
+| #107 | A3：登记处标题杂质：罗马数字与阿拉伯数字、末词上的脚注数字、单字母量后丢失的符号、"(with Discussion)" |
+| #108 | A4：昵称 Gary/Garrison；只在网上发表的出处（Transformer Circuits Thread、LessWrong、AI Alignment Forum、The Gradient）查不到时判"无法确定" |
+| #109 | A5：源码没有 `\bibliography` 时，回退使用主文件旁唯一的 `.bib`（仍报 CIT005） |
+| #110 | E1：第五批（heldout4）复核与各项回放 |
+
+评测（第五批 heldout4，2026-07-29..08-04，修复全部合并后才收集）：
+
+- 1005 条参考文献、88 个报警、66 个真问题、19 个误报、3 个不确定，每百条 1.9（门槛 ≤1.5，未达到；0.2.0 在同一批上 2.1）；无法确定 6%。用户决定按实发布 0.2.1
+- 19 个误报：名字写法 8（不带点的缩写 JR/DR、后缀 IV ×3、Danny/Daniel、Peter/Xi Chen、Zhitao/Rex Ying）、登记处记录 4、标题字段写成"章节, in 书名" 2、年份 3（书被绑定到重印章节、JMLR 卷年、ACM Just Accepted）、机构排第一作者 1、只在 OpenReview 的投稿 1
+- 前四批：dev 0.1、heldout 0.7、heldout2 0.4、heldout3 0.4（原样测得 1.7，其误报已用于本版开发）
+- HALLMARK test_public any_issue：精确率 98.1%、误报率 2.2%（原 2.6%），召回率 88.9%；Badalova & Mayr 不变
+
 ## 下一步
 
-- [ ] 0.1.3：修第四批的误报，再用第五批（07-29..08-04）验证：引用 arXiv 早期版本（v1 的标题与作者，REF001/REF011）；书被绑定到期刊里的书评（REF010/REF011/REF013）；登记处标题杂质（罗马数字、脚注数字、丢失的 ⊙、"(with Discussion)"）；昵称 Gary/Garrison；卷年份；网络出版物（Transformer Circuits Thread）
-- [ ] 源码里没有 `\bibliography` 但目录里只有一个 `.bib` 时，回退使用它（第四批 2607.20215v1）
-- [ ] 召回率：只有预印本记录的论文上编造/错误的会议名；只漏掉部分作者的作者列表
-- [ ] 需要用户操作：MCP Registry 发布新版本（`mcp-publisher login github` 后 `mcp-publisher publish`）；投稿 awesome 列表
+- [ ] 0.2.2：修第五批的误报（缩写不带点、IV 后缀、Danny、"Research" 机构、"章节, in 书名"、dblp 标题里的 TeX），用第六批验证
+- [ ] v0.3.0 引文支撑分诊（S1–S7）：`feat/support-sentences` 分支上已有 S1 句子抽取、S2 证据获取、S3 段落排序、S5 判定核心；S4 本地核验模型对比（用户已同意下载 FactCG、MiniCheck、HHEM）；S6 金标集（子代理多人标注 + 人工裁决，发布说明注明标签由 AI 生成）
+- [ ] 召回率（B1–B3）：只漏掉部分作者的作者列表；只有预印本记录的论文上编造/错误的会议名
+- [ ] 需要用户操作：MCP Registry 发布新版本；awesome 列表投稿
 
 ## 已知问题与备忘
 
