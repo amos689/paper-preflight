@@ -25,6 +25,9 @@ All notable changes to this project are documented here. The format follows
   for digits ("Seyfert Nuclei. II." for "... 2:"), a footnote mark on the last word
   ("Absorption1"), a symbol dropped after a one-letter quantity ("Z$_{solar}$" for "Z"), and a
   journal's "(with Discussion)" note.
+- Gary and Garrison are one given name (Garrison W. Cottrell, "Gary Cottrell" on dblp), and an
+  entry cited from a web-only publication (Transformer Circuits Thread, LessWrong, the AI
+  Alignment Forum, The Gradient) that no source finds is "cannot determine", not "not found".
 
 ## [0.2.0] - 2026-10-04
 

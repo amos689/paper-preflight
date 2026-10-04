@@ -1019,3 +1019,17 @@ source = "real_papers:2607.20044v1"
 key = "vehtari2021rank"
 expect = []
 note = "was REF012: Crossref's title adds '(with Discussion)', the journal's note that discussions follow"
+
+[[case]]
+name = "fp-elhage2021-web-publication"
+source = "real_papers:2607.27230v2"
+key = "elhage2021mathematical"
+expect = []
+note = "was REF003: Elhage et al., 'A Mathematical Framework for Transformer Circuits', Transformer Circuits Thread (2021), a web publication no queried source indexes"
+
+[[case]]
+name = "fp-bachlechner2020-gary-garrison"
+source = "real_papers:2607.27230v2"
+key = "bachlechner2020rezero"
+expect = []
+note = "was REF011: Garrison W. Cottrell goes by Gary (dblp's 'Gary Cottrell'); one person"
