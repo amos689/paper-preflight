@@ -62,6 +62,26 @@ def test_a_citation_used_as_a_noun_is_named(found: dict[str, CitationSentence]) 
     assert found["wang2018"].claim == f"See also the leaderboard of {CITED_WORK}."  # a footnote
 
 
+def test_a_parenthetical_citation_used_as_a_noun_is_named(tmp_path: Path) -> None:
+    (tmp_path / "main.tex").write_text(
+        r"""\documentclass{article}\begin{document}
+The closest to our work are \cite{a} and \cite{b}. \cite{a} demonstrates that personas
+shape the representations. Deep networks generalise well. \cite{c}
+They are hard to explain.
+\end{document}""",
+        encoding="utf-8",
+    )
+    found = citation_sentences(load_project(tmp_path))
+    claims = [(s.key, s.claim) for s in found]
+    assert claims[:3] == [
+        ("a", f"The closest to our work are {CITED_WORK} and {CITED_WORK}."),
+        ("b", f"The closest to our work are {CITED_WORK} and {CITED_WORK}."),
+        ("a", f"{CITED_WORK} demonstrates that personas shape the representations."),
+    ]
+    # a citation after a sentence's full stop, before the next sentence, belongs to the first
+    assert claims[3] == ("c", "Deep networks generalise well.")
+
+
 def test_numbers_and_abbreviations_survive(found: dict[str, CitationSentence]) -> None:
     liu = found["liu2019"]
     assert liu.claim == (
