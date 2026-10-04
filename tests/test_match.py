@@ -278,6 +278,27 @@ def test_a_meetings_year_named_by_its_venue() -> None:
     assert check_year(2003, article, venue="Journal of SAT 2003").status == "mismatch"
 
 
+def test_a_jmlr_volume_runs_into_the_next_year() -> None:
+    # JMLR cites 18(167) as 2018; dblp files volume 18 under 2017 (journals/jmlr/ChowGJP17)
+    record = SourceRecord(
+        source="dblp", source_id="journals/jmlr/ChowGJP17", title="Risk-Constrained RL",
+        year=2017, years=frozenset({2017}),
+    )  # fmt: skip
+    assert check_year(2018, record).status == "match"
+    assert check_year(2016, record).status == "mismatch"
+    other = replace(record, source_id="journals/tit/GavishD14")
+    assert check_year(2018, other).status == "mismatch"
+
+
+def test_a_volume_the_record_leaves_out() -> None:
+    record = SourceRecord(source="crossref", source_id="x", title="The Quantum Theory of Fields")
+    check = check_title("The Quantum Theory of Fields. Vol. 2: Modern Applications", record)
+    assert (check.status, check.changed) == ("variant", ())
+    # two parts of one series are two works
+    part = SourceRecord(source="x", source_id="y", title="Deep Nets, Part 2: Advanced Systems")
+    assert check_title("Deep Nets, Part 1: Basics of Learning", part).status == "mismatch"
+
+
 @pytest.mark.parametrize(
     ("text", "key"),
     [

@@ -418,6 +418,7 @@ _ENTRY_KINDS = {
     "incollection": "chapter", "inbook": "chapter",
     "online": "software", "software": "software", "electronic": "software", "www": "software",
     "article": "article", "inproceedings": "paper", "conference": "paper",
+    "book": "book", "mvbook": "book",
 }  # fmt: skip
 # Record kinds an entry of each kind cannot be, whatever the title
 _NOT_THE_SAME = {
@@ -426,6 +427,9 @@ _NOT_THE_SAME = {
     "software": {"article", "paper", "chapter", "thesis"},
     "article": {"report", "thesis"},
     "paper": {"report", "thesis"},
+    # a book is not one chapter of a later collection that reprints it (Baxter's "Exactly
+    # Solved Models in Statistical Mechanics", 1982, and a 1985 World Scientific chapter)
+    "book": {"chapter"},
 }
 
 

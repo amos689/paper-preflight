@@ -237,6 +237,14 @@ CONTAINER_IN_TITLE = "the title field also names the book or proceedings"
 # field that also names its book, a style trick (set with \textup in a real paper's .bib)
 _IN_CONTAINER = re.compile(r"^(?P<head>.{12,}?),\s+in\s+(?P<tail>[A-Z]\S*(?:\s+\S+){2,})$")
 
+VOLUME_NOT_IN_RECORD = "the record's title leaves out the volume"
+# "The Quantum Theory of Fields. Vol. 2: Modern Applications": a volume of a multi-volume book,
+# which Crossref titles without the volume
+_VOLUME = re.compile(
+    r"^(?P<head>.{12,}?)[.,:]?\s+(?:vol(?:ume)?\.?|part|band|tome)\s*(?:\d+|[IVX]+)\b.*$",
+    re.IGNORECASE,
+)
+
 
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
@@ -245,6 +253,12 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if within and title_score(within["head"], record.title) >= TITLE_SAME:
         found = check_title(within["head"], record)
         return replace(found, status="variant", note=found.note or CONTAINER_IN_TITLE)
+
+    volume = _VOLUME.match(entry_title)
+    head = volume["head"] if volume and not _VOLUME.match(record.title) else ""
+    if head and title_score(head, record.title) >= TITLE_SAME:
+        found = check_title(head, record)
+        return replace(found, status="variant", note=found.note or VOLUME_NOT_IN_RECORD)
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
@@ -659,6 +673,10 @@ def check_year(
         and _names_year(venue, year)
     ):
         # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
+        return FieldCheck("match")
+    if year - 1 in years and record.source_id.startswith("journals/jmlr/"):
+        # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
+        # cites its paper 18(167) as 2018
         return FieldCheck("match")
     # No general ±1 tolerance: refchecker dropped it because it silently hid real year errors.
     # Only preprint/published pairs legitimately differ by a year or two.
