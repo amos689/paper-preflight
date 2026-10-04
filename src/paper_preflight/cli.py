@@ -139,7 +139,8 @@ def _safe_stdout() -> None:
 @app.command()
 def check(
     path: Annotated[
-        Path, typer.Argument(help="Project directory, main .tex file, or a .bib file.")
+        Path,
+        typer.Argument(help="Project directory, main .tex file, a .bib file, or a compiled .bbl."),
     ] = Path("."),
     main_file: Annotated[
         Path | None, typer.Option("--main", help="Main .tex file if it cannot be detected.")
@@ -425,7 +426,8 @@ def bib_fetch(
 @bib_app.command("fix")
 def bib_fix(
     path: Annotated[
-        Path, typer.Argument(help="Project directory, main .tex file, or a .bib file.")
+        Path,
+        typer.Argument(help="Project directory, main .tex file, a .bib file, or a compiled .bbl."),
     ] = Path("."),
     level: Annotated[
         str,

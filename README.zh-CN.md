@@ -155,7 +155,8 @@ HALLMARK v1.2.3 两个公开数据集的全部条目，2026-10-03 运行。"只�
 uvx paper-preflight check path/to/paper
 ```
 
-`path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。
+`path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。没有 `.bib` 的项目（很多 arXiv
+源码就是这样）会读取编译生成的 `.bbl`（只检查，不修改）。
 
 | 选项 | 作用 |
 |---|---|
