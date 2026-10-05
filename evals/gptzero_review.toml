@@ -1,0 +1,93 @@
+# Review of the GPTZero hallucinations paper-preflight did not flag (evals/gptzero.py).
+#
+# verdict: "miss" when GPTZero's comment holds and the reference is hallucinated (paper-preflight
+# abstained), "disputed" when the reference turns out to be correct. Reviewed 2026-10-05;
+# rows are numbered as in GPTZero's tables.
+
+[neurips2025.12]
+verdict = "miss"
+reason = "Short title (3 words): not searched as a 'not found' candidate."
+
+[neurips2025.14]
+verdict = "miss"
+reason = "Short title (4 words) with an ICLR 2025 venue: not searched as a 'not found' candidate."
+
+[neurips2025.23]
+verdict = "miss"
+reason = "A similar real title by other authors: abstained as ambiguous."
+
+[neurips2025.37]
+verdict = "miss"
+reason = "The real SoftMatch title with invented authors: abstained as ambiguous."
+
+[neurips2025.40]
+verdict = "miss"
+reason = "Short title (4 words) with an ICLR 2022 venue: not searched as a 'not found' candidate."
+
+[neurips2025.43]
+verdict = "miss"
+reason = "The plain-text reader read no authors or title (accented first name, 'Yu' as a middle name)."
+
+[neurips2025.57]
+verdict = "miss"
+reason = "The plain-text reader missed the venue ('In 37th International Conference ...'); with no venue the entry counted as grey literature."
+
+[neurips2025.58]
+verdict = "miss"
+reason = "No author and a garbled title: abstained as ambiguous."
+
+[neurips2025.61]
+verdict = "miss"
+reason = "The plain-text reader took the journal into the title ('$9(1): 39-56,2001$'); with no venue the entry counted as grey literature."
+
+[neurips2025.80]
+verdict = "miss"
+reason = "A Distill URL: web content is not judged."
+
+[neurips2025.81]
+verdict = "miss"
+reason = "No venue, as for a blog post: grey literature is not judged."
+
+[neurips2025.85]
+verdict = "miss"
+reason = "A real survey title with invented authors; several surveys share the title: abstained as ambiguous."
+
+[iclr2026.4]
+verdict = "miss"
+reason = "The arXiv URL is broken by a space ('arxiv.org/ abs/2501.17727'), so the ID was not read; with no venue the entry counted as grey literature."
+
+[iclr2026.5]
+verdict = "miss"
+reason = "The plain-text reader read no authors or title (a long author list with a garbled name)."
+
+[iclr2026.6]
+verdict = "miss"
+reason = "A workshop (DEEM 2020) that no queried source indexes."
+
+[iclr2026.19]
+verdict = "miss"
+reason = "Garbled author ('Ishita et al. Bardhan.'): too little to search."
+
+[iclr2026.24]
+verdict = "miss"
+reason = "A real title (Colas et al., NeurIPS 2020) with another author and journal: abstained as ambiguous."
+
+[iclr2026.27]
+verdict = "miss"
+reason = "The plain-text reader missed the venue ('In 2009 IEEE/WIC/ACM ...'); with no venue the entry counted as grey literature."
+
+[iclr2026.36]
+verdict = "miss"
+reason = "The plain-text reader read no authors or title (lowercase name part, 'Yun chen Chen')."
+
+[iclr2026.39]
+verdict = "miss"
+reason = "A blog URL: web content is not judged."
+
+[iclr2026.45]
+verdict = "miss"
+reason = "A placeholder URL (example.com) and no venue: grey literature is not judged."
+
+[iclr2026.48]
+verdict = "miss"
+reason = "A second reference number inside the reference ('[3] K. Arnold, ...') confused the plain-text reader."

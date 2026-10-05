@@ -149,3 +149,19 @@ remote_files = [
   { path = "serp_verify.py", git_blob_sha1 = "aa2981591f177d3c741038dbc572fb8a2d171c5b", bytes = 27682 },
   { path = "test_serp.py", git_blob_sha1 = "6e5253aae99fb6785441bc400f41035ef5d24fed", bytes = 8041 },
 ]
+
+[[dataset]]
+name = "gptzero"
+version = "2026-10-05"
+source_urls = [
+  "https://gptzero.me/news/neurips/ (table: https://docs.google.com/spreadsheets/d/14hIuCK7HCnGhdCuxfwp1wIYbbHMn-K3FNvY9NgWGW0Y)",
+  "https://gptzero.me/news/iclr-2026/ (table: https://docs.google.com/spreadsheets/d/1WIf6EGQXN9TMCeH7d18GWC4H14Sb9h5NBKTB_3vawD8)",
+]
+license = "unspecified (GPTZero's published tables)"
+retrieved_at = "2026-10-05"
+redistributable = false
+notes = "Hallucinated references GPTZero's staff confirmed: 100 in NeurIPS 2025 papers, 51 in ICLR 2026 submissions; one reference per row with GPTZero's comment. Exported as CSV by evals/gptzero.py fetch, which warns when a table changed. Not committed."
+files = [
+  { path = "gptzero/neurips2025.csv", sha256 = "7af222edbe52d06b356f3e998109c2cbd16f0420bd80ec8c25e00865c4ef4658", bytes = 36335 },
+  { path = "gptzero/iclr2026.csv", sha256 = "cabb793d42282d11d84c45c8fd26d423b1482477d193bc5c0ed27efabbe0ccbc", bytes = 26473 },
+]

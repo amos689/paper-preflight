@@ -89,8 +89,24 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 
 ## How accurate is it?
 
-Three measurements, all against the live sources: the bibliographies of real papers, a
-head-to-head with published tools, and a public benchmark.
+Four measurements, all against the live sources: hallucinations found in published papers, the
+bibliographies of real papers, a head-to-head with published tools, and a public benchmark.
+
+### On hallucinations that got past peer review
+
+GPTZero published 151 hallucinated references it found in NeurIPS 2025 papers and ICLR 2026
+submissions, each confirmed by its staff. Pasted as plain text, as the papers printed them:
+
+| References | Flagged | Cannot determine | Verified |
+|---|---|---|---|
+| 151 | **129 (85%)** | 22 | **0** |
+
+- **None of them is verified.** The 22 left undecided are web pages and blog posts, titles too
+  short to search with confidence, real titles given with invented authors where several works
+  share the title, and references the plain-text reader could not take apart. Each is listed
+  with its reason in [`evals/results/gptzero.md`](evals/results/gptzero.md).
+- GPTZero's own tool found these, so they are the hallucinations a search can find; recall on
+  every kind of hallucination is lower (see HALLMARK below).
 
 ### On real papers
 
