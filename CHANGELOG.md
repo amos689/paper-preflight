@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The skill installs into Codex, Gemini CLI, GitHub Copilot, Cursor and other agents with
+  `npx skills add amos689/paper-preflight` or `gh skill install amos689/paper-preflight
+  paper-preflight`; without an MCP server, it runs the CLI. Its frontmatter now names its
+  licence.
+
 ## [0.3.0] - 2026-10-05
 
 An experimental evidence finder for citations, and fixes for the fifth real-paper batch's

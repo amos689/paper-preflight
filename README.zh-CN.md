@@ -304,7 +304,15 @@ claude plugin marketplace add amos689/paper-preflight
 claude plugin install paper-preflight@paper-preflight
 ```
 
-**Codex、Cursor、VS Code 等支持 MCP 的客户端**：运行 `paper-preflight mcp`。工具都是只读的，并且限
+**Codex、Gemini CLI、Copilot、Cursor 等智能体**：安装同一个技能。没有配置 MCP 服务时，它会改用命令行：
+
+```bash
+npx skills add amos689/paper-preflight
+```
+
+也可以用 `gh skill install amos689/paper-preflight paper-preflight` 安装。
+
+**支持 MCP 的客户端（Codex、Cursor、VS Code 等）**：运行 `paper-preflight mcp`。工具都是只读的，并且限
 制在你的工作区内，配置见 [docs/mcp.md](docs/mcp.md)。
 
 **pre-commit**：每次提交时几秒内检查引用键和缓存中的核查结果，见
@@ -332,7 +340,8 @@ claude plugin install paper-preflight@paper-preflight
    文件新鲜时直接采用；键重复时以第一个定义为准，和 BibTeX 一致。
 2. **标识符优先的路由。** DOI 交给它的注册机构（由 doi.org 告诉我们是 Crossref、DataCite 还是
    其他）；arXiv 编号交给 arXiv，arXiv 限流时改走 DataCite；PMID 和 PMCID 交给 PubMed（它也会标出已撤稿的
-   文章）；没有标识符的条目按标题在 dblp 和 Crossref 中检索。
+   文章）；没有标识符的条目按标题在 dblp 和 Crossref 中检索。dblp 的搜索接口现在会给脚本弹出反爬验证，我们走的是它的
+   SPARQL 接口，不受影响。
 3. **逐字段比对，带防护。** 比对标题（包括 arXiv 早期版本的标题）、作者（容忍 Reiß/Reis 这类转写
    差异）、年份和发表场所。检索结果只有在足够多字段一致、且没有其他作品同样吻合时才会被采用；已
    知的假冒 DOI 副本会被跳过。
