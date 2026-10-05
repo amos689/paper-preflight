@@ -361,6 +361,10 @@ def _name_forms(person: Person) -> set[str]:
         forms |= {family[-1], "".join(family)}
         if given:
             forms.add(given[-1] + "".join(family))
+    # a double surname cited by its first part: dblp's Alain Raymond-Saez is "Raymond, Alain"
+    double = fold(person.family).split("-")
+    if len(double) == 2 and min(len(part) for part in double) >= 3:
+        forms.add(double[0])
     return {loose_surname(form) for form in forms if form}
 
 
@@ -384,9 +388,22 @@ def _same_words(a: Person, b: Person) -> bool:
     return _name_words(a.family) <= words_b and _name_words(b.family) <= words_a
 
 
+def _in_other_order(a: Person, b: Person) -> bool:
+    """One name written in the other order, with an initial for the given name: Crossref's
+    "K. Palanisamy" is the entry's "Karthikeyan, P." (Karthikeyan Palanisamy). Both surnames
+    must be long enough not to be two people's (Kim, P. and K. Park)."""
+    given_a, given_b = _given_words(a), _given_words(b)
+    family_a, family_b = surname_key(a), surname_key(b)
+    if len(given_a) != 1 or len(given_b) != 1 or min(len(family_a), len(family_b)) < 5:
+        return False
+    return given_a[0] in {family_b[0], family_b} and given_b[0] in {family_a[0], family_a}
+
+
 def same_person(a: Person, b: Person) -> bool:
     """One person written differently by two sources (checked after exact surnames pair up)."""
     if surname_key(a) == surname_key(b) or _name_forms(a) & _name_forms(b) or _same_words(a, b):
+        return True
+    if _in_other_order(a, b):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree.
@@ -412,7 +429,8 @@ _NICKNAMES = {
         "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
-        "yura/yuri gary/garrison danny/daniel "
+        "yura/yuri gary/garrison danny/daniel freddy/frederic freddy/frederick "
+        "freddie/frederick fred/frederic fred/frederick "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
         "staszek/stanislaw kasia/katarzyna gosia/malgorzata"
@@ -492,7 +510,20 @@ def given_names_differ(a: Person, b: Person) -> bool:
         return False
     if first_a in _COGNATES and _COGNATES[first_a] == _COGNATES.get(first_b):
         return False
+    if _name_and_initials(words_a, words_b) or _name_and_initials(words_b, words_a):
+        return False
     return fuzz.ratio(first_a, first_b) < 75 and Levenshtein.distance(first_a, first_b) > 1
+
+
+def _name_and_initials(words: list[str], others: list[str]) -> bool:
+    """An English name before the initials of the other's two or more given names: "Ricky T. Q."
+    is dblp's Tian Qi Chen. One initial is a middle name's: "Seth A." is not Aaron."""
+    initials = words[1:]
+    return (
+        len(initials) >= 2
+        and all(len(w) == 1 for w in initials)
+        and [o[0] for o in others] == initials
+    )
 
 
 @dataclass(frozen=True)

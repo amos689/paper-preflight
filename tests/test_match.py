@@ -499,11 +499,31 @@ def test_only_venue_names_are_judged() -> None:
         ("Spiridonov, Aleksandar", "Spiridonov, Alexander", False),
         ("Levine, Sergey", "Levine, Sergei", False),
         ("{OpenAI}", "{OpenAI}", False),
+        ("Ren, Freddy", "Ren, Frederic", False),  # Crossref's Frederic Ren
+        ("Chen, Ricky T. Q.", "Chen, Tian Qi", False),  # dblp's Tian Qi Chen
+        # a name and one initial are a middle name's, not the other's initials
+        ("Horowitz, Seth A.", "Horowitz, Aaron", True),
     ],
 )  # fmt: skip
 def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
     (a,), (b,) = parse_authors(ours).people, parse_authors(theirs).people
     assert given_names_differ(a, b) is differ
+
+
+@pytest.mark.parametrize(
+    ("ours", "theirs", "same"),
+    [
+        ("Raymond, Alain", "Raymond-Saez, Alain", True),  # a double surname's first part
+        ("Karthikeyan, P.", "Palanisamy, K.", True),  # Crossref's order for one name
+        ("Kim, P.", "Park, K.", False),  # surnames too short to tell: two people
+        ("Garcia, Ana", "Lopez, Ana", False),
+    ],
+)  # fmt: skip
+def test_one_person_in_another_form(ours: str, theirs: str, same: bool) -> None:
+    from paper_preflight.match import same_person
+
+    (a,), (b,) = parse_authors(ours).people, parse_authors(theirs).people
+    assert same_person(a, b) is same
 
 
 def test_co_authors_sharing_a_surname_pair_up_by_given_name() -> None:
