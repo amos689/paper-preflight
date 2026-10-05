@@ -236,6 +236,8 @@ CONTAINER_IN_TITLE = "the title field also names the book or proceedings"
 # "Quarks and Strings on a Lattice, in New Phenomena in Subnuclear Physics": a chapter's title
 # field that also names its book, a style trick (set with \textup in a real paper's .bib)
 _IN_CONTAINER = re.compile(r"^(?P<head>.{12,}?),\s+in\s+(?P<tail>[A-Z]\S*(?:\s+\S+){2,})$")
+# a name before what it is: "spaCy: Industrial-strength ...", "simplexity - Functions to ..."
+_SOFTWARE_NAME = re.compile(r"^(?P<name>[^\s:]{2,40})\s*(?::|\s[-–—])\s+\S")
 
 VOLUME_NOT_IN_RECORD = "the record's title leaves out the volume"
 # "The Quantum Theory of Fields. Vol. 2: Modern Applications": a volume of a multi-volume book,
@@ -249,6 +251,15 @@ _VOLUME = re.compile(
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
+    named = _SOFTWARE_NAME.match(entry_title)
+    if (
+        record.work_type == "software"
+        and named
+        and title_key(named["name"]) == title_key(record.title)
+    ):
+        # software is cited by its name and what it does ("spaCy: Industrial-strength Natural
+        # Language Processing in Python"); its record may carry the name alone ("spaCy")
+        return FieldCheck("match", 1.0)
     within = _IN_CONTAINER.match(entry_title)
     if within and title_score(within["head"], record.title) >= TITLE_SAME:
         found = check_title(within["head"], record)
@@ -558,9 +569,21 @@ def _pair_by_given_name(
     return {j: i for i, j in owner.items()}
 
 
+def _lost_letters(person: Person, written: tuple[Person, ...]) -> Person:
+    """A recorded name with a character the registry lost (Schönle as "P. Sch" + _LOST +
+    "nle", Crossref) as the entry writes it, when exactly one of the entry's names fits it
+    letter for letter."""
+    if _LOST not in person.family:
+        return person
+    pattern = ".{1,2}".join(map(re.escape, person.family.split(_LOST)))
+    fits = [p for p in written if re.fullmatch(pattern, p.family, re.IGNORECASE)]
+    return replace(person, family=fits[0].family) if len(fits) == 1 else person
+
+
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
-    people = [_as_meant(p, written) for p in record.authors if surname_key(p)]
+    recorded = [_lost_letters(p, authors.people) for p in record.authors]
+    people = [_as_meant(p, written) for p in recorded if surname_key(p)]
     record_keys = [surname_key(person) for person in people]
     meant = [_as_meant(person, set(record_keys)) for person in authors.people]
     entry = [(person, key) for person in meant if (key := surname_key(person))]
@@ -622,6 +645,10 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
 
     if matched == 0:
         return result("mismatch", "no author in common", disjoint=True)
+    if missing and not record.authors_complete and len(taken) == len(people) and first:
+        # the record lists only some of the authors (a dataset's deposit, a truncated list) and
+        # all of them are in the entry: the entry's other authors are no error
+        return result("match")
     if overlap == 1.0 and first:
         omitted = (
             len(entry) < len(record_keys) and not authors.truncated and record.authors_complete
@@ -790,6 +817,24 @@ _MEETING = re.compile(r"proceedings|conference|symposium|workshop|congress|meeti
 
 
 def check_venue(
+    venue: str | None,
+    record: SourceRecord,
+    *,
+    named: bool = True,
+    journal: bool = False,
+    issns: frozenset[str] = frozenset(),
+) -> FieldCheck:
+    """The entry's venue against the record's; see :func:`_check_venue`. Semantic Scholar's
+    venue only ever counts for a match: it files workshops under their conference (ROUGE, of
+    the ACL 2004 workshop Text Summarization Branches Out, under ACL), and on the real-paper
+    batches its venues gave two false REF014s and no real one."""
+    found = _check_venue(venue, record, named=named, journal=journal, issns=issns)
+    if found.status == "mismatch" and record.source == "s2":
+        return FieldCheck("unknown")
+    return found
+
+
+def _check_venue(
     venue: str | None,
     record: SourceRecord,
     *,

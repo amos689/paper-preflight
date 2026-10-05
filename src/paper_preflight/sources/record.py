@@ -62,8 +62,15 @@ def plain_title(text: str) -> str:
     math. A HALLMARK VALID entry was flagged because Crossref's title was
     "$${{\mathrm {Latent}}Out}$$: an unsupervised deep anomaly detection approach ...".
     """
-    # tags may also arrive escaped ("&lt;title&gt;HIRES ...&lt;/title&gt;", 10.1117/12.176725)
-    text = MARKUP_TAG_RE.sub("", html.unescape(_TAG_RE.sub("", text)))
+    # tags may also arrive escaped ("&lt;title&gt;HIRES ...&lt;/title&gt;", 10.1117/12.176725),
+    # and entities escaped twice ("z &amp;lt; 0.1", 10.1093/mnras/stac472)
+    text = _TAG_RE.sub("", text)
+    for _ in range(3):
+        unescaped = html.unescape(text)
+        if unescaped == text:
+            break
+        text = unescaped
+    text = MARKUP_TAG_RE.sub("", text)
     text = _EMBEDDED_DOCUMENT_RE.sub(r" \1 ", text)
     text = _AAS_TAG_RE.sub("", _AAS_REPEAT_RE.sub(_aas_repeat, text))
     if "$" in text or "\\" in text:

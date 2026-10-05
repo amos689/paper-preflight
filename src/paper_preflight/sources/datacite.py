@@ -17,7 +17,12 @@ FIELDS = "doi,titles,creators,publicationYear,version,types,url,identifiers,publ
 POLICY = SourcePolicy(name="datacite", min_interval=1.0)
 # Zenodo titles a GitHub release "owner/repo: tag" ("pyRiemann/pyRiemann: v0.10"); the work is
 # the repository, as its citation names it
-_GITHUB_RELEASE = re.compile(r"^[\w.-]+/([\w.-]+): v?\d[\w.+-]*$")
+# Zenodo titles a GitHub release "owner/repo: tag", with the tag after the repository's name
+# ("tystan/simplexity: simplexity v0.1.1") or followed by its notes ("explosion/spaCy: v3.7.2:
+# Fixes for APIs and requirements"); a concept DOI carries the latest release's title
+_GITHUB_RELEASE = re.compile(r"^[\w.-]+/([\w.-]+): (?:[\w.-]+ )?v?\d[\w.+-]*(?::.*)?$")
+# Repositories deposit dataset and software creators as they please, and often not all of them
+_PARTIAL_AUTHORS = frozenset({"dataset", "software"})
 
 
 def parse_doi(data: dict[str, Any]) -> SourceRecord:
@@ -33,10 +38,17 @@ def parse_doi(data: dict[str, Any]) -> SourceRecord:
             creator.get("familyName") or creator.get("givenName")
         ):
             name = collapse(str(creator.get("name", "")))
-            if "," in name and creator.get("nameType") != "Organizational":
+            parts = [p.strip() for p in name.split(",") if p.strip()]
+            if len(parts) > 1 and all(len(p.split()) > 1 for p in parts):
+                # several people in one name, as UCI deposits them: "Barry Becker, Ronny Kohavi"
+                authors.extend(Person.from_display(p) for p in parts)
+            elif "," in name and creator.get("nameType") != "Organizational":
                 authors.append(Person.from_display(name))
             else:
                 authors.append(Person(family=name, literal=name))
+        elif not creator.get("givenName") and " " in str(creator.get("familyName")):
+            # Zenodo puts a GitHub user's whole name in familyName ("Ines Montani")
+            authors.append(Person.from_display(collapse(str(creator["familyName"]))))
         else:
             authors.append(Person.from_parts(creator.get("givenName"), creator.get("familyName")))
     year = attributes.get("publicationYear")
@@ -52,20 +64,25 @@ def parse_doi(data: dict[str, Any]) -> SourceRecord:
     if "arxiv" not in identifiers and doi.startswith("10.48550/arxiv."):
         identifiers["arxiv"] = doi.removeprefix("10.48550/arxiv.")
     types = attributes.get("types") or {}
+    work_type = str(types.get("resourceTypeGeneral") or "").lower() or None
     publisher = (
         attributes.get("publisher") if isinstance(attributes.get("publisher"), str) else None
     )
+    if release:  # a software release: its year is the release's, not the cited software's
+        year, years = None, set()
     return SourceRecord(
         source="datacite",
         source_id=doi,
         title=titles[0] if titles else "",
         alt_titles=tuple(titles[1:]),
         authors=tuple(authors),
+        authors_complete=work_type not in _PARTIAL_AUTHORS,
+        authors_ordered=work_type != "software",  # Zenodo orders a repository's contributors
         year=int(year) if year else None,
         years=frozenset(years),
         venue=publisher,
         # lower-cased like the other sources ("Preprint" -> "preprint"), so preprint checks apply
-        work_type=str(types.get("resourceTypeGeneral") or "").lower() or None,
+        work_type=work_type,
         identifiers=identifiers,
         publisher=publisher,
         url=attributes.get("url"),

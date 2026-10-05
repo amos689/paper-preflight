@@ -30,6 +30,21 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Registry records in odd forms no longer make a correct entry look wrong. These were false
+  positives in the sixth batch of real papers:
+  - DataCite creators deposited as one name ("Barry Becker, Ronny Kohavi", for UCI datasets);
+    a dataset's or software's record may also list only some of its authors, and Zenodo may
+    put a whole name in the family name or list contributors in its own order;
+  - Zenodo titles of GitHub releases, also on concept DOIs ("explosion/spaCy: v3.7.2: Fixes
+    ..."): the repository's name is the title, and a release's year is not compared;
+  - software cited by its name and what it does ("spaCy: Industrial-strength Natural Language
+    Processing in Python");
+  - Crossref titles with entities escaped twice ("&amp;lt;");
+  - a publisher's journal code given as the journal ("humr" for HUMOR);
+  - a letter a registry lost in a name ("Sch" + U+FFFD + "nle").
+
+  Semantic Scholar's venue no longer raises REF014: it files workshops under their conference
+  (ROUGE's ACL 2004 workshop under ACL).
 - The plain-text reader (pasted lists, `.txt` and PDFs) reads more references in full. It now
   handles:
   - authors whose first name starts with an accented capital ("Étienne Pardoux");

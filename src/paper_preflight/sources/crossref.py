@@ -30,6 +30,8 @@ SELECT = ",".join(
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
+# a publisher's code for a journal given as its title: De Gruyter's "humr" for HUMOR
+_JOURNAL_CODE = re.compile(r"[a-z]{2,6}")
 
 UPDATE_STATUS = {
     "retraction": "retracted",
@@ -104,7 +106,11 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     if embedded and years and 0 < min(years) - int(embedded.group(1)) <= 3:
         years.add(int(embedded.group(1)))
     venue = None
-    containers = [collapse(str(c)) for c in item.get("container-title") or [] if c]
+    containers = [
+        collapse(str(c))
+        for c in item.get("container-title") or []
+        if c and not _JOURNAL_CODE.fullmatch(collapse(str(c)))
+    ]
     if containers:
         venue = containers[0]
     elif (item.get("event") or {}).get("name"):
