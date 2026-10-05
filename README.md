@@ -332,7 +332,16 @@ claude plugin marketplace add amos689/paper-preflight
 claude plugin install paper-preflight@paper-preflight
 ```
 
-**Codex, Cursor, VS Code and other MCP clients** — run `paper-preflight mcp`. The tools are
+**Codex, Gemini CLI, Copilot, Cursor and other agents** — install the same skill. It runs the
+CLI when no MCP server is configured:
+
+```bash
+npx skills add amos689/paper-preflight
+```
+
+`gh skill install amos689/paper-preflight paper-preflight` installs it too.
+
+**MCP clients (Codex, Cursor, VS Code, …)** — run `paper-preflight mcp`. The tools are
 read-only and confined to your workspace; see [docs/mcp.md](docs/mcp.md).
 
 **pre-commit** — check citation keys and cached verdicts on every commit in seconds; see
@@ -363,7 +372,8 @@ and more complete; their values are never printed or logged.
 2. **Identifier-first routing.** DOIs go to their registration agency (doi.org tells which:
    Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback, and PMIDs and
    PMCIDs to PubMed (which also marks retracted articles). Entries without identifiers are searched by
-   title in dblp and Crossref.
+   title in dblp and Crossref. dblp is read through its SPARQL endpoint, which still answers
+   scripts now that dblp's search API is behind a bot challenge.
 3. **Field-by-field matching with guards.** It compares titles (including earlier arXiv version
    titles), authors (tolerating transcriptions such as Reiß/Reis), year and venue. A search
    result is used only when enough of these agree and no other work fits as well; known fake

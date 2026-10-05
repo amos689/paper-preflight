@@ -2,6 +2,7 @@
 name: paper-preflight
 description: Verify every reference of a LaTeX paper against real scholarly records (Crossref, dblp, arXiv, DataCite, OpenAlex) before declaring the paper finished or ready to submit, and fix what it reports without inventing anything.
 when_to_use: Use before saying a LaTeX paper, thesis or report is done, ready to submit or ready to share; after adding or editing references in a .bib file; or when the user asks whether citations are real, correct or retracted.
+license: MIT
 ---
 
 # Check a paper's references before calling it done
@@ -16,7 +17,7 @@ to run it, fix what it proves wrong, and hand the user what only they can decide
   `.bib` file) as `path`. Page with `offset=next_offset` until `next_offset` is null.
 - Otherwise run the CLI from the project root:
   `paper-preflight check . --format json`
-  (or `uvx paper-preflight check . --format json`).
+  (or `uvx paper-preflight check . --format json`; without uv, `pip install paper-preflight`).
 - Exit codes: 0 clean, 1 blocking findings, 2 incomplete run (a source was unavailable),
   3 usage error. `preflight_explain` (or the rule table in the output) explains any rule ID.
 
