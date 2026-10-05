@@ -252,8 +252,10 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
     named = _SOFTWARE_NAME.match(entry_title)
-    if record.work_type == "software" and named and title_key(named["name"]) == title_key(
-        record.title
+    if (
+        record.work_type == "software"
+        and named
+        and title_key(named["name"]) == title_key(record.title)
     ):
         # software is cited by its name and what it does ("spaCy: Industrial-strength Natural
         # Language Processing in Python"); its record may carry the name alone ("spaCy")
