@@ -1,6 +1,6 @@
 # `support`: does a cited work say what the citation claims?
 
-- **Tool:** paper-preflight 0.3.0 candidate (`paper-preflight support`, experimental), main after #116
+- **Tool:** paper-preflight 0.3.0 (`paper-preflight support`, experimental); the name check is 0.4.0's
 - **Data:** the citation-support gold set, `evals/support_gold.toml`: 298 pairs of a citing sentence and a cited work. The sentences come from 55 arXiv papers of July 2026 under CC BY, CC BY-SA or CC0. 250 pairs are the papers' real citations. 48 are mis-citations made on purpose: the cited work swapped for another work the same paper cites.
 - **Labels:** made by AI models, not by experts (see below)
 - **Run:** 2026-10-04 and 2026-10-05, CPU, cited works' text fetched live, then scored offline
@@ -9,7 +9,7 @@
 
 For each citation, `support` reads the cited work's text, ranks its passages for the claim, and has a local model score the best ones. It says one of two things:
 
-- **supported**: a passage scores at least 0.4, quoted word for word;
+- **supported**: a passage scores at least 0.4, quoted word for word; or, for a citation set right after a name ("Adam \cite{x}"), the cited work's title carries that name (see "The name check");
 - **could not confirm**: with the reason. The reason is that no text could be had, that only the abstract could be had, or that no passage was close enough.
 
 It never says that a citation is wrong. The reason is the last section.
@@ -76,6 +76,19 @@ Reading more of a work's text finds a few more confirmations, but it is right le
 
 The default is 4 passages at 0.4.
 
+## The name check
+
+Many citations only name what they cite: "trained with Adam \cite{kingma}", "on ImageNet \cite{deng}". The claim around them is the citing paper's own, so no passage of the cited work says it. When a citation is set right after a name, and the cited work's title carries that name, `support` confirms it with the title as its quote. An acronym or a name with inner capitals or digits ("BERT", "ImageNet", "GPT-4") counts anywhere in the title. A plain capitalised word ("Adam") counts only as the title's own name ("Adam: A Method for Stochastic Optimization").
+
+On the gold set, 48 pairs follow a name. The check confirms 11 of them, all real citations: 9 labelled supported and 2 partially supported. It confirms none of the mis-citations. With HHEM:
+
+| | Said "supported" | Right [95% CI] | Supported citations confirmed | Real citations confirmed | Mis-citations confirmed |
+|---|---|---|---|---|---|
+| HHEM, top 4, 0.4 | 35 | 97% [85%, 99%] | 30/130 | 31/250 (12%) | 0 |
+| ... and the name check (default) | 45 | 93% [82%, 98%] | 38/130 | 41/250 (16%) | 0 |
+
+The names are read from the papers' sources and the titles from their check reports, so this measures the check as `support` runs it (`evals/support_eval.py report`).
+
 ## Why it never says "not supported"
 
 A low best score is weak evidence of a mis-citation. The table counts full-text pairs whose best passage scores below a threshold, and how many of them are labelled not supported. The 48 swapped citations are included, so mis-citations are far more common here than in real papers.
@@ -96,7 +109,7 @@ Genuine citations often paraphrase loosely, cite a dataset or method by name, or
 - **Small and AI-labelled.** The confidence intervals are wide, and the labels are not experts'.
 - **Mostly computer science and physics.** The papers are recent arXiv papers, and their cited works are mostly on arXiv too. Fields where cited works are paywalled will see far more "only the abstract" answers.
 - **Abstracts rarely confirm anything.** Of the 79 real pairs with only an abstract, 2 were confirmed.
-- **A claim is the sentence, or the clause, around the citation.** A citation that only names a method or dataset ("trained with Adam \cite{x} on ImageNet \cite{y}") is asked to support the whole clause, which its work seldom says.
+- **A claim is the sentence, or the clause, around the citation.** A citation that only names a method or dataset is asked to support the whole clause, which its work seldom says. The name check covers the case where the title carries the name; a name the title does not carry ("Transformer" for "Attention Is All You Need") stays unconfirmed.
 
 ## Speed
 

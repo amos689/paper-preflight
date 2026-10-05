@@ -42,3 +42,29 @@ def test_nothing_is_ever_called_unsupported() -> None:
     assert (abstract.verdict, abstract.reason) == (NOT_CONFIRMED, "ABSTRACT_ONLY")
     nothing = judge(claim, evidence(NONE), Overlap())
     assert (nothing.verdict, nothing.reason) == (NOT_CONFIRMED, "NO_TEXT")
+
+
+def test_a_name_the_title_carries_confirms_its_citation() -> None:
+    from paper_preflight.support.judge import name_in_title
+
+    assert name_in_title("Adam", "Adam: A Method for Stochastic Optimization")
+    assert name_in_title("Dropout", "Dropout - a simple way to prevent overfitting")
+    assert name_in_title("BERT", "BERT: Pre-training of Deep Bidirectional Transformers")
+    assert name_in_title("GPT-4", "GPT-4 Technical Report")
+    assert name_in_title("GELU", "Gaussian Error Linear Units (GELUs)")
+    assert name_in_title("ImageNet", "ImageNet Large Scale Visual Recognition Challenge")
+    # a plain word only as the title's own name; an acronym only as a whole word
+    assert not name_in_title("Adam", "On the convergence of Adam and beyond")
+    assert not name_in_title("Diffusion", "High-Resolution Image Synthesis with Latent Diffusion")
+    assert not name_in_title("GPT", "GPT-4 Technical Report")
+    assert not name_in_title("", "Adam: A Method")
+    assert not name_in_title("Adam", "")
+    title = "Adam: A Method for Stochastic Optimization"
+    claim = "We train with a learning rate of 0.001."
+    named = judge(claim, evidence(FULL_TEXT, ABSTRACT_TEXT, RESULT), Overlap(), name="Adam",
+                  title=title)  # fmt: skip
+    assert (named.verdict, named.reason, named.quote) == (SUPPORTED, "NAME_IN_TITLE", title)
+    no_text = judge(claim, evidence(NONE), Overlap(), name="Adam", title=title)
+    assert (no_text.verdict, no_text.reason) == (SUPPORTED, "NAME_IN_TITLE")
+    other = judge(claim, evidence(NONE), Overlap(), name="Adam", title="Attention Is All You Need")
+    assert (other.verdict, other.reason) == (NOT_CONFIRMED, "NO_TEXT")

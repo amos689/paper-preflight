@@ -29,6 +29,7 @@ from urllib.parse import quote
 import httpx
 
 from paper_preflight import arxiv_source
+from paper_preflight.bib.pdftext import PdfUnavailable
 from paper_preflight.cache import Cache
 from paper_preflight.resolve import Sources
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
@@ -52,6 +53,7 @@ OPENALEX_WORK = "https://api.openalex.org/works/doi:{doi}"
 OPENALEX_SELECT = "id,doi,ids,abstract_inverted_index,best_oa_location"
 S2_PAPER = "https://api.semanticscholar.org/graph/v1/paper/{id}"
 CROSSREF_WORK = "https://api.crossref.org/works/{doi}"
+NO_PDF_READER = "a PDF, which needs the pdf extra to read: pip install 'paper-preflight[pdf]'"
 
 
 @dataclass(frozen=True)
@@ -240,7 +242,10 @@ class EvidenceFetcher:
             reason = incomplete(passages)
             return reason if reason else ("arXiv source", passages, document_abstract(project))
         if pdfs:
-            passages = pdf_passages(pdfs[0])
+            try:
+                passages = pdf_passages(pdfs[0])
+            except PdfUnavailable:
+                return NO_PDF_READER
             reason = incomplete(passages)
             return reason if reason else ("arXiv PDF", passages, "")
         return "nothing readable in its source"
@@ -263,7 +268,10 @@ class EvidenceFetcher:
                 return "larger than 40 MB"
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(content)
-        passages = pdf_passages(path)
+        try:
+            passages = pdf_passages(path)
+        except PdfUnavailable:
+            return NO_PDF_READER
         return incomplete(passages) or passages
 
 

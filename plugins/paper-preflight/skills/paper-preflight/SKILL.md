@@ -42,6 +42,21 @@ Safe fixes (identifier formatting, missing DOIs) can be applied with
 `paper-preflight bib fix <path> --apply`. For authors, title, year or venue, show the user the
 diff from `paper-preflight bib fix <path> --level unsafe` before applying it.
 
+## Does the cited work say it? (when the user asks)
+
+When the user asks whether citations are supported, call `preflight_cited_passages` with a
+cited key. For each sentence citing it, the tool returns the claim and the cited work's passages
+ranked for that claim. Judge each claim yourself, and report it as one of two things:
+
+- **confirmed**: a passage states the claim; quote the passage word for word. A citation set
+  right after a name ("Adam \cite{...}") is also confirmed when `name_in_title` is true.
+- **could not confirm**: give the reason. It is that there is no text, that only the abstract
+  is available, or that no passage says it.
+
+Never call a citation wrong or invented on this evidence. The text may say it in other words,
+or be only an abstract. Without the MCP server, `paper-preflight support` does the same with a
+local model (the `support` extra).
+
 ## Never
 
 - Never write or complete a BibTeX entry from memory. Get it with the `preflight_bib_lookup`

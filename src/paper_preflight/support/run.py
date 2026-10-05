@@ -63,33 +63,71 @@ def work_for(entry: BibEntry | None, assessment: Assessment) -> Work | None:
     return Work(doi=doi, arxiv=arxiv, pmcid=pmcid)
 
 
-def run_support(
+@dataclass
+class Gathered:
+    """What a claim is judged on: each citation's sentence and its cited work's text."""
+
+    check: CheckResult
+    sentences: list[CitationSentence]
+    evidence: dict[str, Evidence]  # by key
+    titles: dict[str, str]  # the bound record's title, by key
+    skipped: dict[str, str]
+
+
+def gather(
     target: Path,
-    verifier: Verifier,
     *,
-    cache_path: Path,
+    cache_path: Path | None,
     folder: Path,
     offline: bool = False,
     environ: dict[str, str] | None = None,
-) -> SupportResult:
+    keys: set[str] | None = None,
+) -> Gathered:
+    """Steps 1-3: check the references, read the citation sentences and fetch the cited works'
+    text (only for ``keys``, when given)."""
     checked = run_check(
         target, verify=VerifyOptions(cache_path=cache_path, offline=offline, environ=environ)
     )
     entries = {e.key: e for b in checked.bib_files for e in b.entries}
-    result = SupportResult(check=checked)
+    skipped: dict[str, str] = {}
     works: dict[str, Work] = {}
     for key, assessment in checked.verdicts.items():
+        if keys is not None and key not in keys:
+            continue
         if assessment.verdict not in CHECKABLE:
-            result.skipped[key] = f"not verified ({assessment.verdict.value})"
+            skipped[key] = f"not verified ({assessment.verdict.value})"
         elif (work := work_for(entries.get(key), assessment)) is None:
-            result.skipped[key] = "no identifier to find its text by"
+            skipped[key] = "no identifier to find its text by"
         else:
             works[key] = work
     sentences = _once(s for s in citation_sentences(load_project(target)) if s.key in works)
     evidence = asyncio.run(_fetch(works, cache_path, folder, offline=offline, environ=environ))
-    for sentence in sentences:
-        found = evidence[sentence.key]
-        result.items.append(SupportItem(sentence, judge(sentence.claim, found, verifier), found))
+    titles = {
+        key: record.title
+        for key in works
+        if (record := checked.verdicts[key].record) is not None and record.title
+    }
+    return Gathered(checked, sentences, evidence, titles, skipped)
+
+
+def run_support(
+    target: Path,
+    verifier: Verifier,
+    *,
+    cache_path: Path | None,
+    folder: Path,
+    offline: bool = False,
+    environ: dict[str, str] | None = None,
+) -> SupportResult:
+    found = gather(target, cache_path=cache_path, folder=folder, offline=offline, environ=environ)
+    result = SupportResult(skipped=found.skipped, check=found.check)
+    for sentence in found.sentences:
+        evidence = found.evidence[sentence.key]
+        judgement = judge(
+            sentence.claim, evidence, verifier,
+            name=sentence.name, title=found.titles.get(sentence.key, ""),
+        )  # fmt: skip
+        result.items.append(SupportItem(sentence, judgement, evidence))
     return result
 
 
@@ -106,7 +144,7 @@ def _once(sentences: Iterable[CitationSentence]) -> list[CitationSentence]:
 
 async def _fetch(
     works: dict[str, Work],
-    cache_path: Path,
+    cache_path: Path | None,
     folder: Path,
     *,
     offline: bool,

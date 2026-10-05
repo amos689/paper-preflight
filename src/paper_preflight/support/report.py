@@ -19,12 +19,14 @@ from paper_preflight.support.run import SupportItem, SupportResult
 REASONS = {
     "en": {
         "SUPPORTING_PASSAGE": "the cited work says so",
+        "NAME_IN_TITLE": "the citation names the cited work, and its title says so",
         "NO_TEXT": "no text of the cited work could be had",
         "ABSTRACT_ONLY": "only the abstract could be had, and it does not say so",
         "NOT_FOUND": "no passage of the accessible text says so in words close enough",
     },
     "zh": {
         "SUPPORTING_PASSAGE": "被引文献中有这样的表述",
+        "NAME_IN_TITLE": "引用处点了名，被引文献的标题里就是这个名字",
         "NO_TEXT": "无法获取被引文献的文本",
         "ABSTRACT_ONLY": "只拿到了摘要，摘要中没有这样说",
         "NOT_FOUND": "可访问的文本中没有足够接近的表述",

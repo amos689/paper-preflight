@@ -16,6 +16,7 @@ Design rules:
 from __future__ import annotations
 
 import asyncio
+import tempfile
 from pathlib import Path
 from typing import Any, Literal
 
@@ -31,12 +32,17 @@ from paper_preflight.fixes import edits, plan
 from paper_preflight.rules import RULES, describe
 from paper_preflight.tex.project import ProjectError
 
+MAX_PASSAGES = 20  # preflight_cited_passages returns at most this many passages per claim
+PASSAGE_CHARS = 1500  # and cuts each one to this length
+
 INSTRUCTIONS = """\
 paper-preflight checks the references of a LaTeX paper against real scholarly records
 (Crossref, dblp, arXiv, DataCite, OpenAlex). It never uses an LLM to judge and abstains when
 unsure. Run preflight_check before declaring a paper finished or ready to submit; fix every
 error, and ask the user about references reported as "cannot determine" instead of guessing.
 Never write a BibTeX entry from memory: get it with preflight_bib_lookup.
+To see whether a cited work supports the sentence citing it, read preflight_cited_passages and
+judge conservatively: confirm only with a quoted passage, and never call a citation wrong.
 """
 
 
@@ -86,6 +92,8 @@ def _summary(result: CheckResult) -> dict[str, Any]:
 
 def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
     root = root.resolve()
+    # cited works' text (arXiv sources, PDFs) for preflight_cited_passages, next to the cache
+    support_folder = (cache_path.parent if cache_path else Path(tempfile.gettempdir())) / "support"
     server = FastMCP("paper-preflight", instructions=INSTRUCTIONS, version=__version__)
 
     @server.tool(
@@ -242,4 +250,82 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
             "diff": "".join(edit.diff(root) for edit in file_edits),
         }
 
+    @server.tool(
+        annotations=ToolAnnotations(
+            title="Find the passages a citation rests on",
+            read_only_hint=True,
+            idempotent_hint=True,
+            open_world_hint=True,
+        )
+    )
+    async def preflight_cited_passages(
+        key: str,
+        path: str = ".",
+        max_passages: int = 8,
+        offline: bool = False,
+    ) -> dict[str, Any]:
+        """For each sentence of the paper that cites `key`: the claim it makes and the passages
+        of the cited work ranked best for that claim, for you to judge whether the work supports
+        it. The first call downloads the work's text (its arXiv source, an open-access full text
+        or PDF, or else its abstract) into the local cache.
+
+        Judge each claim conservatively. Say "confirmed" only when a passage states it (quote
+        the passage word for word) or, for a citation set right after a name such as
+        "Adam \\cite{...}", when `name_in_title` is true. Otherwise say "could not confirm",
+        with the reason: no text, only the abstract, or no passage says it. Never call a
+        citation wrong or invented on this evidence: the text may say it in other words, or be
+        only an abstract. `evidence.level` is "full_text", "abstract" or "none".
+        """
+        from paper_preflight.support.judge import name_in_title
+        from paper_preflight.support.retrieve import rank
+        from paper_preflight.support.run import gather
+
+        target = _inside(root, path)
+        try:
+            found = await asyncio.to_thread(
+                gather, target, cache_path=cache_path, folder=support_folder, offline=offline,
+                keys={key},
+            )  # fmt: skip
+        except ProjectError as error:
+            raise ToolError(str(error)) from error
+        if key not in found.check.verdicts:
+            raise ToolError(f"'{key}' is not a cited key of this paper.")
+        if key in found.skipped:
+            return {"key": key, "skipped": found.skipped[key], "citations": []}
+        evidence = found.evidence[key]
+        title = found.titles.get(key, "")
+        top = max(1, min(max_passages, MAX_PASSAGES))
+        return {
+            "key": key,
+            "title": title,
+            "evidence": {
+                "level": evidence.level,
+                "source": evidence.source,
+                "notes": list(evidence.notes),
+            },
+            "citations": [
+                {
+                    "file": _relative(root, sentence.file),
+                    "line": sentence.line,
+                    "sentence": sentence.sentence,
+                    "claim": sentence.claim,
+                    "name": sentence.name or None,
+                    "name_in_title": name_in_title(sentence.name, title),
+                    "passages": [
+                        {"index": hit.index, "text": _clip(evidence.passages[hit.index])}
+                        for hit in rank(sentence.claim, evidence.passages, top=top)
+                    ],
+                }
+                for sentence in found.sentences
+                if sentence.key == key
+            ],
+        }
+
     return server
+
+
+def _clip(text: str, limit: int = PASSAGE_CHARS) -> str:
+    """A passage cut at a word boundary to ``limit`` characters, marked with an ellipsis."""
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0] + " …"

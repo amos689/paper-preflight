@@ -38,8 +38,8 @@ class Verifier(Protocol):
 @dataclass(frozen=True)
 class Judgement:
     verdict: str  # SUPPORTED | NOT_CONFIRMED
-    reason: str  # SUPPORTING_PASSAGE, NO_TEXT, ABSTRACT_ONLY or NOT_FOUND
-    quote: str = ""  # an exact excerpt of the evidence
+    reason: str  # SUPPORTING_PASSAGE, NAME_IN_TITLE, NO_TEXT, ABSTRACT_ONLY or NOT_FOUND
+    quote: str = ""  # an exact excerpt of the evidence, or the title that names the work
     score: float = 0.0  # the best passage's score
     passage: int = -1  # the best passage's index in the evidence
 
@@ -54,6 +54,25 @@ def best_sentence(verifier: Verifier, claim: str, passage: str) -> str:
     return sentences[max(range(len(sentences)), key=scores.__getitem__)]
 
 
+_TITLE_WORD = re.compile(r"[A-Za-z0-9]+(?:[-+.][A-Za-z0-9]+)*")
+
+
+def name_in_title(name: str, title: str) -> bool:
+    """Whether the cited work's title names what the citation is set after ("Adam \\cite{x}").
+
+    An acronym or a name with inner capitals or digits ("BERT", "ImageNet", "GPT-4") counts
+    anywhere in the title, as a word. A plain capitalised word ("Adam", "Dropout") counts only as
+    the title's own name: "Adam: A Method for ...", "... (Adam)".
+    """
+    if not name or not title:
+        return False
+    if sum(c.isupper() for c in name) >= 2 or any(c.isdigit() for c in name):
+        words = _TITLE_WORD.findall(title)
+        return name in words or f"{name}s" in words  # "GELU" in "... Units (GELUs)"
+    text = " ".join(title.split())
+    return bool(re.match(re.escape(name) + r"\s*[:–—-]\s", text)) or f"({name})" in text
+
+
 def judge(
     claim: str,
     evidence: Evidence,
@@ -61,8 +80,15 @@ def judge(
     *,
     support_at: float = SUPPORT_AT,
     passages: int = PASSAGES,
+    name: str = "",
+    title: str = "",
 ) -> Judgement:
+    """A passage that scores ``support_at`` or more confirms the claim. Failing that, a citation
+    set right after a name (``name``) is confirmed when the cited work's ``title`` names it."""
+    named = name_in_title(name, title)
     if not evidence.passages:
+        if named:
+            return Judgement(SUPPORTED, "NAME_IN_TITLE", title)
         return Judgement(NOT_CONFIRMED, "NO_TEXT")
     hits = rank(claim, evidence.passages, top=passages)
     texts = [evidence.passages[h.index] for h in hits]
@@ -74,5 +100,7 @@ def judge(
         if quote not in evidence.passages[index]:
             quote = ""  # a quote is an exact excerpt of the evidence, or nothing
         return Judgement(SUPPORTED, "SUPPORTING_PASSAGE", quote, score, index)
+    if named:
+        return Judgement(SUPPORTED, "NAME_IN_TITLE", title, score)
     reason = "ABSTRACT_ONLY" if evidence.level == ABSTRACT else "NOT_FOUND"
     return Judgement(NOT_CONFIRMED, reason, score=score, passage=index)

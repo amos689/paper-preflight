@@ -33,6 +33,8 @@ GOLD = ROOT / "support_gold.toml"
 SUPPORT = ROOT / ".data" / "support"
 SCORES = SUPPORT / "scores"
 LABELS = ROOT / ".data" / "support" / "final_labels.json"
+REAL_PAPERS = ROOT / ".data" / "real_papers"  # the gold set's papers (evals/real_papers.py)
+REAL_REPORTS = ROOT / ".data" / "real_papers_reports"
 
 
 def _evidence(packet: str) -> Evidence:
@@ -101,6 +103,32 @@ def _bests(path: Path, pairs: dict[str, Any]) -> dict[str, dict[str, float]]:
     return out
 
 
+def named_by_title(pairs: dict[str, Any]) -> set[str]:
+    """Pairs the name check confirms: the citation is set right after a name the cited work's
+    title carries ("Adam \\cite{x}"). Names are read from the papers' sources and titles from
+    their check reports (evals/real_papers.py); a swapped pair's work is the other reference's."""
+    from paper_preflight.support.judge import name_in_title
+    from paper_preflight.support.sentences import citation_sentences
+    from paper_preflight.tex.project import find_main_file, load_project
+
+    found: set[str] = set()
+    for paper in sorted({p["paper"] for p in pairs.values()}):
+        folder = REAL_PAPERS / paper
+        names = {
+            (s.key, s.line): s.name
+            for s in citation_sentences(load_project(folder, main=find_main_file(folder)))
+            if s.name
+        }
+        report = json.loads((REAL_REPORTS / f"{paper}.json").read_text(encoding="utf-8"))
+        titles = {r["key"]: r["matched"]["title"] for r in report["references"] if r["matched"]}
+        for packet, pair in pairs.items():
+            name = names.get((pair["key"], pair["line"]), "") if pair["paper"] == paper else ""
+            work = pair.get("swapped") or pair["key"]
+            if name and name_in_title(name, titles.get(work, "")):
+                found.add(packet)
+    return found
+
+
 def report() -> None:
     """Evidence-finder metrics: how often "supported" is right, and how many it finds."""
     labels: dict[str, str] = json.loads(LABELS.read_text(encoding="utf-8"))
@@ -126,6 +154,20 @@ def report() -> None:
                 print(f"{at:>10} | {len(said):>4} | {strict:>9.2f} | "
                       f"{lenient / max(len(said), 1):>7.2f} | {found:>6.2f} | {share:>14.0%} | "
                       f"{wrong:>23}")  # fmt: skip
+    named = named_by_title(pairs)
+    hhem = _bests(SCORES / "hhem.json", pairs)
+    print(f"\n== the name check: {len(named)} pairs confirmed by the cited work's title")
+    for label, said in (
+        ("hhem top 4 at 0.4", {p for p, b in hhem.items() if b.get("top 4", -1.0) >= 0.4}),
+        ("... and the name check", {p for p, b in hhem.items() if b.get("top 4", -1.0) >= 0.4}
+         | named),
+    ):  # fmt: skip
+        right = sum(labels[p] == "supported" for p in said)
+        wrong = sum("swapped" in pairs[p] and labels[p] == "not_supported" for p in said)
+        print(f"{label}: said {len(said)}, right {right / max(len(said), 1):.2f}, "
+              f"supported confirmed {sum(p in said for p in supported)}/{len(supported)}, "
+              f"real confirmed {sum(p in said for p in real)}/{len(real)}, "
+              f"mis-citations confirmed {wrong}")  # fmt: skip
 
 
 def main() -> None:

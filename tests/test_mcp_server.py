@@ -44,6 +44,7 @@ async def test_tools_are_few_and_read_only(workspace: Path) -> None:
         "preflight_explain",
         "preflight_bib_lookup",
         "preflight_bib_fix",
+        "preflight_cited_passages",
     }
     for tool in tools.values():
         assert tool.annotations is not None
@@ -140,6 +141,7 @@ async def test_stdio_server_speaks_only_the_protocol(workspace: Path) -> None:
         "preflight_explain",
         "preflight_bib_lookup",
         "preflight_bib_fix",
+        "preflight_cited_passages",
     }
     assert explained.data["rule"] == "CIT001"
 
@@ -202,3 +204,27 @@ async def test_check_reports_progress(workspace: Path) -> None:
     final = [u for u in updates if u[2] and u[2].startswith("References searched by title")]
     assert final
     assert final[-1][0] == final[-1][1]  # the title search reached its total
+
+
+@pytest.mark.anyio
+async def test_cited_passages_give_each_claim_and_the_passages_for_it(
+    workspace: Path, recorded_web: FakeWeb, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr("paper_preflight.support.evidence.EPRINT_INTERVAL", 0.0)
+    data = await call(
+        workspace, "preflight_cited_passages", path="paper", key="kingma2015adam", max_passages=3
+    )
+    assert data["title"].startswith("Adam")
+    assert data["evidence"]["level"] in {"full_text", "abstract", "none"}
+    assert any(c["name"] == "Adam" and c["name_in_title"] for c in data["citations"])
+    assert all(len(c["passages"]) <= 3 and c["claim"] for c in data["citations"])
+    skipped = await call(
+        workspace, "preflight_cited_passages", path="paper", key="lindqvist2024quantum"
+    )
+    assert skipped == {
+        "key": "lindqvist2024quantum",
+        "skipped": "not verified (not_found)",
+        "citations": [],
+    }
+    with pytest.raises(ToolError, match="not a cited key"):
+        await call(workspace, "preflight_cited_passages", path="paper", key="nope")

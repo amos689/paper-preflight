@@ -102,3 +102,20 @@ def test_kinds() -> None:
     assert _kind("Attention was introduced for translation.") == "background"
     assert _kind("BERT was released in 2018.") == "background"  # a year is no result
     assert _kind("It reaches 3.2 BLEU more.") == "result"
+
+
+def test_the_name_a_citation_follows_is_kept(tmp_path: Path) -> None:
+    (tmp_path / "main.tex").write_text(
+        r"""\documentclass{article}\begin{document}
+We train with Adam~\cite{kingma} on ImageNet \cite{deng} and CIFAR-10~\citep{cifar}.
+Our model follows GPT-4 \cite{gpt4}. Prior work \cite{prior} studied this.
+Transformers \cite{vaswani} changed NLP. Results are in Table \cite{tab}.
+It uses GELU activations \cite{gelu} and the Adam optimizer \cite{adam2}.
+\end{document}""",
+        encoding="utf-8",
+    )
+    names = {s.key: s.name for s in citation_sentences(load_project(tmp_path))}
+    assert names == {
+        "kingma": "Adam", "deng": "ImageNet", "cifar": "CIFAR-10", "gpt4": "GPT-4",
+        "prior": "", "vaswani": "", "tab": "", "gelu": "GELU", "adam2": "Adam",
+    }  # fmt: skip
