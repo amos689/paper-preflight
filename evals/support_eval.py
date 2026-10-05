@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import time
 import tomllib
 from pathlib import Path
@@ -170,9 +171,82 @@ def report() -> None:
               f"mis-citations confirmed {wrong}")  # fmt: skip
 
 
+AGENT = SUPPORT / "agent"
+AGENT_SAMPLE, AGENT_SEED, AGENT_CHUNK = 100, 20261005, 25
+
+
+def agent_packets() -> None:
+    """Write what ``preflight_cited_passages`` gives an agent, for a random sample of the gold
+    set: the claim, its sentence and the cited work's 8 passages ranked for it. Agents judge
+    them by the tool's rules and write one JSON line per pair to verdicts_<chunk>.jsonl:
+    {"packet": ..., "verdict": "confirmed" | "not_confirmed", "quote": ..., "reason": ...}."""
+    from paper_preflight.mcp_server import PASSAGE_CHARS, _clip
+
+    pairs = tomllib.loads(GOLD.read_text(encoding="utf-8"))["pair"]
+    sample = random.Random(AGENT_SEED).sample(pairs, AGENT_SAMPLE)
+    AGENT.mkdir(parents=True, exist_ok=True)
+    for start in range(0, len(sample), AGENT_CHUNK):
+        lines = []
+        for pair in sample[start : start + AGENT_CHUNK]:
+            evidence = _evidence(pair["packet"])
+            hits = rank(pair["claim"], evidence.passages, top=8) if evidence.passages else []
+            lines.append(json.dumps({
+                "packet": pair["packet"], "claim": pair["claim"], "sentence": pair["sentence"],
+                "evidence_level": evidence.level,
+                "passages": [_clip(evidence.passages[h.index], PASSAGE_CHARS) for h in hits],
+            }, ensure_ascii=False))  # fmt: skip
+        out = AGENT / f"packets_{start // AGENT_CHUNK + 1}.jsonl"
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"{len(sample)} pairs in {AGENT}")
+
+
+def agent_score() -> None:
+    """How the agents' verdicts compare with the labels, like ``report`` does for a model.
+    A "confirmed" whose quote is not word for word in a passage counts as not confirmed."""
+    labels: dict[str, str] = json.loads(LABELS.read_text(encoding="utf-8"))
+    pairs = {p["packet"]: p for p in tomllib.loads(GOLD.read_text(encoding="utf-8"))["pair"]}
+    shown = {
+        item["packet"]: item
+        for path in sorted(AGENT.glob("packets_*.jsonl"))
+        for item in map(json.loads, path.read_text(encoding="utf-8").splitlines())
+    }
+    verdicts = {
+        item["packet"]: item
+        for path in sorted(AGENT.glob("verdicts_*.jsonl"))
+        for item in map(json.loads, path.read_text(encoding="utf-8").splitlines())
+        if item.get("packet") in shown
+    }
+    said, unquoted = [], 0
+    for packet, item in verdicts.items():
+        if item.get("verdict") != "confirmed":
+            continue
+        quote = " ".join(str(item.get("quote") or "").split())
+        if quote and any(quote in " ".join(p.split()) for p in shown[packet]["passages"]):
+            said.append(packet)
+        else:
+            unquoted += 1
+    real = [p for p in verdicts if "swapped" not in pairs[p]]
+    supported = [p for p in real if labels[p] == "supported"]
+    right = sum(labels[p] == "supported" for p in said)
+    lenient = sum(labels[p] in {"supported", "partially_supported"} for p in said)
+    wrong = sum("swapped" in pairs[p] and labels[p] == "not_supported" for p in said)
+    print(f"{len(verdicts)} of {len(shown)} pairs judged; {unquoted} confirmations without an "
+          f"exact quote were not counted")  # fmt: skip
+    found = sum(p in said for p in supported)
+    print(f"said confirmed {len(said)}, right {right} ({right / max(len(said), 1):.0%}), lenient "
+          f"{lenient / max(len(said), 1):.0%}; supported confirmed {found}/{len(supported)}; "
+          f"real confirmed {sum(p in said for p in real)}/{len(real)}; "
+          f"mis-citations confirmed {wrong}")  # fmt: skip
+    hhem = _bests(SCORES / "hhem.json", pairs)
+    machine = [p for p in verdicts if hhem.get(p, {}).get("top 4", -1.0) >= 0.4]
+    print(f"HHEM on the same pairs: said {len(machine)}, right "
+          f"{sum(labels[p] == 'supported' for p in machine)}, real confirmed "
+          f"{sum(p in machine for p in real)}/{len(real)}")  # fmt: skip
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("command", choices=["score", "report"])
+    parser.add_argument("command", choices=["score", "report", "agent-packets", "agent-score"])
     parser.add_argument("model", nargs="?", default="hhem")
     parser.add_argument(
         "--every-passage", action="store_true", help="score every passage of the full texts"
@@ -180,6 +254,10 @@ def main() -> None:
     args = parser.parse_args()
     if args.command == "score":
         score(args.model, args.every_passage)
+    elif args.command == "agent-packets":
+        agent_packets()
+    elif args.command == "agent-score":
+        agent_score()
     else:
         report()
 

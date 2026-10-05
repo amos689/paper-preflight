@@ -307,7 +307,9 @@ paper-preflight support path/to/paper --download-model --all
   82%–98%）。但真实引用中它只能确认大约六分之一；而得分低的引用，真是错引的还不到一半。标注集的标签
   由 AI 模型给出，不是专家标注，详见 [`evals/results/support.md`](evals/results/support.md)。
 - **也可以让你的智能体来判断。** MCP 工具 `preflight_cited_passages` 返回每句话的说法和被引文献里
-  最相关的段落，交给 Claude、Codex 等智能体按同样的规则判断；它不需要模型，也不需要 `support` 扩展。
+  最相关的段落，交给 Claude、Codex 等智能体按同样的规则判断；它不需要模型，也不需要 `support` 扩展。在标注集的 100 处
+  引用上，Claude 智能体据此确认了 39% 的真实引用（HHEM 为 9%），每一处确认至少部分成立（标签出自同一
+  系列的模型）。
 - **哪些内容会离开你的电脑**：引用句只在本地打分。发出去的只有被引文献的标识符，用来获取它们的文本；
   拿到的文本保存在本地缓存里。
 
