@@ -65,6 +65,25 @@ can confirm. Results are always reported as HALLMARK labels them, and every summ
 second table without the disputed entries, so both numbers are visible. Reports of further
 label problems are welcome as issues.
 
+## Real-world hallucinations: GPTZero's lists
+
+GPTZero published the hallucinated references it found, with its staff's confirmation: 100 in
+NeurIPS 2025 papers and 51 in ICLR 2026 submissions. `evals/gptzero.py` checks each one as the
+paper printed it, through the plain-text reader, and counts it as flagged (a warning or error),
+cannot determine, or missed (verified). The tables are not redistributed; every reference not
+flagged is reviewed in `evals/gptzero_review.toml`.
+
+```bash
+uv run python evals/gptzero.py fetch
+uv run python evals/gptzero.py run
+uv run python evals/gptzero.py report
+```
+
+0.3.0 flags 129 of the 151 (85%) and verifies none. Of the 22 it leaves undecided, 8 are
+references the plain-text reader could not take apart, 5 leave it with ambiguous candidates (4
+real titles given with invented authors, one garbled title), 4 give too little to search (short
+or garbled titles), and 5 are web pages, blogs or an unindexed workshop. Results: [`results/gptzero.md`](results/gptzero.md).
+
 ## Real papers
 
 Benchmarks perturb real entries; real `.bib` files are messier: books, theses, talks, software,
