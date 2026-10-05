@@ -1124,3 +1124,73 @@ source = "real_papers:2608.14642v1"
 key = "chow2018risk"
 expect = []
 note = "was REF013: JMLR cites 18(167) as 2018; dblp files volume 18 under 2017"
+
+[[case]]
+name = "fp-spacy2-zenodo-concept-doi"
+source = "real_papers:2608.04299v1"
+key = "spacy2"
+expect = []
+note = "was REF001: 10.5281/zenodo.1212303 is spaCy's Zenodo concept DOI, which spaCy asks to cite; DataCite gives it the latest release's title, 'explosion/spaCy: v3.7.2: Fixes for APIs and requirements'."
+
+[[case]]
+name = "fp-adult2-uci-creators-in-one-name"
+source = "real_papers:2608.04310v3"
+key = "adult_2"
+expect = []
+note = "was REF011: DataCite stores the UCI dataset's creators as one name, 'Barry Becker, Ronny Kohavi'."
+
+[[case]]
+name = "fp-online-shoppers-uci-creators-in-one-name"
+source = "real_papers:2608.04310v3"
+key = "online_shoppers_purchasing_intention_dataset_468"
+expect = []
+note = "was REF011: DataCite stores the UCI dataset's creators as one name, 'C. Sakar, Yomi Kastro'."
+
+[[case]]
+name = "fp-spambase94-uci-creators-partial"
+source = "real_papers:2608.04310v3"
+key = "spambase_94"
+expect = []
+note = "was REF011: DataCite lists two of the four creators UCI gives, as one name ('Mark Hopkins, Erik Reeber'); a dataset's deposit need not list every author."
+
+[[case]]
+name = "fp-bank-marketing-uci-creators-partial"
+source = "real_papers:2608.04310v3"
+key = "bank_marketing_222"
+expect = []
+note = "was REF011: DataCite lists two of the three creators UCI gives, as one name ('S. Moro, P. Rita')."
+
+[[case]]
+name = "fp-gama-dr4-double-escaped-entity"
+source = "real_papers:2608.04371v1"
+key = "2022MNRAS.513..439D"
+expect = []
+note = "was REF012: Crossref's title has '&amp;lt;' (escaped twice), which read as 'and lt'."
+
+[[case]]
+name = "fp-mightee-hi-double-escaped-entity"
+source = "real_papers:2608.04371v1"
+key = "2025MNRAS.544..193J"
+expect = []
+note = "was REF012: Crossref's title has '&amp;gt;' (escaped twice), which read as 'and gt'."
+
+[[case]]
+name = "fp-attardo1991-journal-code"
+source = "real_papers:2608.04311v1"
+key = "attardo1991script"
+expect = []
+note = "was REF014: Crossref's journal title for HUMOR is De Gruyter's code 'humr'."
+
+[[case]]
+name = "fp-conrad1979-lost-letter"
+source = "real_papers:2608.05697v1"
+key = "conrad1979speech"
+expect = []
+note = "was REF011: Crossref's record names 'P. Sch' + U+FFFD + 'nle', a letter lost; the entry's Schönle is right."
+
+[[case]]
+name = "fp-simplexity-github-release-title"
+source = "real_papers:2608.05230v1"
+key = "Stanford2024simplexity"
+expect = []
+note = "was REF012 and REF013: Zenodo titles the GitHub release 'tystan/simplexity: simplexity v0.1.1'; the release's year is not the software's."

@@ -444,6 +444,26 @@ def test_unrecognised_venues_naming_something_else(venue: str, recorded: str, st
     assert check_venue(venue, record).status == status
 
 
+def test_semantic_scholars_venue_counts_only_for_a_match() -> None:
+    # S2 files the ACL 2004 workshop Text Summarization Branches Out (ROUGE) under ACL
+    acl = "Annual Meeting of the Association for Computational Linguistics"
+    s2 = SourceRecord(source="s2", source_id="x", title="t", venue=acl)
+    assert check_venue("Text Summarization Branches Out", s2).status == "unknown"
+    assert check_venue("Proceedings of ACL", s2).status == "match"
+    assert check_venue("NeurIPS", s2).status == "unknown"
+    assert check_venue("NeurIPS", replace(s2, source="dblp", venue="ACL")).status == "mismatch"
+
+
+def test_software_cited_by_its_name_and_what_it_does() -> None:
+    from paper_preflight.match import check_title
+
+    record = SourceRecord(source="datacite", source_id="x", title="spaCy", work_type="software")
+    title = "spaCy: Industrial-strength Natural Language Processing in Python"
+    assert check_title(title, record).status == "match"
+    assert check_title("Gensim: Topic modelling", record).status == "mismatch"
+    assert check_title(title, replace(record, work_type="text")).status == "mismatch"
+
+
 def test_only_venue_names_are_judged() -> None:
     # a publisher or a howpublished note is not where the entry names its venue
     record = SourceRecord(source="dblp", source_id="x", title="t", venue="CVPR")
