@@ -21,7 +21,7 @@
 
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
-> **状态：v0.3，早期版本。** 最希望收到的是误报反馈：请
+> **状态：v0.4，早期版本。** 最希望收到的是误报反馈：请
 > [提交 issue](https://github.com/amos689/paper-preflight/issues)。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
@@ -29,7 +29,7 @@
 
 ```text
 $ paper-preflight check examples/demo-paper --lang zh
-paper-preflight 0.3.0 · main.tex · 12 条参考文献，12 个被引用的键
+paper-preflight 0.4.0 · main.tex · 12 条参考文献，12 个被引用的键
 
 错误    CIT001 main.tex:31
     引用键 'nonexistent2023' 未在任何参考文献文件中定义（共被引用 1 次）。
@@ -388,8 +388,10 @@ npx skills add amos689/paper-preflight
 ## 路线图
 
 - 已完成：发布到 PyPI（v0.1）；从 `.bbl`、纯文本、PDF 或 arXiv 编号读取参考文献（v0.2）；
-  实验性的引用原文查找 `support`（v0.3）
-- 下一步：查出更多目前漏掉的问题（作者列表不全、编造的会议或期刊），每一轮都用新一周的真实论文来衡量
+  实验性的引用原文查找 `support`（v0.3）；在线试用页、更多智能体可装、由智能体判断的 `support`、在已发表
+  论文的幻觉引用上实测召回（v0.4）
+- 下一步：查出更多目前漏掉的问题（真实标题配编造作者、没有标题的条目、编造的会议或期刊），每一轮都用新一周
+  的真实论文来衡量
 - 之后：中文参考文献
 
 进度见 [docs/PROGRESS.md](docs/PROGRESS.md) 和[更新日志](CHANGELOG.md)。

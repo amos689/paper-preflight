@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-05
+
+Measured in the wild, tried in the browser. On the 151 hallucinated references GPTZero found in
+NeurIPS 2025 papers and ICLR 2026 submissions, 135 are flagged and none is verified. On a
+seventh batch of real papers, collected after every fix in this release (753 references), 1.2
+false positives per 100 references (0.3.0: 1.9 on the sixth batch). New: an online demo, the
+skill in more agents, and citation support judged by your own agent.
+
 ### Added
 
 - An MCP tool, `preflight_cited_passages`: for each sentence citing a key, the claim and the
@@ -16,7 +24,6 @@ All notable changes to this project are documented here. The format follows
   \cite{deng}") when the cited work's title carries that name. On the gold set this confirms 41
   of 250 real citations instead of 31; 93% of the confirmations are right, and no mis-citation
   is confirmed.
-
 - An online demo for Hugging Face Spaces (`space/`). It takes an arXiv ID, an uploaded file
   (`.bib`, `.bbl`, `.tex`, `.txt`, `.pdf`, or a `.zip` of a LaTeX project such as Overleaf's
   source download) or pasted references, and shows the report, the suggested `.bib` fixes and
@@ -384,7 +391,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/amos689/paper-preflight/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/amos689/paper-preflight/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/amos689/paper-preflight/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/amos689/paper-preflight/compare/v0.1.2...v0.2.0
