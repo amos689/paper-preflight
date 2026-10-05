@@ -101,11 +101,11 @@ uv run python evals/real_papers.py run --batch heldout3       # check them again
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are six batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are seven batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last two are each batch as it came out:
+candidate's (main 43a5544); the last three are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -114,7 +114,8 @@ candidate's (main 43a5544); the last two are each batch as it came out:
 | `heldout2` | 2026-07-15..21 | held out for #78-#91 (3.0 as it came out); studied (#94-#98) | 983 | 55 | 46 | 4 | 5 | 0.4 |
 | `heldout3` | 2026-07-22..28 | held out for #94-#98 | 814 | 107 | 92 | 14 | 1 | 1.7 |
 | `heldout4` | 2026-07-29..08-04 | held out for 0.2.1; studied for 0.3.0 (#112-#114) | 1,005 | 88 | 66 | 19 | 3 | 1.9 |
-| `heldout5` | 2026-08-05..11 | held out for 0.3.0 | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
+| `heldout5` | 2026-08-05..11 | held out for 0.3.0; studied for 0.4.0 (#126-#128) | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
+| `heldout6` | 2026-08-12..18 | held out for 0.4.0 | 753 | 86 | 77 | 9 | 0 | 1.2 |
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
@@ -161,6 +162,20 @@ candidate's (main 43a5544); the last two are each batch as it came out:
     initials, a double surname cut short, a name in the other order, a character lost in
     Crossref (REF011);
   - and one is a journal code ('humr') Crossref gives as the journal title (REF014).
+- **On `heldout5`**, after the fixes for 0.4.0 (#126-#128), 3 of the 20 false positives are
+  left (replayed offline), and every real problem is still flagged.
+- **On `heldout6`**, 41 of the 77 real problems are published preprints. The other 36 are:
+  identifiers written so that links break (21, eleven of them arXiv IDs with Zotero's
+  " [cs]"); invented or wrong authors (9, two with no real author at all); wrong titles (3); a
+  wrong year; and two invented works. Of the 9 false positives:
+  - registry errors: Crossref's 'Probelm', dblp's 'Biopolymer', an affiliation mark inside a
+    Crossref name ('Asmussen c'), and dblp's joint workshop volume for STACOM;
+  - real works no source describes as cited: a Substack post and a technical report written as
+    papers, a database cited by its access year, an IEEE early-access year;
+  - a name written family name first without a comma ('Rouse D. M.').
+
+  15% of the references are "cannot determine". Most are in one paper whose `.bib` gives 60
+  astronomy references without titles (journal, volume and page only).
 - **A held-out batch's flags are reviewed, not used to change a rule** until its numbers are
   reported. Measuring the fixes they lead to needs a new week of papers.
 - The sources are not committed (arXiv's default licence does not allow redistribution); the
