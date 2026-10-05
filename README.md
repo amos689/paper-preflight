@@ -324,12 +324,16 @@ citations with their quotes, and `arxiv:<id>` works as a target, as it does for 
 
 - **What it says:** "confirmed", with the passage quoted word for word, or "could not
   confirm". A citation it could not confirm comes with the reason: no text, only the abstract,
-  or no passage close enough.
-- **It never calls a citation wrong.** On a gold set of 298 citations, 97% of its
-  confirmations were right [95% CI 85%, 99%]. But it confirms only about one real citation in
-  eight, and a low score pointed at a mis-citation less than half the time. The gold set's
+  or no passage close enough. A citation that only names what it cites ("Adam \cite{...}") is
+  confirmed when the cited work's title carries the name.
+- **It never calls a citation wrong.** On a gold set of 298 citations, 93% of its
+  confirmations were right [95% CI 82%, 98%]. But it confirms only about one real citation in
+  six, and a low score pointed at a mis-citation less than half the time. The gold set's
   labels were made by AI models, not experts; see
   [`evals/results/support.md`](evals/results/support.md).
+- **Or let your agent judge.** The MCP tool `preflight_cited_passages` returns each claim with
+  the cited work's best passages, for Claude, Codex or another agent to judge by the same
+  rules. It needs no model and no `support` extra.
 - **What leaves your machine:** the claims are scored locally. Only the cited works'
   identifiers go out, to fetch their text, which is then kept in the local cache.
 

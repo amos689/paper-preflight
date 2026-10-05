@@ -39,6 +39,7 @@ class CitationSentence:
     claim: str  # the part of the sentence this citation is attached to
     kind: str  # "result" | "method" | "background"
     previous: str = ""  # the sentence before, in the same paragraph (context)
+    name: str = ""  # a name the citation is set right after ("Adam \cite{x}"): what it names
 
 
 # ---------------------------------------------------------------- LaTeX to plain text
@@ -146,6 +147,18 @@ _NOUN_PLACE = re.compile(
 )
 # ... and as a sentence's subject: first in the sentence, a verb after it ("[12] shows that")
 _SENTENCE_END = re.compile(r"[.!?]['\")\]]*$")
+# A name a citation may stand right after: "Adam", "ImageNet", "GPT-4", "ResNet-50", "CIFAR-10"
+_NAME = re.compile(r"[A-Z][A-Za-z0-9]*(?:[-+.][A-Za-z0-9]+)*")
+_NOT_NAMES = frozenset(
+    "The This That These Those Our We It In On For See Table Tab Fig Figure Section Sec "
+    "Appendix Eq Equation Algorithm Alg Chapter Theorem Lemma".split()
+)
+# Words for what a name names, after it ("the Adam optimizer \cite{x}", "ImageNet dataset")
+_KINDS_OF_THING = frozenset(
+    "optimizer optimiser dataset datasets benchmark benchmarks model models activation "
+    "activations architecture algorithm method framework loss network networks corpus library "
+    "toolkit package metric score encoder decoder backbone tokenizer embeddings".split()
+)
 _LOWERCASE_NEXT = re.compile(r"[\s~]*[a-z]")
 
 _NEWCOMMAND_RE = re.compile(
@@ -227,6 +240,7 @@ def _math_text(content: str) -> str:
 class _Paragraph:
     chars: list[str] = field(default_factory=list)
     cites: list[tuple[int, CiteCommand]] = field(default_factory=list)
+    names: dict[int, str] = field(default_factory=dict)  # by citation offset
 
     def emit(self, text: str) -> None:
         for ch in text:
@@ -287,6 +301,8 @@ class _Converter:
                         or (_starts_sentence(before) and _LOWERCASE_NEXT.match(text, cite.end, end))
                     ):
                         self.current.emit(f" {CITED_WORK} ")
+                    elif name := _name_before(before):
+                        self.current.names[cite.offset] = name
                 i = cite.end
                 continue
             ch = text[i]
@@ -517,6 +533,20 @@ def _starts_sentence(before: str) -> bool:
     return not before or bool(_SENTENCE_END.search(before) and not _ends_with_abbreviation(before))
 
 
+def _name_before(before: str) -> str:
+    """The name a citation is set right after ("trained with Adam \\cite{x}"), or "": the last
+    word, or the one before a word for its kind ("GELU activations \\cite{x}"), when it is
+    capitalised, is not the first of its sentence, and is no common word."""
+    words = before.rstrip().split()
+    if len(words) >= 3 and words[-1].lower() in _KINDS_OF_THING:
+        words = words[:-1]
+    if len(words) < 2 or not _NAME.fullmatch(words[-1]) or words[-1] in _NOT_NAMES:
+        return ""
+    if _starts_sentence(" ".join(words[:-1])):
+        return ""  # the first word of a sentence is capitalised anyway
+    return words[-1]
+
+
 def _sentence_of(place: int, spans: list[tuple[int, int]], text: str) -> int:
     """The sentence a citation belongs to. One set after a sentence's full stop that is not the
     next sentence's subject ("... generalise well. \\cite{x} They ...") belongs to the sentence
@@ -546,10 +576,11 @@ def _paragraph_sentences(
         for position, command in cites:
             claim = claims.get(position, sentence)
             line, column = index.position(command.offset)
+            name = paragraph.names.get(command.offset, "")
             for key in command.keys:
                 out.append(
                     CitationSentence(
-                        key.key, path, line, column, sentence, claim, _kind(claim), previous
+                        key.key, path, line, column, sentence, claim, _kind(claim), previous, name
                     )
                 )
         previous = sentence

@@ -45,8 +45,14 @@ def test_demo_paper(recorded_web: FakeWeb, tmp_path: Path) -> None:
     assert result.skipped["devlin2019bert"] == "not verified (identifier_conflict)"
     assert result.skipped["goodfellow2016deep"] == "not verified (cannot_determine)"
     assert not checked & set(result.skipped)
-    # a verifier that is never sure confirms nothing, and accuses nobody
-    assert {item.judgement.verdict for item in result.items} == {NOT_CONFIRMED}
+    # a verifier that is never sure confirms no passage, and accuses nobody; "Adam \cite{x}" and
+    # "GELU activations \cite{y}" are confirmed by the titles of the works they cite
+    confirmed = {
+        i.citation.key: i.judgement for i in result.items if i.judgement.verdict != NOT_CONFIRMED
+    }
+    assert set(confirmed) == {"kingma2015adam", "hendrycks2016gelu"}
+    assert {j.reason for j in confirmed.values()} == {"NAME_IN_TITLE"}
+    assert confirmed["kingma2015adam"].quote.startswith("Adam: A Method")
     assert all(item.citation.claim for item in result.items)
 
 

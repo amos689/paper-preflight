@@ -8,6 +8,15 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- An MCP tool, `preflight_cited_passages`: for each sentence citing a key, the claim and the
+  cited work's passages ranked for it, for the agent itself to judge whether the work supports
+  the claim. It needs no model and no `support` extra. The skill tells the agent how to judge:
+  confirm only with a quoted passage, never call a citation wrong.
+- `support` confirms a citation set right after a name ("Adam \cite{kingma}", "ImageNet
+  \cite{deng}") when the cited work's title carries that name. On the gold set this confirms 41
+  of 250 real citations instead of 31; 93% of the confirmations are right, and no mis-citation
+  is confirmed.
+
 - An online demo for Hugging Face Spaces (`space/`). It takes an arXiv ID, an uploaded file
   (`.bib`, `.bbl`, `.tex`, `.txt`, `.pdf`, or a `.zip` of a LaTeX project such as Overleaf's
   source download) or pasted references, and shows the report, the suggested `.bib` fixes and
@@ -18,6 +27,11 @@ All notable changes to this project are documented here. The format follows
   `npx skills add amos689/paper-preflight` or `gh skill install amos689/paper-preflight
   paper-preflight`; without an MCP server, it runs the CLI. Its frontmatter now names its
   licence.
+
+### Fixed
+
+- `support` no longer stops when a cited work's text is a PDF and pypdf is not installed: the
+  work is read from its abstract, with a note to install the `pdf` extra.
 
 ## [0.3.0] - 2026-10-05
 

@@ -79,6 +79,7 @@ def test_skill_frontmatter_and_references(skill: Path) -> None:
             "preflight_explain",
             "preflight_bib_lookup",
             "preflight_bib_fix",
+            "preflight_cited_passages",
         }, tool
 
 
