@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- An online demo for Hugging Face Spaces (`space/`). It takes an arXiv ID, an uploaded file
+  (`.bib`, `.bbl`, `.tex`, `.txt`, `.pdf`, or a `.zip` of a LaTeX project such as Overleaf's
+  source download) or pasted references, and shows the report, the suggested `.bib` fixes and
+  JSON and SARIF downloads. It checks up to 300 references, deletes the files after the run and
+  holds no API keys. `.github/workflows/space.yml` publishes it on every release once the
+  `HF_SPACE` variable and `HF_TOKEN` secret are set.
 - The skill installs into Codex, Gemini CLI, GitHub Copilot, Cursor and other agents with
   `npx skills add amos689/paper-preflight` or `gh skill install amos689/paper-preflight
   paper-preflight`; without an MCP server, it runs the CLI. Its frontmatter now names its

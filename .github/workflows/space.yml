@@ -1,0 +1,59 @@
+name: Space
+
+# Publishes space/ to the Hugging Face Space named by the repository variable HF_SPACE
+# ("owner/name"), with the HF_TOKEN secret (a write token for that Space). Runs on every release,
+# after the package is on PyPI, and by hand. Without HF_SPACE it does nothing.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: space
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: vars.HF_SPACE != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Wait until PyPI serves the released version
+        id: version
+        shell: bash
+        run: |
+          version=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/paper_preflight/__init__.py)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          for attempt in $(seq 1 30); do
+            if curl -sf "https://pypi.org/pypi/paper-preflight/$version/json" > /dev/null; then
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "::error::paper-preflight $version is not on PyPI"
+          exit 1
+      - name: Pin the Space to that version
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          sed -i "s/^paper-preflight\[pdf\]==.*/paper-preflight[pdf]==$VERSION/" space/requirements.txt
+          grep -q "==$VERSION$" space/requirements.txt
+      - name: Push space/ to Hugging Face
+        shell: bash
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          cd space
+          git init -q -b main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "paper-preflight $VERSION"
+          git push -q -f "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" main
