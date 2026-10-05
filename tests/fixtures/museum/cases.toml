@@ -1194,3 +1194,31 @@ source = "real_papers:2608.05230v1"
 key = "Stanford2024simplexity"
 expect = []
 note = "was REF012 and REF013: Zenodo titles the GitHub release 'tystan/simplexity: simplexity v0.1.1'; the release's year is not the software's."
+
+[[case]]
+name = "fp-krishna2017-freddy"
+source = "real_papers:2608.04302v1"
+key = "krishna2017dense"
+expect = []
+note = "was REF011: Frederic Ren (Crossref) goes by Freddy; one person."
+
+[[case]]
+name = "fp-chen2018-english-name-and-initials"
+source = "real_papers:2608.05777v2"
+key = "chen_neural_2018"
+expect = []
+note = "was REF011: Ricky T. Q. Chen is dblp's Tian Qi Chen: an English name before the initials of the Chinese given names."
+
+[[case]]
+name = "fp-hurtado2021-double-surname"
+source = "real_papers:2608.04358v1"
+key = "hurtado2021optimizing"
+expect = []
+note = "was REF011: dblp has Alain Raymond-Saez; the entry gives the first part of his double surname."
+
+[[case]]
+name = "fp-karthikeyan2013-other-order"
+source = "real_papers:2608.05697v1"
+key = "karthikeyan2013"
+expect = []
+note = "was REF011: Crossref registers Karthikeyan Palanisamy as 'K. Palanisamy'; the entry's 'Karthikeyan, P.' is the same name in the other order."

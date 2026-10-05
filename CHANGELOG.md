@@ -45,6 +45,12 @@ All notable changes to this project are documented here. The format follows
 
   Semantic Scholar's venue no longer raises REF014: it files workshops under their conference
   (ROUGE's ACL 2004 workshop under ACL).
+- More names written another way are one person:
+  - Freddy for Frederic;
+  - an English name before the initials of two or more given names ("Ricky T. Q." for dblp's
+    Tian Qi Chen);
+  - a double surname cited by its first part ("Raymond" for Raymond-Saez);
+  - a name in the other order, with initials ("Karthikeyan, P." for Crossref's "K. Palanisamy").
 - The plain-text reader (pasted lists, `.txt` and PDFs) reads more references in full. It now
   handles:
   - authors whose first name starts with an accented capital ("Étienne Pardoux");
