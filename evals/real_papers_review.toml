@@ -2016,3 +2016,549 @@ note = "Every version of arXiv 2509.15572 is titled '... Against AI-IDE'; the en
 [finding."2607.26390v3:jimenez2023swe:REF015"]
 verdict = "correct"
 note = "The preprint appeared in ICLR (2024) (dblp records it with the same title and authors)."
+
+# heldout5 (sixth batch, 2026-08-05..11), reviewed 2026-10-05
+
+[finding."2608.04299v1:spacy2:REF001"]
+verdict = "false_positive"
+note = "10.5281/zenodo.1212303 is spaCy's Zenodo concept DOI, the one spaCy asks to cite; DataCite gives it the latest release's title ('explosion/spaCy: v3.7.2 ...')."
+
+[finding."2608.04299v1:wang2024innovative:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025) (same title and authors)."
+
+[finding."2608.04299v1:wang2024mmte:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (2024), DOI 10.18653/v1/2024.emnlp-main.634 (same title and authors)."
+
+[finding."2608.04299v1:johnson2017billion:REF015"]
+verdict = "correct"
+note = "The preprint appeared in IEEE Trans. Big Data (2021), DOI 10.1109/tbdata.2019.2921572 (same title and authors)."
+
+[finding."2608.04307v1:chen2025pdo:REF001"]
+verdict = "correct"
+note = "arXiv 2510.13907 is 'LLM Prompt Duel Optimizer' by Yuanchen Wu et al. in every version; the entry's title and first author are not."
+
+[finding."2608.04307v1:yang2024opro:REF014"]
+verdict = "correct"
+note = "'Large Language Models as Optimizers' is an ICLR 2024 paper, not NeurIPS."
+
+[finding."2608.04307v1:weerasooriya2025prorefine:REF011"]
+verdict = "correct"
+note = "ProRefine (arXiv 2506.05305) is first-authored by Deepak Pandita; Maria Liakata is not an author."
+
+[finding."2608.04307v1:wang2025pmpo:REF011"]
+verdict = "correct"
+note = "PMPO (arXiv 2505.16307) is first-authored by Chenzhuo Zhao; its Wang is Xinda Wang, not Zhe Wang."
+
+[finding."2608.04307v1:lin2004rouge:REF014"]
+verdict = "false_positive"
+note = "ROUGE appeared in the ACL 2004 workshop Text Summarization Branches Out (W04-1013), as the entry says; Semantic Scholar files the workshop under ACL."
+
+[finding."2608.04307v1:zhao2023survey:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Frontiers Comput. Sci. (2026), DOI 10.1007/s11704-026-60308-3 (same title and authors)."
+
+[finding."2608.04307v1:yi2025zera:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (2025), DOI 10.18653/v1/2025.emnlp-main.1190 (same title and authors)."
+
+[finding."2608.04311v1:zeng2024barking:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.18653/v1/2024.lrec-main.191; the paper's DOI is 10.63317/3k8trujbhctx."
+
+[finding."2608.04311v1:veisbergs1997contextual:REF003"]
+verdict = "correct"
+note = "Perspectives 5(1) has no such article; Veisbergs's essay appeared as a chapter of Delabastita (ed.), Traductio (1997). The journal, volume and pages are wrong."
+
+[finding."2608.04311v1:delabastita1996introduction:REF003"]
+verdict = "unclear"
+note = "The Translator 2(2):127-139 is Delabastita's 'Introduction' (10.1080/13556509.1996.10798970); the entry describes it instead of giving its title."
+
+[finding."2608.04311v1:wang2024innovative:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025) (same title and authors)."
+
+[finding."2608.04311v1:wang2024mmte:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (2024), DOI 10.18653/v1/2024.emnlp-main.634 (same title and authors)."
+
+[finding."2608.04311v1:attardo1991script:REF014"]
+verdict = "false_positive"
+note = "Crossref's journal title for HUMOR is the code 'humr'; the entry's journal is right."
+
+[finding."2608.04311v1:shanahan2023roleplaylargelanguagemodels:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Nat. (2023), DOI 10.1038/s41586-023-06647-8 (same title and authors)."
+
+[finding."2608.04311v1:delabastita1994:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.04311v1:Sun2022ExPUN:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (2022), DOI 10.18653/v1/2022.emnlp-main.304 (same title and authors)."
+
+[finding."2608.04310v3:Cortez2008UsingDM:REF003"]
+verdict = "false_positive"
+note = "A real FUBUTEC 2008 paper; the entry's url is its Semantic Scholar page (CorpusID 16621299), which was not asked."
+
+[finding."2608.04310v3:kiossou2026anytime:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ECML PKDD (3) (2027), DOI 10.1007/978-3-032-37664-0_18 (same title and authors)."
+
+[finding."2608.04310v3:SANTOSPEREIRA2005943:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.04310v3:bank_marketing_222:REF011"]
+verdict = "false_positive"
+note = "DataCite stores the UCI dataset's creators as one name, 'S. Moro, P. Rita', and leaves out P. Cortez, whom UCI lists."
+
+[finding."2608.04310v3:erickson2025tabarenalivingbenchmarkmachine:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025) (same title and authors)."
+
+[finding."2608.04310v3:bao2021compaslicated:REF011"]
+verdict = "correct"
+note = "The NeurIPS Datasets and Benchmarks paper lists Aaron Horowitz, not Seth A. Horowitz."
+
+[finding."2608.04310v3:online_shoppers_purchasing_intention_dataset_468:REF011"]
+verdict = "false_positive"
+note = "DataCite stores the UCI dataset's creators as one name, 'C. Sakar, Yomi Kastro'."
+
+[finding."2608.04310v3:spambase_94:REF011"]
+verdict = "false_positive"
+note = "DataCite stores the UCI dataset's creators as one name, 'Mark Hopkins, Erik Reeber', and leaves out Forman and Suermondt, whom UCI lists."
+
+[finding."2608.04310v3:arslan2025sorted:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025) (same title and authors)."
+
+[finding."2608.04310v3:adult_2:REF011"]
+verdict = "false_positive"
+note = "DataCite stores the UCI dataset's creators as one name, 'Barry Becker, Ronny Kohavi'."
+
+[finding."2608.04324v1:Khansa:2021:REF003"]
+verdict = "false_positive"
+note = "Real: 'Resource Allocation for Multi-source Multi-relay Wireless Networks: A Multi-Armed Bandit Approach' (UNet 2021, 10.1007/978-3-030-86356-2_6); the entry leaves out the subtitle."
+
+[finding."2608.04302v1:krishna2017dense:REF011"]
+verdict = "false_positive"
+note = "Frederic Ren (Crossref) goes by Freddy; one person."
+
+[finding."2608.04302v1:choi2020drama:REF011"]
+verdict = "correct"
+note = "DramaQA (AAAI 2021) is by Seongho Choi, Kyoung-Woon On, Yu-Jung Heo and others; the entry's four authors are not on it."
+
+[finding."2608.04302v1:fu2024videomme:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2025), DOI 10.1109/cvpr52734.2025.02245 (same title and authors)."
+
+[finding."2608.04302v1:wu2024longvideo:REF011"]
+verdict = "correct"
+note = "LongVideoBench (arXiv 2407.15754) is by Haoning Wu, Dongxu Li, Bei Chen and Junnan Li; five of the entry's authors are not on it."
+
+[finding."2608.04302v1:li2023mvbench:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2024), DOI 10.1109/cvpr52733.2024.02095 (same title and authors)."
+
+[finding."2608.04302v1:pini2019mvad:REF011"]
+verdict = "correct"
+note = "The MTAP article (10.1007/s11042-018-7040-z) has five authors; Costantino Grana is not one of them."
+
+[finding."2608.04302v1:yao2024minicpm:REF012"]
+verdict = "correct"
+note = "Every version of arXiv 2408.01800 says 'MLLM'; the entry spells the acronym out, which is not the title."
+
+[finding."2608.04302v1:xu2024longvu:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025) (same title and authors)."
+
+[finding."2608.04302v1:xu2024longvu:REF011"]
+verdict = "correct"
+note = "LongVU (arXiv 2410.17434) does not list Florian Schroff, Varun Jampani or Deqing Sun."
+
+[finding."2608.04302v1:li2023videochat:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Sci. China Inf. Sci. (2025), DOI 10.1007/s11432-024-4321-9 (same title and authors)."
+
+[finding."2608.04302v1:sun2019videobert:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICCV (2019), DOI 10.1109/iccv.2019.00756 (same title and authors)."
+
+[finding."2608.04302v1:lin2004rouge:REF014"]
+verdict = "false_positive"
+note = "ROUGE appeared in the ACL 2004 workshop Text Summarization Branches Out (W04-1013), as the entry says; Semantic Scholar files the workshop under ACL."
+
+[finding."2608.04302v1:lee2024nv:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025) (same title and authors)."
+
+[finding."2608.04302v1:ye2024mplugowl3:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025) (same title and authors)."
+
+[finding."2608.04302v1:tong2024gveval:REF015"]
+verdict = "correct"
+note = "The preprint appeared in AAAI (2025), DOI 10.1609/aaai.v39i7.32798 (same title and authors)."
+
+[finding."2608.04302v1:muennighoff2023mteb:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EACL (2023), DOI 10.18653/v1/2023.eacl-main.148 (same title and authors)."
+
+[finding."2608.04348v1:bahri2021scarf:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022) (same title and authors)."
+
+[finding."2608.04348v1:dwivedi2021graph:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022) (same title and authors)."
+
+[finding."2608.04348v1:codella2019skin:REF012"]
+verdict = "correct"
+note = "The title says 'International'; the entry abbreviates it to 'Int.'."
+
+[finding."2608.04348v1:xia2023combating:REF014"]
+verdict = "correct"
+note = "The paper appeared at ICCV 2023 (Crossref), not CVPR."
+
+[finding."2608.04348v1:kipf2016semi:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (Poster) (2017) (same title and authors)."
+
+[finding."2608.04349v1:esser2024sd3:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024) (same title and authors)."
+
+[finding."2608.04349v1:esser2024sd3:REF011"]
+verdict = "correct"
+note = "The SD3 paper lists Dominik Lorenz, not Lorber."
+
+[finding."2608.04349v1:salimans2022progressive:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022) (same title and authors)."
+
+[finding."2608.04349v1:yin2024dmd:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2024), DOI 10.1109/cvpr52733.2024.00632 (same title and authors)."
+
+[finding."2608.04349v1:yin2024dmd2:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2024) (same title and authors)."
+
+[finding."2608.04349v1:liu2026flow:REF013"]
+verdict = "correct"
+note = "Flow-GRPO is in NeurIPS 38, 2025 (Crossref); the entry says 2026."
+
+[finding."2608.04349v1:hu2022lora:REF011"]
+verdict = "correct"
+note = "LoRA's sixth author is Shean Wang; the entry has 'Shanen'."
+
+[finding."2608.04349v1:wu2026collectionlora:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ECCV (64) (2026), DOI 10.1007/978-3-032-37196-6_18 (same title and authors)."
+
+[finding."2608.04349v1:oquab2023dinov2:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2024) (same title and authors)."
+
+[finding."2608.04349v1:ko2025distillm:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025) (same title and authors)."
+
+[finding."2608.04349v1:shi2023recon:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2023) (same title and authors)."
+
+[finding."2608.04349v1:geva2020transformer:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (1) (2021), DOI 10.18653/v1/2021.emnlp-main.446 (same title and authors)."
+
+[finding."2608.04358v1:beaulieu2020learning:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ECAI (2020), DOI 10.3233/faia200193 (same title and authors)."
+
+[finding."2608.04358v1:tran2025contrastive:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025) (same title and authors)."
+
+[finding."2608.04358v1:jaegle2021perceiver:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022) (same title and authors)."
+
+[finding."2608.04358v1:dosovitskiy2020image:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2021) (same title and authors)."
+
+[finding."2608.04358v1:lyle2024disentangling:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CoLLAs (2024) (same title and authors)."
+
+[finding."2608.04358v1:liu2024neuroplastic:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025) (same title and authors)."
+
+[finding."2608.04358v1:miconi2020backpropamine:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (Poster) (2019) (same title and authors)."
+
+[finding."2608.04358v1:chaudhry2018efficient:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (Poster) (2019) (same title and authors)."
+
+[finding."2608.04358v1:hurtado2021optimizing:REF011"]
+verdict = "false_positive"
+note = "dblp has Alain Raymond-Saez; the entry gives the first part of his double surname."
+
+[finding."2608.04358v1:lee2024slow:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024) (same title and authors)."
+
+[finding."2608.04358v1:arani2022learning:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022) (same title and authors)."
+
+[finding."2608.04358v1:ha2016hypernetworks:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (Poster) (2017) (same title and authors)."
+
+[finding."2608.04358v1:vray2025reservoirtta:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025) (same title and authors)."
+
+[finding."2608.04384v2:parr1998dsl:REF003"]
+verdict = "correct"
+note = "No 1998 report of this title by Terence Parr can be found; his 1998 book is 'Language Translation Using PCCTS and C++'."
+
+[finding."2608.04384v2:wuwu2025pinnsagent:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025) (same title and authors)."
+
+[finding."2608.04384v2:fowler2010dsl:REF013"]
+verdict = "unclear"
+note = "Fowler's book was released in September 2010 with copyright 2011; dblp has 2011."
+
+[finding."2608.04384v2:rahman2022uno:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2023) (same title and authors)."
+
+[finding."2608.04384v2:li2025pinndarts:REF015"]
+verdict = "correct"
+note = "The preprint appeared in J. Comput. Phys. (2026), DOI 10.1016/j.jcp.2026.114954 (same title and authors)."
+
+[finding."2608.04384v2:li2025codepde:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2026) (same title and authors)."
+
+[finding."2608.05230v1:Dumuid2018:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.1177/0962280218799335; the article is 10.1177/0962280217710835."
+
+[finding."2608.05230v1:Dumuid2022a:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.1136/jech-2021-217885; the article is 10.1136/jech-2021-216686."
+
+[finding."2608.05230v1:miatke2023:REF003"]
+verdict = "correct"
+note = "No paper of this title exists; the authors' 2023 IJBNPA review is 'The association between reallocations of time and health using compositional data analysis ...' (10.1186/s12966-023-01526-x)."
+
+[finding."2608.05230v1:miatke2023:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.1186/s12966-023-01449-w."
+
+[finding."2608.05230v1:nikfarjam2024quality:REF001"]
+verdict = "correct"
+note = "10.1145/3638529.3654153 is another GECCO 2024 paper (Dumont and Riff)."
+
+[finding."2608.05230v1:schmidbauer2024guiding:REF001"]
+verdict = "correct"
+note = "10.1145/3638529.3654157 is another GECCO 2024 paper (Cook and Tumer)."
+
+[finding."2608.05230v1:nikfarjam2024use:REF001"]
+verdict = "correct"
+note = "10.1145/3643033 is another ACM article (package arrival time prediction)."
+
+[finding."2608.05230v1:DBLP:conf/eurogp/ZhangCTXBZ23:REF017"]
+verdict = "correct"
+note = "The DOI is written with a LaTeX escape."
+
+[finding."2608.05230v1:DBLP:conf/evoapps/UrquhartH13:REF017"]
+verdict = "correct"
+note = "The DOI is written with a LaTeX escape."
+
+[finding."2608.05230v1:QIN2026102240:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.05230v1:Dumuid2018:REF012"]
+verdict = "correct"
+note = "The title ends 'and sleep research'; the entry drops 'research'."
+
+[finding."2608.05230v1:Stanford2024simplexity:REF012"]
+verdict = "false_positive"
+note = "Zenodo titles a GitHub release 'tystan/simplexity: simplexity v0.1.1'; it is the R package the entry names."
+
+[finding."2608.05230v1:Stanford2024simplexity:REF013"]
+verdict = "unclear"
+note = "The DOI is v0.1.1's (2023); the entry cites v0.2.0 (2024) with it."
+
+[finding."2608.05230v1:DBLP:conf/ppsn/XieNSRDN22:REF017"]
+verdict = "correct"
+note = "The DOI is written with a LaTeX escape."
+
+[finding."2608.04827v1:hsu2008:REF003"]
+verdict = "false_positive"
+note = "Elton Hsu's lecture notes (2008) exist and are widely cited; unindexed grey literature written as an @article."
+
+[finding."2608.04827v1:nene1996:REF003"]
+verdict = "false_positive"
+note = "COIL-100 is Columbia technical report CUCS-006-96 (1996); unindexed grey literature written as an @article."
+
+[finding."2608.04827v1:hyvarinen2005estimation:REF011"]
+verdict = "correct"
+note = "The JMLR paper is by Aapo Hyvärinen alone; Peter Dayan was its editor."
+
+[finding."2608.04827v1:Rasmussen2006:REF013"]
+verdict = "unclear"
+note = "MIT Press released the book in November 2005 with copyright 2006; Crossref has 2005."
+
+[finding."2608.04827v1:song2020score:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2021) (same title and authors)."
+
+[finding."2608.04827v1:tosi2014metric:REF015"]
+verdict = "correct"
+note = "The preprint appeared in UAI (2014) (same title and authors)."
+
+[finding."2608.04827v1:jo2024generative:REF011"]
+verdict = "correct"
+note = "The ICML 2024 paper is by Jaehyeong Jo and Sung Ju Hwang; Minseok Jo and Jihun Ha are not its authors."
+
+[finding."2608.04827v1:jo2024generative:REF014"]
+verdict = "correct"
+note = "The paper appeared at ICML 2024, not AISTATS."
+
+[finding."2608.05697v1:vanegas2019piezoresistive:REF011"]
+verdict = "correct"
+note = "The Journal of Sensors article lists Erik Vanegas, not Edwin."
+
+[finding."2608.05697v1:karthikeyan2013:REF011"]
+verdict = "false_positive"
+note = "Crossref registers Karthikeyan Palanisamy as 'K. Palanisamy'; the entry's 'Karthikeyan, P.' is the same name in the other order."
+
+[finding."2608.05697v1:zangroniz2017:REF011"]
+verdict = "correct"
+note = "Sensors 17, 2324 lists Roberto Zangróniz, not Rafael."
+
+[finding."2608.05697v1:cho2017deepbreath:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ACII (2017), DOI 10.1109/acii.2017.8273639 (same title and authors)."
+
+[finding."2608.05697v1:conrad1979speech:REF011"]
+verdict = "false_positive"
+note = "Crossref's record has 'P. Sch�nle' (a character lost); the entry's Schönle is right."
+
+[finding."2608.05777v2:chen_neural_2018:REF011"]
+verdict = "false_positive"
+note = "Ricky T. Q. Chen is dblp's Tian Qi Chen; the English name with the initials of the Chinese one."
+
+[finding."2608.04369v1:ZhangFranz2020PRL:REF012"]
+verdict = "correct"
+note = "The title ends 'in Electric Circuits'; the entry drops it."
+
+[finding."2608.04369v1:Regensburger2016:REF011"]
+verdict = "correct"
+note = "Nature 488, 167 lists Christoph Bersch and Georgy Onishchukov; the entry has Christian and Grigory."
+
+[finding."2608.04369v1:Betz2012PRL:REF011"]
+verdict = "correct"
+note = "PRL 109, 056805 is 'Hot Electron Cooling by Acoustic Phonons in Graphene' by other co-authors; the entry's title and authors are those of Betz et al., Nature Physics 2013."
+
+[finding."2608.04369v1:Betz2012PRL:REF012"]
+verdict = "correct"
+note = "PRL 109, 056805 is 'Hot Electron Cooling by Acoustic Phonons in Graphene'; 'Supercollision Cooling in Undoped Graphene' is the Nature Physics paper."
+
+[finding."2608.04481v1:Preskill-2025:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.1145/372315; the article is 10.1145/3723153 (a digit is missing)."
+
+[finding."2608.04481v1:Bauer-2020:REF017"]
+verdict = "correct"
+note = "The doi field lacks the prefix 10.1021/."
+
+[finding."2608.04481v1:Jensen-1988:REF012"]
+verdict = "correct"
+note = "The title ends 'calculations'; the entry has 'calculation'."
+
+[finding."2608.04481v1:Merz-2026:REF011"]
+verdict = "correct"
+note = "arXiv 2605.01138 lists Seetharami Seelam; the entry has 'S. Seelan'."
+
+[finding."2608.04481v1:Babbush-2018:REF012"]
+verdict = "correct"
+note = "The title says 'Quantum Circuits'; the entry has 'circuit'."
+
+[finding."2608.04481v1:Rubin-2023:REF012"]
+verdict = "correct"
+note = "The title is 'Fault-Tolerant Quantum Simulation ... Using ...'; the entry has 'simulations' and 'usign'."
+
+[finding."2608.04481v1:Bellonzi-2024:REF017"]
+verdict = "correct"
+note = "'10.48550.arXiv.2406.06335' is not a DOI (dots for the slash)."
+
+[finding."2608.04481v1:Rowe-2026:REF012"]
+verdict = "correct"
+note = "The entry's title misspells 'quantum' as 'qantum'."
+
+[finding."2608.04481v1:Rowe-2026:REF017"]
+verdict = "correct"
+note = "'10.48550.arXiv.2604.14921' is not a DOI (dots for the slash)."
+
+[finding."2608.04481v1:STO-3G:REF012"]
+verdict = "correct"
+note = "The title says 'Gaussian Expansions'; the entry has 'expansion'."
+
+[finding."2608.04481v1:block2:REF011"]
+verdict = "correct"
+note = "Block2's fourth author is Zhi-Hao Cui; the entry has 'Chui'."
+
+[finding."2608.04362v1:benitez-llambay_examining_2024:REF002"]
+verdict = "correct"
+note = "doi.org has no 10.3847/1538-4357/ad6549; the article is 10.3847/1538-4357/ad65d9."
+
+[finding."2608.04371v1:2019AJ....157..168D:REF011"]
+verdict = "unclear"
+note = "arXiv 1804.08657 lists Sasha Safonova; Crossref's record of the AJ article (161 authors) does not."
+
+[finding."2608.04371v1:2022MNRAS.513..439D:REF012"]
+verdict = "false_positive"
+note = "Crossref's title keeps the HTML entity '&lt;' undecoded; the entry's '<' is right."
+
+[finding."2608.04371v1:2016mks..confE...6J:REF013"]
+verdict = "unclear"
+note = "A PoS paper from the 2016 MeerKAT conference: ADS dates it 2016, Crossref 2018 (the proceedings' publication)."
+
+[finding."2608.04371v1:2025MNRAS.544..193J:REF012"]
+verdict = "false_positive"
+note = "Crossref's title keeps the HTML entity '&gt;' undecoded; the entry's '>' is right."
+
+[finding."2608.04371v1:2011IJMPD..20..989N:REF012"]
+verdict = "correct"
+note = "The title is 'The Five-Hundred-Meter Aperture ...'; the entry (as ADS has it) drops 'Meter'."
+
+[finding."2608.04336v1:chen2023frugalgpt:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2024) (same title and authors)."
+
+[finding."2608.04336v1:ga4gc2025:REF017"]
+verdict = "correct"
+note = "The DOI is written with a LaTeX escape."
+
+[finding."2608.04336v1:li2025temperature:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.04336v1:zhang2026dgm:REF013"]
+verdict = "unclear"
+note = "The entry cites ICLR 2026 (OpenReview) and says 2026; it was bound to a 2025 reprint in another journal (10.70777/si.v2i3.15063). The ICLR acceptance could not be checked (OpenReview's API asks for a challenge)."
