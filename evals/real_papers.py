@@ -14,14 +14,15 @@ is kept when its source contains a main .tex file and a .bib file with at least 
 entries, until the category's quota is met. Sources go to evals/.data/real_papers/ and are never
 committed (arXiv's default licence does not allow redistribution); the manifest lists the IDs.
 
-There are five batches, each a later week. "dev" (papers first submitted 2026-07-01..07) was
+There are six batches, each a later week. "dev" (papers first submitted 2026-07-01..07) was
 used to find false positives and fix them for 0.1.1. "heldout" (2026-07-08..14) was collected
 after those fixes and reported as it came out for 0.1.1; its false positives were then studied
 and fixed for 0.1.2. "heldout2" (2026-07-15..21) was collected after those fixes and reported as
 it came out; its false positives missed 0.1.2's gate and were studied and fixed in turn.
 "heldout3" (2026-07-22..28) measured those fixes for 0.1.2; its false positives were then
-studied and fixed for 0.2.1, which "heldout4" (2026-07-29..08-04) measures. Numbers on a batch
-whose flags were studied are optimistic.
+studied and fixed for 0.2.1, which "heldout4" (2026-07-29..08-04) measures; its false positives
+were fixed for 0.3.0, which "heldout5" (2026-08-05..11) measures. Numbers on a batch whose flags
+were studied are optimistic.
 
 Every flagged reference is then reviewed by hand against the registries and recorded in
 evals/real_papers_review.toml as "correct" (the entry really is wrong), "false_positive" (the
@@ -65,7 +66,8 @@ BATCHES = {
     "heldout": ("202607080000", "202607142359"),  # held out for 0.1.1, then studied for 0.1.2
     "heldout2": ("202607150000", "202607212359"),  # held out for 0.1.2, then studied for it
     "heldout3": ("202607220000", "202607282359"),  # held out for 0.1.2's fixes, then studied
-    "heldout4": ("202607290000", "202608042359"),  # held out for 0.2.1's fixes
+    "heldout4": ("202607290000", "202608042359"),  # held out for 0.2.1's fixes, then studied
+    "heldout5": ("202608050000", "202608112359"),  # held out for 0.3.0's fixes
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,

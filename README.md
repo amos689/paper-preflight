@@ -94,25 +94,24 @@ head-to-head with published tools, and a public benchmark.
 
 ### On real papers
 
-The bibliographies of 20 arXiv papers from the turn of July and August 2026 (cs, stat, q-bio,
-quant-ph and astro-ph), chosen mechanically and collected only after every fix in this release,
-with every warning and error reviewed by hand:
+The bibliographies of 20 arXiv papers first submitted in August 2026 (cs, stat, q-bio, quant-ph
+and astro-ph), chosen mechanically and collected only after every fix in this release, with every
+warning and error reviewed by hand:
 
 | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|
-| 1,005 | 88 | 66 | 19 | 3 | 1.9 |
+| 1,043 | 136 | 109 | 20 | 7 | 1.9 |
 
-- **Fewer than one false alarm per paper** (50 references on average), against 66 real
-  problems: 31 errors in the entries (invented co-authors and given names, wrong or malformed
-  DOIs, wrong titles and years) and 35 cited preprints that have since been published.
-- **The false alarms are mostly names written another way** (initials without dots, a
-  generational suffix, a nickname or an English name) **and records the registries got wrong**
-  (a registry listing 3 of 10 authors, a garbled title). The previous release has 2.1 on
-  these papers.
-- **Four earlier batches of 20 papers were used to find false positives,** each first measured
+- **Fewer than one false alarm per paper** (52 references on average), against 109 real
+  problems: 56 errors in the entries (invented co-authors and given names, wrong or malformed
+  DOIs, wrong titles, years and venues) and 53 cited preprints that have since been published.
+- **The false alarms are mostly registry records in odd forms** (dataset creators stored as one
+  name, HTML entities left in titles, software DOIs titled after their latest release) **and
+  names written another way** (a nickname, an English name, a double surname cut short). The
+  1.5 aimed for is not reached; these are the next fixes.
+- **Five earlier batches of 20 papers were used to find false positives,** each first measured
   as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; 0.1.2 before its last fixes: 3.0;
-  0.1.2: 1.7). On all four, this release has 0.1 to 0.7. Details in
-  [`evals/README.md`](evals/README.md#real-papers).
+  0.1.2: 1.7; 0.2.1: 1.9). Details in [`evals/README.md`](evals/README.md#real-papers).
 
 ### Next to other tools
 
