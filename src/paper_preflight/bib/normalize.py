@@ -13,11 +13,15 @@ _SPECIAL_LETTERS = str.maketrans(
 _WORD_RE = re.compile(r"\w+", re.UNICODE)
 
 
+def deaccent(text: str) -> str:
+    """Strip diacritics and fold special letters, keeping the case ("Étienne" is "Etienne")."""
+    text = unicodedata.normalize("NFKD", text.translate(_SPECIAL_LETTERS))
+    return unicodedata.normalize("NFKC", "".join(c for c in text if not unicodedata.combining(c)))
+
+
 def fold(text: str) -> str:
     """Lower-case, strip diacritics and fold special letters; CJK characters pass through."""
-    text = unicodedata.normalize("NFKD", text.translate(_SPECIAL_LETTERS))
-    text = "".join(ch for ch in text if not unicodedata.combining(ch))
-    return unicodedata.normalize("NFKC", text).casefold()
+    return deaccent(text).casefold()
 
 
 def title_key(title: str) -> str:

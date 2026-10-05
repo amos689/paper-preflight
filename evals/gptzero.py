@@ -29,6 +29,7 @@ import csv
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import tomllib
 from collections import Counter
@@ -37,6 +38,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from real_papers import source_commit
 
 from paper_preflight import __version__
 from paper_preflight.check import VerifyOptions, run_check
@@ -155,12 +157,23 @@ def outcomes(name: str) -> list[dict[str, Any]]:
     return found
 
 
+def _code() -> str:
+    """The commit the report is made with, and whether src/ has changes not committed yet."""
+    command = ["git", "status", "--porcelain", "--", "src"]
+    try:
+        changed = subprocess.run(command, capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        changed = ""
+    note = " with changes to src/ not yet committed" if changed else ""
+    return f"commit {source_commit()}{note}"
+
+
 def report(args: argparse.Namespace) -> None:
     review = tomllib.loads(REVIEW.read_text(encoding="utf-8")) if REVIEW.exists() else {}
     lines = [
         "# Real-world recall: GPTZero's hallucinated references (NeurIPS 2025, ICLR 2026)",
         "",
-        f"- **Tool:** paper-preflight {__version__}",
+        f"- **Tool:** paper-preflight {__version__} ({_code()})",
         "- **Data:** the references GPTZero's staff confirmed as hallucinated: 100 in NeurIPS 2025 "
         "papers, 51 in ICLR 2026 submissions ([NeurIPS](https://gptzero.me/news/neurips/), "
         "[ICLR](https://gptzero.me/news/iclr-2026/)). The tables are not redistributed; rows are "

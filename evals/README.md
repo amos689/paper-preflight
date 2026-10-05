@@ -79,10 +79,11 @@ uv run python evals/gptzero.py run
 uv run python evals/gptzero.py report
 ```
 
-0.3.0 flags 129 of the 151 (85%) and verifies none. Of the 22 it leaves undecided, 8 are
-references the plain-text reader could not take apart, 5 leave it with ambiguous candidates (4
-real titles given with invented authors, one garbled title), 4 give too little to search (short
-or garbled titles), and 5 are web pages, blogs or an unindexed workshop. Results: [`results/gptzero.md`](results/gptzero.md).
+0.3.0 flagged 129 of the 151 (85%). With the plain-text reader's fixes (#125) it flags 135 (89%),
+and verifies none. Of the 16 it leaves undecided, 2 are references the plain-text reader still
+cannot take apart (a garbled author list, a lower-case name part), 5 leave it with ambiguous
+candidates (4 real titles given with invented authors, one garbled title), 4 give too little to
+search (short or garbled titles), and 5 are web pages, blogs or an unindexed workshop. Results: [`results/gptzero.md`](results/gptzero.md).
 
 ## Real papers
 

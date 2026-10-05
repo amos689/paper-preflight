@@ -188,6 +188,43 @@ def test_a_word_broken_at_a_line_end_is_joined() -> None:
         ("ANSI/NISO Z39.96-2024: JATS: Journal Article Tag Suite (2024).",
          {"title": "ANSI/NISO Z39.96-2024: JATS: Journal Article Tag Suite", "year": "2024",
           "author": None}),
+        # an accented capital starts a name
+        ("Étienne Pardoux and Alexander Yu Veretennikov. Poisson equation for multiscale "
+         "diffusions. Journal of Mathematical Sciences, 111(3):3713-3719, 2002.",
+         {"author": "Étienne Pardoux and Alexander Yu Veretennikov",
+          "title": "Poisson equation for multiscale diffusions",
+          "journal": "Journal of Mathematical Sciences", "type": "article"}),
+        # a title that asks runs into its journal, and math left in from a PDF
+        ("W L Chan and R O Shelton. Can machine learning improve delta hedging? Journal of "
+         "Derivatives, $9(1): 39-56,2001$.",
+         {"title": "Can machine learning improve delta hedging?",
+          "journal": "Journal of Derivatives", "year": "2001"}),
+        # ... but a question with a subtitle stays one title
+        ("M. J. Simpson and M. J. Plank. When Do Trajectories Matter? Identifiability Analysis "
+         "for Stochastic Transport Phenomena. 2026. arXiv:2604.15598.",
+         {"title": "When Do Trajectories Matter? Identifiability Analysis for Stochastic "
+                   "Transport Phenomena", "journal": None}),
+        # a venue that starts with its edition or its year
+        ("K. A. Sankararaman and F. Bromberg. The impact of neural network overparameterization "
+         "on gradient confusion. In 37th International Conference on Machine Learning (ICML), "
+         "pages 8469-8479, 2020.",
+         {"booktitle": "37th International Conference on Machine Learning (ICML)",
+          "type": "inproceedings"}),
+        ("Tom Eccles, Jeffrey Tweedale, and Yvette Izza. Let's pretend: A study of negotiation "
+         "with autonomous agents. In 2009 IEEE/WIC/ACM International Joint Conference on Web "
+         "Intelligence and Intelligent Agent Technology (WI-IAT), volume 3, pp. 449-452. IEEE, "
+         "2009.",
+         {"booktitle": "2009 IEEE/WIC/ACM International Joint Conference on Web Intelligence "
+                       "and Intelligent Agent Technology (WI-IAT)"}),
+        # no venue, the year after the title, and an arXiv URL a PDF broke at the slash
+        ("Robert Huben, Logan Riggs, and Lee Sharkey. Sparse autoencoders can interpret randomly "
+         "initialized transformers, 2025. URL https://arxiv.org/ abs/2501.17727.",
+         {"title": "Sparse autoencoders can interpret randomly initialized transformers",
+          "year": "2025", "eprint": "2501.17727"}),
+        # numbered twice
+        ("[3] K. Arnold, J. Smith, and A. Doe. Variability in triage decision making. "
+         "Resuscitation, 85:12341239, 2014.",
+         {"author": "K. Arnold and J. Smith and A. Doe", "journal": "Resuscitation"}),
     ],
 )  # fmt: skip
 def test_reference_styles(reference: str, expected: dict[str, str | None]) -> None:
