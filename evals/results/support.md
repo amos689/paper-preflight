@@ -89,6 +89,19 @@ On the gold set, 48 pairs follow a name. The check confirms 11 of them, all real
 
 The names are read from the papers' sources and the titles from their check reports, so this measures the check as `support` runs it (`evals/support_eval.py report`).
 
+## An agent as the judge
+
+`preflight_cited_passages` hands the claim and the cited work's 8 best passages to the user's own agent, with the same rules: confirm only with a quote copied word for word, never call a citation wrong. To see how an agent does, 100 gold-set pairs were drawn at random (seed 20261005). Four Claude Sonnet agents judged them, 25 each, from exactly what the tool returns (`evals/support_eval.py agent-packets`, then `agent-score`). A confirmation counts only if its quote is in a passage; all 37 quotes were.
+
+| On the same 100 pairs | Said "supported" | Labelled supported [95% CI] | Supported or partially | Supported citations confirmed | Real citations confirmed | Mis-citations confirmed |
+|---|---|---|---|---|---|---|
+| HHEM, top 4, 0.4 | 9 | 9 (100%) | 9 | 8/46 | 8/93 (9%) | 0 |
+| An agent, top 8 passages | 37 | 32 (86%) [72%, 94%] | 37 (100%) | 31/46 | 36/93 (39%) | 0 |
+
+The agent confirms four times as many real citations. Its five confirmations not labelled supported are all labelled partially supported: it confirmed the part the citation names (a method, a dataset) and set the rest of the sentence aside, as its rules allow. One swapped pair was confirmed; the swapped-in work happens to say the same thing, and its label is supported.
+
+**Read this with care.** The labels were made by Claude models, and the judge is one too, so their agreement is likely higher than an independent judge's would be. The sample is small. This shows what the tool's output lets an agent do, not how accurate any agent is.
+
 ## Why it never says "not supported"
 
 A low best score is weak evidence of a mis-citation. The table counts full-text pairs whose best passage scores below a threshold, and how many of them are labelled not supported. The 48 swapped citations are included, so mis-citations are far more common here than in real papers.
@@ -127,6 +140,8 @@ uv run python evals/support_labels.py final          # final labels from the ann
 uv run python evals/support_eval.py score hhem       # also factcg, minicheck
 uv run python evals/support_eval.py score hhem --every-passage
 uv run python evals/support_eval.py report
+uv run python evals/support_eval.py agent-packets     # then agents write verdicts_<n>.jsonl
+uv run python evals/support_eval.py agent-score
 ```
 
 The annotators' label files and the cited works' text stay out of the repository (`evals/.data/`). The gold set keeps claims, labels and identifiers only.

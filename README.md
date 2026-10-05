@@ -333,7 +333,9 @@ citations with their quotes, and `arxiv:<id>` works as a target, as it does for 
   [`evals/results/support.md`](evals/results/support.md).
 - **Or let your agent judge.** The MCP tool `preflight_cited_passages` returns each claim with
   the cited work's best passages, for Claude, Codex or another agent to judge by the same
-  rules. It needs no model and no `support` extra.
+  rules. It needs no model and no `support` extra. On 100 gold-set citations, a Claude agent
+  judging from it confirmed 39% of the real ones, against HHEM's 9%, and every confirmation
+  was at least partially supported (the labels come from the same model family).
 - **What leaves your machine:** the claims are scored locally. Only the cited works'
   identifiers go out, to fetch their text, which is then kept in the local cache.
 
