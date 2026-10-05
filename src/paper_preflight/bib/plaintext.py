@@ -24,6 +24,7 @@ from itertools import pairwise
 from pathlib import Path
 
 from paper_preflight.bib import bbl
+from paper_preflight.bib.normalize import deaccent
 from paper_preflight.bib.parse import BibFile, BibIssue, parse_bib_text
 from paper_preflight.textio import read_text
 
@@ -67,6 +68,15 @@ _SENTENCE = re.compile(
     r"(?<!\b[A-Z])(?<!\bSt)(?<!\bJr)\.\s+(?=[A-Z0-9“\"(]|arXiv|pp?\.\s*\d)|(?<=\bal)\.\s+"
     r"|(?<=[a-z])\.(?=[A-Z][a-z])"
 )
+# a title that asks runs into its venue: "Can machine learning improve delta hedging? Journal of
+# Derivatives, 9(1)"; a "?" inside names is a lost letter ("Kamile? Luko?iut?e")
+_ASKING_TITLE = re.compile(r"^(?P<title>.{8,}?[a-z][?!])\s+(?P<venue>[A-Z].*)$")
+_VOLUME = re.compile(r"\d+\s*\(\d+\)|,\s*\d")  # "9(1)", ", 12"
+_BROKEN_HOST = re.compile(r"\b((?:arxiv|doi)\.org/)\s+(?=\S)", re.I)
+_SECOND_NUMBER = re.compile(r"^\[\d{1,4}\]\s*")
+_TITLE_YEAR = re.compile(r"^(?P<title>.{8,}?),\s*(?P<year>(?:1[89]|20)\d\d)[a-z]?$")
+# a venue may start with its edition or year: "37th International Conference ...", "2009 IEEE ..."
+_EDITION = re.compile(r"^(?:\d+(?:st|nd|rd|th)|(?:1[89]|20)\d\d)\s+(?=[A-Z])")
 _IN = re.compile(r"^In(?::|\s)\s*", re.I)
 _EDITORS = re.compile(r"^.*?\((?:eds?|editors?)\.?\),?\s*", re.I)
 _LANGUAGE = re.compile(r"^[a-z]{2}\.\s+")  # biblatex's "langid": ". en. In: ..."
@@ -257,9 +267,11 @@ def _unmarked_starts(lines: list[str], wrapped: bool = False) -> list[int]:
 def parse_reference(text: str) -> tuple[str, dict[str, str]]:
     """The entry type and fields of one formatted reference."""
     fields: dict[str, str] = {}
+    text = _BROKEN_HOST.sub(r"\1", text)  # "https://arxiv.org/ abs/2501.17727", from a PDF
     _identifiers(text, fields)
     plain = _VISITED.sub("", _NUMBERS.sub("", _LINK.sub("", text)))
-    plain = re.sub(r"\s+", " ", plain).strip(" .,;")
+    plain = re.sub(r"\s+", " ", plain.replace("$", "")).strip(" .,;")  # "$9(1): 39-56,2001$"
+    plain = _SECOND_NUMBER.sub("", plain)  # "[3] K. Arnold, ...", numbered twice
     entry_type = "misc"
     readers = (_quoted, _apa, _aas, _family_initials, _vancouver, _year_after, _sentences)
     for read in (*readers, _numbered):
@@ -274,6 +286,20 @@ def parse_reference(text: str) -> tuple[str, dict[str, str]]:
                 if value and key not in fields:
                     fields[key] = value
             break
+    asking = _ASKING_TITLE.match(fields.get("title", ""))
+    if asking and not {"journal", "booktitle"} & set(fields):
+        venue_type, venue = _venue(asking["venue"])
+        name = venue.get("journal") or venue.get("booktitle") or ""
+        if (
+            venue_type in {"article", "inproceedings"}  # and no subtitle: "Matter? Identifiability"
+            and (_JOURNAL.search(name) or _MEETING.search(name) or _VOLUME.search(asking["venue"]))
+        ):
+            entry_type, fields["title"] = venue_type, asking["title"]
+            fields.update(venue)
+    dated = _TITLE_YEAR.match(fields.get("title", ""))  # "Title, 2025. URL ...": no venue
+    if dated:
+        fields["title"] = dated["title"]
+        fields.setdefault("year", dated["year"])
     if "year" not in fields:
         years = _YEAR.findall(plain)
         if years:
@@ -335,7 +361,7 @@ def _venue_name(text: str) -> str | None:
             end = period.start()  # a sentence ends, not an abbreviation
             break
     name = text[:end].strip(" .,;:")
-    if len(re.findall(r"[A-Za-z]{3,}", name)) == 0 or not name[:1].isupper():
+    if len(re.findall(r"[A-Za-z]{3,}", name)) == 0 or not _EDITION.sub("", name)[:1].isupper():
         return None
     if _YEAR.fullmatch(name) or len(name.split()) > 20:
         return None
@@ -472,7 +498,7 @@ def _numbered(text: str) -> tuple[str, dict[str, str]] | None:
 
 def _looks_like_names(text: str) -> bool:
     """A list of people or one organisation: capitalised names joined by commas, "and", "&"."""
-    text = _ET_AL.sub("", text.strip())
+    text = deaccent(_ET_AL.sub("", text.strip()))  # "Étienne Pardoux"
     parts = [p.strip() for p in re.split(r",|\band\b|&", text) if p.strip()]
     if not parts or len(text) > 3000:
         return False

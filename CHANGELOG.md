@@ -30,6 +30,17 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- The plain-text reader (pasted lists, `.txt` and PDFs) reads more references in full. It now
+  handles:
+  - authors whose first name starts with an accented capital ("Étienne Pardoux");
+  - a title that ends in a question mark and runs into its journal;
+  - venues that start with an edition or a year ("In 37th International Conference ...",
+    "In 2009 IEEE/WIC/ACM ...");
+  - a year after a title with no venue ("Title, 2025.");
+  - an arXiv link broken by a space after the slash, LaTeX dollar signs, and a reference
+    numbered twice.
+
+  On GPTZero's 151 confirmed hallucinated references, 135 are flagged instead of 129.
 - `support` no longer stops when a cited work's text is a PDF and pypdf is not installed: the
   work is read from its abstract, with a note to install the `pdf` extra.
 
