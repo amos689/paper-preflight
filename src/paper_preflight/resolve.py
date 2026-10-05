@@ -23,10 +23,11 @@ from typing import TypeVar, cast
 import httpx
 
 from paper_preflight.bib.ids import Identifier, extract_identifiers
-from paper_preflight.bib.normalize import word_count
+from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry
 from paper_preflight.cache import Cache
 from paper_preflight.match import (
+    MIN_PREFIX_CHARS,
     TITLE_VARIANT,
     EntryInfo,
     check_authors,
@@ -55,6 +56,7 @@ from paper_preflight.sources.record import SourceRecord
 T = TypeVar("T")
 
 CS_ENTRY_TYPES = {"inproceedings", "conference", "proceedings"}
+SEARCH_CLOSE = 0.85  # a search result this close to the entry's title is compared in full
 GREY_TYPES = {"book", "booklet", "manual", "misc", "online", "software", "techreport", "report",
               "phdthesis", "mastersthesis", "thesis", "unpublished", "electronic", "standard",
               "patent", "dataset"}  # fmt: skip
@@ -562,6 +564,19 @@ async def _registered_years(items: list[Evidence], sources: Sources) -> None:
             item.candidates.append(record)
 
 
+def _close_title(entry: str | None, found: str) -> bool:
+    """A search result worth comparing in full: a similar title, or the entry's title with a
+    subtitle the entry leaves out ("Resource Allocation for Multi-source Multi-relay Wireless
+    Networks: A Multi-Armed Bandit Approach", UNet 2021, cited without its subtitle)."""
+    entry = entry or ""
+    if title_score(entry, found) >= SEARCH_CLOSE:
+        return True
+    # only that way round: a result that is the entry's title without its subtitle is often
+    # another work (Robinson et al. 2011 found as a shorter title, and lost its rescue)
+    head = title_key(re.split(r":| - ", found, maxsplit=1)[0])
+    return len(head) >= MIN_PREFIX_CHARS and head == title_key(entry)
+
+
 async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
     """dblp's title search for all entries at once: ten prefixes to a query, fifty records."""
     if not items:
@@ -587,7 +602,7 @@ async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
             if "dblp" in item.unavailable:
                 continue  # not answered: no "no such work" either
             candidates = found.get(low, [])
-            close = [p for p, t in candidates if title_score(item.info.title, t) >= 0.85][:5]
+            close = [p for p, t in candidates if _close_title(item.info.title, t)][:5]
             if not close:
                 item.negative.add("dblp")
             for pub in close:
@@ -621,7 +636,7 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
     )
     if records is None:
         return
-    close = [r for r in records if title_score(info.title, r.title) >= 0.85]
+    close = [r for r in records if _close_title(info.title, r.title)]
     if close:
         item.candidates.extend(close)
     else:
@@ -636,7 +651,7 @@ async def _search_s2(item: Evidence, client: SourceClient, api_key: str) -> None
         item.optional_unavailable.setdefault(error.source, error.reason.value)
         return
     item.searched.add("s2")
-    if record is not None and title_score(item.info.title, record.title) >= 0.85:
+    if record is not None and _close_title(item.info.title, record.title):
         item.candidates.append(record)
     else:
         item.negative.add("s2")

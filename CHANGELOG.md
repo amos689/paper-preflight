@@ -45,6 +45,10 @@ All notable changes to this project are documented here. The format follows
 
   Semantic Scholar's venue no longer raises REF014: it files workshops under their conference
   (ROUGE's ACL 2004 workshop under ACL).
+- A work cited without its subtitle is found: a search result that is the entry's title plus
+  a subtitle is compared in full, however different the two titles look as strings ("Resource
+  Allocation for Multi-source Multi-relay Wireless Networks", cited without ": A Multi-Armed
+  Bandit Approach", was reported as not found).
 - More names written another way are one person:
   - Freddy for Frederic;
   - an English name before the initials of two or more given names ("Ricky T. Q." for dblp's

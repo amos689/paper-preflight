@@ -1222,3 +1222,11 @@ source = "real_papers:2608.05697v1"
 key = "karthikeyan2013"
 expect = []
 note = "was REF011: Crossref registers Karthikeyan Palanisamy as 'K. Palanisamy'; the entry's 'Karthikeyan, P.' is the same name in the other order."
+
+[[case]]
+name = "fp-khansa2021-subtitle-left-out"
+source = "real_papers:2608.04324v1"
+key = "Khansa:2021"
+expect = []
+note = "was REF003: the UNet 2021 paper is 'Resource Allocation for Multi-source Multi-relay Wireless Networks: A Multi-Armed Bandit Approach'; the entry leaves out the subtitle, and search results below 0.85 title similarity were dropped before the subtitle rule could see them."
+
