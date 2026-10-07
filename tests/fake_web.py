@@ -111,6 +111,8 @@ class FakeWeb:
         for doi in dois:
             if doi.lower().startswith("10.48550/"):
                 answers.append({"DOI": doi, "RA": "DataCite"})
+            elif ".cnki." in doi.lower():  # CNKI's DOIs: 10.13328/j.cnki.jos.006074
+                answers.append({"DOI": doi, "RA": "CNKI"})
             elif doi.lower() in CROSSREF_ITEMS:
                 answers.append({"DOI": doi, "RA": "Crossref"})
             else:
