@@ -45,6 +45,13 @@ by "(remove or correct the field)" or "(correct the arXiv ID)", even at the safe
 fields are now left for a person to correct. An arXiv ID exported with its subject class
 ("2311.07911 [cs]", as Zotero writes it) gets the bare ID as its fix.
 
+### Changed
+
+- A work found under two records whose titles differ only in hyphens or spaces (a preprint's
+  "Trade-off", its proceedings' "Tradeoff") is one work, not two: invented authors on a real
+  title are reported (REF010) instead of abstained on as ambiguous. GPTZero's hallucinated
+  references: 137 of 151 flagged.
+
 ## [0.4.1] - 2026-10-07
 
 Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite
