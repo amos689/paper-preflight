@@ -62,6 +62,9 @@ def _aas_repeat(match: re.Match[str]) -> str:
     return match.group(3) if same else f"{match.group(2)} {match.group(3)}"
 
 
+_TITLE_FOOTNOTE = re.compile(r"\s*\*\*\s*[A-Z].*$", re.S)
+
+
 def plain_title(text: str) -> str:
     r"""A title without the markup registries keep in it: HTML and MathML tags, entities, and TeX
     math. A HALLMARK VALID entry was flagged because Crossref's title was
@@ -70,6 +73,9 @@ def plain_title(text: str) -> str:
     # tags may also arrive escaped ("&lt;title&gt;HIRES ...&lt;/title&gt;", 10.1117/12.176725),
     # and entities escaped twice ("z &amp;lt; 0.1", 10.1093/mnras/stac472)
     text = _TAG_RE.sub("", text)
+    # a footnote run into the title: Crossref's "Theory of the Backpropagation Neural Network**
+    # Based on ... which appeared in Proceedings of the IJCNN ..." (Hecht-Nielsen 1992)
+    text = _TITLE_FOOTNOTE.sub("", text)
     for _ in range(3):
         unescaped = html.unescape(text)
         if unescaped == text:

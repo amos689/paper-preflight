@@ -1321,3 +1321,66 @@ source = "real_papers:2608.19082v1"
 key = "Giles2016"
 expect = ["REF012"]
 note = "was REF010 and REF014 against Penrose's 'Connectivity of soft random geometric graphs': the cited paper, by the entry's authors in the entry's journal, is '... over Annuli', and its title is what is wrong."
+
+[[case]]
+name = "fp-bird2006-coling-acl"
+source = "real_papers:2608.25243v1"
+key = "bird2006nltk"
+expect = []
+note = "was REF014: 'Proceedings of the COLING/ACL 2006 interactive presentation sessions' names a joint meeting; dblp files the paper under ACL."
+
+[[case]]
+name = "fp-sridharan2015-sigarch-newsletter"
+source = "real_papers:2608.25276v1"
+key = "sridharan2015memory"
+expect = []
+note = "was REF014: the ASPLOS 2015 paper, cited in ACM SIGARCH Computer Architecture News, which carries ASPLOS's proceedings."
+
+[[case]]
+name = "fp-seaborn2015-black-hat-talk"
+source = "real_papers:2608.25276v1"
+key = "seaborn2015exploiting"
+expect = []
+note = "was REF003: a Black Hat 2015 talk (journal = {Black Hat}); talks no source indexes."
+
+[[case]]
+name = "fp-wei2024-dataset-name-after-title"
+source = "real_papers:2609.29549v1"
+key = "wei2024simpleqa"
+expect = []
+note = "was REF012: 'Measuring Short-Form Factuality in Large Language Models ({SimpleQA})', the dataset's name added after the real title."
+
+[[case]]
+name = "fp-dosovitskiy2021-vit-short-head"
+source = "real_papers:2608.25251v1"
+key = "dosovitskiy2021vit"
+expect = []
+note = "was REF003: 'An Image is Worth 16x16 Words' without its subtitle; the part before the colon has six words but 29 characters, under the 30 the subtitle rule needed."
+
+[[case]]
+name = "fp-wang2017-chestxray8-title-cut-short"
+source = "real_papers:2608.25251v1"
+key = "wang2017chestxray14"
+expect = []
+note = "was REF003: ChestX-ray8 (CVPR 2017) cited with its title ending at 'Weakly-Supervised Classification'; the record, found only as a longer title, is by the entry's authors."
+
+[[case]]
+name = "fp-fang2023-middle-name-nickname"
+source = "real_papers:2608.26219v1"
+key = "fang2023sftl"
+expect = []
+note = "was REF011: Robert M. Kirby publishes as Mike Kirby (Robert Michael)."
+
+[[case]]
+name = "fp-baccari2020-ifmmode-name"
+source = "real_papers:2608.25414v2"
+key = "Baccari2020"
+expect = []
+note = "was REF011: Šupić written with APS's ifmmode ... else ... fi construction; the reader kept both branches."
+
+[[case]]
+name = "fp-fluetsch2019-mnras-december-online"
+source = "real_papers:2608.25341v1"
+key = "Fluetsch_2019"
+expect = []
+note = "was REF013: MNRAS 483, 4586, online 19 December 2018 with no volume in Crossref yet, cited as 2019."
