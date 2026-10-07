@@ -29,7 +29,7 @@ _ARXIV_CONTEXT_RE = re.compile(r"arxiv", re.IGNORECASE)
 _ARXIV_DOI_RE = re.compile(r"^10\.48550/arxiv\.(.+)$", re.IGNORECASE)
 _ARXIV_DOI_VERSION_RE = re.compile(r"v\d+$", re.IGNORECASE)
 _PMCID_RE = re.compile(r"\bPMC\d{4,9}\b", re.IGNORECASE)
-_TRAILING_PUNCTUATION = ".,;:)]}"
+_TRAILING_PUNCTUATION = ".,;:)]}/"
 
 
 @dataclass(frozen=True)

@@ -24,7 +24,7 @@ from paper_preflight.sources.record import Person, SourceRecord, collapse, plain
 DOIRA_URL = "https://doi.org/doiRA/"
 HANDLE_URL = "https://doi.org/api/handles/"
 DOI_URL = "https://doi.org/"
-CHUNK = 25  # keeps request URLs well under common length limits
+CHUNK = 6  # doiRA times out (504) on larger batches; also keeps URLs short
 
 POLICY = SourcePolicy(name="doiorg", min_interval=1.0)
 
