@@ -8,6 +8,11 @@ from dataclasses import dataclass, field
 
 _HOMONYM_SUFFIX_RE = re.compile(r"\s+\d{4}$")  # dblp: "Jian Sun 0001"
 _SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv"}
+# An affiliation mark deposited as part of a family name: "Asmussen c" (Crossref, Albrecher,
+# Asmussen & Kortschak 2006), "Smith*"-style marks written apart
+_AFFILIATION_MARK = re.compile(r"[a-z]|[*†‡§¶]+|\d{1,2}")
+# Letters deposited as look-alike symbols: "S⊘ren" for Søren (the same record)
+_MISENCODED = str.maketrans({"⊘": "ø"})
 # Last words that make a display name a group, not a person ("Gemma Team" on arXiv 2503.19786,
 # "Cursor Research" on arXiv 2603.24477)
 COLLECTIVE_WORDS = frozenset(
@@ -92,8 +97,11 @@ class Person:
         ("Davidson Jr.", Crossref) and a name repeated in its original script are dropped.
         """
         given, family = _romanised(collapse(given or "")), _romanised(collapse(family or ""))
+        given, family = given.translate(_MISENCODED), family.translate(_MISENCODED)
         parts = family.split(" ")
-        while len(parts) > 1 and parts[-1].lower().strip(",") in _SUFFIXES:
+        while len(parts) > 1 and (
+            parts[-1].lower().strip(",") in _SUFFIXES or _AFFILIATION_MARK.fullmatch(parts[-1])
+        ):
             parts.pop()
         return cls(family=" ".join(parts).rstrip(","), given=given)
 

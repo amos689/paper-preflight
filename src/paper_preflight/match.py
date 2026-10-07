@@ -12,6 +12,7 @@ from __future__ import annotations
 import re
 import tomllib
 from dataclasses import dataclass, field, replace
+from datetime import date
 from difflib import SequenceMatcher
 from functools import cache
 from importlib import resources
@@ -410,9 +411,32 @@ def _in_other_order(a: Person, b: Person) -> bool:
     return given_a[0] in {family_b[0], family_b} and given_b[0] in {family_a[0], family_a}
 
 
+def _same_letters(a: Person, b: Person) -> bool:
+    """The same names and initials in any order: "Rouse D. M." (Vancouver style, which BibTeX
+    reads as given "Rouse D.", family "M.") is David M. Rouse; "Mallikarjun B. R." is the same
+    either way round. Words pair with equal words, initials with words they begin; a full name
+    of three letters or more must pair, so that initials alone never make a person."""
+    rest_a = re.findall(r"\w+", fold(_APOSTROPHES.sub("", a.display)))
+    rest_b = re.findall(r"\w+", fold(_APOSTROPHES.sub("", b.display)))
+    if len(rest_a) != len(rest_b) or len(rest_a) < 2:
+        return False
+    full = False
+    for word in [w for w in rest_a if len(w) >= 2]:
+        if word in rest_b:
+            rest_a.remove(word)
+            rest_b.remove(word)
+            full = full or len(word) >= 3
+    if not full:
+        return False
+    pairs = zip(sorted(rest_a), sorted(rest_b), strict=True)
+    return all(x[0] == y[0] and min(len(x), len(y)) == 1 for x, y in pairs)
+
+
 def same_person(a: Person, b: Person) -> bool:
     """One person written differently by two sources (checked after exact surnames pair up)."""
     if surname_key(a) == surname_key(b) or _name_forms(a) & _name_forms(b) or _same_words(a, b):
+        return True
+    if _same_letters(a, b):
         return True
     if _in_other_order(a, b):
         return True
@@ -714,6 +738,8 @@ def is_preprint(record: SourceRecord) -> bool:
 
 # Records of proceedings, whose volume may appear the year after the meeting
 _PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inproceedings"})
+# Resources that keep changing after they are registered (DataCite resource types)
+_LIVING_TYPES = frozenset({"dataset", "service", "database", "collection"})
 
 
 def _names_year(venue: str | None, year: int) -> bool:
@@ -747,6 +773,10 @@ def check_year(
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
         # cites its paper 18(167) as 2018
         return FieldCheck("match")
+    if record.work_type in _LIVING_TYPES and max(years) < year <= date.today().year:
+        # a database or service is cited by the year it was used, as its maintainers ask (USGS
+        # NWIS: DataCite's 1994 is when the service started)
+        return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
     # No general ±1 tolerance: refchecker dropped it because it silently hid real year errors.
     # Only preprint/published pairs legitimately differ by a year or two.
     distance = min(abs(year - y) for y in years)
@@ -903,6 +933,10 @@ def _check_venue(
             # ICLR 2025 BuildingTrust workshop, then ICML 2025)
             return FieldCheck("unknown")
         return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
+    if "@" in (record.venue or "") and re.search(r"\bworkshops?\b", venue or "", re.I):
+        # dblp names a workshop by its acronyms at its conference: "CMRxRecon/MBAS/STACOM@MICCAI"
+        # for the Workshop on Statistical Atlases and Computational Models of the Heart
+        return FieldCheck("unknown")
     if mine is None and theirs is not None and named and venue:
         ours = venue_words(VENUE_SERIES.sub(" ", venue))
         # every word of the recorded name and its known forms, filler included ("adv", "proc")

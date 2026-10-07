@@ -1230,3 +1230,59 @@ key = "Khansa:2021"
 expect = []
 note = "was REF003: the UNet 2021 paper is 'Resource Allocation for Multi-source Multi-relay Wireless Networks: A Multi-Armed Bandit Approach'; the entry leaves out the subtitle, and search results below 0.85 title similarity were dropped before the subtitle rule could see them."
 
+
+[[case]]
+name = "fp-rouse2008-vancouver-names"
+source = "real_papers:2608.11518v1"
+key = "RH-08"
+expect = []
+note = "was REF010: 'Rouse D. M. and Hemami S. S' is Rouse and Hemami, family name first with no comma, which BibTeX reads as families 'M.' and 'S'; Crossref has David M. Rouse and Sheila S. Hemami."
+
+[[case]]
+name = "fp-albrecher2006-affiliation-mark"
+source = "real_papers:2608.11544v2"
+key = "albrecher2006ruin"
+expect = []
+note = "was REF011: Crossref deposits the second author as given 'S\u2298ren', family 'Asmussen c' (a look-alike symbol and an affiliation mark); the entry's Soeren Asmussen is right."
+
+[[case]]
+name = "fp-usgs-nwis-access-year"
+source = "real_papers:2608.11544v2"
+key = "usgs_nwis"
+expect = []
+note = "was REF013: a database cited by the year it was accessed, as USGS asks; DataCite's 1994 (a Collection) is when the service started."
+
+[[case]]
+name = "fp-notin2025-substack"
+source = "real_papers:2608.16951v1"
+key = "notin2025scalingwall"
+expect = []
+note = "was REF003: a real Substack post written as an @article with journal 'Substack (proteingym.org)'; web content no source indexes."
+
+[[case]]
+name = "fp-zhu2002-report-as-inproceedings"
+source = "real_papers:2608.16951v1"
+key = "zhu2002semi"
+expect = []
+note = "was REF003: Zhu's 'Semi-supervised learning literature survey' is University of Wisconsin-Madison Technical Report 1530, written as an @inproceedings whose booktitle names the report and its institution."
+
+[[case]]
+name = "fp-chiu2024-joint-workshop-volume"
+source = "real_papers:2608.15843v1"
+key = "chiu2024physics"
+expect = []
+note = "was REF014: the paper is in the STACOM 2024 workshop, as the entry says; dblp names the joint volume 'CMRxRecon/MBAS/STACOM@MICCAI'."
+
+[[case]]
+name = "fp-zhou2018-ieee-early-access"
+source = "real_papers:2608.11744v1"
+key = "zhou2018automatic"
+expect = []
+note = "was REF013: TSE published the article online in 2018 (its DOI is tse.2018.2872971); Crossref has only the 2020 issue, deposited then."
+
+[[case]]
+name = "real-parr1998-bare-technical-report"
+source = "real_papers:2608.04384v2"
+key = "parr1998dsl"
+expect = ["REF003"]
+note = "a real problem kept: no 1998 report 'A Handbook for Language Designers' by Terence Parr exists; journal = {Technical Report} names no institution, so it is not taken for an unindexed report."

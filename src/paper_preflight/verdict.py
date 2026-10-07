@@ -972,7 +972,14 @@ def _under_review(info: EntryInfo) -> bool:
 # Publications that appear only on their own sites, cited like journals ("journal =
 # {Transformer Circuits Thread}"); no queried source indexes them
 _WEB_VENUES = re.compile(
-    r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$", re.IGNORECASE
+    r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b",
+    re.IGNORECASE,
+)
+
+
+_REPORT_VENUE = re.compile(
+    r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b",
+    re.IGNORECASE,
 )
 
 
@@ -1008,7 +1015,15 @@ def _abstention_reasons(
         for i in evidence.identifiers
         if i.scheme in {"doi", "arxiv", "pmid", "pmcid"} and i.value not in dead
     ]
-    if info.entry_type in GREY_TYPES and not live_ids:
+    # a report or thesis under another entry type: Zhu's "Semi-supervised learning literature
+    # survey" as @inproceedings with booktitle "Technical Report, University of Wisconsin-Madison".
+    # It must name who issued it: a bare "Technical Report" (Parr 1998, which does not exist)
+    # says nothing a reader could look up.
+    venue = info.venue or ""
+    report = bool(_REPORT_VENUE.search(venue)) and bool(
+        re.search(r"[^\W\d_]{3,}", _REPORT_VENUE.sub(" ", venue))
+    )
+    if (info.entry_type in GREY_TYPES or report) and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)
     # a paper in a society's own proceedings, linked there (Proceedings of the Samahang Pisika ng
     # Pilipinas, proceedings.spp-online.org): no source knowing it says nothing about it
