@@ -1,41 +1,29 @@
-<h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/paper-preflight-logo-dark.svg">
-    <img src="docs/assets/brand/paper-preflight-logo.svg" alt="paper-preflight" width="460">
-  </picture>
-</h1>
+<div align="center">
 
-<p align="center">
-  <strong>投稿前，把 LaTeX 论文的每一条参考文献拿到真实学术数据库里核对一遍。<br>
-  不靠大模型猜，不乱扣"伪造"的帽子。</strong>
-</p>
+![paper-preflight](docs/assets/brand/paper-preflight-logo.svg)
 
-<p align="center">
-  <a href="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml"><img src="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://pypi.org/project/paper-preflight/"><img src="https://img.shields.io/pypi/v/paper-preflight?label=PyPI&amp;color=2f6fb0" alt="PyPI 版本"></a>
-  <a href="LICENSE"><img src="docs/assets/badges/license.zh-CN.svg" alt="MIT 许可证"></a>
-  <a href="https://glama.ai/mcp/servers/amos689/paper-preflight"><img src="https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg" alt="paper-preflight 在 Glama 上的 MCP 服务器评分"></a>
-</p>
+**投稿前，把 LaTeX 论文的每一条参考文献拿到真实学术数据库里核对一遍。<br>
+不靠大模型猜，不乱扣"伪造"的帽子。**
 
-<p align="center">
-  <a href="pyproject.toml"><img src="docs/assets/badges/python.zh-CN.svg" alt="Python 3.11 至 3.14"></a>
-  <a href="#快速上手"><img src="docs/assets/badges/input.zh-CN.svg" alt="输入：LaTeX、BibTeX 和 PDF"></a>
-  <a href="#工作原理"><img src="docs/assets/badges/sources.zh-CN.svg" alt="核对 6 个学术数据库"></a>
-  <a href="#设计原则"><img src="docs/assets/badges/verdicts.zh-CN.svg" alt="判定不用大模型"></a>
-  <a href="docs/mcp.md"><img src="docs/assets/badges/mcp.zh-CN.svg" alt="只读的 MCP 工具"></a>
-</p>
+[![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
+[![PyPI 版本](https://img.shields.io/pypi/v/paper-preflight?label=PyPI&color=2f6fb0)](https://pypi.org/project/paper-preflight/)
+[![MIT 许可证](docs/assets/badges/license.zh-CN.svg)](LICENSE)
+[![paper-preflight 在 Glama 上的 MCP 服务器评分](https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg)](https://glama.ai/mcp/servers/amos689/paper-preflight)
 
-<p align="center">
-  <a href="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml"><img src="docs/assets/badges/platforms.zh-CN.svg" alt="在 Windows、Linux 和 macOS 上测试"></a>
-  <a href="README.md"><img src="docs/assets/badges/languages.zh-CN.svg" alt="英文和简体中文"></a>
-</p>
+[![Python 3.11 至 3.14](docs/assets/badges/python.zh-CN.svg)](pyproject.toml)
+[![输入：LaTeX、BibTeX 和 PDF](docs/assets/badges/input.zh-CN.svg)](#快速上手)
+[![核对 6 个学术数据库](docs/assets/badges/sources.zh-CN.svg)](#工作原理)
+[![判定不用大模型](docs/assets/badges/verdicts.zh-CN.svg)](#设计原则)
+[![只读的 MCP 工具](docs/assets/badges/mcp.zh-CN.svg)](docs/mcp.md)
 
-<p align="center">
-  <a href="README.md">English</a> · <strong>简体中文</strong> ·
-  <a href="#快速上手">快速上手</a> ·
-  <a href="https://github.com/amos689/paper-preflight/releases">版本发布</a> ·
-  <a href="https://github.com/amos689/paper-preflight/issues/new/choose">反馈问题</a>
-</p>
+[![在 Windows、Linux 和 macOS 上测试](docs/assets/badges/platforms.zh-CN.svg)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
+[![英文和简体中文](docs/assets/badges/languages.zh-CN.svg)](README.md)
+
+[English](README.md) · **简体中文** · [快速上手](#快速上手) ·
+[版本发布](https://github.com/amos689/paper-preflight/releases) ·
+[反馈问题](https://github.com/amos689/paper-preflight/issues/new/choose)
+
+</div>
 
 ![paper-preflight 检查示例论文：未定义的引用键、指向另一篇论文的 DOI、所有数据源都查不到的文献、已撤稿论文和重复的条目键报为错误；已正式发表的预印本、指向同一作品的两个条目、错误的年份和带 LaTeX 转义的 DOI 报为警告](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 
