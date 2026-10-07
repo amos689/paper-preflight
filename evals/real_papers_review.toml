@@ -3122,3 +3122,13 @@ note = "dblp links the cited arXiv record to this published version (same title 
 [finding."2608.18588v1:rawles2024androidworld:REF015"]
 verdict = "correct"
 note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+# found by 0.5.1's fixes on development batches (a title cut short, bound to the cited work)
+
+[finding."2608.19082v1:Giles2016:REF012"]
+verdict = "correct"
+note = "The J. Stat. Phys. 162, 1068 paper by Giles, Georgiou & Dettmann is 'Connectivity of Soft Random Geometric Graphs over Annuli'; the entry leaves out 'over annuli'."
+
+[finding."2608.11575v1:Gupta2023:REF012"]
+verdict = "correct"
+note = "MNRAS 524, 3385 (Gupta 2023) is 'JWST early Universe observations and ΛCDM cosmology'; the entry ends at 'ΛCDM'."

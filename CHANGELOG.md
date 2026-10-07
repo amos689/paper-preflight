@@ -6,6 +6,25 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+Eight of the ten false positives on the eighth batch of real papers (heldout7):
+
+- A person missing from the matched record is reported only when every record of the work
+  reached through the entry's identifiers leaves them out: registries' author lists stop short
+  (ESO's DataCite records, KISTI's), and the arXiv record has the full list (REF011).
+- A collaboration in the author list ("MAGPI Team") pairs with the record's longer name for it
+  ("And The MAGPI Team"); "RDKit Contributors" and the like are groups, not missing people.
+- Software cited by its name matches a Zenodo release titled by its repository
+  ("rdkit/rdkit: 2026_09_1 (Q3 2026) Release"), which a concept DOI resolves to (REF001).
+- A title cut short, by the entry's own authors, binds to the paper it shortens instead of
+  another paper with the shorter title: "Connectivity of Soft Random Geometric Graphs [over
+  Annuli]" is reported as a title missing words (REF012), not as wrong authors and venue.
+
+The other two are a registry's English given name for an author and its garbled symbol
+("Rnu" for R_V). On the development batches the changes also find two titles cut short; no
+real problem is lost, and HALLMARK and GPTZero are unchanged.
+
 ## [0.5.0] - 2026-10-07
 
 Catches more, abstains less, misfires less. On a new held-out week of real papers, collected

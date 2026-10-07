@@ -257,12 +257,20 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #145 | 第八批 heldout7（0.5.0 保留集，只跑一次）：962 条、53 个报警、41 个真问题、10 个误报、2 个不确定，每百条 1.0（门槛 1.5，通过）。E4 不改：作者被删几位已有提示级 REF011，升为警告会误报 |
 | #146 | 0.5.0 发布准备：版本号、CHANGELOG、README（heldout7 每百条 1.0；GPTZero 139/151；HALLMARK test 伪造口径召回 50.2%、误报率 1.9%）、路线图 |
 
+0.5.0 已于 2026-10-07 发布到 PyPI 与 MCP Registry（用户确认、设备授权）。
+
+## 0.5.1：heldout7 的误报（2026-10-07 起）
+
+| PR | 内容 |
+|---|---|
+| #147 | 冻结第九批 heldout8（2026-08-26..09-01）的名单，修复完成前不跑 |
+| #148 | heldout7 的 10 个误报修掉 8 个：作者只在所有同作品记录都缺时才算缺（DataCite、KISTI 记录不全，arXiv 记录完整）；团队署名与记录里的长名配对，"Contributors" 算群体；软件按 Zenodo 发行版的仓库名比对；截短的标题按作者绑到它所截的那篇，报 REF012。英文名、登记库乱码不修。八批回放：去掉 8 个误报，新增 2 个正确的 REF012，丢掉 2 个原判"不确定"；HALLMARK、GPTZero 不变 |
+
 ## 下一步
 
-- [ ] 发布 0.5.0：GitHub Release（需用户确认），之后 MCP Registry 发布（需用户设备授权）
-- [ ] heldout7 的 10 个误报是下一轮开发数据：登记库作者不全（DataCite、KISTI）、团队署名、截短标题绑到同名短标题论文、Zenodo 总 DOI、英文名、登记库乱码符号
+- [ ] 跑 heldout8（只跑一次），通过后发 0.5.1
 - [ ] 中文实验线 X1–X6（工作区 `zh-experiments/`），结果写进 `reports/paper preflight 中文实验结果.md`
-- [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；0.5.0 发布时 MCP Registry 设备授权
+- [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；每次发布时 MCP Registry 设备授权
 
 ## 已知问题与备忘
 
