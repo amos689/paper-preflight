@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-07
+
+A compliance fix (CNKI DOIs) and eight fewer false positives. On a new held-out week of real
+papers, run once with these changes: 2.4 false positives per 100 references, over the 1.5
+target; none comes from this release's changes, and they are the next fixes.
+
 ### Fixed
 
 - A CNKI DOI is no longer resolved. doi.org answers content negotiation for CNKI's DOIs with a
