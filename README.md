@@ -115,36 +115,36 @@ submissions, each confirmed by its staff. Pasted as plain text, as the papers pr
 
 | References | Flagged | Cannot determine | Verified |
 |---|---|---|---|
-| 151 | **135 (89%)** | 16 | **0** |
+| 151 | **139 (92%)** | 12 | **0** |
 
-- **None of them is verified.** The 16 left undecided are web pages and blog posts, titles too
-  short to search with confidence, real titles given with invented authors where several works
-  share the title, and two references the plain-text reader could not take apart. Each is listed
-  with its reason in [`evals/results/gptzero.md`](evals/results/gptzero.md).
+- **None of them is verified.** The 12 left undecided are web pages and blog posts, a workshop
+  no source indexes, real titles given with invented authors where the sources cannot tell
+  which work is meant, a real title cut short, and two references too garbled to search. Each
+  is listed with its reason in [`evals/results/gptzero.md`](evals/results/gptzero.md).
 - GPTZero's own tool found these, so they are the hallucinations a search can find; recall on
   every kind of hallucination is lower (see HALLMARK below).
 
 ### On real papers
 
-The bibliographies of 20 arXiv papers first submitted in mid-August 2026 (cs, stat, q-bio,
-quant-ph and astro-ph), chosen mechanically and collected only after every fix in this release,
-with every warning and error reviewed by hand:
+The bibliographies of 20 arXiv papers first submitted in late August 2026 (cs, stat, q-bio,
+quant-ph and astro-ph), chosen mechanically, their list fixed before any change in this
+release, run once at the end, with every warning and error reviewed by hand:
 
 | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|
-| 753 | 86 | 77 | 9 | 0 | 1.2 |
+| 962 | 53 | 41 | 10 | 2 | 1.0 |
 
-- **One false alarm every two papers** (38 references on average), against 77 real problems:
-  36 errors in the entries (invented authors and titles, wrong given names, years and titles,
-  identifiers written so that links break) and 41 cited preprints that have since been
-  published.
-- **The false alarms are mostly registry records with errors of their own** (two misspelt
-  titles, an affiliation mark inside a name, a workshop filed under a joint volume) **and real
-  works no source describes as cited** (a Substack post, a technical report, a database cited
-  by its access year, an article's early-access year).
-- **Six earlier batches of 20 papers were used to find false positives,** each first measured
+- **One false alarm every two papers** (48 references on average), against 41 real problems:
+  16 errors in the entries (wrong years, given names and titles, a missing first author, one
+  paper's title with another's authors, identifiers written so that links break) and 25 cited
+  preprints that have since been published.
+- **The false alarms are mostly registry records with errors of their own** (author lists that
+  stop short, a garbled symbol, an English given name) **and collaboration names in author
+  lists** ("MAGPI Team"); two come from a title cited without its last words.
+- **Seven earlier batches of 20 papers were used to find false positives,** each first measured
   as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; 0.1.2 before its last fixes: 3.0;
-  0.1.2: 1.7; 0.2.1: 1.9; 0.3.0: 1.9). Details in [`evals/README.md`](evals/README.md#real-papers).
+  0.1.2: 1.7; 0.2.1: 1.9; 0.3.0: 1.9; 0.4.0: 1.2). Details in
+  [`evals/README.md`](evals/README.md#real-papers).
 
 ### Next to other tools
 
@@ -174,17 +174,17 @@ BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 98.1% | 89.1% | 2.2% | 97.0% |
-| | Fabrication | 99.0% | 49.0% | 0.6% | 97.0% |
-| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.7% | 2.1% | 98.4% |
-| | Fabrication | 98.1% | 52.7% | 1.0% | 98.4% |
+| `test_public`: 831 entries, never used during development | Any issue | 98.4% | 90.3% | 1.9% | 97.7% |
+| | Fabrication | 99.0% | 50.2% | 0.6% | 97.7% |
+| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 91.7% | 2.1% | 98.9% |
+| | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.4.1 on 2026-10-07. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.5.0 on 2026-10-07. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
-- **The held-out split confirms the development numbers:** the same precision and two points
-  less recall on entries no rule was ever tuned on.
+- **The held-out split confirms the development numbers:** a little higher precision and one
+  and a half points less recall on entries no rule was ever tuned on.
 - **Every flag on a `dev_public` entry labelled VALID was checked by hand.** The 11 that remain are not
   correct citations: DOIs that belong to other papers, author lists naming people who did not
   write the paper, a shifted year and a truncated title.
@@ -441,10 +441,11 @@ or "complete" references from memory, or name and shame authors.
 - Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID
   (v0.2); an experimental evidence finder for citations, `support` (v0.3); installs into more
   agents, an agent-judged `support`, and recall measured on hallucinations found in published
-  papers (v0.4)
-- Next: catch more of what is still missed (real titles with invented authors, references
-  without titles, invented venues), each round measured on a new week of real papers
-- Later: Chinese-language references
+  papers (v0.4); references without titles found by journal, volume and page, short titles and
+  real titles with invented authors judged where the sources allow it (v0.5)
+- Next: Word (.docx) manuscripts; the false positives of the latest week of real papers
+  (registries' short author lists, collaboration names)
+- Being tried: Chinese-language references, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
 [changelog](CHANGELOG.md).

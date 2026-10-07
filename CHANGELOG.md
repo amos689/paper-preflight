@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-07
+
+Catches more, abstains less, misfires less. On a new held-out week of real papers, collected
+before any change in this release: 1.0 false positives per 100 references (0.4.0: 1.2). GPTZero's
+151 hallucinated references: 139 flagged (0.4.0: 135), none verified. HALLMARK `test_public`:
+fabrication recall 50.2% (49.0%), false-positive rate 1.9% (2.2%).
+
 ### Added
 
 - Journal articles cited without a title ("MNRAS 249, 523", as astronomy and physics cite) are
