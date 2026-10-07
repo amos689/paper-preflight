@@ -450,9 +450,9 @@ or "complete" references from memory, or name and shame authors.
 ## Roadmap
 
 - Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID
-  (v0.2); an experimental evidence finder for citations, `support` (v0.3); an online demo,
-  installs into more agents, an agent-judged `support`, and recall measured on hallucinations
-  found in published papers (v0.4)
+  (v0.2); an experimental evidence finder for citations, `support` (v0.3); installs into more
+  agents, an agent-judged `support`, and recall measured on hallucinations found in published
+  papers (v0.4)
 - Next: catch more of what is still missed (real titles with invented authors, references
   without titles, invented venues), each round measured on a new week of real papers
 - Later: Chinese-language references

@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- MCP: every tool parameter has a description in the tool schema (none had one), and each
+  tool says when to use it instead of the others.
+- README: a logo, badges and a centred header; the roadmap no longer lists an online demo as
+  done (the Hugging Face Space was not set up).
+
 ## [0.4.0] - 2026-10-05
 
 Measured in the wild, tried in the browser. On the 151 hallucinated references GPTZero found in
