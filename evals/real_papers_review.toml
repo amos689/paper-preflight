@@ -3132,3 +3132,409 @@ note = "The J. Stat. Phys. 162, 1068 paper by Giles, Georgiou & Dettmann is 'Con
 [finding."2608.11575v1:Gupta2023:REF012"]
 verdict = "correct"
 note = "MNRAS 524, 3385 (Gupta 2023) is 'JWST early Universe observations and ΛCDM cosmology'; the entry ends at 'ΛCDM'."
+
+# heldout8 (2026-08-26..09-01), held out for 0.5.1; reviewed 2026-10-07
+
+[finding."2608.25276v1:seaborn2015exploiting:REF003"]
+verdict = "false_positive"
+note = "A real Black Hat 2015 talk (Seaborn & Dullien, Google Project Zero); talks no source indexes."
+
+[finding."2608.25276v1:sridharan2015memory:REF014"]
+verdict = "false_positive"
+note = "ASPLOS papers also appear in ACM SIGARCH Computer Architecture News."
+
+[finding."2608.25291v1:cranmer2023pysr:REF003"]
+verdict = "correct"
+note = "No PySR paper in the Journal of Open Source Software: JOSS 8(85) 5319 is pyGeo. PySR's citable paper is arXiv 2305.01582."
+
+[finding."2608.25291v1:li2024lasr:REF001"]
+verdict = "correct"
+note = "arXiv 2410.07262 is another paper; LaSR is arXiv 2409.09359 by Grayeli, Sehgal, Costilla-Reyes, Cranmer and Chaudhuri, not the entry's authors."
+
+[finding."2608.25291v1:landajuela2021discovering:REF010"]
+verdict = "correct"
+note = "A chimera: Cranmer et al.'s NeurIPS 2020 title with Landajuela et al. as authors."
+
+[finding."2608.25291v1:landajuela2021discovering:REF013"]
+verdict = "correct"
+note = "The titled paper is NeurIPS 2020 (see REF010)."
+
+[finding."2608.25251v1:wang2017chestxray14:REF003"]
+verdict = "false_positive"
+note = "ChestX-ray8 (Wang et al., CVPR 2017) exists; its title goes on '... Classification and Localization of Common Thorax Diseases', and search results with the full title were dropped as not close."
+
+[finding."2608.25251v1:zhang2022chexzero:REF003"]
+verdict = "correct"
+note = "No such paper: CheXzero is Tiu et al., 'Expert-level detection of pathologies from unannotated chest X-ray images via self-supervised learning', Nat. Biomed. Eng. 2022."
+
+[finding."2608.25251v1:dosovitskiy2021vit:REF003"]
+verdict = "false_positive"
+note = "ViT, 'An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale' (ICLR 2021), cited without its subtitle; the part before the colon is 29 characters, under the 30 the subtitle rule needs."
+
+[finding."2608.25251v1:irvin2019chexpert:REF011"]
+verdict = "correct"
+note = "CheXpert's authors are Silviana Ciurea-Ilcus and Behzad Haghgoo; the entry has Silviu and Babak."
+
+[finding."2608.25251v1:zech2018confounding:REF011"]
+verdict = "correct"
+note = "The authors are Anthony B. Costa and Joseph J. Titano; the entry has Andrew and Joshua."
+
+[finding."2608.25251v1:huang2021gloria:REF011"]
+verdict = "correct"
+note = "GLoRIA's first author is Shih-Cheng Huang; the entry has Xinyue Huang."
+
+[finding."2608.25251v1:bustos2020padchest:REF014"]
+verdict = "correct"
+note = "PadChest is in Medical Image Analysis 66 (2020), not Scientific Data."
+
+[finding."2608.25251v1:oakdenrayner2020hidden:REF014"]
+verdict = "correct"
+note = "The paper is in ACM CHIL 2020, not Nature Medicine."
+
+[finding."2608.25251v1:taleb2020selfsupervised3d:REF014"]
+verdict = "correct"
+note = "'3D Self-Supervised Methods for Medical Imaging' is a NeurIPS 2020 paper, not Medical Image Analysis."
+
+[finding."2608.25275v1:trafficbots2023:REF001"]
+verdict = "correct"
+note = "The DOI is another ICRA 2023 paper; TrafficBots is by Zhang, Liniger, Dai, Yu and Van Gool, not the entry's authors."
+
+[finding."2608.25275v1:kigan2024:REF002"]
+verdict = "correct"
+note = "10.1109/CVPRW59438.2024.01117 is not registered."
+
+[finding."2608.25275v1:NI2020102137:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.25513v1:williams2001using:REF003"]
+verdict = "false_positive"
+note = "Williams & Seeger, 'Using the Nyström Method to Speed Up Kernel Machines', NIPS 2000 (dblp); the entry writes 'Nystroem', the German transliteration."
+
+[finding."2608.25513v1:bauer2007regularization:REF003"]
+verdict = "correct"
+note = "Bauer, Pereverzev & Rosasco's J. Complexity 23, 52 (2007) paper is 'On regularization algorithms in learning theory'; the entry's title does not exist."
+
+[finding."2608.25513v1:blanchard2012discrepancy:REF003"]
+verdict = "correct"
+note = "No paper of this title; Blanchard & Mathé's 2012 discrepancy-principle paper is in Inverse Problems, on conjugate gradients."
+
+[finding."2608.25513v1:blanchard2018early:REF003"]
+verdict = "correct"
+note = "The EJS 12 (2018) paper is 'Early stopping for statistical inverse problems via truncated SVD estimation'; the entry adds 'and concentration inequalities'."
+
+[finding."2608.25513v1:blanchard2018optimaladapt:REF011"]
+verdict = "correct"
+note = "The SIAM/ASA JUQ paper is by Blanchard, Hoffmann and Reiß; Nicole Mücke is not an author."
+
+[finding."2608.25513v1:wei2019early:REF011"]
+verdict = "correct"
+note = "The paper is by Yuting Wei, Fanny Yang and Martin Wainwright; Bin Yu is not an author and the second author is Fanny."
+
+[finding."2608.27489v1:Li2023HyperbolicPhenotypes:REF001"]
+verdict = "correct"
+note = "The DOI is 'Hyperbolic hierarchical knowledge graph embeddings for biological entities'; the entry's title and authors are altered."
+
+[finding."2608.27489v1:Kauffman2025EHREmbeddings:REF002"]
+verdict = "correct"
+note = "The DOI is not registered."
+
+[finding."2608.27489v1:Zheng2025SelfSupervisedEHR:REF002"]
+verdict = "correct"
+note = "The DOI is not registered."
+
+[finding."2608.27489v1:Timilsina2025HarmonizingFMs:REF002"]
+verdict = "correct"
+note = "The DOI is not registered."
+
+[finding."2608.27489v1:Xian2025TransformerPatientEmbedding:REF002"]
+verdict = "correct"
+note = "The DOI is not registered."
+
+[finding."2608.27489v1:Hollmann2025TabPFN:REF002"]
+verdict = "correct"
+note = "A placeholder DOI ('s41586-025-XXXX-X'); the paper is 10.1038/s41586-024-08328-6."
+
+[finding."2608.27489v1:zhou2023comprehensive:REF001"]
+verdict = "correct"
+note = "arXiv 2302.10329 is another paper; the entry's title and authors match no survey."
+
+[finding."2608.27489v1:schmidt2023recent:REF003"]
+verdict = "correct"
+note = "No such paper in npj Digital Medicine 6 (2023)."
+
+[finding."2608.27489v1:chatterjee2021visual:REF003"]
+verdict = "correct"
+note = "No such IUI 2021 paper."
+
+[finding."2608.27489v1:Pu2023GraphAD:REF011"]
+verdict = "correct"
+note = "The record's authors are Yiyuan Pu et al.; Zhen Gan and Yao Lu are not authors."
+
+[finding."2608.27489v1:Kauffman2025EHREmbeddings:REF011"]
+verdict = "correct"
+note = "The authors are Justin Kauffman et al.; McDermott and Chen are not on the paper."
+
+[finding."2608.27489v1:Zheng2025SelfSupervisedEHR:REF011"]
+verdict = "correct"
+note = "The first author is Yuanyuan Zheng; Sharma and Vakalopoulou are not authors."
+
+[finding."2608.27489v1:Zheng2025SelfSupervisedEHR:REF012"]
+verdict = "correct"
+note = "The title says 'EHR categorical data'; the entry has 'categorical EHR data'."
+
+[finding."2608.27489v1:Amirahmadi2023EHRTrajReview:REF011"]
+verdict = "correct"
+note = "The authors are Ali Amirahmadi, Mattias Ohlsson and Kobra Etminani; the entry has other given names."
+
+[finding."2608.27489v1:Hollmann2025TabPFN:REF011"]
+verdict = "correct"
+note = "The authors are Noah Hollmann, Samuel Müller et al.; the entry has Nina and Stefan, and Eggensperger is not on the Nature paper."
+
+[finding."2608.27489v1:Xian2025TransformerPatientEmbedding:REF011"]
+verdict = "correct"
+note = "The first author is Su Xian; Jing Du and Fan Yang are not authors."
+
+[finding."2608.27489v1:gorishniy2021fttransformer:REF011"]
+verdict = "correct"
+note = "The third author is Valentin Khrulkov; the entry has Valery."
+
+[finding."2608.27489v1:diaz2019umap:REF011"]
+verdict = "correct"
+note = "The second author is Luke Anderson-Trocmé; the entry has Laina."
+
+[finding."2609.29549v1:nakamoto2023calql:REF011"]
+verdict = "false_positive"
+note = "Yuexiang Zhai, as the entry has him, is 'Simon Zhai' in Crossref's NeurIPS deposit: one person, an English given name."
+
+[finding."2609.29549v1:wei2024simpleqa:REF012"]
+verdict = "false_positive"
+note = "The entry adds the dataset's name, '(SimpleQA)', after the real title."
+
+[finding."2609.29549v1:wei2024longfact:REF012"]
+verdict = "false_positive"
+note = "The entry adds the dataset's name, '(LongFact)', after the real title."
+
+[finding."2608.25274v1:lindenberger2025scaling:REF011"]
+verdict = "false_positive"
+note = "arXiv 2510.26795 lists Matteo Balice; Crossref's NeurIPS 2025 record leaves him out, and the entry gives no arXiv ID."
+
+[finding."2608.25274v1:wang2024fine:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 is the 2023 conference; the entry says 2024."
+
+[finding."2608.25274v1:sarlin2024snap:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 is the 2023 conference; the entry says 2024."
+
+[finding."2608.25274v1:song2024learning:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 is the 2023 conference; the entry says 2024."
+
+[finding."2608.25299v1:hu2022lora:REF011"]
+verdict = "correct"
+note = "LoRA's seventh author is Lu Wang; the entry has Liang Wang."
+
+[finding."2608.26219v1:fang2023sftl:REF011"]
+verdict = "false_positive"
+note = "Robert M. Kirby publishes as Mike Kirby (Robert Michael); one person."
+
+[finding."2608.26219v1:fang2024funbat:REF011"]
+verdict = "false_positive"
+note = "Robert M. Kirby publishes as Mike Kirby (Robert Michael); one person."
+
+[finding."2608.26219v1:luo2024mmgn:REF011"]
+verdict = "false_positive"
+note = "Balasubramanya Nadiga publishes as Balu Nadiga; one person."
+
+[finding."2608.26228v1:2023Evolutionary:REF011"]
+verdict = "correct"
+note = "The author field holds an e-mail address ('arives@meta.com') and leaves out most of the ESMFold paper's authors."
+
+[finding."2608.26228v1:WHO:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.26228v1:YADAMP:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.26228v1:pubmedbert:REF014"]
+verdict = "correct"
+note = "The venue field holds ACM's export residue ('ACMPUB27New York, NY'); the paper is in ACM Transactions on Computing for Healthcare."
+
+[finding."2608.25414v2:eczoo_rains:REF012"]
+verdict = "false_positive"
+note = "A page of the Error Correction Zoo, cited with the Zoo's handbook (arXiv 2606.11484) as its eprint; the page is not the handbook, but nothing is wrong."
+
+[finding."2608.25414v2:eczoo_qubit_9_12_3:REF012"]
+verdict = "false_positive"
+note = "A page of the Error Correction Zoo, cited with the Zoo's handbook (arXiv 2606.11484) as its eprint; the page is not the handbook, but nothing is wrong."
+
+[finding."2608.25414v2:eczoo_arvind:REF012"]
+verdict = "false_positive"
+note = "A page of the Error Correction Zoo, cited with the Zoo's handbook (arXiv 2606.11484) as its eprint; the page is not the handbook, but nothing is wrong."
+
+[finding."2608.25414v2:eczoo_qubit_5_6_2:REF012"]
+verdict = "false_positive"
+note = "A page of the Error Correction Zoo, cited with the Zoo's handbook (arXiv 2606.11484) as its eprint; the page is not the handbook, but nothing is wrong."
+
+[finding."2608.25414v2:Baccari2020:REF011"]
+verdict = "false_positive"
+note = "Šupić is written with APS's \\ifmmode ... \\else ... \\fi construction; the reader keeps both branches."
+
+[finding."2608.25414v2:mckague2011self:REF013"]
+verdict = "unclear"
+note = "TQC 2011's proceedings (LNCS) appeared in 2014; the entry cites the conference year."
+
+[finding."2608.25414v2:crew2025magic:REF013"]
+verdict = "correct"
+note = "The Reports on Progress in Physics article is 2026; the entry cites the journal with the preprint's year."
+
+[finding."2608.25341v1:Daddi_2010:REF011"]
+verdict = "correct"
+note = "The ApJL paper (arXiv 1003.3889) has ten authors ending with Riechers; Morrison, Salvato, Strazzullo, Tan, Valentino, Wang, Wuyts and Zhang are not among them."
+
+[finding."2608.25341v1:Maiolino_2017:REF011"]
+verdict = "correct"
+note = "Urrutia and Venturi are not authors of Nature 544, 202."
+
+[finding."2608.25341v1:Maiolino_2017:REF012"]
+verdict = "correct"
+note = "The title says 'inside'; the entry has 'in'."
+
+[finding."2608.25341v1:Kormendy_2013:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.25341v1:Fabian_2012:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.25341v1:Fluetsch_2019:REF013"]
+verdict = "false_positive"
+note = "MNRAS 483, 4586 is the March 2019 issue, online December 2018; ADS and the authors cite 2019."
+
+[finding."2608.25243v1:yan2026learning:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; the entry says 2026."
+
+[finding."2608.25243v1:bird2006nltk:REF014"]
+verdict = "false_positive"
+note = "COLING/ACL 2006 was one joint meeting; dblp files it under ACL."
+
+[finding."2608.25241v2:wohlin2012:REF013"]
+verdict = "correct"
+note = "The DOI is the 2000 Kluwer edition; the 2012 Springer edition has another DOI."
+
+[finding."2608.25243v1:chu2025sft:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25243v1:jang2021towards:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25243v1:ma2025learning:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25243v1:chen2021dataset:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25243v1:zhou2026silence:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25276v1:ding2025moecho:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25276v1:fayyaz2025steeringmoellmsexpert:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25276v1:fedus2022switchtransformersscalingtrillion:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25276v1:hassan2021utrr:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25276v1:zheng2023trojvit:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.29549v1:cui2024orbench:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.29549v1:wei2024longfact:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25267v1:hu2021lora:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25267v1:wang2025truthoverridden:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25267v1:goel2023surprisinglylikely:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25282v1:gupta2022lookback:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25282v1:huang2022learning:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25282v1:zeng2024effective:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25291v1:virgolin2022symbolic:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25291v1:shojaee2025llm:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25291v1:sun2022symbolic:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25251v1:zhang2020convirt:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25274v1:wang2025bevsplat:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25299v1:wang2026locateanything:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25299v1:dong2026ref:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25261v1:peltekian2025ren:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.25261v1:shazeer2017outrageously:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.27489v1:devlin2018bert:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
