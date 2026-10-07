@@ -35,6 +35,7 @@ from paper_preflight.match import (
     canonical_venue,
     check_authors,
     evaluate,
+    has_cjk,
     is_preprint,
     related_words,
     subtitle_variant,
@@ -70,6 +71,7 @@ class Reason(StrEnum):
     OFFLINE_MODE = "OFFLINE_MODE"
     BUDGET_EXHAUSTED = "BUDGET_EXHAUSTED"
     NON_LATIN_UNSUPPORTED = "NON_LATIN_UNSUPPORTED"
+    TRANSLATED_CHINESE_WORK = "TRANSLATED_CHINESE_WORK"
     GREY_LITERATURE = "GREY_LITERATURE"
     UNINDEXED_LINK = "UNINDEXED_LINK"
     UNINDEXED_VENUE = "UNINDEXED_VENUE"
@@ -86,6 +88,10 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
     Reason.SOURCES_UNAVAILABLE: ("a source was unavailable", "有来源不可用"),
     Reason.OFFLINE_MODE: ("offline mode and no cached answer", "离线模式且没有缓存结果"),
     Reason.BUDGET_EXHAUSTED: ("the request budget is exhausted", "请求额度已用完"),
+    Reason.TRANSLATED_CHINESE_WORK: (
+        "a Chinese-language work cited by a translated title, which the open indexes rarely hold",
+        "以英译题名引用的中文文献，开放索引通常只收录其中文题名",
+    ),
     Reason.NON_LATIN_UNSUPPORTED: (
         "non-Latin titles are not supported yet", "暂不支持非拉丁文字的标题",
     ),
@@ -177,6 +183,10 @@ def _authors_text(record: SourceRecord) -> str:
 
 
 def non_latin(text: str) -> bool:
+    if has_cjk(text):
+        return (
+            True  # a Chinese title with English acronyms in it ("基于BERT的...") is still Chinese
+        )
     letters = [ch for ch in text if ch.isalpha()]
     if not letters:
         return False
@@ -536,12 +546,15 @@ def _field_findings(
     source = source_name(record.source)
     out: list[Finding] = []
     score = f"{m.title.score or 0.0:.2f}"
+    # a Chinese-language work's title, translated by the citing author: other wording than the
+    # journal's own English title is no error (Big Data Research 2015, "... Development Trend")
+    translation = Severity.INFO if info.translated else None
     if m.title.status == "mismatch":
         few = 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                found_title=record.title, score=score,
+                severity=translation, found_title=record.title, score=score,
                 difference=(
                     _describe_changes(m.title.changed, "en") if few else f"similarity {score}"
                 ),
@@ -558,7 +571,7 @@ def _field_findings(
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                found_title=record.title, score=score,
+                severity=translation, found_title=record.title, score=score,
                 difference=_describe_changes(m.title.changed, "en"),
                 difference_zh=_describe_changes(m.title.changed, "zh"),
                 suggestion=protect_title(record.title),
@@ -1060,6 +1073,8 @@ def _abstention_reasons(
         reasons.append(Reason.CORRUPTED_SOURCE_RECORD)
     if non_latin(info.title):
         reasons.append(Reason.NON_LATIN_UNSUPPORTED)
+    elif info.translated:
+        reasons.append(Reason.TRANSLATED_CHINESE_WORK)
     live_ids = [
         i
         for i in evidence.identifiers

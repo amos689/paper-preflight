@@ -34,6 +34,9 @@ COORDINATE_SELECT = f"{SELECT},article-number"
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
 _IEEE_YEAR = re.compile(r"^10\.1109/[a-z]+\.(\d{4})\.\d{5,}$")
+# Chinese journals' DOIs: Science Press's "10.3724/sp.j.1087.2012.00322" (J. Computer Applications
+# 32(2), 2012; Crossref has 2013) and "10.11959/j.issn.2096-0271.2015030"
+_CHINESE_YEAR = re.compile(r"^10\.\d{4,9}/(?:sp\.j\.\d+|j\.issn\.\d{4}-\d{3}[\dx])\.(\d{4})")
 # a publisher's code for a journal given as its title: De Gruyter's "humr" for HUMOR
 _JOURNAL_CODE = re.compile(r"[a-z]{2,6}")
 
@@ -108,8 +111,10 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     # went online (2002). The DOI's year counts when it is a few years before the registered ones.
     # IEEE's journal DOIs carry the year they were assigned, at early access: "10.1109/tse.2018.
     # 2872971" was online in 2018, and Crossref has only its issue's date, 2020.
-    embedded = _WILEY_YEAR.match(doi) or (
-        _IEEE_YEAR.match(doi) if item.get("type") == "journal-article" else None
+    embedded = (
+        _WILEY_YEAR.match(doi)
+        or _CHINESE_YEAR.match(doi)
+        or (_IEEE_YEAR.match(doi) if item.get("type") == "journal-article" else None)
     )
     if embedded and years and 0 < min(years) - int(embedded.group(1)) <= 3:
         years.add(int(embedded.group(1)))

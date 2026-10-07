@@ -22,6 +22,7 @@ from urllib.parse import urlsplit
 from rapidfuzz import fuzz
 from rapidfuzz.distance import Levenshtein
 
+from paper_preflight import chinese
 from paper_preflight.bib.names import AuthorList, parse_authors
 from paper_preflight.bib.normalize import fold, title_key, word_count
 from paper_preflight.bib.parse import BibEntry
@@ -61,6 +62,14 @@ _LINK_RE = re.compile(r"https?://[^\s{}<>\"]+", re.IGNORECASE)
 _PAGE_SEPARATOR = re.compile(r"\s*(?:-+|–|—|,)\s*")
 
 
+_CJK = re.compile("[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+
+
+def has_cjk(text: str) -> bool:
+    """The text has Han characters: Chinese (or Japanese) script."""
+    return bool(_CJK.search(text))
+
+
 def first_page(pages: str | None) -> str | None:
     """The first page or article number of a page field, lower-cased ("L25--L28" -> "l25")."""
     head = _PAGE_SEPARATOR.split((pages or "").strip(), maxsplit=1)[0].strip().lower()
@@ -82,6 +91,8 @@ class EntryInfo:
     issns: frozenset[str] = frozenset()
     volume: str | None = None
     first_page: str | None = None  # see :func:`first_page`
+    # a Chinese-language work cited in English ("... (in Chinese)"; see paper_preflight.chinese)
+    translated: bool = False
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
@@ -97,9 +108,12 @@ class EntryInfo:
             title, venue, venue_field = chapter, title, "booktitle"
         links = " ".join(entry.text(f) or "" for f in ("url", "howpublished", "note"))
         hosts = (urlsplit(url).hostname or "" for url in _LINK_RE.findall(links))
+        other = " ".join(entry.text(f) or "" for f in ("note", "pages", "howpublished"))
+        language = entry.text("language") or entry.text("langid") or ""
+        is_translated = chinese.translated(title=title, venue=venue, other=other, language=language)
         return cls(
             key=entry.key,
-            title=title,
+            title=chinese.strip_mark(title),
             authors=parse_authors(author_field.value if author_field else None),
             year=int(match.group(0)) if match else None,
             venue=venue,
@@ -109,6 +123,7 @@ class EntryInfo:
             issns=frozenset(_ISSN_RE.findall((entry.text("issn") or "").upper())),
             volume=(entry.text("volume") or "").strip() or None,
             first_page=first_page(entry.text("pages") or entry.text("eid")),
+            translated=is_translated,
         )
 
 
@@ -273,6 +288,10 @@ _VOLUME = re.compile(
 
 def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
+        return FieldCheck("unknown")
+    if has_cjk(entry_title) != has_cjk(record.title):
+        # one side in Chinese script, the other in Latin script: a translation cannot be compared
+        # (ISTIC's record of a paper an English entry cites by its translated title)
         return FieldCheck("unknown")
     named = _SOFTWARE_NAME.match(entry_title)
     # Zenodo titles a release by its GitHub repository: "rdkit/rdkit: 2026_09_1 (Q3 2026) Release"
@@ -1098,6 +1117,25 @@ def _fit(title: FieldCheck, authors: AuthorCheck) -> tuple[bool, int, float, flo
     )  # fmt: skip
 
 
+def _as_chinese_journal_record(record: SourceRecord) -> SourceRecord:
+    """A Chinese-language journal's record as an English entry is compared with it. Crossref's
+    backfile records of these journals put a whole name in the family name ("Jia Zheng-Mao",
+    Acta Physica Sinica), list the first author only, or list the authors in another order than
+    the printed paper; the experiments' development data had seven false author findings so."""
+    people = []
+    for person in record.authors:
+        words = person.family.split()
+        if not person.given and not person.literal and 2 <= len(words) <= 3:
+            person = Person(family=words[0], given=" ".join(words[1:]))
+        people.append(person)
+    return replace(
+        record,
+        authors=tuple(people),
+        authors_ordered=False,
+        authors_complete=record.authors_complete and len(people) > 1,
+    )
+
+
 def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldCheck, AuthorCheck]:
     """The title and authors, checked against the version of the work the entry fits best.
 
@@ -1107,6 +1145,8 @@ def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldChec
     without them, an earlier title's authors are compared in any order (arXiv 2508.03341 put its
     second author first in v4).
     """
+    if info.translated:
+        record = _as_chinese_journal_record(record)
     title = check_title(info.title, record)
     if title.note == EARLIER_VERSION and not record.versions:
         authors = check_authors(info.authors, replace(record, authors_ordered=False))

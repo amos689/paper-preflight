@@ -8,6 +8,27 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+Chinese-language works cited in English, as English papers by Chinese authors often do
+("... (in Chinese)", the journal's English name, pinyin authors). On the Chinese-reference
+experiments' development data, 63 of 235 such entries had at least one warning or error with
+0.5.0; 19 have now, and the rest are real problems or doi.org's lookups (next).
+
+- Such a reference (a language mark in brackets in the title or anywhere in a note, a language
+  field saying Chinese, the English name of a Chinese-language journal, or a journal named in
+  pinyin) that nobody indexes is no longer "not found" (REF003): the open indexes hold these
+  works under their Chinese title, if at all. The reason given is
+  `TRANSLATED_CHINESE_WORK`.
+- The mark "(in Chinese)" is not part of the title compared; a title in Chinese script
+  against one in Latin script is a translation, not another title (REF001, REF012); a
+  translated title worded otherwise than the journal's own English title is worth a look,
+  not a warning.
+- Crossref's records of Chinese-language journals are read as they are: a whole name in the
+  family name, only the first author, another author order (REF010, REF011).
+- A Chinese title with English acronyms in it ("基于BERT的...") is Chinese; a Chinese journal's
+  DOI names its year ("10.3724/SP.J.1087.2012.00322"); a DOI taken from a URL loses a trailing
+  slash; doi.org's agency lookup asks for six DOIs at a time (25 often timed out).
+
+
 Eleven of the nineteen false positives on the ninth batch of real papers (heldout8):
 
 - A title cited without its subtitle counts when the part before the colon has five words, not
