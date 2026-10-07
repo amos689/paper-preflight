@@ -53,3 +53,15 @@ def test_versioned_arxiv_doi_gets_a_safe_fix() -> None:
     assert finding.data["suggestion"] == "10.48550/arxiv.2602.12139"
     assert "version suffix" in finding.message.en
     assert "版本号后缀" in finding.message.zh
+
+
+def test_an_eprint_with_its_subject_class_gets_the_bare_identifier() -> None:
+    # Zotero exports "2311.07911 [cs]": the class belongs in eprintclass
+    (finding,) = check_identifier_syntax(
+        parse_bib_text(
+            "@misc{a, eprint = {2311.07911 [cs]}, eprinttype = {arxiv}}", Path("refs.bib")
+        ).entries
+    )
+    assert finding.data["detail"] == "eprint-class"
+    assert finding.data["suggestion"] == "2311.07911"
+    assert "eprintclass" in finding.message.en

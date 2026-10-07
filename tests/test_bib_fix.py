@@ -108,3 +108,22 @@ def test_line_endings_and_untouched_bytes_are_kept(tmp_path: Path) -> None:
     new = apply(text, entries, fixes, "\r\n")
     assert new == text.replace("tacl\\_a\\_00276", "tacl_a_00276").replace("2019", "2020")
     assert "\n" not in new.replace("\r\n", "")  # still CRLF everywhere
+
+
+def test_advice_is_never_written_into_the_file(tmp_path: Path) -> None:
+    # REF017's "(remove or correct the field)" is advice for a person, not a value: an invalid
+    # DOI or arXiv ID is left as it is, while an ID with its subject class is corrected
+    bib = tmp_path / "refs.bib"
+    bib.write_text(
+        "@misc{z,\n  title = {Instruction-Following Evaluation for Large Language Models},\n"
+        "  eprinttype = {arxiv},\n  eprint = {2311.07911 [cs]},\n  doi = {not a doi}\n}\n"
+        "@misc{y,\n  title = {Something},\n  eprinttype = {arxiv},\n  eprint = {1706.0376x}\n}\n",
+        encoding="utf-8",
+    )
+    result = fix(str(bib), "--apply", "--offline")
+    assert result.exit_code == EXIT_OK
+    text = bib.read_text(encoding="utf-8")
+    assert "eprint = {2311.07911}," in text
+    assert "doi = {not a doi}" in text
+    assert "eprint = {1706.0376x}" in text
+    assert "(" not in text

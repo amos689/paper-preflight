@@ -40,6 +40,11 @@ Chen", as PDFs and generated lists write them) no longer stops the authors and t
 being read. One more of GPTZero's 151 hallucinated references is flagged (136), and two more
 references of the development PDFs are found.
 
+`bib fix` no longer writes REF017's advice into a file: an invalid DOI or arXiv ID was replaced
+by "(remove or correct the field)" or "(correct the arXiv ID)", even at the safe level. Such
+fields are now left for a person to correct. An arXiv ID exported with its subject class
+("2311.07911 [cs]", as Zotero writes it) gets the bare ID as its fix.
+
 ## [0.4.1] - 2026-10-07
 
 Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite
