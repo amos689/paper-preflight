@@ -249,6 +249,7 @@ CONTAINER_IN_TITLE = "the title field also names the book or proceedings"
 # field that also names its book, a style trick (set with \textup in a real paper's .bib)
 _IN_CONTAINER = re.compile(r"^(?P<head>.{12,}?),\s+in\s+(?P<tail>[A-Z]\S*(?:\s+\S+){2,})$")
 # a name before what it is: "spaCy: Industrial-strength ...", "simplexity - Functions to ..."
+_REPOSITORY_RELEASE = re.compile(r"^[\w.-]+/(?P<repo>[\w.-]+):\s")
 _SOFTWARE_NAME = re.compile(r"^(?P<name>[^\s:]{2,40})\s*(?::|\s[-–—])\s+\S")
 
 VOLUME_NOT_IN_RECORD = "the record's title leaves out the volume"
@@ -264,10 +265,13 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     if not entry_title or not record.title:
         return FieldCheck("unknown")
     named = _SOFTWARE_NAME.match(entry_title)
+    # Zenodo titles a release by its GitHub repository: "rdkit/rdkit: 2026_09_1 (Q3 2026) Release"
+    repository = _REPOSITORY_RELEASE.match(record.title)
     if (
         record.work_type == "software"
         and named
-        and title_key(named["name"]) == title_key(record.title)
+        and title_key(named["name"])
+        in {title_key(record.title), title_key(repository["repo"]) if repository else None}
     ):
         # software is cited by its name and what it does ("spaCy: Industrial-strength Natural
         # Language Processing in Python"); its record may carry the name alone ("spaCy")
@@ -602,6 +606,12 @@ def _group(person: Person) -> bool:
     return any(word in COLLECTIVE_WORDS for word in _name_words(person.display))
 
 
+def _same_group(a: Person, b: Person) -> bool:
+    """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team"."""
+    ours = _name_words(a.display) - {"and", "the"}
+    return bool(ours) and _group(b) and ours <= _name_words(b.display)
+
+
 def _pair_by_given_name(
     entry: list[tuple[Person, str]], pool: list[tuple[Person, str]]
 ) -> dict[int, int]:
@@ -668,8 +678,9 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
             taken.add(index)
             renamed.append((person.display, people[index].display))
     missing: list[str] = []
-    groups: set[int] = set()  # groups credited where the record lists only people
-    people_only = not any(_organisation(p) for p in people)
+    groups: set[int] = set()  # groups credited where the record lists no group
+    # (a one-word handle such as GitHub's "sriniker" on a Zenodo release is no group)
+    people_only = not any(_group(p) for p in people)
     for j, (person, _) in enumerate(entry):
         if j in paired:
             continue
@@ -677,6 +688,11 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
             (i for i, other in enumerate(people) if i not in taken and same_person(person, other)),
             None,
         )
+        if index is None and _group(person):
+            index = next(
+                (i for i, o in enumerate(people) if i not in taken and _same_group(person, o)),
+                None,
+            )
         if index is None and people_only and _group(person):
             groups.add(j)  # "Kevin Lu and Thinking Machines Lab": the lab is no missing person
         elif index is None:

@@ -964,3 +964,24 @@ def test_names_in_another_order_with_initials(entry: str, record: Person, same: 
     from paper_preflight.match import same_person
 
     assert same_person(parse_name(entry), record) is same
+
+
+def test_a_collaboration_under_a_longer_name_is_on_the_record() -> None:
+    # ESO's DataCite records end their author lists with "And The MAGPI Team"
+    team = "And The MAGPI Team"
+    record = SourceRecord(
+        source="datacite", source_id="10.18727/0722-6691/5349", title="Mapping Galaxy ...",
+        authors=(Person("Mendel", "J. Trevor"), Person(team, literal=team)),
+    )  # fmt: skip
+    found = check_authors(parse_authors("Mendel, J. T. and {MAGPI Team}"), record)
+    assert found.missing == ()
+
+
+def test_software_is_matched_by_its_repository_name() -> None:
+    # Zenodo titles a release "owner/repo: version"; the entry cites the software by its name
+    release = SourceRecord(
+        source="datacite", source_id="10.5281/zenodo.591637",
+        title="rdkit/rdkit: 2026_09_1 (Q3 2026) Release", work_type="software",
+    )  # fmt: skip
+    assert check_title("RDKit: Open-source cheminformatics", release).status == "match"
+    assert check_title("Pandas: Powerful data structures", release).status == "mismatch"

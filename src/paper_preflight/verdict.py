@@ -33,6 +33,7 @@ from paper_preflight.match import (
     Match,
     best_candidate,
     canonical_venue,
+    check_authors,
     evaluate,
     is_preprint,
     related_words,
@@ -330,6 +331,23 @@ def _bind_candidate(
     # with the same recognised venue in the same year.
     named = sum(1 for person in info.authors.people if not person.literal)
     words = word_count(info.title)
+    # The entry's whole title and more, by the entry's people: the cited work with its title cut
+    # short (Giles, Georgiou & Dettmann's "Connectivity of Soft Random Geometric Graphs over
+    # Annuli"), not another paper that happens to have the shorter title (Penrose's). REF012
+    # names the words left out.
+    key = title_key(info.title)
+    longer = [
+        m
+        for m in evaluated
+        if words >= MIN_VENUE_TITLE_WORDS
+        and m.authors.status == "match"
+        and m.authors.first_author_match
+        and m.year.status != "mismatch"
+        and m.suspicious is None
+        and title_key(m.record.title).startswith(f"{key} ")
+    ]
+    if len({_work_key(m.record.title) for m in longer}) == 1:
+        return min(longer, key=_rank)
     if words < MIN_VENUE_TITLE_WORDS or named < 2:
         return None
     same_title = [
@@ -478,6 +496,22 @@ def _year_gap(year: int | None, record: SourceRecord) -> int:
 # ---------------------------------------------------------------- findings
 
 
+def _missing_everywhere(
+    info: EntryInfo, missing: tuple[str, ...], others: tuple[SourceRecord, ...]
+) -> list[str]:
+    """The entry's people missing from the bound record and from every other record of the
+    work: ESO's DataCite record of WAVES stops before R. McMahon, whom arXiv 1903.02473 lists;
+    KISTI's records of the Sejong Open Cluster Survey leave out authors arXiv has."""
+    found = {
+        name
+        for record in others
+        for name in missing
+        if name not in check_authors(info.authors, record).missing
+        and record.source not in AUTHORS_NOT_CHECKED_AGAINST
+    }
+    return [name for name in missing if name not in found]
+
+
 def _field_findings(
     entry: BibEntry,
     info: EntryInfo,
@@ -485,11 +519,13 @@ def _field_findings(
     *,
     published_known: bool = True,
     coordinates: bool = False,
+    others: tuple[SourceRecord, ...] = (),
 ) -> list[Finding]:
     """Findings on the fields of a bound entry.
 
     ``published_known``: a published (non-preprint) record of the bound work is known; without
-    one, a preprint record cannot correct the year of a published version.
+    one, a preprint record cannot correct the year of a published version. ``others``: other
+    records of the same work, reached through the entry's identifiers.
     """
     key, record = entry.key, m.record
     source = source_name(record.source)
@@ -537,9 +573,9 @@ def _field_findings(
         )  # fmt: skip
     elif (
         authors.status in {"mismatch", "variant"}
-        and (authors.missing or not authors.first_author_match)
+        and (_missing_everywhere(info, authors.missing, others) or not authors.first_author_match)
     ) or authors.renamed:
-        names = list(authors.missing)
+        names = _missing_everywhere(info, authors.missing, others)
         details: list[tuple[str, str]] = []
         if names:
             en, zh = ", ".join(names), "、".join(names)
@@ -862,6 +898,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
             _field_findings(
                 entry, info, bound, published_known=published_known,
                 coordinates=evidence.by_coordinates,
+                others=tuple(m.record for m in same if m is not bound),
             )
         )  # fmt: skip
         same_records = [m.record for m in same] or [bound.record]

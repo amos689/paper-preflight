@@ -1286,3 +1286,38 @@ source = "real_papers:2608.04384v2"
 key = "parr1998dsl"
 expect = ["REF003"]
 note = "a real problem kept: no 1998 report 'A Handbook for Language Designers' by Terence Parr exists; journal = {Technical Report} names no institution, so it is not taken for an unindexed report."
+
+[[case]]
+name = "fp-driver2019-datacite-stops-short"
+source = "real_papers:2608.18464v1"
+key = "driver19"
+expect = []
+note = "was REF011: ESO's DataCite record of the WAVES paper in The Messenger stops before R. McMahon, whom the arXiv record (1903.02473), reached through the entry's eprint, lists."
+
+[[case]]
+name = "fp-mendel2024-collaboration-name"
+source = "real_papers:2608.18464v1"
+key = "mendel24"
+expect = []
+note = "was REF011: the entry ends with {MAGPI Team}; ESO's DataCite record names it 'And The MAGPI Team'."
+
+[[case]]
+name = "fp-sung2013-kisti-stops-short"
+source = "real_papers:2608.18550v1"
+key = "sos0"
+expect = []
+note = "was REF011: KISTI's record (via doi.org) of the Sejong Open Cluster Survey 0 leaves out Bessell, Kim and Hur, whom the arXiv record (1306.0309) lists."
+
+[[case]]
+name = "fp-rdkit-zenodo-concept-doi"
+source = "real_papers:2608.21349v1"
+key = "rdkit"
+expect = []
+note = "was REF001: RDKit's Zenodo concept DOI resolves to its latest release, titled 'rdkit/rdkit: 2026_09_1 (Q3 2026) Release'; the entry, by {RDKit Contributors}, cites the software by its name."
+
+[[case]]
+name = "real-giles2016-title-cut-short"
+source = "real_papers:2608.19082v1"
+key = "Giles2016"
+expect = ["REF012"]
+note = "was REF010 and REF014 against Penrose's 'Connectivity of soft random geometric graphs': the cited paper, by the entry's authors in the entry's journal, is '... over Annuli', and its title is what is wrong."

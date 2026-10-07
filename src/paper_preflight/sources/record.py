@@ -14,10 +14,10 @@ _AFFILIATION_MARK = re.compile(r"[a-z]|[*†‡§¶]+|\d{1,2}")
 # Letters deposited as look-alike symbols: "S⊘ren" for Søren (the same record)
 _MISENCODED = str.maketrans({"⊘": "ø"})
 # Last words that make a display name a group, not a person ("Gemma Team" on arXiv 2503.19786,
-# "Cursor Research" on arXiv 2603.24477)
+# "Cursor Research" on arXiv 2603.24477, "RDKit Contributors" as RDKit asks to be cited)
 COLLECTIVE_WORDS = frozenset(
     "team collaboration consortium project committee community initiative group alliance lab "
-    "labs research".split()
+    "labs research contributors developers".split()
 )
 
 
