@@ -126,15 +126,22 @@ submissions, each confirmed by its staff. Pasted as plain text, as the papers pr
 
 ### On real papers
 
-The bibliographies of 20 arXiv papers first submitted in late August 2026 (cs, stat, q-bio,
-quant-ph and astro-ph), chosen mechanically, their list fixed before any change in this
-release, run once at the end, with every warning and error reviewed by hand:
+Two weeks of arXiv papers (20 each, cs, stat, q-bio, quant-ph and astro-ph), chosen
+mechanically, each list fixed before the changes it measures, run once, with every warning and
+error reviewed by hand:
 
-| References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
-|---|---|---|---|---|---|
-| 962 | 53 | 41 | 10 | 2 | 1.0 |
+| Papers first submitted | Version | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
+|---|---|---|---|---|---|---|---|
+| 2026-08-19..25 | 0.5.0 | 962 | 53 | 41 | 10 | 2 | 1.0 |
+| 2026-08-26..09-01 | 0.5.1 | 780 | 101 | 81 | 19 | 1 | 2.4 |
 
-- **One false alarm every two papers** (48 references on average), against 41 real problems:
+- **The second week is over our target of 1.5.** None of its 19 false alarms comes from 0.5.1's
+  changes: they are other forms of one person's name, pages of a reference site cited with its
+  handbook's arXiv ID, real works no source indexes or cited with a shortened title, dataset
+  names after titles, and venue name forms. They are the next fixes. Two of its papers alone
+  have 33 real problems (invented DOIs, authors and titles).
+- **In the first week, one false alarm every two papers** (48 references on average), against
+  41 real problems:
   16 errors in the entries (wrong years, given names and titles, a missing first author, one
   paper's title with another's authors, identifiers written so that links break) and 25 cited
   preprints that have since been published.

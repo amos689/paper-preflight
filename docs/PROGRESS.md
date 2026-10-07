@@ -266,11 +266,12 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #147 | 冻结第九批 heldout8（2026-08-26..09-01）的名单，修复完成前不跑 |
 | #148 | heldout7 的 10 个误报修掉 8 个：作者只在所有同作品记录都缺时才算缺（DataCite、KISTI 记录不全，arXiv 记录完整）；团队署名与记录里的长名配对，"Contributors" 算群体；软件按 Zenodo 发行版的仓库名比对；截短的标题按作者绑到它所截的那篇，报 REF012。英文名、登记库乱码不修。八批回放：去掉 8 个误报，新增 2 个正确的 REF012，丢掉 2 个原判"不确定"；HALLMARK、GPTZero 不变 |
 | #149 | 第九批 heldout8（#148 的保留集，只跑一次）：780 条、101 个报警、81 个真问题、19 个误报、1 个不确定，每百条 2.4，**未过 1.5 的门槛**；19 个误报均非 #148 引入（同人异名 4、Error Correction Zoo 页面 4、真实作品查无 4、标题后加数据集名 2、会议名写法 2、登记库作者不全 1、名字里的 \ifmmode 1、MNRAS 卷年 1）。冻结第十批 heldout9（2026-09-02..08）的名单 |
+| #150 | 合规：知网 DOI 不再做内容协商（doi.org 会跳到 robots 禁止的 chndoi.org，0.4.x/0.5.0 会跟过去）；中文实验 X1 发现 |
+| #151 | 0.5.1 发布：#148 与 #150；README 并列 heldout7（0.5.0，1.0）与 heldout8（0.5.1，2.4）（用户 2026-10-07 决定先发） |
 
 ## 下一步
 
-- [ ] heldout8 未过门槛：先修它的误报类型，再用 heldout9 验证（是否先发 0.5.1 需用户决定）
-- [ ] 中文实验线 X1–X6（工作区 `zh-experiments/`），结果写进 `reports/paper preflight 中文实验结果.md`
+- [ ] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报（见 `reports/paper preflight 中文实验结果.md` 8.3 节），用 heldout9 与 X1/X6c 回放验证。中文 MVP 暂缓（用户决定）
 - [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；每次发布时 MCP Registry 设备授权
 
 ## 已知问题与备忘
