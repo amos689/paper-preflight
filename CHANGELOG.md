@@ -35,6 +35,11 @@ Seven of the nine false positives on the seventh batch of real papers:
 The other two are typos in the registries' titles ("Probelm", "Biopolymer"). Tolerating them
 would hide more typos in entries than registries make, so they stay.
 
+In plain-text lists (and PDFs), a name with a lower-case part among proper names ("Yun chen
+Chen", as PDFs and generated lists write them) no longer stops the authors and title from
+being read. One more of GPTZero's 151 hallucinated references is flagged (136), and two more
+references of the development PDFs are found.
+
 ## [0.4.1] - 2026-10-07
 
 Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite
