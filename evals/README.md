@@ -101,11 +101,11 @@ uv run python evals/real_papers.py run --batch heldout3       # check them again
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are eight reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are nine reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last four are each batch as it came out:
+candidate's (main 43a5544); the last five are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -117,6 +117,7 @@ candidate's (main 43a5544); the last four are each batch as it came out:
 | `heldout5` | 2026-08-05..11 | held out for 0.3.0; studied for 0.4.0 (#126-#128) | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
 | `heldout6` | 2026-08-12..18 | held out for 0.4.0; studied for 0.5.0 (#139-#141) | 753 | 86 | 77 | 9 | 0 | 1.2 |
 | `heldout7` | 2026-08-19..25 | held out for 0.5.0 (list committed before any change, #138); studied for 0.5.1 | 962 | 53 | 41 | 10 | 2 | 1.0 |
+| `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147) | 780 | 101 | 81 | 19 | 1 | 2.4 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -125,8 +126,18 @@ candidate's (main 43a5544); the last four are each batch as it came out:
   ("MAGPI Team") two; a truncated title bound to another paper of the shorter title two; a
   Zenodo concept DOI, an English given name and a registry's garbled symbol one each.
 
-A ninth batch, `heldout8` (2026-08-26..09-01), was collected on 2026-10-07 and its list committed
-before any change made for heldout7's false positives; it is run once, when they are done.
+- **On `heldout8`**, run once after #148 fixed eight of heldout7's ten false positives: 81 real
+  problems (two papers alone have 33, with invented DOIs, authors and titles) and 19 false
+  positives, 2.4 per 100 references, over the 1.5 gate. None comes from #148. They are other
+  forms of one person's name (Yuexiang/Simon Zhai, Robert M./Mike Kirby, Balasubramanya/Balu
+  Nadiga) 4, four pages of the Error Correction Zoo cited with its handbook's arXiv ID 4, real
+  works not found (a Black Hat talk, a title cut short, a subtitle left out, 'Nystroem') 4, a
+  dataset's name after a title ('(SimpleQA)') 2, venue names (COLING/ACL, ASPLOS in SIGARCH
+  Computer Architecture News) 2, a registry's short author list 1, an `\ifmmode` in a name 1
+  and an MNRAS volume year 1.
+
+A tenth batch, `heldout9` (2026-09-02..08), was collected on 2026-10-07 and its list committed
+before any change made for heldout8's false positives.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
