@@ -258,6 +258,12 @@ def _rank(m: Match) -> tuple[int, int, float, float, int]:
     )
 
 
+def _work_key(title: str) -> str:
+    """One work's titles in its records: a preprint's "Quantity-Quality Tradeoff" and its
+    proceedings' "Trade-off" (SoftMatch, dblp) differ only in hyphens and spaces."""
+    return title_key(title).replace(" ", "")
+
+
 def _bind_candidate(
     info: EntryInfo,
     candidates: list[SourceRecord],
@@ -297,7 +303,7 @@ def _bind_candidate(
             and (other_publication(info, m) or other_kind(info, m.record))
         )
     ]
-    if len({title_key(m.record.title) for m in strong}) == 1:
+    if len({_work_key(m.record.title) for m in strong}) == 1:
         return min(strong, key=lambda m: (_year_gap(info.year, m.record), _rank(m)))
     # The same people at the same recognised venue in the same year, with a title one or two
     # words off ("Inference" for "Reasoning"): the cited work with a reworded title (REF012
@@ -312,7 +318,7 @@ def _bind_candidate(
         and (m.title.score or 0.0) >= MIN_REWORDED_SCORE
         and 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
     ]
-    if len({title_key(m.record.title) for m in reworded}) == 1:
+    if len({_work_key(m.record.title) for m in reworded}) == 1:
         return min(reworded, key=_rank)
     # Same long title, same year, one work, but other authors: that is the cited work with wrong
     # authors (REF010/REF011: HALLMARK's placeholder and swapped authors), not a missing one.
@@ -342,7 +348,7 @@ def _bind_candidate(
         and m.suspicious is None
         and (words >= MIN_TITLE_ONLY_WORDS or m.venue.status == "match")
     ]
-    if len({title_key(m.record.title) for m in same_title}) != 1:
+    if len({_work_key(m.record.title) for m in same_title}) != 1:
         return None
     return min(same_title, key=_rank)
 

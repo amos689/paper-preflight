@@ -252,10 +252,11 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #140 | E6：第七批 9 个误报修掉 7 个（姓在前的缩写人名、登记库人名里的单位标记、数据库按访问年份、IEEE 提前在线年份、dblp 合卷的研讨会、Substack 与写成别的类型的技术报告）；回放无其他变化；HALLMARK test 误报率 2.2% → 1.9%。登记库标题里的拼写错误（Probelm、Biopolymer）不修：容忍它们会漏掉更多条目自己的拼写错误 |
 | #141 | E5：纯文本读取器认得带小写成分的名字（"Yun chen Chen"），但只在规范人名占多数、且小写词不是 on/of 之类虚词时；GPTZero 135 → 136；Badalova & Mayr 字段一致不变；开发集 PDF 找到 815 → 818 条 |
 | #142 | E7：`bib fix` 不再把 REF017 的提示语（"(correct the arXiv ID)" 等）当作值写进文件（安全级也会写，属实际 bug）；Zotero 导出的 "2311.07911 [cs]" 修复为纯编号。S2 CorpusID 作标识符不做：开发数据里只有 10 个 .bib 用到，且这些条目靠标题已能找到 |
+| #143 | E2：同一作品的两条记录标题只差连字符或空格（SoftMatch 的预印本与 ICLR 版）时算一篇，不再判"有歧义"；真实题名配编造作者因此报 REF010。七批回放无变化；HALLMARK test 召回 89.1% → 89.4%，误报率不变；GPTZero 136 → 137。只署一个人名的条目（iclr 24）仍不判：机构署名（"Meta AI"）会因此误报 |
 
 ## 下一步
 
-- [ ] 第五轮英文主线（E1、E5、E6、E7 已完成）：E2 真实题名配编造作者、E3 会议核对、E4 作者被删几位（先实验，过门槛才合并）；然后跑 heldout7，发 0.5.0
+- [ ] 第五轮英文主线（E1、E2、E5、E6、E7 已完成）：E3 会议核对、E4 作者被删几位（先实验，过门槛才合并）；然后跑 heldout7，发 0.5.0
 - [ ] 中文实验线 X1–X6（工作区 `zh-experiments/`），结果写进 `reports/paper preflight 中文实验结果.md`
 - [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；0.5.0 发布时 MCP Registry 设备授权
 

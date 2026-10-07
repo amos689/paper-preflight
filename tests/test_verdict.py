@@ -1081,3 +1081,17 @@ def test_a_books_doi_on_a_chapter_is_its_container() -> None:
     other = replace(book, title="Handbook of Social Psychology")
     item = evidence_for(entry, anchored=[other], searched={"crossref"}, negative={"crossref"})
     assert "REF001" in {f.rule_id for f in assess(entry, item, current_year=YEAR).findings}
+
+
+def test_invented_authors_on_a_work_with_two_records_are_reported() -> None:
+    # SoftMatch in dblp: the CoRR preprint says "Trade-off", the ICLR paper "Tradeoff". One work
+    # under titles that differ in a hyphen, not two: invented authors on it are reported
+    entry = bib(
+        NO_DOI.replace(
+            "Smith, Ann and Jones, Bob and Lee, Carol", "Nina Rodriguez and Ibrahim Diallo"
+        ).replace("Long Document", "Long-Document")
+    )
+    preprint = record(source="dblp", title=TITLE.replace("Long Document", "Long-Document"))
+    published = record(source="dblp", title=TITLE.replace("Long Document", "LongDocument"))
+    result = assess(entry, search_result(entry, preprint, published), current_year=YEAR)
+    assert (result.verdict, rules(result)) == (Verdict.METADATA_MISMATCH, {"REF010"})
