@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-07
+
+Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite
+has already answered, and a sound paper's report no longer lists the same suggestion a dozen
+times. Findings are unchanged: a replay of the sixth held-out batch gives identical results.
+
 ### Changed
 
 - When the arXiv API does not answer but DataCite does (it registers every arXiv paper), the

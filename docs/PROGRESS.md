@@ -229,6 +229,18 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 - 对"没写期刊/会议的 @article"按灰色文献处理：会去掉 3 个误报，但损失 19 个 HALLMARK 检出；
 - 允许四人中有一个异常名字：会让 APS 格式把标题读成作者。
 
+## 0.4.1 打磨（2026-10-07）
+
+| PR | 内容 |
+|---|---|
+| #132 | 演示 GIF 按 0.4.0 重新生成 |
+| #133 | logo、徽章和居中的 README 头部（中英文）；PyPI 上的 README 改用 GitHub 绝对链接 |
+| #134 | MCP 工具参数全部补上说明（Glama TDQS：参数说明覆盖率原为 0%）；README 去掉"已有在线试用页"的不实描述 |
+| #135 | README 头部改成 Markdown，Glama（会去掉 HTML）上也能显示 logo；一份浅色、深色背景都能看清的 logo |
+| #136 | arXiv 未应答而 DataCite 已核实时，运行不再判为不完整（新增提示 RUN002）；REF015、REF016 在文字报告中合并成一行，`--details` 逐条查看 |
+
+另外：Glama 已收录（Dockerfile 构建、评分 A），awesome-LaTeX#130 和 awesome-mcp-servers#15891 已提交；Hugging Face Space 因 Gradio/Docker Space 需付费而暂不做。
+
 ## 下一步
 
 - [ ] 发布 0.4.0（需用户确认），之后 MCP Registry 发布新版本（需用户设备授权）
@@ -241,7 +253,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 - 本机跑测试要加 `--basetemp=.pytest_tmp`：沙箱不允许写系统临时目录。CI 不受影响。
 - Windows 保留设备名（aux、con、nul、prn、com1……）不能当文件名，所以模块叫 `auxdata.py`。
 - 后台任务运行期间，提交只用显式路径 `git add <path>`，不要用 `git add -A`。
-- arXiv API 常限流（429 或超时）。#10 之后会自动改走 DataCite，但报告仍会注明 arXiv 不可用（撤回状态只有 arXiv 知道）。
+- arXiv API 常限流（429 或超时）。#10 之后会自动改走 DataCite；0.4.1 起，DataCite 已核实的条目不再让运行判为不完整，改由 RUN002 提示撤回状态这次没查。
 - S2 key 的条款：所有接口合计每秒不超过 1 次。适配器按 1.1 秒间隔单连接请求；同时开两个进程会共用 key，可能合计超限。
 - 叠放的 PR：合并父 PR 之前，先用 `gh pr edit <子PR> --base main` 转走，否则删分支会把子 PR 关掉且无法重开
 - 实跑验证时用临时缓存：设 `PAPER_PREFLIGHT_CACHE_DIR` 指向草稿目录，避免污染真实缓存；不要打印凭据的值。
