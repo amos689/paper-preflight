@@ -11,7 +11,7 @@
 **Check every reference of a LaTeX paper against real scholarly records before you submit.
 No LLM guessing, no false accusations.**
 
-![paper-preflight checking the demo paper: errors for an undefined citation key, a DOI that belongs to another paper, a reference no source knows and a retracted paper; warnings for a published preprint, a wrong year and a LaTeX-escaped DOI](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
+![paper-preflight checking the demo paper: errors for an undefined citation key, a DOI that belongs to another paper, a reference no source knows, a retracted paper and a duplicate entry key; warnings for a published preprint, two entries for the same work, a wrong year and a LaTeX-escaped DOI](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
 and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
