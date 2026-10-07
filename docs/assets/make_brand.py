@@ -49,7 +49,6 @@ def text_width(text: str) -> float:
 # ---------------------------------------------------------------- logo
 
 NAVY = "#17324d"
-NAVY_DARK_MODE = "#24496f"
 PAPER = "#f6f9fc"
 FOLD = "#9ec5ef"
 LINE = "#c3d3e6"
@@ -86,20 +85,25 @@ def mark(x: int, y: int, background: str) -> str:
     )
 
 
-def logo(dark: bool) -> str:
+# Mid-tone wordmark colours that read on white and on dark pages (GitHub in both themes, Glama),
+# so one image serves everywhere: READMEs are also shown by sites that drop <picture>.
+INK, ACCENT, NAVY_ANY = "#4a6b8c", "#3a86d4", "#1f4166"
+DISPLAY_WIDTH = 460  # the README shows the logo at this width
+
+
+def logo() -> str:
     first, second = "paper-", "preflight"
     tracking = -2
     width_first = ARIAL_BOLD.getlength(first) + tracking * len(first)
     width_second = ARIAL_BOLD.getlength(second) + tracking * len(second)
     text_x = 174
     width = int(text_x + width_first + width_second + 24)
-    ink, accent = ("#e6edf3", "#79b8ff") if dark else ("#1b2a3a", "#2f6fb0")
-    background = NAVY_DARK_MODE if dark else NAVY
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="160" viewBox="0 0 {width} 160" role="img" aria-labelledby="title desc">
+    height = round(160 * DISPLAY_WIDTH / width)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{DISPLAY_WIDTH}" height="{height}" viewBox="0 0 {width} 160" role="img" aria-labelledby="title desc">
   <title id="title">paper-preflight</title>
   <desc id="desc">A sheet of references with a green check mark, beside the paper-preflight wordmark.</desc>
-  {mark(16, 16, background)}
-  <text x="{text_x}" y="106" fill="{ink}" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" letter-spacing="{tracking}">{first}<tspan fill="{accent}">{second}</tspan></text>
+  {mark(16, 16, NAVY_ANY)}
+  <text x="{text_x}" y="106" fill="{INK}" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" letter-spacing="{tracking}">{first}<tspan fill="{ACCENT}">{second}</tspan></text>
 </svg>
 """
 
@@ -157,15 +161,14 @@ BADGE_SET = {
 def main() -> None:
     BRAND.mkdir(parents=True, exist_ok=True)
     BADGES.mkdir(parents=True, exist_ok=True)
-    (BRAND / "paper-preflight-logo.svg").write_text(logo(dark=False), encoding="utf-8")
-    (BRAND / "paper-preflight-logo-dark.svg").write_text(logo(dark=True), encoding="utf-8")
+    (BRAND / "paper-preflight-logo.svg").write_text(logo(), encoding="utf-8")
     (BRAND / "paper-preflight-mark.svg").write_text(mark_only(), encoding="utf-8")
     for name, (en_label, en_value, zh_label, zh_value, color) in BADGE_SET.items():
         (BADGES / f"{name}.en.svg").write_text(badge(en_label, en_value, color), encoding="utf-8")
         (BADGES / f"{name}.zh-CN.svg").write_text(
             badge(zh_label, zh_value, color), encoding="utf-8"
         )
-    print(f"wrote 3 logo files and {2 * len(BADGE_SET)} badges")
+    print(f"wrote 2 logo files and {2 * len(BADGE_SET)} badges")
 
 
 if __name__ == "__main__":

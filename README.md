@@ -1,43 +1,31 @@
 <!-- mcp-name: io.github.amos689/paper-preflight -->
 
-<h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/paper-preflight-logo-dark.svg">
-    <img src="docs/assets/brand/paper-preflight-logo.svg" alt="paper-preflight" width="460">
-  </picture>
-</h1>
+<div align="center">
 
-<p align="center">
-  <strong>Check every reference of a LaTeX paper against real scholarly records before you submit.<br>
-  No LLM guessing, no false accusations.</strong>
-</p>
+![paper-preflight](docs/assets/brand/paper-preflight-logo.svg)
 
-<p align="center">
-  <a href="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml"><img src="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://pypi.org/project/paper-preflight/"><img src="https://img.shields.io/pypi/v/paper-preflight?label=PyPI&amp;color=2f6fb0" alt="PyPI version"></a>
-  <a href="LICENSE"><img src="docs/assets/badges/license.en.svg" alt="MIT license"></a>
-  <a href="https://glama.ai/mcp/servers/amos689/paper-preflight"><img src="https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg" alt="paper-preflight MCP server on Glama"></a>
-</p>
+**Check every reference of a LaTeX paper against real scholarly records before you submit.<br>
+No LLM guessing, no false accusations.**
 
-<p align="center">
-  <a href="pyproject.toml"><img src="docs/assets/badges/python.en.svg" alt="Python 3.11 to 3.14"></a>
-  <a href="#quick-start"><img src="docs/assets/badges/input.en.svg" alt="Input: LaTeX, BibTeX and PDF"></a>
-  <a href="#how-it-works"><img src="docs/assets/badges/sources.en.svg" alt="Checked against six scholarly databases"></a>
-  <a href="#design-principles"><img src="docs/assets/badges/verdicts.en.svg" alt="No LLM in the verdicts"></a>
-  <a href="docs/mcp.md"><img src="docs/assets/badges/mcp.en.svg" alt="Read-only MCP tools"></a>
-</p>
+[![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/paper-preflight?label=PyPI&color=2f6fb0)](https://pypi.org/project/paper-preflight/)
+[![MIT license](docs/assets/badges/license.en.svg)](LICENSE)
+[![paper-preflight MCP server on Glama](https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg)](https://glama.ai/mcp/servers/amos689/paper-preflight)
 
-<p align="center">
-  <a href="https://github.com/amos689/paper-preflight/actions/workflows/ci.yml"><img src="docs/assets/badges/platforms.en.svg" alt="Tested on Windows, Linux and macOS"></a>
-  <a href="README.zh-CN.md"><img src="docs/assets/badges/languages.en.svg" alt="English and Simplified Chinese"></a>
-</p>
+[![Python 3.11 to 3.14](docs/assets/badges/python.en.svg)](pyproject.toml)
+[![Input: LaTeX, BibTeX and PDF](docs/assets/badges/input.en.svg)](#quick-start)
+[![Checked against six scholarly databases](docs/assets/badges/sources.en.svg)](#how-it-works)
+[![No LLM in the verdicts](docs/assets/badges/verdicts.en.svg)](#design-principles)
+[![Read-only MCP tools](docs/assets/badges/mcp.en.svg)](docs/mcp.md)
 
-<p align="center">
-  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="https://github.com/amos689/paper-preflight/releases">Releases</a> ·
-  <a href="https://github.com/amos689/paper-preflight/issues/new/choose">Feedback</a>
-</p>
+[![Tested on Windows, Linux and macOS](docs/assets/badges/platforms.en.svg)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
+[![English and Simplified Chinese](docs/assets/badges/languages.en.svg)](README.zh-CN.md)
+
+**English** · [简体中文](README.zh-CN.md) · [Quick start](#quick-start) ·
+[Releases](https://github.com/amos689/paper-preflight/releases) ·
+[Feedback](https://github.com/amos689/paper-preflight/issues/new/choose)
+
+</div>
 
 ![paper-preflight checking the demo paper: errors for an undefined citation key, a DOI that belongs to another paper, a reference no source knows, a retracted paper and a duplicate entry key; warnings for a published preprint, two entries for the same work, a wrong year and a LaTeX-escaped DOI](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 

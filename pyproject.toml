@@ -91,6 +91,11 @@ content-type = "text/markdown"
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "README.md"
 
+# Images first: PyPI needs the file itself (raw), not GitHub's page for it (blob).
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = '!\[([^\]]*)\]\((?!https?://)([^)\s]+)\)'
+replacement = '![\1](https://raw.githubusercontent.com/amos689/paper-preflight/main/\2)'
+
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
 pattern = '\]\((?!https?://|#)([^)\s]+)\)'
 replacement = '](https://github.com/amos689/paper-preflight/blob/main/\1)'
