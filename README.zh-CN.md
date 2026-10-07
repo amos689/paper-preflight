@@ -8,7 +8,7 @@
 
 **投稿前，把 LaTeX 论文的每一条参考文献拿到真实学术数据库里核对一遍。不靠大模型猜，不乱扣"伪造"的帽子。**
 
-![paper-preflight 检查示例论文：未定义的引用键、指向另一篇论文的 DOI、所有数据源都查不到的文献和已撤稿论文报为错误；已正式发表的预印本、错误的年份和带 LaTeX 转义的 DOI 报为警告](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
+![paper-preflight 检查示例论文：未定义的引用键、指向另一篇论文的 DOI、所有数据源都查不到的文献、已撤稿论文和重复的条目键报为错误；已正式发表的预印本、指向同一作品的两个条目、错误的年份和带 LaTeX 转义的 DOI 报为警告](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 
 大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
 读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
