@@ -33,6 +33,12 @@ TITLE_SAME = 0.95
 TITLE_VARIANT = 0.90
 TITLE_ACCEPT = 0.92  # minimum title similarity to accept an unanchored search candidate
 MIN_PREFIX_CHARS = 30  # a title may omit its subtitle only if the remaining prefix is this long
+MIN_PREFIX_WORDS = 5  # ... or has this many words ("An Image is Worth 16x16 Words", 29 chars)
+
+
+def long_prefix(key: str) -> bool:
+    """A title key long enough to stand for a title without its subtitle."""
+    return len(key) >= MIN_PREFIX_CHARS or len(key.split()) >= MIN_PREFIX_WORDS
 
 
 @dataclass(frozen=True)
@@ -130,13 +136,13 @@ def subtitle_variant(a: str, b: str) -> bool:
     short, long_ = sorted((ka, kb), key=len)
     if not (":" in a or ":" in b or " - " in a or " - " in b):
         return False
-    if len(short) >= MIN_PREFIX_CHARS and long_.startswith(short):
+    if long_prefix(short) and long_.startswith(short):
         return True
     # or without the name before the colon: arXiv's "mHC: Manifold-Constrained Hyper-Connections"
     for full, rest in ((b, ka), (a, kb)):
         name, colon, tail = full.partition(":")
         short_name = colon and len(name.split()) <= 2
-        if short_name and len(rest) >= MIN_PREFIX_CHARS and title_key(tail) == rest:
+        if short_name and long_prefix(rest) and title_key(tail) == rest:
             return True
     if len(kb) >= len(ka):
         return False
@@ -245,6 +251,10 @@ EARLIER_VERSION = "matches an earlier version's title"
 
 
 CONTAINER_IN_TITLE = "the title field also names the book or proceedings"
+NAME_AFTER_TITLE = "the title field adds a name in parentheses"
+# a dataset's or system's name after the title: "... in Large Language Models (SimpleQA)"; one
+# word with a second capital or a digit, so that "(Extended Abstract)" stays part of a title
+_NAME_AFTER = re.compile(r"^(?P<head>.{12,}?)\s*\((?P<name>[A-Z][a-z]*[A-Z0-9][\w-]{0,22})\)\s*$")
 # "Quarks and Strings on a Lattice, in New Phenomena in Subnuclear Physics": a chapter's title
 # field that also names its book, a style trick (set with \textup in a real paper's .bib)
 _IN_CONTAINER = re.compile(r"^(?P<head>.{12,}?),\s+in\s+(?P<tail>[A-Z]\S*(?:\s+\S+){2,})$")
@@ -276,6 +286,12 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
         # software is cited by its name and what it does ("spaCy: Industrial-strength Natural
         # Language Processing in Python"); its record may carry the name alone ("spaCy")
         return FieldCheck("match", 1.0)
+    named = _NAME_AFTER.match(entry_title)
+    # not when the record has the name too, perhaps spaced out ("(S 4 G)" for "(S4G)")
+    if named and title_key(named["name"]) not in title_key(record.title).replace(" ", ""):
+        found = check_title(named["head"], record)
+        if found.status == "match" and not found.changed:  # word for word without the name
+            return replace(found, status="variant", note=NAME_AFTER_TITLE)
     within = _IN_CONTAINER.match(entry_title)
     if within and title_score(within["head"], record.title) >= TITLE_SAME:
         found = check_title(within["head"], record)
@@ -547,11 +563,21 @@ def given_names_differ(a: Person, b: Person) -> bool:
         return False
     if frozenset((first_a, first_b)) in _NICKNAMES:
         return False
+    if _middle_nickname(words_a, first_b) or _middle_nickname(words_b, first_a):
+        return False
     if first_a in _COGNATES and _COGNATES[first_a] == _COGNATES.get(first_b):
         return False
     if _name_and_initials(words_a, words_b) or _name_and_initials(words_b, words_a):
         return False
     return fuzz.ratio(first_a, first_b) < 75 and Levenshtein.distance(first_a, first_b) > 1
+
+
+def _middle_nickname(words: list[str], other: str) -> bool:
+    """``other`` is a nickname of a name whose initial is one of ``words``' middle initials:
+    "Robert M." publishes as "Mike" (Robert Michael Kirby)."""
+    formal = {name for pair in _NICKNAMES if other in pair for name in pair if name != other}
+    middles = [w for w in words[1:] if len(w) == 1]
+    return any(name.startswith(m) for m in middles for name in formal)
 
 
 def _name_and_initials(words: list[str], others: list[str]) -> bool:
@@ -875,6 +901,25 @@ _VENUE_FULL_NAMES = {
 }
 
 
+def canonical_venues(text: str | None) -> set[str]:
+    """Every recognised venue a name names: "COLING/ACL 2006" names COLING and ACL."""
+    if not text:
+        return set()
+    folded = " ".join(re.findall(r"[\w-]+", fold(_URL.sub(" ", text))))
+    return {
+        key
+        for key, patterns in _VENUES
+        if any(re.search(rf"(?<!\w){re.escape(p)}(?!\w)", folded) for p in patterns)
+    }
+
+
+_SIG_NEWSLETTER = re.compile(
+    r"\bSIG[A-Z]+ (?:Notices|Record|News|Newsletter)\b|Computer Architecture News|"
+    r"Operating Systems Review|Performance Evaluation Review|Software Engineering Notes",
+    re.IGNORECASE,
+)
+
+
 def venue_words(text: str | None) -> set[str]:
     words = re.findall(r"[a-z]+", fold(text or ""))
     return {w for w in words if len(w) >= 3 and w not in _VENUE_FILLER}
@@ -940,10 +985,14 @@ def _check_venue(
     LNCS, OpenReview), and only judges venue names (``named``: booktitle or journal, not a
     publisher). A workshop must share no word at all: its name rarely contains its venue's.
     """
+    if venue and _SIG_NEWSLETTER.search(venue):
+        # ACM's SIG newsletters carry the proceedings of their conferences (ASPLOS in SIGARCH
+        # Computer Architecture News): the newsletter is no other venue
+        return FieldCheck("unknown")
     mine, theirs = canonical_venue(venue), canonical_venue(record.venue)
     if mine is not None and theirs is not None:
-        if mine == theirs:
-            return FieldCheck("match")
+        if mine == theirs or theirs in canonical_venues(venue):
+            return FieldCheck("match")  # or a joint meeting: COLING/ACL 2006 is ACL's too
         if "workshop" in fold(venue or "") and "workshop" not in fold(record.venue or ""):
             # a workshop at another meeting: the work's workshop version (Pavlova et al., the
             # ICLR 2025 BuildingTrust workshop, then ICML 2025)

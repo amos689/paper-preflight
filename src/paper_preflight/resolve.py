@@ -27,12 +27,12 @@ from paper_preflight.bib.normalize import title_key, word_count
 from paper_preflight.bib.parse import BibEntry
 from paper_preflight.cache import Cache
 from paper_preflight.match import (
-    MIN_PREFIX_CHARS,
     TITLE_VARIANT,
     EntryInfo,
     at_coordinates,
     check_authors,
     check_title,
+    long_prefix,
     title_score,
 )
 from paper_preflight.sources import (
@@ -102,6 +102,9 @@ class Evidence:
     # longer titles a search found that begin with the entry's whole title: it may be a real
     # work cited by the first words of its title ("Semantically Diverse Language Generation")
     extended: list[str] = field(default_factory=list)
+    # their records, kept apart from the candidates: only a title cut short binds to one
+    # (verdict._bind_candidate), and they neither make an entry ambiguous nor stop the rescue
+    extending: list[SourceRecord] = field(default_factory=list)
     negative: set[str] = field(default_factory=set)  # sources that answered "no such work"
     unavailable: dict[str, str] = field(default_factory=dict)  # source -> reason
     # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
@@ -601,7 +604,7 @@ def _close_title(entry: str | None, found: str) -> bool:
     # only that way round: a result that is the entry's title without its subtitle is often
     # another work (Robinson et al. 2011 found as a shorter title, and lost its rescue)
     head = title_key(re.split(r":| - ", found, maxsplit=1)[0])
-    return len(head) >= MIN_PREFIX_CHARS and head == title_key(entry)
+    return long_prefix(head) and head == title_key(entry)
 
 
 async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
@@ -624,29 +627,39 @@ async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
     if found is None:
         return
     wanted: dict[str, list[Evidence]] = {}
+    wanted_longer: dict[str, list[Evidence]] = {}
     for low, owners in by_prefix.items():
         for item in owners:
             if "dblp" in item.unavailable:
                 continue  # not answered: no "no such work" either
             candidates = found.get(low, [])
-            item.extended += _extending(item.info.title, [t for _, t in candidates])
+            longer = _extending(item.info.title, [t for _, t in candidates])
+            item.extended += longer
             close = [p for p, t in candidates if _close_title(item.info.title, t)][:5]
             if not close:
                 item.negative.add("dblp")
+                # the entry may be a title cut short (see verdict._bind_candidate)
+                for pub in [p for p, t in candidates if t in longer][:3]:
+                    wanted_longer.setdefault(pub, []).append(item)
             for pub in close:
                 wanted.setdefault(pub, []).append(item)
-    if not wanted:
+    if not wanted and not wanted_longer:
         return
+    every = {
+        pub: wanted.get(pub, []) + wanted_longer.get(pub, []) for pub in {*wanted, *wanted_longer}
+    }
     records = await _guard(
-        [item for owners in wanted.values() for item in owners],
-        lambda: dblp.full_records(sources.dblp, list(wanted)),
-        owners_of=lambda pub: wanted.get(pub, []),
+        [item for owners in every.values() for item in owners],
+        lambda: dblp.full_records(sources.dblp, list(every)),
+        owners_of=lambda pub: every.get(pub, []),
     )
-    for pub, owners in wanted.items():
+    for pub in every:
         record = (records or {}).get(pub.removeprefix(dblp.REC))
         if record is not None:
-            for item in owners:
+            for item in wanted.get(pub, []):
                 item.candidates.append(record)
+            for item in wanted_longer.get(pub, []):
+                item.extending.append(record)
 
 
 async def _search_crossref(item: Evidence, sources: Sources) -> None:
@@ -664,7 +677,9 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
     )
     if records is None:
         return
-    item.extended += _extending(info.title, [r.title for r in records])
+    longer = _extending(info.title, [r.title for r in records])
+    item.extended += longer
+    item.extending += [r for r in records if r.title in longer]
     close = [r for r in records if _close_title(info.title, r.title)]
     if close:
         item.candidates.extend(close)

@@ -271,10 +271,15 @@ def _bind_candidate(
     *,
     preprint_pair: bool = False,
     current_year: int | None = None,
+    extending: list[SourceRecord] | None = None,
 ) -> Match | None:
-    """Bind an unanchored entry to one search candidate, or to none when in doubt."""
+    """Bind an unanchored entry to one search candidate, or to none when in doubt.
+
+    ``extending``: found records whose title is the entry's and more, considered only as the
+    work behind a title cut short.
+    """
     candidates = [r for r in candidates if not book_review(info, r)]
-    if not candidates:
+    if not candidates and not extending:
         return None
     evaluated = [evaluate(info, r, preprint_pair=preprint_pair) for r in candidates]
     best = best_candidate(info, candidates, preprint_pair=preprint_pair)
@@ -338,7 +343,7 @@ def _bind_candidate(
     key = title_key(info.title)
     longer = [
         m
-        for m in evaluated
+        for m in evaluated + [evaluate(info, r) for r in extending or [] if r not in candidates]
         if words >= MIN_VENUE_TITLE_WORDS
         and m.authors.status == "match"
         and m.authors.first_author_match
@@ -880,8 +885,9 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     bound = min(same, key=_rank) if same else None
     if bound is None and not anchored:
         bound = _bind_candidate(
-            info, evidence.candidates, preprint_pair=preprint, current_year=current_year
-        )
+            info, evidence.candidates, preprint_pair=preprint, current_year=current_year,
+            extending=evidence.extending,
+        )  # fmt: skip
 
     if bound is not None and not preprint and is_preprint(bound.record):
         bound = _cited_version(info, evidence, bound)
@@ -1015,7 +1021,8 @@ def _under_review(info: EntryInfo) -> bool:
 # Publications that appear only on their own sites, cited like journals ("journal =
 # {Transformer Circuits Thread}"); no queried source indexes them
 _WEB_VENUES = re.compile(
-    r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b",
+    r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b|"
+    r"\bblack ?hat\b|\bdef ?con\b",
     re.IGNORECASE,
 )
 

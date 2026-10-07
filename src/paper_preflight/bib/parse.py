@@ -188,11 +188,16 @@ def _decode_entity(match: re.Match[str]) -> str:
     return _LATEX_SPECIAL.get(char, char)
 
 
+_IFMMODE_RE = re.compile(r"\\ifmmode\s*(?P<math>.*?)\\else\s*(?P<text>.*?)\\fi(?:\{\})?", re.S)
+
+
 def latex_to_text(value: str) -> str:
     # BibTeX copied from web pages carries HTML entities ("Francesco d&apos;Amore" in a dblp-
     # scraped HALLMARK entry); decode them first, or "&" reaches LaTeX as an alignment tab.
     value = _HTML_ENTITY_RE.sub(_decode_entity, value)
     value = MARKUP_TAG_RE.sub("", value)  # ADS: "<ASTROBJ>NGC 1068</ASTROBJ>"
+    # APS: "\ifmmode \check{S}\else \v{S}\fi{}upi\ifmmode \acute{c}\else \'{c}\fi{}" is Šupić
+    value = _IFMMODE_RE.sub(lambda m: m["text"], value)
     try:
         text = _latex2text.latex_to_text(value, latex_context=_WALKER_CONTEXT)
     except Exception:  # pylatexenc can fail on malformed input; fall back

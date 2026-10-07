@@ -97,7 +97,7 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     if (
         item.get("type") == "journal-article"
         and not item.get("published-print")
-        and item.get("volume")
+        and (item.get("volume") or (len(online) >= 2 and online[1] == 12))
         and len(online) >= 2
         and online[0]
         and online[1] >= 10

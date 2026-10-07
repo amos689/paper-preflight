@@ -6,6 +6,30 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+Eleven of the nineteen false positives on the ninth batch of real papers (heldout8):
+
+- A title cited without its subtitle counts when the part before the colon has five words, not
+  only thirty characters ("An Image is Worth 16x16 Words"); a title cut short that search finds
+  only as a longer title, by the entry's own authors, binds to it (ChestX-ray8). Such records
+  are kept apart from the search candidates, so they make no entry ambiguous.
+- A dataset's or system's name after a title ("... Models (SimpleQA)") is not a title
+  difference when the title matches word for word without it (REF012).
+- A middle name's nickname ("Robert M." publishing as "Mike") is the same person (REF011);
+  APS's `\ifmmode … \else … \fi` inside a name keeps its text branch.
+- A joint meeting names each of its venues ("COLING/ACL 2006" is ACL's too), and ACM's SIG
+  newsletters (SIGARCH Computer Architecture News for ASPLOS) are no other venue (REF014).
+- Black Hat and DEF CON talks are unindexed venues, not "not found" (REF003).
+- An MNRAS article online in December with no print date or volume yet counts next year's
+  volume year (REF013).
+- A footnote Crossref ran into a title ("...Network**Based on ...") is removed, so Hecht-
+  Nielsen's 1992 chapter is verified against its own record.
+
+Not fixed: two other forms of a person's name ('Simon' for Yuexiang, 'Balu'), four pages of a
+reference site cited with its handbook's arXiv ID, one registry's short author list and one
+transliterated title ('Nystroem').
+
 ## [0.5.1] - 2026-10-07
 
 A compliance fix (CNKI DOIs) and eight fewer false positives. On a new held-out week of real

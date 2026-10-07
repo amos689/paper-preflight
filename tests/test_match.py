@@ -985,3 +985,45 @@ def test_software_is_matched_by_its_repository_name() -> None:
     )  # fmt: skip
     assert check_title("RDKit: Open-source cheminformatics", release).status == "match"
     assert check_title("Pandas: Powerful data structures", release).status == "mismatch"
+
+
+def test_a_dataset_name_after_the_title_is_not_a_different_title() -> None:
+    record = SourceRecord(
+        source="arxiv", source_id="2411.04368",
+        title="Measuring short-form factuality in large language models",
+    )  # fmt: skip
+    entry = "Measuring Short-Form Factuality in Large Language Models (SimpleQA)"
+    assert check_title(entry, record).status == "variant"
+    # the record has the name too, spaced out: it is part of the title
+    spaced = SourceRecord(
+        source="crossref", source_id="x", title="Basic Reproduction Number (R 0 )"
+    )
+    assert check_title("Basic Reproduction Number (R0)", spaced).status == "match"
+
+
+def test_a_short_head_of_five_words_stands_for_a_title_without_its_subtitle() -> None:
+    record = SourceRecord(
+        source="dblp", source_id="conf/iclr/DosovitskiyB0WZ21",
+        title="An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+    )  # fmt: skip
+    assert check_title("An Image is Worth 16x16 Words", record).status == "variant"
+
+
+def test_a_joint_meeting_names_both_venues() -> None:
+    record = SourceRecord(source="dblp", source_id="conf/acl/Bird06", title="NLTK", venue="ACL")
+    venue = "Proceedings of the COLING/ACL 2006 interactive presentation sessions"
+    assert check_venue(venue, record).status == "match"
+    asplos = SourceRecord(source="dblp", source_id="conf/asplos/X15", title="X", venue="ASPLOS")
+    assert check_venue("ACM SIGARCH Computer Architecture News", asplos).status == "unknown"
+
+
+def test_a_middle_name_may_be_used_by_its_nickname() -> None:
+    assert not given_names_differ(Person("Kirby", "Robert M."), Person("Kirby", "Mike"))
+    assert given_names_differ(Person("Kirby", "Robert J."), Person("Kirby", "Mike"))
+
+
+def test_ifmmode_keeps_the_text_branch() -> None:
+    from paper_preflight.bib.parse import latex_to_text
+
+    raw = "\\ifmmode \\check{S}\\else \\v{S}\\fi{}upi\\ifmmode \\acute{c}\\else \\'{c}\\fi{}"
+    assert latex_to_text(raw) == "Šupić"
