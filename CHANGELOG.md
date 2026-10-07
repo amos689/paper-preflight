@@ -27,7 +27,10 @@ experiments' development data, 63 of 235 such entries had at least one warning o
 - A Chinese title with English acronyms in it ("基于BERT的...") is Chinese; a Chinese journal's
   DOI names its year ("10.3724/SP.J.1087.2012.00322"); a DOI taken from a URL loses a trailing
   slash; doi.org's agency lookup asks for six DOIs at a time (25 often timed out).
-
+- "The DOI does not exist" (REF002) needs the Handle API's "not found". doi.org's agency lookup
+  (doiRA) also says "does not exist" when the handle server it asks does not answer (code 2), as
+  ISTIC's often did in the Chinese-reference experiments for DOIs that resolved an hour later;
+  such a DOI is now left undetermined. One more request per missing DOI.
 
 Eleven of the nineteen false positives on the ninth batch of real papers (heldout8):
 

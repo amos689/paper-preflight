@@ -77,13 +77,19 @@ async def _answers(client: SourceClient, items: dict[str, Any]) -> dict[str, Age
     result = {answer.doi.lower(): answer for answer in parse_doira(payload)}
     # doiRA answers a bare "Error" for DOIs whose prefix is not registered at all (a made-up
     # 10.77771/... in HALLMARK). That word alone proves nothing, so the Handle API decides.
-    for doi in unclear_dois(payload):
+    # Nor does "DOI does not exist" alone: doiRA says so when the handle server it asks does not
+    # answer (code 2), as ISTIC's often did in the Chinese-reference experiments (X3), for
+    # DOIs that resolve an hour later. Only the Handle API's "not found" makes a DOI missing.
+    missing = [doi for doi, answer in result.items() if not answer.exists]
+    for doi in unclear_dois(payload) + missing:
         try:
             exists = await handle_exists(client, doi)
         except SourceUnavailable:
-            continue  # stays unknown: an unanswered check is not a negative
+            exists = None
         if exists is False:
             result[doi] = AgencyAnswer(doi, None, False)
+        else:  # registered but doiRA did not say where, or unknown: no negative either way
+            result.pop(doi, None)
     return result
 
 
