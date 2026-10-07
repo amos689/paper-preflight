@@ -18,11 +18,12 @@ from __future__ import annotations
 import asyncio
 import tempfile
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from fastmcp import Context, FastMCP
 from fastmcp.exceptions import ToolError
 from mcp.types import ToolAnnotations
+from pydantic import Field
 
 from paper_preflight import __version__
 from paper_preflight.check import CheckResult, VerifyOptions, run_check
@@ -31,6 +32,16 @@ from paper_preflight.findings import Severity
 from paper_preflight.fixes import edits, plan
 from paper_preflight.rules import RULES, describe
 from paper_preflight.tex.project import ProjectError
+
+# Parameter descriptions shared by several tools.
+PATH = Field(
+    description="A LaTeX project folder, a .tex file or a .bib file, relative to the workspace "
+    "root (default: the root itself)."
+)
+OFFLINE = Field(
+    description="true: answer only from the local cache and never touch the network (references "
+    "not cached yet come back as unverified)."
+)
 
 MAX_PASSAGES = 20  # preflight_cited_passages returns at most this many passages per claim
 PASSAGE_CHARS = 1500  # and cuts each one to this length
@@ -106,12 +117,21 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
     )
     async def preflight_check(
         ctx: Context,
-        path: str = ".",
-        offline: bool = False,
-        max_findings: int = 20,
-        offset: int = 0,
-        include_info: bool = False,
-        lang: Literal["en", "zh"] = "en",
+        path: Annotated[str, PATH] = ".",
+        offline: Annotated[bool, OFFLINE] = False,
+        max_findings: Annotated[
+            int, Field(description="How many findings to return in this call (at least 1).")
+        ] = 20,
+        offset: Annotated[
+            int,
+            Field(description="Where to start in the findings: 0 first, then `next_offset`."),
+        ] = 0,
+        include_info: Annotated[
+            bool, Field(description="Also return info findings (suggestions), not only errors.")
+        ] = False,
+        lang: Annotated[
+            Literal["en", "zh"], Field(description="Language of the messages: English or Chinese.")
+        ] = "en",
     ) -> dict[str, Any]:
         """Verify every cited reference of a LaTeX project (or a .bib file) against real
         scholarly records, and check citation keys and the bibliography.
@@ -122,6 +142,10 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         so the paper cannot be declared clean yet. `offline: true` answers from the local cache
         only. The first run of a paper may take a minute or two (progress is reported while the
         references are searched); later runs are served from the cache.
+
+        Use this first, on the whole paper. Use `preflight_explain` to understand a finding,
+        `preflight_bib_fix` to get the corrections as a diff, and `preflight_bib_lookup` to get a
+        single entry.
         """
         target = _inside(root, path)
         loop = asyncio.get_running_loop()
@@ -154,9 +178,15 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
             open_world_hint=False,
         )
     )
-    def preflight_explain(rule_id: str) -> dict[str, Any]:
+    def preflight_explain(
+        rule_id: Annotated[
+            str,
+            Field(description="A rule ID as it appears in a finding, such as REF003 or CIT001."),
+        ],
+    ) -> dict[str, Any]:
         """Explain a paper-preflight rule (for example REF003 or CIT001): what it detects, its
-        default severity, the message template and whether a fix can be applied safely."""
+        default severity, the message template and whether a fix can be applied safely. Use it
+        when a finding from `preflight_check` is unclear; it does not look at the paper."""
         described = describe(rule_id)
         if described is None:
             raise ToolError(f"Unknown rule '{rule_id}'. Known rules: {', '.join(sorted(RULES))}.")
@@ -171,12 +201,26 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         )
     )
     def preflight_bib_lookup(
-        identifier: str | None = None,
-        title: str | None = None,
-        author: str | None = None,
-        year: int | None = None,
-        prefer: Literal["published", "preprint"] = "published",
-        offline: bool = False,
+        identifier: Annotated[
+            str | None,
+            Field(
+                description="A DOI (10.xxxx/...) or an arXiv ID (2401.01234). Give this or `title`."
+            ),
+        ] = None,
+        title: Annotated[
+            str | None, Field(description="The work's title, when there is no identifier.")
+        ] = None,
+        author: Annotated[
+            str | None, Field(description="An author's family name, to narrow a title search.")
+        ] = None,
+        year: Annotated[
+            int | None, Field(description="The publication year, to narrow a title search.")
+        ] = None,
+        prefer: Annotated[
+            Literal["published", "preprint"],
+            Field(description="For a preprint that has been published: which version to return."),
+        ] = "published",
+        offline: Annotated[bool, OFFLINE] = False,
     ) -> dict[str, Any]:
         """Get a BibTeX entry for a DOI, an arXiv ID or a title, built from the registry record
         instead of written from memory. Give `identifier`, or `title` (with `author` and `year`
@@ -187,6 +231,9 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         the source; do not invent one) or "unavailable" (a source did not answer; retry later).
         A published preprint comes back as its published version with the eprint kept;
         `status_flags` lists notices such as "retracted".
+
+        Use it when adding or replacing one entry; to check a whole bibliography use
+        `preflight_check`.
         """
         if (identifier is None) == (title is None):
             raise ToolError("Give either `identifier` or `title`.")
@@ -211,10 +258,19 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         )
     )
     def preflight_bib_fix(
-        path: str = ".",
-        level: Literal["safe", "unsafe"] = "safe",
-        keys: list[str] | None = None,
-        offline: bool = False,
+        path: Annotated[str, PATH] = ".",
+        level: Annotated[
+            Literal["safe", "unsafe"],
+            Field(
+                description="safe: only broken identifiers and missing DOIs; unsafe: also "
+                "authors, title, year and venue from the record."
+            ),
+        ] = "safe",
+        keys: Annotated[
+            list[str] | None,
+            Field(description="Only these citation keys (default: every key with a fix)."),
+        ] = None,
+        offline: Annotated[bool, OFFLINE] = False,
     ) -> dict[str, Any]:
         """Propose edits to the .bib files, taken from the verified records, as a unified diff.
         Nothing is written: apply the diff with your own editing tools.
@@ -223,6 +279,8 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         registry has; `level="unsafe"` also rewrites authors, title, year and venue from the
         record and removes identifiers that point to another work. Show unsafe diffs to the user
         before applying them. References nobody could find are never "fixed".
+
+        Use it after `preflight_check` has reported errors or warnings in the bibliography.
         """
         target = _inside(root, path)
         try:
@@ -259,10 +317,13 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         )
     )
     async def preflight_cited_passages(
-        key: str,
-        path: str = ".",
-        max_passages: int = 8,
-        offline: bool = False,
+        key: Annotated[str, Field(description="The citation key whose citing sentences to trace.")],
+        path: Annotated[str, PATH] = ".",
+        max_passages: Annotated[
+            int,
+            Field(description="Passages to return per citing sentence, best first (1 to 20)."),
+        ] = 8,
+        offline: Annotated[bool, OFFLINE] = False,
     ) -> dict[str, Any]:
         """For each sentence of the paper that cites `key`: the claim it makes and the passages
         of the cited work ranked best for that claim, for you to judge whether the work supports
@@ -275,6 +336,9 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
         with the reason: no text, only the abstract, or no passage says it. Never call a
         citation wrong or invented on this evidence: the text may say it in other words, or be
         only an abstract. `evidence.level` is "full_text", "abstract" or "none".
+
+        Use it only after `preflight_check` has verified that the work exists; it answers
+        whether a real work supports a sentence, not whether the reference is correct.
         """
         from paper_preflight.support.judge import name_in_title
         from paper_preflight.support.retrieve import rank
