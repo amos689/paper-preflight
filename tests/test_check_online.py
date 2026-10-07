@@ -318,3 +318,21 @@ def test_a_shorter_record_found_by_coordinates_is_only_worth_a_look(
     assert ref["verdict"] == "verified"
     (author,) = [f for f in payload["findings"] if f["rule"] == "REF011"]
     assert author["severity"] == "info"
+
+
+def test_a_cnki_doi_is_never_resolved(tmp_path: Path, recorded_web: FakeWeb) -> None:
+    # doi.org answers a CNKI DOI's content negotiation with a redirect to chndoi.org, whose
+    # robots.txt disallows every agent: the DOI is known to exist, and nothing more is asked
+    bib = tmp_path / "refs.bib"
+    bib.write_text(
+        "@article{cnki, author = {Wang, Lei}, title = {A Study of Software Testing},"
+        " journal = {Journal of Software}, year = {2021}, doi = {10.13328/j.cnki.jos.006074}}",
+        encoding="utf-8",
+    )
+    result, payload = check_json(tmp_path, str(bib), "--fail-on", "never")
+    assert result.exit_code == EXIT_OK
+    asked = [str(r.url) for r in recorded_web.requests]
+    assert not [url for url in asked if "doi.org/10.13328" in url or "chndoi" in url]
+    (ref,) = payload["references"]
+    assert ref["verdict"] == "cannot_determine"
+    assert "IDENTIFIER_EXISTS_NO_METADATA" in ref["reasons"]

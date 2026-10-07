@@ -61,6 +61,10 @@ SEARCH_CLOSE = 0.85  # a search result this close to the entry's title is compar
 GREY_TYPES = {"book", "booklet", "manual", "misc", "online", "software", "techreport", "report",
               "phdthesis", "mastersthesis", "thesis", "unpublished", "electronic", "standard",
               "patent", "dataset"}  # fmt: skip
+# Registration agencies whose DOIs doi.org cannot answer with metadata: it redirects to the
+# agency's landing page instead. CNKI's is chndoi.org, whose robots.txt disallows every agent,
+# so a CNKI DOI is never resolved; doiRA's answer that it exists is all that is known.
+NO_CONTENT_NEGOTIATION = frozenset({"CNKI"})
 # Sites whose papers the sources index: a work linked there that no source knows is missing.
 # A link anywhere else (a society's own proceedings site, a lab page) may be the only copy.
 INDEXED_HOSTS = (
@@ -280,6 +284,8 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         for item in by_doi.get(doi, []):
             item.status_records.append(record)
     for doi, agency in other_dois:
+        if (agency or "").upper() in NO_CONTENT_NEGOTIATION:
+            continue  # the DOI exists (doiRA said so); its metadata is not asked for
         await _content_negotiation(doi, agency or "", by_doi.get(doi, []), sources)
 
     # 2. arXiv IDs (from eprint/journal/url fields and from DataCite arXiv DOIs).

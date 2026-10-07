@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- A CNKI DOI is no longer resolved. doi.org answers content negotiation for CNKI's DOIs with a
+  redirect to chndoi.org, whose robots.txt disallows every agent, and the check followed it. A
+  CNKI DOI is now known to exist from doi.org's agency lookup (doiRA) and is otherwise left
+  undetermined, as the reference says.
+
 Eight of the ten false positives on the eighth batch of real papers (heldout7):
 
 - A person missing from the matched record is reported only when every record of the work
