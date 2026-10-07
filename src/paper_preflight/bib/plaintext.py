@@ -89,6 +89,11 @@ _PREPRINT = re.compile(r"^(?:arXiv|CoRR|bioRxiv|medRxiv|SSRN|Preprint|preprint)\
 # a name: capitalised words, a few lower-case particles, initials
 _NAME_WORD = r"(?:[A-Z][\w'’\-.?@]*|(?:van|von|de|der|den|del|della|di|da|du|la|le|dos|bin|al)\b)"
 _PERSON = re.compile(rf"{_NAME_WORD}(?:\s*{_NAME_WORD}){{0,5}}\.?")
+# a name with one or two short lower-case words after its first (see _looks_like_names)
+_LOOSE_PERSON = re.compile(rf"{_NAME_WORD}(?:\s+(?:{_NAME_WORD}|[a-z]{{2,8}})){{1,4}}\.?")
+_FUNCTION_WORDS = frozenset(
+    "a an the of on in for to at by and or with from via into is are as its".split()
+)
 _ET_AL = re.compile(r",?\s*(?:and\s+)?et\.?\s+al\.?$")
 # Nature, LNCS: "Smith, J. A., Lee, K. & Wu, X." and what follows
 _FAMILY_INITIALS = re.compile(
@@ -496,12 +501,27 @@ def _numbered(text: str) -> tuple[str, dict[str, str]] | None:
     return (entry_type, fields) if entry_type is not None else None
 
 
+def _loose_person(part: str) -> bool:
+    """A capitalised name with one or two short lower-case words: "Yun chen Chen". Never a
+    word of a phrase ("Proceedings on", Badalova & Mayr's P3R30)."""
+    lower = [w for w in part.split() if re.fullmatch(r"[a-z]+", w)]
+    return (
+        bool(_LOOSE_PERSON.fullmatch(part))
+        and len(lower) <= 2
+        and not any(w in _FUNCTION_WORDS for w in lower)
+    )
+
+
 def _looks_like_names(text: str) -> bool:
     """A list of people or one organisation: capitalised names joined by commas, "and", "&"."""
     text = deaccent(_ET_AL.sub("", text.strip()))  # "Étienne Pardoux"
     parts = [p.strip() for p in re.split(r",|\band\b|&", text) if p.strip()]
     if not parts or len(text) > 3000:
         return False
+    names = [bool(_PERSON.fullmatch(p)) or p == "others" for p in parts]
+    # a name with a lower-case part, as PDFs and generated lists write them ("Yun chen Chen",
+    # "Oded teht sun"): among many proper names only, for a title may read like one
+    loose = sum(not n and _loose_person(p) for n, p in zip(names, parts, strict=True))
     # a long list may hold a name a PDF mangled ("Anton V orontsov", "Christopher R ́e")
-    odd = sum(not (_PERSON.fullmatch(p) or p == "others") for p in parts)
-    return odd <= len(parts) // 8
+    odd = len(parts) - sum(names) - loose
+    return odd <= len(parts) // 8 and (loose == 0 or sum(names) >= max(3, 3 * loose))

@@ -283,3 +283,20 @@ def test_a_list_from_stdin() -> None:
     result = CliRunner().invoke(app, ["check", "-", "--offline", "-f", "json"], input=LIST)
     assert result.exit_code in {0, 2}, result.output
     assert '"entries": 2' in result.output.replace(" ", "").replace('"entries":2', '"entries": 2')
+
+
+def test_a_name_with_a_lower_case_part_among_many() -> None:
+    # PDFs and generated lists write "Yun chen Chen" or "Wei xin Zhao": among proper names, still
+    # a name, so the list is read as authors and the title is found
+    _, fields = parse_reference(
+        "Anna Berg, Carl Dahl, Erik Fors, Wei xin Zhao, and Greta Holm. Learning to rank with "
+        "sparse graphs. In Proceedings of the 30th Conference on Learning Theory, 2021."
+    )
+    assert fields["title"] == "Learning to rank with sparse graphs"
+    assert fields["author"].startswith("Anna Berg and Carl Dahl")
+    # a phrase is not: "Proceedings on" before a quoted workshop name (Badalova & Mayr P3R30)
+    _, fields = parse_reference(
+        "Anna Berg, Carl Dahl, and Erik Fors. Sparse graphs. In Ian Moss, Jon Lake (eds.), "
+        "Proceedings on \u201cWhat Fails and Why\u201d at NeurIPS 2023 Workshops, 2023."
+    )
+    assert fields["title"] == "Sparse graphs"

@@ -42,7 +42,7 @@ reason = "A real survey title with invented authors; several surveys share the t
 
 [iclr2026.5]
 verdict = "miss"
-reason = "The plain-text reader read no authors or title (a long author list with a garbled name)."
+reason = "GPQA's real title with garbled, partly invented authors; only Semantic Scholar answers for it, and its authors are never held against an entry."
 
 [iclr2026.6]
 verdict = "miss"
