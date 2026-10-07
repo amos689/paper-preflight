@@ -2908,3 +2908,217 @@ note = "TSE published the article online in 2018 (its DOI is tse.2018.2872971); 
 [finding."2608.11744v1:li2024llm:REF015"]
 verdict = "correct"
 note = "The preprint appeared in ICSE (2025), DOI 10.1109/icse55347.2025.00153 (same title and authors)."
+
+# heldout7 (2026-08-19..25), held out for 0.5.0; reviewed 2026-10-07
+
+[finding."2608.18437v2:zheng-yu-2025-tangut-translation:REF012"]
+verdict = "correct"
+note = "The ACL Anthology title (2025.alp-1.16) says 'Large Language Model'; the entry has 'Models'."
+
+[finding."2608.18489v1:zhang2026diagnosing:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-2274 is 2025."
+
+[finding."2608.18404v1:kernel5_bagnell2003policy:REF011"]
+verdict = "correct"
+note = "The NIPS 2003 paper is by Bagnell, Kakade, Ng and Schneider; the entry leaves out J. Andrew Bagnell, its first author."
+
+[finding."2608.18404v1:hdc_application_1_fpga:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.18404v1:gymnasium:REF013"]
+verdict = "correct"
+note = "Gymnasium is in the NeurIPS 2025 Datasets and Benchmarks track (proceedings volume 38, 2025); the entry says 2026."
+
+[finding."2608.18419v1:gruver2024large:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 is the 2023 conference; the entry says 2024."
+
+[finding."2608.18412v1:Ando2024-ow:REF003"]
+verdict = "unclear"
+note = "A paper said to be at the 86th IPSJ National Convention (2024); neither CiNii nor the queried sources know it, and the convention's proceedings could not be checked."
+
+[finding."2608.18413v1:fan2024trim3dgs:REF011"]
+verdict = "correct"
+note = "Trim 3D Gaussian Splatting is by Lue Fan et al.; the entry has 'Zongcheng Fan'."
+
+[finding."2608.18413v1:gao2025citygsx:REF011"]
+verdict = "correct"
+note = "arXiv 2503.23044 names Yuanyuan Gao, Hao Li, Jiaqi Chen, Zhengyu Zou, Dingwen Zhang; the entry gives other given names for five of them."
+
+[finding."2608.18413v1:xiong2024gauuscenev2:REF011"]
+verdict = "correct"
+note = "arXiv 2404.04880 names Butian Xiong and Junhua Liu; the entry has Biao Xiong and Jiahao Liu."
+
+[finding."2608.18479v1:POLEWSKI2015252:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.18479v1:YAO2011260:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.18423v2:balunovic2026matharena:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; the entry says 2026."
+
+[finding."2608.18423v2:zhu2025multiagentbench:REF011"]
+verdict = "false_positive"
+note = "Crossref deposits the author as 'Robert Tang'; the ACL Anthology's own BibTeX names him Xiangru Tang, as the entry does (one person, an English given name)."
+
+[finding."2608.19082v1:Giles2016:REF010"]
+verdict = "false_positive"
+note = "The entry is Giles, Georgiou & Dettmann, 'Connectivity of soft random geometric graphs over annuli', J. Stat. Phys. 162, 1068 (2016), cited without 'over annuli'; it was bound to Penrose's paper of that shorter title."
+
+[finding."2608.19082v1:Giles2016:REF014"]
+verdict = "false_positive"
+note = "Bound to the wrong paper (see REF010): J. Stat. Phys. is the cited paper's journal."
+
+[finding."2608.19082v1:dipankar:REF010"]
+verdict = "correct"
+note = "A chimera: the title is Ni, Stingo & Baladandayuthapani's JASA 2017 paper; the authors, journal and pages are Bandyopadhyay & Canale's JRSS C 65, 619 (2016) paper on periodontal data."
+
+[finding."2608.19082v1:dipankar:REF013"]
+verdict = "correct"
+note = "The titled paper is JASA 2017 (see REF010)."
+
+[finding."2608.19082v1:aimed:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2608.20184v1:pathirana_2026:REF017"]
+verdict = "correct"
+note = "The doi field has a 'doi:' prefix."
+
+[finding."2608.21349v1:rdkit:REF001"]
+verdict = "false_positive"
+note = "10.5281/zenodo.591637 is RDKit's Zenodo concept DOI, which resolves to the latest release ('rdkit/rdkit: 2026_09_1'); the same software."
+
+[finding."2608.18420v1:ZhaoYanZenodo2026:REF012"]
+verdict = "unclear"
+note = "The authors cite their own Zenodo software as 'dgmld-proof: ...', its repository's name; the registered title starts 'Proof: ...'."
+
+[finding."2608.18464v1:driver19:REF011"]
+verdict = "false_positive"
+note = "arXiv 1903.02473 lists R. McMahon among the authors; ESO's DataCite record leaves him out."
+
+[finding."2608.18464v1:mendel24:REF011"]
+verdict = "false_positive"
+note = "'MAGPI Team' is the collaboration named after the authors; the record lists people only."
+
+[finding."2608.18464v1:taylor23:REF011"]
+verdict = "false_positive"
+note = "'4HS Team' is the collaboration named after the authors; the record lists people only."
+
+[finding."2608.18550v1:sos0:REF011"]
+verdict = "false_positive"
+note = "arXiv 1306.0309 lists Bessell, Kim and Hur among the seven authors; KISTI's record (via doi.org) leaves them out."
+
+[finding."2608.18550v1:sos1:REF011"]
+verdict = "false_positive"
+note = "arXiv 1103.4927 lists Karimov and Ibrahimov; KISTI's record (via doi.org) leaves them out."
+
+[finding."2608.18550v1:OD94:REF012"]
+verdict = "false_positive"
+note = "The title is 'R_V-dependent optical and near-ultraviolet extinction'; Crossref renders R_V as 'Rnu'."
+
+[finding."2608.18474v1:sabet2020simalign:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:dou2021word:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:wu2023wspalign:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:lai2022cross:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:steingrimsson2023sentalign:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:zhang2024mgte:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:pires2019multilingual:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:gururangan2020don:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:reimers2020making:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18474v1:peng2023yarn:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18489v1:sun2019rotate:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:mirchandani2023large:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:akyurek2022learning:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:finlayson2021causal:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:li2022pruning:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:zhao2025taming:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18419v1:zhao2026hieramp:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18479v1:niu2023towards:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18479v1:dong2025towards:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18479v1:takmaz2023openmask3d:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18423v2:hafner2021benchmarking:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18863v1:brunzema2022event:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.21349v1:shubham2024wiser:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18588v1:liu2023repobench:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2608.18588v1:rawles2024androidworld:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
