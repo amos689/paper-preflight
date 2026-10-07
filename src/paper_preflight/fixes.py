@@ -87,7 +87,8 @@ def _fix_for(finding: Finding, entry: BibEntry) -> Fix | None:
         return Fix(
             entry.file, entry.key, finding.rule_id, field, "remove", current.raw, None, level
         )
-    if not isinstance(suggestion, str) or not suggestion:
+    # a suggestion that is advice for a person ("(correct the arXiv ID)"), not a value
+    if not isinstance(suggestion, str) or not suggestion or finding.data.get("manual"):
         return None
     if current is None:
         return Fix(entry.file, entry.key, finding.rule_id, field, "add", None, suggestion, level)

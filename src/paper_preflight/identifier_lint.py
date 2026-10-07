@@ -20,6 +20,11 @@ _VERSIONED_ARXIV_DOI_RE = re.compile(r"10\.48550/arxiv\.\S+v\d+$", re.IGNORECASE
 _ARXIV_ID_RE = re.compile(
     r"^(?:arxiv:)?(\d{4}\.\d{4,5}|[a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7})(v\d+)?$", re.I
 )
+_ARXIV_WITH_CLASS_RE = re.compile(
+    r"^(?:arxiv:)?(\d{4}\.\d{4,5}(?:v\d+)?|[a-z][a-z-]+(?:\.[A-Z]{2})?/\d{7}(?:v\d+)?)"
+    r"\s*\[[a-z-]+(?:\.[a-z-]+)?\]$",
+    re.I,
+)
 
 
 def _raw_value(entry: BibEntry, name: str) -> str | None:
@@ -46,7 +51,7 @@ def check_identifier_syntax(entries: list[BibEntry]) -> list[Finding]:
                         "REF017", location, key=entry.key, field="doi",
                         problem="not a DOI", problem_zh="不是有效的 DOI",
                         value=raw, suggestion="(remove or correct the field)",
-                        detail="invalid",
+                        detail="invalid", manual=True,
                     )
                 )  # fmt: skip
             elif _ESCAPE_RE.search(raw) or raw != raw.strip() or normalized != raw.lower():
@@ -68,12 +73,25 @@ def check_identifier_syntax(entries: list[BibEntry]) -> list[Finding]:
             and archive == "arxiv"
             and not _ARXIV_ID_RE.match(eprint.strip())
         ):
-            findings.append(
+            location = Location(entry.file, eprint_field.line, 1)
+            classed = _ARXIV_WITH_CLASS_RE.match(eprint.strip())
+            if classed:
+                # Zotero's export: "2311.07911 [cs]", the subject class in the identifier
+                findings.append(
                     make_finding(
-                        "REF017", Location(entry.file, eprint_field.line, 1), key=entry.key,
-                        field="eprint", problem="not an arXiv identifier",
-                        problem_zh="不是有效的 arXiv 编号", value=eprint,
-                        suggestion="(correct the arXiv ID)", detail="invalid-eprint",
+                        "REF017", location, key=entry.key, field="eprint",
+                        problem="carries its subject class, which belongs in eprintclass",
+                        problem_zh="带有学科分类（应写在 eprintclass 中）", value=eprint,
+                        suggestion=classed[1], detail="eprint-class",
+                    )
+                )  # fmt: skip
+            else:
+                findings.append(
+                    make_finding(
+                        "REF017", location, key=entry.key, field="eprint",
+                        problem="not an arXiv identifier", problem_zh="不是有效的 arXiv 编号",
+                        value=eprint, suggestion="(correct the arXiv ID)",
+                        detail="invalid-eprint", manual=True,
                     )
                 )  # fmt: skip
     return findings
