@@ -19,6 +19,7 @@ from paper_preflight.match import (
     evaluate,
     first_page,
     given_names_differ,
+    same_person,
     surname_key,
     suspicious_reason,
     title_score,
@@ -521,8 +522,6 @@ def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
     ],
 )  # fmt: skip
 def test_one_person_in_another_form(ours: str, theirs: str, same: bool) -> None:
-    from paper_preflight.match import same_person
-
     (a,), (b,) = parse_authors(ours).people, parse_authors(theirs).people
     assert same_person(a, b) is same
 
@@ -922,3 +921,46 @@ def test_entry_info_keeps_volume_and_first_page() -> None:
     ).entries
     info = EntryInfo.from_entry(entry)
     assert (info.volume, info.first_page) == ("447", "l25")
+
+
+def test_a_database_is_cited_by_the_year_it_was_used() -> None:
+    # USGS asks for its National Water Information System to be cited with the year of access;
+    # DataCite's 1994 (10.5066/F7P55KJN, a "Collection") is when the service started
+    record = SourceRecord(
+        source="datacite", source_id="10.5066/f7p55kjn", title="USGS Water Data for the Nation",
+        year=1994, years=frozenset({1994}), work_type="collection",
+    )  # fmt: skip
+    assert check_year(2026, record).status == "variant"
+    assert check_year(1990, record).status == "mismatch"  # before it existed
+    assert check_year(2099, record).status == "mismatch"  # not yet used
+    article = replace(record, work_type="journal-article")
+    assert check_year(2026, article).status == "mismatch"
+
+
+def test_a_workshop_in_a_joint_dblp_volume_is_not_another_venue() -> None:
+    # STACOM 2024 is in the joint volume dblp names "CMRxRecon/MBAS/STACOM@MICCAI"
+    record = SourceRecord(
+        source="dblp", source_id="conf/stacom/ChiuRCGPGCMV24", title="Physics-Informed ...",
+        venue="CMRxRecon/MBAS/STACOM@MICCAI",
+    )  # fmt: skip
+    workshop = "International Workshop on Statistical Atlases and Computational Models of the Heart"
+    assert check_venue(workshop, record).status == "unknown"
+    assert check_venue("Annual Conference on Spatial Intelligence", record).status == "mismatch"
+
+
+@pytest.mark.parametrize(
+    ("entry", "record", "same"),
+    [
+        # Vancouver style, which BibTeX reads as given "Rouse D.", family "M."
+        ("Rouse D. M.", Person("Rouse", "David M."), True),
+        ("Hemami S. S", Person("Hemami", "Sheila S."), True),
+        # a given name and family initials, read either way round (HALLMARK's dblp entry)
+        ("Mallikarjun B. R.", Person("R.", "Mallikarjun B."), True),
+        ("Rouse D. M.", Person("Rouse", "Daniel K."), False),  # another person's initials
+        ("Kim P.", Person("Kang", "P. K."), False),
+    ],
+)
+def test_names_in_another_order_with_initials(entry: str, record: Person, same: bool) -> None:
+    from paper_preflight.match import same_person
+
+    assert same_person(parse_name(entry), record) is same

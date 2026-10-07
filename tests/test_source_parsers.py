@@ -40,6 +40,8 @@ def test_person_from_parts() -> None:
     assert Person.from_parts("Lihwai 俐 暉", "Lin 林") == Person("Lin", "Lihwai")
     assert Person.from_parts("志华", "周") == Person("周", "志华")
     assert Person.from_parts(None, "Jr.") == Person("Jr.")
+    # an affiliation mark and a look-alike symbol in a deposited name (Crossref, 2006)
+    assert Person.from_parts("S⊘ren", "Asmussen c") == Person("Asmussen", "Søren")
 
 
 def test_doira_routing() -> None:
@@ -276,14 +278,29 @@ def early_access(**changes: Any) -> dict[str, Any]:
         ({}, {2023, 2024}),  # early access: the DOI was created when the article went online
         ({"published-online": {"date-parts": [[2023, 11]]}}, {2023, 2024}),  # deposited online
         ({"type": "proceedings-article"}, {2024}),
-        ({"created": {"date-parts": [[2019, 1, 1]]}}, {2024}),  # too early to be early access
-        ({"created": {"date-parts": [[2025, 1, 1]]}}, {2024}),  # a later deposit is no year
+        # with a DOI that names no year (Proc. IEEE's "10.1109/5.726791"), only the deposit
+        # date can tell: too early to be early access, or a later deposit
+        ({"DOI": "10.1109/5.726791", "created": {"date-parts": [[2019, 1, 1]]}}, {2024}),
+        ({"DOI": "10.1109/5.726791", "created": {"date-parts": [[2025, 1, 1]]}}, {2024}),
     ],
 )
 def test_crossref_early_access_year(changes: dict[str, Any], years: set[int]) -> None:
     record = crossref.parse_work(early_access(**changes))
     assert record.years == years
     assert record.year == 2024
+
+
+def test_crossref_ieee_doi_names_the_early_access_year() -> None:
+    # TSE's 10.1109/tse.2018.2872971 was online in 2018; Crossref has only its 2020 issue,
+    # deposited then. IEEE's journal DOIs name the year they were assigned.
+    issue = {"date-parts": [[2020, 9, 1]]}
+    record = crossref.parse_work(
+        early_access(
+            DOI="10.1109/tse.2018.2872971", issued=issue, **{"published-print": issue},
+            created={"date-parts": [[2020, 8, 19]]},
+        )
+    )  # fmt: skip
+    assert record.years == {2018, 2020}
 
 
 def test_crossref_december_print_counts_the_next_year() -> None:

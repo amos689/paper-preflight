@@ -15,6 +15,26 @@ All notable changes to this project are documented here. The format follows
   never "not found", and a failed lookup does not make the run incomplete. On the seventh batch
   of real papers, references that could not be determined fall from 15.4% to 6.4%.
 
+### Fixed
+
+Seven of the nine false positives on the seventh batch of real papers:
+
+- Names written family name first with initials and no comma ("Rouse D. M.") pair with the
+  registry's full names (REF010).
+- An affiliation mark or look-alike symbol in a registry's name ("Asmussen c", "S⊘ren") is no
+  longer an author difference (REF011).
+- A database or data collection cited by the year it was used is no longer a year error
+  (REF013); nor is an IEEE article cited by its early-access year, which its DOI names
+  ("tse.2018.…", Crossref having only the 2020 issue).
+- A workshop in a joint volume dblp names by acronyms ("CMRxRecon/MBAS/STACOM@MICCAI") is no
+  longer another venue (REF014).
+- A Substack post, and a report or thesis written under another entry type whose venue names
+  the report and its institution, are web content and grey literature, not "not found"
+  (REF003). A bare "Technical Report" naming no one still is.
+
+The other two are typos in the registries' titles ("Probelm", "Biopolymer"). Tolerating them
+would hide more typos in entries than registries make, so they stay.
+
 ## [0.4.1] - 2026-10-07
 
 Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite

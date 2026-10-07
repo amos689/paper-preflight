@@ -33,6 +33,7 @@ COORDINATE_SELECT = f"{SELECT},article-number"
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
+_IEEE_YEAR = re.compile(r"^10\.1109/[a-z]+\.(\d{4})\.\d{5,}$")
 # a publisher's code for a journal given as its title: De Gruyter's "humr" for HUMOR
 _JOURNAL_CODE = re.compile(r"[a-z]{2,6}")
 
@@ -105,7 +106,11 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     # Wiley and Blackwell DOIs carry the year the article was published ("10.1046/j.1365-8711.
     # 2000.03658.x", MNRAS 319(3), December 2000); a backfile deposit may give only the year it
     # went online (2002). The DOI's year counts when it is a few years before the registered ones.
-    embedded = _WILEY_YEAR.match(doi)
+    # IEEE's journal DOIs carry the year they were assigned, at early access: "10.1109/tse.2018.
+    # 2872971" was online in 2018, and Crossref has only its issue's date, 2020.
+    embedded = _WILEY_YEAR.match(doi) or (
+        _IEEE_YEAR.match(doi) if item.get("type") == "journal-article" else None
+    )
     if embedded and years and 0 < min(years) - int(embedded.group(1)) <= 3:
         years.add(int(embedded.group(1)))
     venue = None
