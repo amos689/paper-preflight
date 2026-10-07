@@ -101,6 +101,20 @@ def test_offline_without_cache_neither_fails_nor_floods(
     assert "REF003" not in rules
 
 
+def test_arxiv_outage_answered_by_datacite_keeps_the_run_complete(
+    tmp_path: Path, recorded_web: FakeWeb
+) -> None:
+    # arXiv's API is often overloaded; DataCite holds every arXiv paper, so the references are
+    # checked and the run is not incomplete. An info line says what only arXiv knows.
+    recorded_web.fail("export.arxiv.org", "429")
+    result, payload = check_json(tmp_path, str(DEMO), "--fail-on", "never")
+    assert result.exit_code == EXIT_OK
+    assert payload["run"]["complete"] is True
+    rules = [f["rule"] for f in payload["findings"]]
+    assert "RUN001" not in rules
+    assert "RUN002" in rules
+
+
 def test_source_outage_makes_the_run_incomplete(tmp_path: Path, recorded_web: FakeWeb) -> None:
     recorded_web.fail("sparql.dblp.org", "html")
     result, payload = check_json(tmp_path, str(DEMO), "--fail-on", "never")
@@ -178,6 +192,27 @@ def test_unused_reference_suppressions_need_a_complete_online_run(tmp_path: Path
     assert ("REF013", "kingma2015adam") not in found
     _, offline = check_json(tmp_path, str(bib), "--offline")
     assert "CFG001" not in [f["rule"] for f in offline["findings"]]
+
+
+def test_a_reference_checked_through_a_substitute_keeps_its_suppressions(
+    tmp_path: Path, recorded_web: FakeWeb
+) -> None:
+    # arXiv down, DataCite answered: the run is complete, but rules only arXiv's answer can
+    # trigger did not run for the preprint, so its suppression is not reported as unused
+    recorded_web.fail("export.arxiv.org", "429")
+    bib = tmp_path / "refs.bib"
+    text = (DEMO / "refs.bib").read_text(encoding="utf-8")
+    bib.write_text(
+        text.replace(
+            "@misc{hendrycks2016gelu,", "% preflight: ignore[REF011]\n@misc{hendrycks2016gelu,"
+        ),
+        encoding="utf-8",
+    )
+    _, payload = check_json(tmp_path, str(bib))
+    assert payload["run"]["complete"] is True
+    assert ("CFG001", "hendrycks2016gelu") not in [
+        (f["rule"], f.get("key")) for f in payload["findings"]
+    ]
 
 
 def test_refresh_asks_the_sources_again(tmp_path: Path, recorded_web: FakeWeb) -> None:

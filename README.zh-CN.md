@@ -218,6 +218,7 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 | `--offline` | 完全不联网，只用本地缓存里已有的结果 |
 | `--refresh` | 不用缓存，向所有来源重新查询（例如记录刚被更正之后） |
 | `--fail-on warning` | 警告也算失败（默认只有错误算失败） |
+| `--details` | 逐条列出所有发现；默认情况下，适用于很多条目的建议（预印本已发表、可补的 DOI）合并成一行 |
 | `--lang zh` | 中文输出（也会按系统语言自动选择） |
 
 退出码：
@@ -226,7 +227,7 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 |---|---|
 | 0 | 没有达到 `--fail-on` 级别的发现 |
 | 1 | 有阻塞性发现 |
-| 2 | 没有阻塞性发现，但有数据源不可用，暂时不能宣称"没问题" |
+| 2 | 没有阻塞性发现，但有数据源不可用，也没有其他来源能替它回答，暂时不能宣称"没问题" |
 | 3 | 用法错误 |
 
 ## 获取已核实的 BibTeX

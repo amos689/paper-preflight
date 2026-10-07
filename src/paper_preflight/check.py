@@ -63,6 +63,8 @@ class CheckResult:
     entries: int
     used_build_data: str | None  # ".aux"/".bcf" file used for the cited-key set, if any
     complete: bool = True
+    # references checked through a substitute source (RUN002): some of their rules could not run
+    substituted_keys: set[str] = field(default_factory=set)
     notes: list[str] = field(default_factory=list)
     started_at: float = 0.0
     finished_at: float = 0.0
@@ -208,7 +210,9 @@ def _unused_suppressions(result: CheckResult, used: set[tuple[str, str]]) -> lis
             # only a complete online run has asked every source about every verified entry:
             # offline answers and outages may leave some reference rules unrun
             online = result.verification == "online" and result.complete
-            return online and entry.key in result.verdicts
+            return (
+                online and entry.key in result.verdicts and entry.key not in result.substituted_keys
+            )
         return False  # RUN001 and CFG001 are not about one entry
 
     return unused_suppressions(first_definitions(result.bib_files), used, judged)
@@ -286,6 +290,9 @@ def _verify_into(result: CheckResult, entries: list[BibEntry], options: VerifyOp
             f for f in assessment.findings if not (key in offline_only and f.rule_id == "REF090")
         )
     result.findings.extend(run_findings(evidence))
+    result.substituted_keys = {key for key, item in evidence.items() if item.substituted}
     result.complete = not any(
-        reason != "offline" for item in evidence.values() for reason in item.unavailable.values()
+        reason != "offline" and source not in item.substituted
+        for item in evidence.values()
+        for source, reason in item.unavailable.items()
     )

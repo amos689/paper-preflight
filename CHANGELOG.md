@@ -8,6 +8,13 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- When the arXiv API does not answer but DataCite does (it registers every arXiv paper), the
+  run is no longer incomplete (exit code 2) for those references: a new info finding, RUN002,
+  says they were checked through DataCite and that withdrawals and earlier version titles were
+  not. Seen live: arXiv's API is often overloaded, and every run then ended "incomplete".
+- The text report summarises a suggestion that applies to three or more entries (REF015 published
+  preprints, REF016 available DOIs) in one line; `--details` lists each. JSON, SARIF and the counts
+  are unchanged.
 - MCP: every tool parameter has a description in the tool schema (none had one), and each
   tool says when to use it instead of the others.
 - README: a logo, badges and a centred header; the roadmap no longer lists an online demo as

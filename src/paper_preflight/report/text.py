@@ -7,7 +7,7 @@ from rich.console import Console
 from rich.text import Text
 
 from paper_preflight.check import CheckResult
-from paper_preflight.findings import Severity
+from paper_preflight.findings import Finding, Severity
 
 _STYLE = {Severity.ERROR: "bold red", Severity.WARNING: "yellow", Severity.INFO: "cyan"}
 _LABEL = {
@@ -15,9 +15,32 @@ _LABEL = {
     "zh": {Severity.ERROR: "错误", Severity.WARNING: "警告", Severity.INFO: "提示"},
 }
 
+# Suggestions that often fire for many entries of a sound paper: from GROUP_FROM findings of one
+# rule on, the text report shows them as one line (``--details`` lists each; JSON and SARIF
+# always do). Text: (English, Chinese), with {count} and {keys}.
+GROUP_FROM = 3
+SHOWN_KEYS = 6
+_GROUPED = {
+    "REF015": (
+        "{count} cited preprints have since been published: {keys}. "
+        "Run with --details to see each published version.",
+        "有 {count} 条被引的预印本已正式发表：{keys}。加 --details 逐条查看正式版本。",
+    ),
+    "REF016": (
+        "{count} entries have no DOI although the registry records one: {keys}. "
+        "`paper-preflight bib fix` adds them safely; --details lists each.",
+        "有 {count} 个条目缺少登记机构已有的 DOI：{keys}。"
+        "`paper-preflight bib fix` 可以安全补上；加 --details 逐条查看。",
+    ),
+}
+
 
 def render_text(
-    result: CheckResult, console: Console, lang: str = "en", show_info: bool = True
+    result: CheckResult,
+    console: Console,
+    lang: str = "en",
+    show_info: bool = True,
+    details: bool = False,
 ) -> None:
     zh = lang.startswith("zh")
     labels = _LABEL["zh" if zh else "en"]
@@ -43,10 +66,28 @@ def render_text(
     shown = [f for f in result.findings if show_info or f.severity is not Severity.INFO]
     if shown:
         console.print()
+    by_rule: dict[str, list[Finding]] = {}
+    for finding in shown:
+        by_rule.setdefault(finding.rule_id, []).append(finding)
+    grouped = (
+        set()
+        if details
+        else {r for r, items in by_rule.items() if r in _GROUPED and len(items) >= GROUP_FROM}
+    )
     for finding in shown:
         line = Text()
         label = labels[finding.severity]
         line.append(label + " " * max(1, 8 - cell_len(label)), style=_STYLE[finding.severity])
+        if finding.rule_id in grouped:
+            items = by_rule[finding.rule_id]
+            if finding is not items[0]:
+                continue
+            line.append(f"{finding.rule_id} ×{len(items)}", style="bold")
+            console.print(line, highlight=False)
+            console.print(
+                Text("    " + _group_message(finding.rule_id, items, zh)), highlight=False
+            )
+            continue
         line.append(f"{finding.rule_id} ", style="bold")
         if finding.location is not None:
             line.append(finding.location.display(result.root), style="dim")
@@ -66,6 +107,18 @@ def render_text(
     if verification:
         console.print(verification, highlight=False)
     console.print(summary, style=style, highlight=False)
+
+
+def _group_message(rule_id: str, items: list[Finding], zh: bool) -> str:
+    keys = [f.key or "?" for f in items]
+    shown = keys[:SHOWN_KEYS]
+    more = len(keys) - len(shown)
+    if zh:
+        listed = "、".join(shown) + (f"等 {len(keys)} 条" if more else "")
+    else:
+        listed = ", ".join(shown) + (f" and {more} more" if more else "")
+    template = _GROUPED[rule_id][1 if zh else 0]
+    return template.format(count=len(items), keys=listed)
 
 
 _VERDICT_LABEL = {

@@ -127,6 +127,7 @@ async def test_arxiv_outage_uses_datacite_records() -> None:
     assert sources_of(gelu) == {"datacite"}
     assert gelu.anchored[0].work_type == "preprint"
     assert gelu.unavailable == {"arxiv": "rate_limited"}  # still reported: no withdrawal check
+    assert gelu.substituted == {"arxiv": "datacite"}  # but DataCite answered in its place
     assert gelu.arxiv_missing == []  # an outage never makes an ID "missing"
     assert gelu.candidates == []  # anchored, so not searched by title
     assert sources_of(evidence["he2015residual"]) == {"datacite"}

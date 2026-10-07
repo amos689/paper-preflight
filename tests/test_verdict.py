@@ -145,9 +145,12 @@ async def test_arxiv_outage_falls_back_to_datacite() -> None:
     assert (preprint.verdict, rules(preprint)) == (Verdict.VERIFIED, {"REF015"})
     gelu = assessments["hendrycks2016gelu"]
     assert (gelu.verdict, rules(gelu)) == (Verdict.VERIFIED, set())
-    # withdrawals are only known to arXiv: the run still says arXiv was unavailable
-    (incomplete,) = run_findings(evidence)
-    assert "arXiv (rate_limited)" in incomplete.message.en
+    # the run is not incomplete for them, but says what only arXiv knows went unchecked
+    (substitute,) = run_findings(evidence)
+    assert substitute.rule_id == "RUN002"
+    assert substitute.severity is Severity.INFO
+    assert "through DataCite because arXiv did not answer" in substitute.message.en
+    assert "withdrawn papers" in substitute.message.en
 
 
 @pytest.mark.anyio
@@ -158,13 +161,15 @@ async def test_arxiv_outage_does_not_turn_a_preprint_year_into_an_error() -> Non
     web = FakeWeb()
     web.fail("export.arxiv.org", "429")
     web.fail("api.datacite.org", "429")
-    assessments, _ = await run_demo(web)
+    assessments, evidence = await run_demo(web)
     preprint = assessments["he2015residual"]
     assert preprint.record is not None
     assert preprint.record.source == "crossref"  # the published version, found by title
     assert (preprint.verdict, rules(preprint)) == (Verdict.VERIFIED, {"REF015"})
     gelu = assessments["hendrycks2016gelu"]
     assert (gelu.verdict, gelu.reasons) == (Verdict.CANNOT_DETERMINE, (Reason.SOURCES_UNAVAILABLE,))
+    # nothing stood in for arXiv here, so the run is incomplete as before
+    assert [f.rule_id for f in run_findings(evidence)] == ["RUN001"]
 
 
 @pytest.mark.anyio

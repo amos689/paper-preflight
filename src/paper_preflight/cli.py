@@ -207,6 +207,14 @@ def check(
         typer.Option("--cite-command", help="Extra citation macro, e.g. --cite-command mycite."),
     ] = None,
     hide_info: Annotated[bool, typer.Option("--hide-info", help="Hide info findings.")] = False,
+    details: Annotated[
+        bool,
+        typer.Option(
+            "--details",
+            help="List every finding: by default, suggestions that apply to many entries "
+            "(published preprints, available DOIs) are summarised in one line.",
+        ),
+    ] = False,
     offline: Annotated[
         bool,
         typer.Option(
@@ -278,9 +286,11 @@ def check(
     else:
         if output:
             with output.open("w", encoding="utf-8") as handle:
-                render_text(result, Console(file=handle, width=100), language, not hide_info)
+                render_text(
+                    result, Console(file=handle, width=100), language, not hide_info, details
+                )
         else:
-            render_text(result, Console(highlight=False), language, not hide_info)
+            render_text(result, Console(highlight=False), language, not hide_info, details)
 
     threshold = None if fail_on is FailOn.NEVER else Severity(fail_on.value)
     if result.has_blocking(threshold):
