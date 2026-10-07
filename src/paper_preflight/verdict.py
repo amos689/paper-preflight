@@ -1056,9 +1056,28 @@ def _abstention_reasons(
         return reasons
     required = {"crossref"} | ({"dblp"} if looks_cs(info) else set())
     answered_no = bool(evidence.searched) and evidence.searched | required <= _answered_no(evidence)
-    if word_count(info.title) < MIN_NOT_FOUND_WORDS or not answered_no:
+    if not answered_no or (
+        word_count(info.title) < MIN_NOT_FOUND_WORDS and not _venue_vouches(evidence, current_year)
+    ):
         return [Reason.INSUFFICIENT_METADATA]
     return []
+
+
+def _venue_vouches(evidence: Evidence, current_year: int) -> bool:
+    """A short title can be called "not found" at a venue dblp indexes in full, in a past year:
+    "Spectral Contrastive Graph Clustering" at ICLR 2022 is a title, not a topic, there. Not
+    when a found title is the entry's and more (a real paper cited by its first words), and
+    never below three words, which Crossref is not even asked about."""
+    info = evidence.info
+    venue = canonical_venue(info.venue)
+    return (
+        venue is not None
+        and venue != "arxiv"
+        and info.year is not None
+        and info.year < current_year
+        and word_count(info.title) >= 3
+        and not evidence.extended
+    )
 
 
 def assess_all(
