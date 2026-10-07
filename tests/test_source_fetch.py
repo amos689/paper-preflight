@@ -61,6 +61,10 @@ async def test_doira_chunks_and_quotes(http: httpx.AsyncClient) -> None:
     route = respx.get(url__startswith=doiorg.DOIRA_URL).mock(
         return_value=httpx.Response(200, json=payload)
     )
+    # doiRA's "DOI does not exist" is confirmed by the Handle API's "not found" (code 100)
+    respx.get(url__startswith=doiorg.HANDLE_URL + "10.1109/cvpr.2016.999999").mock(
+        return_value=httpx.Response(404, json={"responseCode": 100})
+    )
     client = client_for(doiorg.POLICY, http, Cache(None))
     answers = await doiorg.registration_agencies(
         client, ["10.1109/CVPR.2016.90", "10.48550/arXiv.1706.03762", "10.1109/CVPR.2016.999999"]
@@ -68,6 +72,25 @@ async def test_doira_chunks_and_quotes(http: httpx.AsyncClient) -> None:
     assert route.call_count == 1
     assert answers["10.48550/arxiv.1706.03762"].agency == "DataCite"
     assert answers["10.1109/cvpr.2016.999999"].exists is False
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_does_not_exist_needs_the_handle_apis_not_found(http: httpx.AsyncClient) -> None:
+    # doiRA says "DOI does not exist" when the handle server it asks does not answer (code 2):
+    # ISTIC's DOIs, in the Chinese-reference experiments, resolved an hour later
+    respx.get(url__startswith=doiorg.DOIRA_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json=[{"DOI": "10.3969/j.issn.1000-3428.2010.01.001", "status": "DOI does not exist"}],
+        )
+    )
+    respx.get(url__startswith=doiorg.HANDLE_URL).mock(
+        return_value=httpx.Response(500, json={"responseCode": 2})
+    )
+    client = client_for(doiorg.POLICY, http, Cache(None))
+    answers = await doiorg.registration_agencies(client, ["10.3969/j.issn.1000-3428.2010.01.001"])
+    assert answers == {}  # unknown: no REF002
 
 
 @pytest.mark.anyio
