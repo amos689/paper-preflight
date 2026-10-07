@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="248" height="22" viewBox="0 0 248 22" role="img" aria-label="checked against: 6 scholarly databases">
+  <title>checked against: 6 scholarly databases</title>
+  <clipPath id="r"><rect width="248" height="22" rx="3"/></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="248" height="22" fill="#3b4a5a"/>
+    <rect x="108" width="140" height="22" fill="#2e7d78"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana, Geneva, DejaVu Sans, Microsoft YaHei, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="11">
+    <text x="54" y="15">checked against</text>
+    <text x="178" y="15">6 scholarly databases</text>
+  </g>
+</svg>

@@ -95,6 +95,19 @@ path = "README.md"
 pattern = '\]\((?!https?://|#)([^)\s]+)\)'
 replacement = '](https://github.com/amos689/paper-preflight/blob/main/\1)'
 
+# The README's HTML header: images from the repository, links to GitHub (PyPI has no repo files).
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = '(src|srcset)="(?!https?://)([^"]+)"'
+replacement = '\1="https://raw.githubusercontent.com/amos689/paper-preflight/main/\2"'
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = 'href="#([^"]+)"'
+replacement = 'href="https://github.com/amos689/paper-preflight#\1"'
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = 'href="(?!https?://)([^"]+)"'
+replacement = 'href="https://github.com/amos689/paper-preflight/blob/main/\1"'
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/paper_preflight"]
 
