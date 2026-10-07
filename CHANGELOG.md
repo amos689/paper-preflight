@@ -51,6 +51,12 @@ fields are now left for a person to correct. An arXiv ID exported with its subje
   "Trade-off", its proceedings' "Tradeoff") is one work, not two: invented authors on a real
   title are reported (REF010) instead of abstained on as ambiguous. GPTZero's hallucinated
   references: 137 of 151 flagged.
+- A title of three or four words can be "not found" (REF003) at a conference or journal dblp
+  indexes in full, in a past year ("Spectral contrastive graph clustering" at ICLR 2022), when
+  every source answered. Not when a found title is the entry's and more: that is a real paper
+  cited by its first words. Elsewhere short titles still name topics, not papers. GPTZero: 139
+  of 151; HALLMARK `test_public` fabrication recall 49.3% -> 50.2%, at the same false-positive
+  rate; no change on the seven development batches of real papers.
 
 ## [0.4.1] - 2026-10-07
 

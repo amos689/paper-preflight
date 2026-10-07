@@ -95,6 +95,9 @@ class Evidence:
     published_versions: list[SourceRecord] = field(default_factory=list)
     status_records: list[SourceRecord] = field(default_factory=list)  # e.g. OpenAlex retraction
     searched: set[str] = field(default_factory=set)  # sources asked by title
+    # longer titles a search found that begin with the entry's whole title: it may be a real
+    # work cited by the first words of its title ("Semantically Diverse Language Generation")
+    extended: list[str] = field(default_factory=list)
     negative: set[str] = field(default_factory=set)  # sources that answered "no such work"
     unavailable: dict[str, str] = field(default_factory=dict)  # source -> reason
     # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
@@ -576,6 +579,12 @@ async def _registered_years(items: list[Evidence], sources: Sources) -> None:
             item.candidates.append(record)
 
 
+def _extending(entry: str, found: list[str]) -> list[str]:
+    """Found titles that are the entry's whole title and more."""
+    key = title_key(entry)
+    return [t for t in found if key and title_key(t).startswith(f"{key} ")]
+
+
 def _close_title(entry: str | None, found: str) -> bool:
     """A search result worth comparing in full: a similar title, or the entry's title with a
     subtitle the entry leaves out ("Resource Allocation for Multi-source Multi-relay Wireless
@@ -614,6 +623,7 @@ async def _search_dblp(items: list[Evidence], sources: Sources) -> None:
             if "dblp" in item.unavailable:
                 continue  # not answered: no "no such work" either
             candidates = found.get(low, [])
+            item.extended += _extending(item.info.title, [t for _, t in candidates])
             close = [p for p, t in candidates if _close_title(item.info.title, t)][:5]
             if not close:
                 item.negative.add("dblp")
@@ -648,6 +658,7 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
     )
     if records is None:
         return
+    item.extended += _extending(info.title, [r.title for r in records])
     close = [r for r in records if _close_title(info.title, r.title)]
     if close:
         item.candidates.extend(close)

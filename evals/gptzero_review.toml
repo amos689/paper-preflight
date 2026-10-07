@@ -10,7 +10,7 @@ reason = "Short title (3 words): not searched as a 'not found' candidate."
 
 [neurips2025.14]
 verdict = "miss"
-reason = "Short title (4 words) with an ICLR 2025 venue: not searched as a 'not found' candidate."
+reason = "The first words of a real ICLR 2025 title ('Semantically Diverse Language Generation for Uncertainty Estimation in Language Models', Aichberger et al.) with invented co-authors: a title cut short is not called not found."
 
 [neurips2025.23]
 verdict = "miss"

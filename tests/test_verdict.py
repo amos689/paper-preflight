@@ -313,12 +313,33 @@ def test_an_old_work_nobody_knows_is_not_called_not_found(
     assert result.verdict is (Verdict.CANNOT_DETERMINE if reasons else Verdict.NOT_FOUND)
 
 
-def test_short_title_is_never_not_found() -> None:
-    entry = bib(CS_ENTRY.replace(TITLE, "Sparse Attention Revisited").replace(
-        "  doi = {10.1234/acl.2023.1},\n", ""
-    ))  # fmt: skip
-    item = evidence_for(entry, searched={"dblp", "crossref"}, negative={"dblp", "crossref"})
-    result = assess(entry, item, current_year=YEAR)
+def short(title: str = "Sparse Attention Revisited", venue: str = "Proceedings of ACL") -> BibEntry:
+    return bib(
+        CS_ENTRY.replace(TITLE, title)
+        .replace("Proceedings of ACL", venue)
+        .replace("  doi = {10.1234/acl.2023.1},\n", "")
+    )
+
+
+def test_a_short_title_is_not_found_only_where_its_venue_vouches_for_it() -> None:
+    # at a venue dblp indexes in full, in a past year, a three-word title names one paper:
+    # GPTZero's "Spectral contrastive graph clustering" at ICLR 2022
+    searched = {"searched": {"dblp", "crossref"}, "negative": {"dblp", "crossref"}}
+    at_acl = assess(short(), evidence_for(short(), **searched), current_year=YEAR)
+    assert at_acl.verdict is Verdict.NOT_FOUND
+    # elsewhere, or with two words, it is a topic, not a title
+    elsewhere = short(venue="Journal of Sparse Methods")
+    result = assess(elsewhere, evidence_for(elsewhere, **searched), current_year=YEAR)
+    assert result.reasons == (Reason.INSUFFICIENT_METADATA,)
+    two = short("Attention Revisited")
+    assert assess(two, evidence_for(two, **searched), current_year=YEAR).reasons == (
+        Reason.INSUFFICIENT_METADATA,
+    )
+    # a found title that is this one and more: a real paper cited by its first words
+    extended = evidence_for(
+        short(), **searched, extended=["Sparse Attention Revisited for Long Inputs"]
+    )
+    result = assess(short(), extended, current_year=YEAR)
     assert result.reasons == (Reason.INSUFFICIENT_METADATA,)
 
 
