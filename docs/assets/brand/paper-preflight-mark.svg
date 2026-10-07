@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="paper-preflight">
+  <title>paper-preflight</title>
+  <rect x="16" y="16" width="128" height="128" rx="32" fill="#17324d"/>
+  <path d="M50 34H88L112 58V118A8 8 0 0 1 104 126H50A8 8 0 0 1 42 118V42A8 8 0 0 1 50 34Z" fill="#f6f9fc"/>
+  <path d="M88 34V52A6 6 0 0 0 94 58H112Z" fill="#9ec5ef"/>
+  <rect x="52" y="50" width="7" height="7" rx="1.5" fill="#2f6fb0"/><rect x="64" y="50" width="34" height="7" rx="3.5" fill="#c3d3e6"/>
+  <rect x="52" y="65" width="7" height="7" rx="1.5" fill="#2f6fb0"/><rect x="64" y="65" width="26" height="7" rx="3.5" fill="#c3d3e6"/>
+  <rect x="52" y="80" width="7" height="7" rx="1.5" fill="#2f6fb0"/><rect x="64" y="80" width="38" height="7" rx="3.5" fill="#c3d3e6"/>
+  <rect x="52" y="95" width="7" height="7" rx="1.5" fill="#2f6fb0"/><rect x="64" y="95" width="22" height="7" rx="3.5" fill="#c3d3e6"/>
+  <circle cx="110" cy="112" r="22" fill="#2da44e" stroke="#17324d" stroke-width="6"/>
+  <path d="M100 112.5L107.5 120L120.5 105" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

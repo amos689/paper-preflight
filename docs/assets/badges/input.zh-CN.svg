@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="174" height="22" viewBox="0 0 174 22" role="img" aria-label="输入: LaTeX · BibTeX · PDF">
+  <title>输入: LaTeX · BibTeX · PDF</title>
+  <clipPath id="r"><rect width="174" height="22" rx="3"/></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="174" height="22" fill="#3b4a5a"/>
+    <rect x="38" width="136" height="22" fill="#2f6fb0"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana, Geneva, DejaVu Sans, Microsoft YaHei, PingFang SC, Noto Sans CJK SC, sans-serif" font-size="11">
+    <text x="19" y="15">输入</text>
+    <text x="106" y="15">LaTeX · BibTeX · PDF</text>
+  </g>
+</svg>
