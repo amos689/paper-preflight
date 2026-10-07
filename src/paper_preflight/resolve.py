@@ -98,6 +98,9 @@ class Evidence:
     unavailable: dict[str, str] = field(default_factory=dict)  # source -> reason
     # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
     optional_unavailable: dict[str, str] = field(default_factory=dict)
+    # unavailable sources whose question another source answered (arXiv -> DataCite): the
+    # reference is checked, only what that source alone knows is not (see RUN002)
+    substituted: dict[str, str] = field(default_factory=dict)
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
     pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
@@ -448,8 +451,9 @@ async def _with_versions(
 async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sources) -> None:
     """The arXiv API refused or timed out: DataCite registers every arXiv paper as
     10.48550/arXiv.<id>, so existence and metadata can still be checked. arXiv stays recorded as
-    unavailable (withdrawals and earlier version titles are only known to arXiv), and an ID
-    DataCite does not return is not treated as missing.
+    unavailable, and DataCite as its substitute: the run is not incomplete for these references,
+    but RUN002 says what was not checked (withdrawals and earlier version titles are only known
+    to arXiv). An ID DataCite does not return is not treated as missing.
     """
     wanted = {f"10.48550/arxiv.{arxiv_id}".lower(): arxiv_id for arxiv_id in by_arxiv}
     owners = [e for items in by_arxiv.values() for e in items]
@@ -465,6 +469,7 @@ async def _arxiv_via_datacite(by_arxiv: dict[str, list[Evidence]], sources: Sour
         for item in by_arxiv.get(wanted.get(doi, ""), []):
             if all(r.source_id != record.source_id for r in item.anchored):
                 item.anchored.append(record)
+            item.substituted.setdefault("arxiv", "datacite")
 
 
 async def _content_negotiation(

@@ -239,6 +239,7 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 | `--offline` | Never touch the network; use only answers already in the local cache |
 | `--refresh` | Ask every source again instead of using cached answers (after a correction, say) |
 | `--fail-on warning` | Make warnings fail the run too (the default is errors) |
+| `--details` | List every finding; by default a suggestion that applies to many entries (published preprints, available DOIs) is one line |
 | `--lang zh` | Chinese messages (also chosen automatically from your locale) |
 
 Exit codes:
@@ -247,7 +248,7 @@ Exit codes:
 |---|---|
 | 0 | Nothing at or above `--fail-on` was found |
 | 1 | Blocking findings |
-| 2 | No blocking findings, but a source was unavailable, so the paper cannot be called clean yet |
+| 2 | No blocking findings, but a source was unavailable and nothing could answer in its place, so the paper cannot be called clean yet |
 | 3 | Usage error |
 
 ## Fetch verified BibTeX

@@ -238,6 +238,15 @@ RULES: dict[str, Rule] = {
              "有 {count} 条文献未能完整核查，因为以下来源不可用：{sources}。"
              "稍后重新运行，结果可能会变化。"),
         ),
+        _rule(
+            "RUN002", "checked-through-substitute", I,
+            ("Checked through a substitute source", "已改用替代来源核查"),
+            ("{count} reference(s) were checked through {substitutes} because {sources} did not "
+             "answer. What only {sources} knows (withdrawn papers, titles of earlier versions) was "
+             "not checked; re-run later for a full check.",
+             "有 {count} 条文献因 {sources} 未应答，改用 {substitutes} 核查。只有 {sources} 掌握的"
+             "信息（论文是否撤回、早期版本的标题）这次未能核查；稍后重新运行可完整核查。"),
+        ),
     ]
 }  # fmt: skip
 

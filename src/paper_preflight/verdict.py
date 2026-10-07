@@ -1030,23 +1030,46 @@ def assess_all(
 
 
 def run_findings(evidence: dict[str, Evidence]) -> list[Finding]:
-    """RUN001 when any source was unavailable for any reference: the run cannot claim a pass.
+    """RUN001 when a source was unavailable for a reference and nothing answered in its place:
+    the run cannot claim a pass. RUN002 (info) when another source answered instead (arXiv's
+    questions through DataCite): the reference is checked, but not what only that source knows.
 
     Offline mode is the user's choice, not a failing source, so it does not count here.
     """
     by_source: dict[str, set[str]] = {}
     affected = 0
+    substituted: dict[str, set[str]] = {}  # unavailable source -> sources used instead
+    replaced = 0
     for item in evidence.values():
         failures = {s: r for s, r in item.unavailable.items() if r != "offline"}
+        stood_in = {s: item.substituted[s] for s in failures if s in item.substituted}
+        failures = {s: r for s, r in failures.items() if s not in stood_in}
         affected += bool(failures)
+        replaced += bool(stood_in)
         for source, reason in failures.items():
             by_source.setdefault(source, set()).add(reason)
-    if not affected:
-        return []
-    described = [f"{source_name(s)} ({', '.join(sorted(r))})" for s, r in sorted(by_source.items())]
-    return [
-        make_finding(
-            "RUN001", None, count=affected, sources="; ".join(described),
-            unavailable=sorted(by_source),
-        )
-    ]  # fmt: skip
+        for source, substitute in stood_in.items():
+            substituted.setdefault(source, set()).add(substitute)
+    findings = []
+    if affected:
+        described = [
+            f"{source_name(s)} ({', '.join(sorted(r))})" for s, r in sorted(by_source.items())
+        ]
+        findings.append(
+            make_finding(
+                "RUN001", None, count=affected, sources="; ".join(described),
+                unavailable=sorted(by_source),
+            )
+        )  # fmt: skip
+    if replaced:
+        findings.append(
+            make_finding(
+                "RUN002", None, count=replaced,
+                sources=", ".join(source_name(s) for s in sorted(substituted)),
+                substitutes=", ".join(
+                    sorted({source_name(x) for xs in substituted.values() for x in xs})
+                ),
+                substituted=sorted(substituted),
+            )
+        )  # fmt: skip
+    return findings
