@@ -126,7 +126,7 @@ submissions, each confirmed by its staff. Pasted as plain text, as the papers pr
 
 ### On real papers
 
-Two weeks of arXiv papers (20 each, cs, stat, q-bio, quant-ph and astro-ph), chosen
+Weeks of arXiv papers (20 each, cs, stat, q-bio, quant-ph and astro-ph), chosen
 mechanically, each list fixed before the changes it measures, run once, with every warning and
 error reviewed by hand:
 
@@ -134,12 +134,16 @@ error reviewed by hand:
 |---|---|---|---|---|---|---|---|
 | 2026-08-19..25 | 0.5.0 | 962 | 53 | 41 | 10 | 2 | 1.0 |
 | 2026-08-26..09-01 | 0.5.1 | 780 | 101 | 81 | 19 | 1 | 2.4 |
+| 2026-09-02..08 | 0.5.2 | 975 | 48 | 31 | 13 | 4 | 1.3 |
 
-- **The second week is over our target of 1.5.** None of its 19 false alarms comes from 0.5.1's
-  changes: they are other forms of one person's name, pages of a reference site cited with its
-  handbook's arXiv ID, real works no source indexes or cited with a shortened title, dataset
-  names after titles, and venue name forms. They are the next fixes. Two of its papers alone
-  have 33 real problems (invented DOIs, authors and titles).
+- **The latest week: about one false alarm every one and a half papers** (49 references on
+  average), against 31 real problems: identifiers of other papers (LLaMA cited with the Llama 3
+  arXiv ID), wrong given names, years and venues, placeholder identifiers, and 17 cited
+  preprints since published. The false alarms are double surnames, works no source indexes
+  cited as journal articles (a law review, a report, a blog), and years a workshop version,
+  a book's online date or a journal volume explain.
+- **The week before was over our target of 1.5** (2.4); 11 of its 19 false alarms are fixed in
+  0.5.2.
 - **In the first week, one false alarm every two papers** (48 references on average), against
   41 real problems:
   16 errors in the entries (wrong years, given names and titles, a missing first author, one
@@ -186,7 +190,7 @@ BibTeX entries.
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 91.7% | 2.1% | 98.9% |
 | | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.5.0 on 2026-10-07. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.5.2 on 2026-10-08. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
@@ -449,10 +453,11 @@ or "complete" references from memory, or name and shame authors.
   (v0.2); an experimental evidence finder for citations, `support` (v0.3); installs into more
   agents, an agent-judged `support`, and recall measured on hallucinations found in published
   papers (v0.4); references without titles found by journal, volume and page, short titles and
-  real titles with invented authors judged where the sources allow it (v0.5)
-- Next: Word (.docx) manuscripts; the false positives of the latest week of real papers
-  (registries' short author lists, collaboration names)
-- Being tried: Chinese-language references, measured before anything ships
+  real titles with invented authors judged where the sources allow it (v0.5); Chinese-language
+  works cited in English no longer called "not found" (v0.5.2)
+- Next: Word (.docx) manuscripts; the false positives of the latest week of real papers (double
+  surnames, unindexed works cited as articles)
+- Being tried: references in Chinese script, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
 [changelog](CHANGELOG.md).

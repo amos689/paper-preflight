@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-08
+
+Fewer false alarms, for English and for Chinese-language works cited in English. On a new
+held-out week of real papers, run once with these changes: 1.3 false positives per 100
+references (0.5.1's week: 2.4). HALLMARK and GPTZero's hallucinated references are unchanged.
+
 ### Fixed
 
 Chinese-language works cited in English, as English papers by Chinese authors often do
