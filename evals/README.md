@@ -101,11 +101,11 @@ uv run python evals/real_papers.py run --batch heldout3       # check them again
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are nine reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are ten reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last five are each batch as it came out:
+candidate's (main 43a5544); the last six are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -117,7 +117,8 @@ candidate's (main 43a5544); the last five are each batch as it came out:
 | `heldout5` | 2026-08-05..11 | held out for 0.3.0; studied for 0.4.0 (#126-#128) | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
 | `heldout6` | 2026-08-12..18 | held out for 0.4.0; studied for 0.5.0 (#139-#141) | 753 | 86 | 77 | 9 | 0 | 1.2 |
 | `heldout7` | 2026-08-19..25 | held out for 0.5.0 (list committed before any change, #138); studied for 0.5.1 | 962 | 53 | 41 | 10 | 2 | 1.0 |
-| `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147) | 780 | 101 | 81 | 19 | 1 | 2.4 |
+| `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147); studied for 0.5.2 | 780 | 101 | 81 | 19 | 1 | 2.4 |
+| `heldout9` | 2026-09-02..08 | held out for 0.5.2 (#152-#154; list committed before them, #149) | 975 | 48 | 31 | 13 | 4 | 1.3 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -136,8 +137,17 @@ candidate's (main 43a5544); the last five are each batch as it came out:
   Computer Architecture News) 2, a registry's short author list 1, an `\ifmmode` in a name 1
   and an MNRAS volume year 1.
 
-A tenth batch, `heldout9` (2026-09-02..08), was collected on 2026-10-07 and its list committed
-before any change made for heldout8's false positives.
+- **On `heldout9`**, run once with 0.5.2's changes (#152-#154): 31 real problems (17 published
+  preprints, identifiers of other papers, wrong given names and years, identifiers written as
+  URLs or placeholders) and 13 false positives, 1.3 per 100 references. They are double
+  surnames ('Ramos Garea', 'Dehghani Tafti') 2, a laboratory credited as an author 1, works no
+  source indexes cited as articles (a law review article, an OpenReview position paper, a
+  report, a blog URL in the journal field) 4, a challenge's LNCS volume named otherwise than
+  dblp names it 1, years (a workshop version, a book's online date, an MNRAS volume) 3,
+  'et al.' inside a name 1 and a subtitle after a question mark 1.
+
+An eleventh batch, `heldout10` (2026-09-09..15), was collected on 2026-10-08 and its list
+committed before any change made for heldout9's false positives.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.

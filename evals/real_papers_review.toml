@@ -3538,3 +3538,197 @@ note = "dblp links the cited arXiv record to this published version (same title 
 [finding."2608.27489v1:devlin2018bert:REF015"]
 verdict = "correct"
 note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+# heldout9 (2026-09-02..08), held out for 0.5.2; reviewed 2026-10-08
+
+[finding."2609.01971v2:ye2025generalist:REF011"]
+verdict = "unclear"
+note = "The bioRxiv version (10.1101/2025.02.02.634313) lists Adam Rouse among 24 authors; Crossref's NeurIPS 2025 record has 23 without him. The entry has the preprint's list."
+
+[finding."2609.01971v2:zhang2024universaltranslatorneuraldynamics:REF011"]
+verdict = "false_positive"
+note = "{The International Brain Laboratory} is the collaboration credited after the people; 'Laboratory' is not counted as a group word."
+
+[finding."2609.02954v1:metzler2002importance:REF003"]
+verdict = "false_positive"
+note = "A law review article (80 U. Det. Mercy L. Rev. 501, 2002); law reviews are rarely in the queried sources."
+
+[finding."2609.02954v1:su2025judge:REF014"]
+verdict = "correct"
+note = "JuDGE is a SIGIR 2025 paper (Crossref 10.1145/3726302.3730295), not COLING 2025."
+
+[finding."2609.02954v1:sartor2009defeasibility:REF013"]
+verdict = "unclear"
+note = "The chapter is in OUP's 'The Logic of Legal Requirements' (2012); the entry's 2009 may be an earlier working version."
+
+[finding."2609.02954v1:ashley1991modeling:REF012"]
+verdict = "correct"
+note = "Ashley's book is 'Modeling Legal Argument: Reasoning with Cases and Hypotheticals'; the entry has 'Arguments'."
+
+[finding."2609.02006v1:agarwal2024gkd:REF011"]
+verdict = "false_positive"
+note = "dblp names her Sabela Ramos Garea (double surname); the entry's 'Ramos, Sabela' is the same person."
+
+[finding."2609.02018v1:dehghani2026universal:REF011"]
+verdict = "false_positive"
+note = "dblp names her Zahra Dehghani Tafti (double surname); the entry's 'Dehghani, Zahra' is the same person."
+
+[finding."2609.01963v1:PARK2005177:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.05532v1:20:REF003"]
+verdict = "false_positive"
+note = "Vicuna is a blog post (lmsys.org); the entry gives its URL in the journal field, which is not read as a link."
+
+[finding."2609.05532v1:21:REF001"]
+verdict = "correct"
+note = "arXiv 2407.21783 is 'The Llama 3 Herd of Models'; LLaMA is 2302.13971, and 'Llama, Hugo Touvron' is a garbled author."
+
+[finding."2609.05532v1:16:REF014"]
+verdict = "false_positive"
+note = "The HECKTOR 2021 overview is in the challenge's LNCS volume '3D Head and Neck Tumor Segmentation in PET/CT Challenge', as the entry says; dblp names it 'HECKTOR@MICCAI'."
+
+[finding."2609.01997v1:HaCohen2024LTXVideo:REF001"]
+verdict = "correct"
+note = "arXiv 2502.13923 is the Qwen2.5-VL report; LTX-Video is 2501.00103."
+
+[finding."2609.01997v1:ho2021CFG:REF013"]
+verdict = "false_positive"
+note = "Classifier-Free Diffusion Guidance was at the NeurIPS 2021 workshop the entry names; the arXiv version (dblp's record) is 2022."
+
+[finding."2609.01982v2:dacode:REF001"]
+verdict = "correct"
+note = "The DOI is ClimateViz (EMNLP 2025); DA-Code is EMNLP 2024, 2024.emnlp-main.748."
+
+[finding."2609.01982v2:optibench:REF011"]
+verdict = "correct"
+note = "OptiBench's fifth author is Wei Shi; the entry has 'Shi, Shi'."
+
+[finding."2609.01982v2:altman_medical_stats:REF013"]
+verdict = "unclear"
+note = "Altman's book is dated 1990 by the CRC reissue's record and 1991 by many printings."
+
+[finding."2609.02029v1:cover_thomas:REF013"]
+verdict = "false_positive"
+note = "Elements of Information Theory, 2nd edition, is Wiley 2006; Crossref's record has its online date, 2005."
+
+[finding."2609.01999v1:jaiswal2022:REF017"]
+verdict = "correct"
+note = "A placeholder DOI ('10.XXXXX/ARXIV.1705.XXXXX')."
+
+[finding."2609.01999v1:Robins1952:REF017"]
+verdict = "correct"
+note = "The doi field holds a Project Euclid ID ('bams/1183517370')."
+
+[finding."2609.02963v1:docking1:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.04261v1:lecun2022path:REF003"]
+verdict = "false_positive"
+note = "LeCun's position paper 'A Path Towards Autonomous Machine Intelligence' (2022) is on OpenReview, which the entry names as the journal; no queried source indexes it."
+
+[finding."2609.04261v1:o2014antimicrobial:REF003"]
+verdict = "false_positive"
+note = "The Review on Antimicrobial Resistance's 2014 report (chaired by Jim O'Neill), written as an @article; a report no source indexes."
+
+[finding."2609.01988v1:Hill1997:REF011"]
+verdict = "correct"
+note = "The PRL paper is by Scott Hill and William K. Wootters; the entry has 'Sam A Hill'."
+
+[finding."2609.01993v2:Davies1988:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.02167v1:Sexton2021:REF013"]
+verdict = "false_positive"
+note = "MNRAS 501, 2 (2021), online November 2020; the volume year is 2021."
+
+[finding."2609.02179v1:Li25:REF012"]
+verdict = "correct"
+note = "The entry's title (ADS export) has lost the relation's symbols: '... with the Local  Relation' for 'Local M_BH-M_* Relation'."
+
+[finding."2609.02179v1:Ding20:REF012"]
+verdict = "correct"
+note = "The entry's title (ADS export) lacks 'with' before 'HST-WFC3'."
+
+[finding."2610.00027v1:ralph2020empirical:REF010"]
+verdict = "false_positive"
+note = "The author field is 'Paul Ralph et al.'; the reader takes 'et al.' as part of one name."
+
+[finding."2610.00027v1:guest2006many:REF003"]
+verdict = "false_positive"
+note = "Guest, Bunce & Johnson, Field Methods 18(1) 59 (2006), registered as 'How Many Interviews Are Enough?'; the entry adds its subtitle after the question mark."
+
+[finding."2610.00027v1:suwarno2025exploring:REF011"]
+verdict = "unclear"
+note = "Crossref's record of the J. Applied Data Sciences article lists only Suwarno; the other three could not be checked."
+
+[finding."2609.01971v2:zhao2025eegagent:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01971v2:liang2023taskmatrix:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02006v1:meng2024pissa:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02006v1:wang2024milora:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02006v1:samragh2024hypercloning:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02006v1:penedo2024fineweb:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02018v1:fu2026revisiting:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01963v1:oquab2023dinov2:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.05532v1:22:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01997v1:zhang2025multiscalediffusion:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01982v2:datascibench:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01982v2:scienceagentbench:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.02029v1:wikitext:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01999v1:agrawal2014thompsonsamplingcontextualbandits:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01999v1:luo_geometry-aware_2023:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.01999v1:Zhang2021feel:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
+
+[finding."2609.04261v1:skenderi2023graph:REF015"]
+verdict = "correct"
+note = "dblp links the cited arXiv record to this published version (same title and authors)."
