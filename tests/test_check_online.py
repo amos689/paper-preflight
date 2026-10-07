@@ -229,3 +229,92 @@ def test_refresh_asks_the_sources_again(tmp_path: Path, recorded_web: FakeWeb) -
 
 def test_refresh_contradicts_offline() -> None:
     assert check(str(DEMO), "--refresh", "--offline").exit_code == EXIT_USAGE
+
+
+UNTITLED = """
+@article{BegemanEtAl1991,
+  author  = {Begeman, K. G. and Broeils, A. H. and Sanders, R. H.},
+  year    = {1991},
+  journal = {Monthly Notices of the Royal Astronomical Society},
+  volume  = {249},
+  pages   = {523}
+}
+@article{Bekenstein2004,
+  author  = {Bekenstein, J. D.},
+  year    = {2004},
+  journal = {Physical Review D},
+  volume  = {70},
+  pages   = {083509}
+}
+@article{misprinted,
+  author  = {Begeman, K. G. and Broeils, A. H. and Sanders, R. H.},
+  year    = {1991},
+  journal = {Monthly Notices of the Royal Astronomical Society},
+  volume  = {249},
+  pages   = {532}
+}
+@article{another_first_author,
+  author  = {Sanders, R. H. and Begeman, K. G.},
+  year    = {1991},
+  journal = {Monthly Notices of the Royal Astronomical Society},
+  volume  = {249},
+  pages   = {523}
+}
+"""
+
+
+def test_untitled_articles_are_found_by_journal_volume_and_page(
+    tmp_path: Path, recorded_web: FakeWeb
+) -> None:
+    # astronomy and physics cite "MNRAS 249, 523" without a title: the article at exactly those
+    # coordinates, by the same first author, is the one cited
+    bib = tmp_path / "refs.bib"
+    bib.write_text(UNTITLED, encoding="utf-8")
+    result, payload = check_json(tmp_path, str(bib), "--fail-on", "never")
+    assert result.exit_code == EXIT_OK
+    refs = {r["key"]: r for r in payload["references"]}
+    for key, doi in (
+        ("BegemanEtAl1991", "10.1093/mnras/249.3.523"),
+        ("Bekenstein2004", "10.1103/physrevd.70.083509"),  # an article number, not a page
+    ):
+        assert refs[key]["verdict"] == "verified"
+        assert "coordinates" in refs[key]["flags"]
+        assert refs[key]["matched"]["doi"] == doi
+    # another page, or another first author: not the article cited, and no evidence against it
+    for key in ("misprinted", "another_first_author"):
+        assert refs[key]["verdict"] == "cannot_determine"
+        assert refs[key]["reasons"] == ["INSUFFICIENT_METADATA"]
+    assert "REF003" not in [f["rule"] for f in payload["findings"]]
+
+
+def test_a_failed_coordinate_lookup_leaves_the_run_complete(
+    tmp_path: Path, recorded_web: FakeWeb
+) -> None:
+    # untitled entries were never searched before: the lookup is optional, like the rescue
+    recorded_web.fail("api.crossref.org", "429")
+    bib = tmp_path / "refs.bib"
+    bib.write_text(UNTITLED, encoding="utf-8")
+    result, payload = check_json(tmp_path, str(bib), "--fail-on", "never")
+    assert result.exit_code == EXIT_OK
+    assert payload["run"]["complete"] is True
+    assert {r["verdict"] for r in payload["references"]} == {"cannot_determine"}
+
+
+def test_a_shorter_record_found_by_coordinates_is_only_worth_a_look(
+    tmp_path: Path, recorded_web: FakeWeb
+) -> None:
+    # Crossref's records of older articles often stop short of the full author list, and an
+    # untitled entry is checked against Crossref alone: an author not on the record is an info
+    bib = tmp_path / "refs.bib"
+    bib.write_text(
+        "@article{BegemanEtAl1991, author = {Begeman, K. G. and Broeils, A. H. and Sanders, R. H."
+        " and Wadsley, J.}, year = {1991}, journal = {Monthly Notices of the Royal Astronomical"
+        " Society}, volume = {249}, pages = {523}}",
+        encoding="utf-8",
+    )
+    result, payload = check_json(tmp_path, str(bib))
+    assert result.exit_code == EXIT_OK
+    (ref,) = payload["references"]
+    assert ref["verdict"] == "verified"
+    (author,) = [f for f in payload["findings"] if f["rule"] == "REF011"]
+    assert author["severity"] == "info"

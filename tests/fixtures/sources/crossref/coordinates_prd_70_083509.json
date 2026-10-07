@@ -1,0 +1,209 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "publisher": "American Physical Society (APS)",
+    "issue": "6",
+    "short-container-title": [
+     "Phys. Rev. D"
+    ],
+    "DOI": "10.1103/physrevd.71.069901",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2005,
+       3,
+       7
+      ]
+     ],
+     "date-time": "2005-03-07T23:28:55Z",
+     "timestamp": 1110238135000
+    },
+    "title": [
+     "Erratum: Relativistic gravitation theory for the modified Newtonian dynamics paradigm [Phys. Rev. D<b>70</b>, 083509 (2004)]"
+    ],
+    "prefix": "10.1103",
+    "volume": "71",
+    "author": [
+     {
+      "given": "Jacob D.",
+      "family": "Bekenstein",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "16",
+    "published-online": {
+     "date-parts": [
+      [
+       2005,
+       3,
+       14
+      ]
+     ]
+    },
+    "container-title": [
+     "Physical Review D"
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2005,
+       3,
+       14
+      ]
+     ]
+    },
+    "URL": "https://doi.org/10.1103/physrevd.71.069901",
+    "ISSN": [
+     "1550-7998",
+     "1550-2368"
+    ],
+    "article-number": "069901"
+   },
+   {
+    "publisher": "American Physical Society (APS)",
+    "issue": "12",
+    "short-container-title": [
+     "Phys. Rev. D"
+    ],
+    "DOI": "10.1103/physrevd.70.121502",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2004,
+       12,
+       22
+      ]
+     ],
+     "date-time": "2004-12-22T09:29:03Z",
+     "timestamp": 1103707743000
+    },
+    "title": [
+     "Are there hyperentropic objects?"
+    ],
+    "prefix": "10.1103",
+    "volume": "70",
+    "author": [
+     {
+      "given": "Jacob D.",
+      "family": "Bekenstein",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "16",
+    "published-online": {
+     "date-parts": [
+      [
+       2004,
+       12,
+       21
+      ]
+     ]
+    },
+    "container-title": [
+     "Physical Review D"
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2004,
+       12,
+       21
+      ]
+     ]
+    },
+    "URL": "https://doi.org/10.1103/physrevd.70.121502",
+    "ISSN": [
+     "1550-7998",
+     "1550-2368"
+    ],
+    "article-number": "121502"
+   },
+   {
+    "publisher": "American Physical Society (APS)",
+    "issue": "8",
+    "short-container-title": [
+     "Phys. Rev. D"
+    ],
+    "DOI": "10.1103/physrevd.70.083509",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2004,
+       10,
+       13
+      ]
+     ],
+     "date-time": "2004-10-13T18:47:25Z",
+     "timestamp": 1097693245000
+    },
+    "title": [
+     "Relativistic gravitation theory for the modified Newtonian dynamics paradigm"
+    ],
+    "prefix": "10.1103",
+    "volume": "70",
+    "author": [
+     {
+      "given": "Jacob D.",
+      "family": "Bekenstein",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "16",
+    "published-online": {
+     "date-parts": [
+      [
+       2004,
+       10,
+       13
+      ]
+     ]
+    },
+    "container-title": [
+     "Physical Review D"
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       2004,
+       10,
+       13
+      ]
+     ]
+    },
+    "URL": "https://doi.org/10.1103/physrevd.70.083509",
+    "ISSN": [
+     "1550-7998",
+     "1550-2368"
+    ],
+    "article-number": "083509"
+   }
+  ]
+ }
+}

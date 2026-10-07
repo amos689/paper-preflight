@@ -30,6 +30,7 @@ from paper_preflight.match import (
     MIN_PREFIX_CHARS,
     TITLE_VARIANT,
     EntryInfo,
+    at_coordinates,
     check_authors,
     check_title,
     title_score,
@@ -104,6 +105,8 @@ class Evidence:
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
     pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
+    # anchored by journal, volume and page: an untitled entry (see _search_coordinates)
+    by_coordinates: bool = False
 
     def mark_unavailable(self, error: SourceUnavailable) -> None:
         self.unavailable.setdefault(error.source, error.reason.value)
@@ -334,6 +337,10 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         _search_dblp(in_dblp, sources), *(title_search(item) for item in unanchored)
     )
     await _registered_years(unanchored, sources)
+
+    # 5b. Journal articles cited without a title, by journal, volume and page.
+    untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
+    await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
 
     # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
     if sources.s2 is not None and sources.s2_key:
@@ -646,6 +653,44 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
         item.candidates.extend(close)
     else:
         item.negative.add("crossref")
+
+
+def _untitled_article(info: EntryInfo) -> bool:
+    """A journal article cited by journal, volume and page, with no title to search for."""
+    return (
+        word_count(info.title) < 3
+        and info.venue_field in {"journal", "journaltitle"}
+        and bool(info.venue and info.volume and info.first_page and info.year)
+        and bool(info.authors.people)
+    )
+
+
+async def _search_coordinates(item: Evidence, sources: Sources) -> None:
+    """Crossref's record at the entry's journal coordinates (:func:`match.at_coordinates`).
+
+    The lookup is optional, like the rescue: an untitled entry was never searched before, so a
+    failure only leaves it undetermined, and finding nothing says nothing against the work
+    (journals without Crossref DOIs: JMLR, early volumes of A&A)."""
+    info = item.info
+    first = info.authors.people[0]
+    try:
+        records = await crossref.search_coordinates(
+            sources.crossref,
+            info.venue or "",
+            info.volume or "",
+            info.first_page or "",
+            year=info.year or 0,
+            author=None if first.literal else first.family,
+            mailto=sources.mailto,
+        )
+    except SourceUnavailable as error:
+        item.optional_unavailable.setdefault(error.source, error.reason.value)
+        return
+    found = [r for r in records if at_coordinates(info, r)]
+    # one work, though perhaps under two DOIs (Watkins 1992, "Technical Note: Q-Learning")
+    if found and len({title_key(r.title) for r in found}) == 1:
+        item.anchored.extend(found)
+        item.by_coordinates = True
 
 
 async def _search_s2(item: Evidence, client: SourceClient, api_key: str) -> None:

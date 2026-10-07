@@ -51,6 +51,13 @@ NAMED_VENUE_FIELDS = frozenset(VENUE_FIELDS[:3])
 
 _ISSN_RE = re.compile(r"\b\d{4}-\d{3}[\dX]\b")
 _LINK_RE = re.compile(r"https?://[^\s{}<>\"]+", re.IGNORECASE)
+_PAGE_SEPARATOR = re.compile(r"\s*(?:-+|–|—|,)\s*")
+
+
+def first_page(pages: str | None) -> str | None:
+    """The first page or article number of a page field, lower-cased ("L25--L28" -> "l25")."""
+    head = _PAGE_SEPARATOR.split((pages or "").strip(), maxsplit=1)[0].strip().lower()
+    return head or None
 
 
 @dataclass(frozen=True)
@@ -66,6 +73,8 @@ class EntryInfo:
     venue_field: str | None = None  # where ``venue`` came from (booktitle, journal, publisher ...)
     link_hosts: tuple[str, ...] = ()  # hosts of the web pages the entry links to
     issns: frozenset[str] = frozenset()
+    volume: str | None = None
+    first_page: str | None = None  # see :func:`first_page`
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
@@ -91,6 +100,8 @@ class EntryInfo:
             venue_field=venue_field,
             link_hosts=tuple(dict.fromkeys(h.removeprefix("www.") for h in hosts if h)),
             issns=frozenset(_ISSN_RE.findall((entry.text("issn") or "").upper())),
+            volume=(entry.text("volume") or "").strip() or None,
+            first_page=first_page(entry.text("pages") or entry.text("eid")),
         )
 
 
@@ -1053,3 +1064,18 @@ def best_candidate(
     if len(distinct) > 1 and (best.title.score or 0) < 1.0:
         return None  # ambiguous: several different works fit equally well — refuse to guess
     return best
+
+
+def at_coordinates(info: EntryInfo, record: SourceRecord) -> bool:
+    """The record is the article an untitled entry cites by journal, volume and page ("MNRAS
+    249, 523", as astronomy and physics cite): the same volume and first page, and the same
+    first author, the authors agreeing as a whole. There is no title to compare, so neither
+    alone is enough: a volume and page may be misprinted, a first author has many papers."""
+    if not (info.volume and info.first_page and record.volume):
+        return False
+    if record.volume.strip().lower() != info.volume.lower():
+        return False
+    if first_page(record.pages) != info.first_page:
+        return False
+    authors = check_authors(info.authors, record)
+    return authors.first_author_match and authors.status in {"match", "variant"}

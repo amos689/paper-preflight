@@ -1,0 +1,105 @@
+{
+ "status": "ok",
+ "message-type": "work-list",
+ "message": {
+  "items": [
+   {
+    "publisher": "Oxford University Press (OUP)",
+    "issue": "3",
+    "published-print": {
+     "date-parts": [
+      [
+       1991,
+       4,
+       1
+      ]
+     ]
+    },
+    "DOI": "10.1093/mnras/249.3.523",
+    "type": "journal-article",
+    "created": {
+     "date-parts": [
+      [
+       2014,
+       7,
+       20
+      ]
+     ],
+     "date-time": "2014-07-20T19:32:33Z",
+     "timestamp": 1405884753000
+    },
+    "page": "523-537",
+    "title": [
+     "Extended rotation curves of spiral galaxies: dark haloes and modified dynamics"
+    ],
+    "prefix": "10.1093",
+    "volume": "249",
+    "author": [
+     {
+      "given": "K. G.",
+      "family": "Begeman",
+      "sequence": "first",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "A. H.",
+      "family": "Broeils",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     },
+     {
+      "given": "R. H.",
+      "family": "Sanders",
+      "sequence": "additional",
+      "affiliation": [],
+      "role": [
+       {
+        "vocabulary": "crossref",
+        "role": "author"
+       }
+      ]
+     }
+    ],
+    "member": "286",
+    "published-online": {
+     "date-parts": [
+      [
+       1991,
+       4,
+       1
+      ]
+     ]
+    },
+    "container-title": [
+     "Monthly Notices of the Royal Astronomical Society"
+    ],
+    "issued": {
+     "date-parts": [
+      [
+       1991,
+       4,
+       1
+      ]
+     ]
+    },
+    "URL": "https://doi.org/10.1093/mnras/249.3.523",
+    "ISSN": [
+     "0035-8711",
+     "1365-2966"
+    ]
+   }
+  ]
+ }
+}

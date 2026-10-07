@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Journal articles cited without a title ("MNRAS 249, 523", as astronomy and physics cite) are
+  looked up on Crossref by journal, volume and first page. The record found is used only when
+  its volume and first page are those cited and its first author is the entry's; the JSON
+  report flags the reference `coordinates`. Nothing found leaves the reference undetermined,
+  never "not found", and a failed lookup does not make the run incomplete. On the seventh batch
+  of real papers, references that could not be determined fall from 15.4% to 6.4%.
+
 ## [0.4.1] - 2026-10-07
 
 Smoother first runs. An overloaded arXiv API no longer leaves every run "incomplete" when DataCite

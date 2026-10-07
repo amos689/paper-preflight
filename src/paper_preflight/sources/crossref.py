@@ -27,6 +27,9 @@ SELECT = ",".join(
         "short-container-title", "ISSN",
     ]
 )  # fmt: skip
+# Coordinate lookups also compare article numbers. A separate list: the fields are part of the
+# cache key, and changing SELECT would orphan every cached answer (and the evaluation replays).
+COORDINATE_SELECT = f"{SELECT},article-number"
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
@@ -160,7 +163,8 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         relations=relations,
         volume=str(item["volume"]) if item.get("volume") else None,
         issue=str(item["issue"]) if item.get("issue") else None,
-        pages=str(item["page"]) if item.get("page") else None,
+        # an article number stands for the pages (Phys. Rev. D 70, 083509)
+        pages=str(item.get("page") or item.get("article-number") or "") or None,
         publisher=item.get("publisher"),
         url=item.get("URL"),
         venue_aliases=aliases,
@@ -221,4 +225,32 @@ async def search_bibliographic(
     """Free-text bibliographic search (title + first authors + year work best)."""
     params = _params({"query.bibliographic": query, "rows": rows, "select": SELECT}, mailto)
     fetched = await client.get_json(WORKS_URL, params=params, classify=_classify_list)
+    return parse_work_list(fetched.data)
+
+
+async def search_coordinates(
+    client: SourceClient,
+    journal: str,
+    volume: str,
+    page: str,
+    *,
+    year: int,
+    author: str | None = None,
+    mailto: str | None = None,
+) -> list[SourceRecord]:
+    """Articles near a journal, volume and first page, a year either side of the cited one (an
+    article is often online a year before its issue). The caller keeps only records at exactly
+    those coordinates. Twenty rows: on development data the right record was outside the first
+    five for 2 of 87 entries."""
+    extra = {
+        "query.bibliographic": f"{journal} {volume} {page}",
+        "filter": f"from-pub-date:{year - 1},until-pub-date:{year + 1}",
+        "rows": 20,
+        "select": COORDINATE_SELECT,
+    }
+    if author:
+        extra["query.author"] = author
+    fetched = await client.get_json(
+        WORKS_URL, params=_params(extra, mailto), classify=_classify_list
+    )
     return parse_work_list(fetched.data)

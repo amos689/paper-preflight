@@ -30,6 +30,12 @@ def _text(name: str) -> str:
 CROSSREF_ITEMS = {
     i["DOI"].lower(): i for i in _load("crossref/batch_filter_doi.json")["message"]["items"]
 }
+# Crossref's answers near "MNRAS 249, 523" (Begeman et al. 1991) and "Phys. Rev. D 70, 083509"
+# (Bekenstein 2004, an article number), recorded 2026-10-07, whatever the volume and page asked
+COORDINATES = {
+    "Monthly Notices of the Royal Astronomical Society": "coordinates_mnras_249_523.json",
+    "Physical Review D": "coordinates_prd_70_083509.json",
+}
 # the demo's two arXiv preprints as DataCite has them (10.48550/arXiv.<id>)
 DATACITE_ARXIV = _load("datacite/dc_arxiv_demo_batch.json")["data"]
 DBLP_ARXIV_CORR = {
@@ -131,6 +137,12 @@ class FakeWeb:
 
     def _crossref(self, request: httpx.Request) -> httpx.Response:
         params = request.url.params
+        if "query.author" in params:  # an untitled entry's journal coordinates
+            query = params.get("query.bibliographic", "")
+            for journal, name in COORDINATES.items():
+                if query.startswith(journal):
+                    return httpx.Response(200, json=_load(f"crossref/{name}"))
+            return httpx.Response(200, json={"message": {"items": []}})
         if "filter" in params:
             wanted = [f.removeprefix("doi:").lower() for f in params["filter"].split(",")]
             items = [CROSSREF_ITEMS[d] for d in wanted if d in CROSSREF_ITEMS]

@@ -473,7 +473,12 @@ def _year_gap(year: int | None, record: SourceRecord) -> int:
 
 
 def _field_findings(
-    entry: BibEntry, info: EntryInfo, m: Match, *, published_known: bool = True
+    entry: BibEntry,
+    info: EntryInfo,
+    m: Match,
+    *,
+    published_known: bool = True,
+    coordinates: bool = False,
 ) -> list[Finding]:
     """Findings on the fields of a bound entry.
 
@@ -541,9 +546,20 @@ def _field_findings(
             en = ", ".join(f"{ours} (recorded: {theirs})" for ours, theirs in authors.renamed)
             zh = "、".join(f"{ours}（记录为 {theirs}）" for ours, theirs in authors.renamed)
             details.append((f"other given names: {en}", f"名字不同：{zh}"))
+        # Found by journal, volume and page, with the right first author, on a record that lists
+        # fewer people than the entry: Crossref's records of older articles often stop short
+        # (Biometrika 85(2) 379 without Vohra, MNRAS 441, 2986 without Wadsley), and no other
+        # source was asked. Worth a look, not a warning.
+        short_record = (
+            coordinates
+            and authors.first_author_match
+            and not authors.renamed
+            and len(record.authors) < len(info.authors.people)
+        )
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
+                severity=Severity.INFO if short_record else None,
                 source=source, missing=names, suggestion=format_authors(record),
                 detail="; ".join(d[0] for d in details), detail_zh="；".join(d[1] for d in details),
             )
@@ -836,10 +852,17 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
             not is_preprint(r) and title_key(r.title) == same_work
             for r in (*evidence.anchored, *evidence.candidates, *evidence.published_versions)
         )
-        findings.extend(_field_findings(entry, info, bound, published_known=published_known))
+        findings.extend(
+            _field_findings(
+                entry, info, bound, published_known=published_known,
+                coordinates=evidence.by_coordinates,
+            )
+        )  # fmt: skip
         same_records = [m.record for m in same] or [bound.record]
         status_findings, flags = _status_findings(entry, same_records, evidence.status_records)
         findings.extend(status_findings)
+        if evidence.by_coordinates:
+            flags.add("coordinates")  # found by journal, volume and page: there is no title
         published = _published_version(entry, evidence, bound.record)
         if published is not None:
             findings.append(published)
