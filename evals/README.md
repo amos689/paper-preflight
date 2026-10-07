@@ -101,7 +101,7 @@ uv run python evals/real_papers.py run --batch heldout3       # check them again
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are seven batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are seven reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
@@ -115,7 +115,10 @@ candidate's (main 43a5544); the last three are each batch as it came out:
 | `heldout3` | 2026-07-22..28 | held out for #94-#98 | 814 | 107 | 92 | 14 | 1 | 1.7 |
 | `heldout4` | 2026-07-29..08-04 | held out for 0.2.1; studied for 0.3.0 (#112-#114) | 1,005 | 88 | 66 | 19 | 3 | 1.9 |
 | `heldout5` | 2026-08-05..11 | held out for 0.3.0; studied for 0.4.0 (#126-#128) | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
-| `heldout6` | 2026-08-12..18 | held out for 0.4.0 | 753 | 86 | 77 | 9 | 0 | 1.2 |
+| `heldout6` | 2026-08-12..18 | held out for 0.4.0; studied for 0.5.0 | 753 | 86 | 77 | 9 | 0 | 1.2 |
+
+An eighth batch, `heldout7` (2026-08-19..25), was collected on 2026-10-07 and its list committed
+before any 0.5.0 change; it is run once, when those changes are done.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.

@@ -1,8 +1,8 @@
 # HALLMARK evaluation
 
-- **Tool:** paper-preflight 0.2.0
+- **Tool:** paper-preflight 0.4.1
 - **Data:** HALLMARK v1.2.3, split `test_public`
-- **Run:** 2026-10-04, 0.0 min, offline (cache only)
+- **Run:** 2026-10-07, 1.6 min, live sources
 - **Unavailable during the run:** none
 - **Unparsed entries:** 0
 
@@ -11,7 +11,7 @@
 | Mode | Precision | Recall | F1 | False-positive rate | Coverage |
 |---|---|---|---|---|---|
 | fabrication | 99.0% | 49.0% | 65.6% | 0.6% | 97.0% |
-| any_issue | 98.1% | 88.9% | 93.3% | 2.2% | 97.0% |
+| any_issue | 98.1% | 89.1% | 93.4% | 2.2% | 97.0% |
 
 ## fabrication: outcomes by hallucination type
 
@@ -44,7 +44,7 @@ For VALID entries a flag is a false positive; for the others, clean is a miss.
 | VALID | – | 312 | 2.2% | 97.8% | 0.0% |
 | fabricated_doi | 1 | 29 | 100.0% | 0.0% | 0.0% |
 | future_date | 1 | 29 | 100.0% | 0.0% | 0.0% |
-| nonexistent_venue | 1 | 37 | 75.7% | 24.3% | 0.0% |
+| nonexistent_venue | 1 | 37 | 78.4% | 21.6% | 0.0% |
 | placeholder_authors | 1 | 33 | 93.9% | 0.0% | 6.1% |
 | chimeric_title | 2 | 23 | 91.3% | 0.0% | 8.7% |
 | hybrid_fabrication | 2 | 29 | 93.1% | 0.0% | 6.9% |

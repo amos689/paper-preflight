@@ -241,12 +241,19 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 
 另外：Glama 已收录（Dockerfile 构建、评分 A），awesome-LaTeX#130 和 awesome-mcp-servers#15891 已提交；Hugging Face Space 因 Gradio/Docker Space 需付费而暂不做。
 
+## 第五轮：英文召回与覆盖，中文做实验（2026-10-07 起）
+
+计划见工作区 `plans/paper-preflight 第五轮开发方案.md`（2026-10-07 定）。用户的决定：英文优先；中文参考文献只做实验验证，不进发布包；.docx 输入放 11 月；不访问知网解析页。目标：10/31 前发 0.5.0。
+
+| PR | 内容 |
+|---|---|
+| #138 | 基线：HALLMARK 用 0.4.1 重测（test 任何问题召回 89.1%，其余不变）；冻结第八批 heldout7（2026-08-19..25）的名单，本轮改动完成前不跑 |
+
 ## 下一步
 
-- [ ] 发布 0.4.0（需用户确认），之后 MCP Registry 发布新版本（需用户设备授权）
-- [ ] 需要用户操作：建 Hugging Face Space 并设 `HF_SPACE`/`HF_TOKEN`；Glama 上架；awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；曝光窗口发帖
-- [ ] 主力转向第二个项目 TestProof（开工前先复查空白）；paper-preflight 进入维护：每月一批真实论文、回复 issue、跟进数据源
-- [ ] 维护期可做：真实标题配编造作者（GPTZero 5 条）；没有标题的天文条目按期刊/卷/页检索；REF017 对 "[cs]" 给出 `2311.07911`；S2 CorpusID 作为标识符；第七批的 9 个误报
+- [ ] 第五轮英文主线：E1 无标题条目按期刊坐标检索；E5 纯文本读取健壮性；E6 第七批的 9 个误报；E7 REF017 "[cs]"、S2 CorpusID；E2 真实题名配编造作者、E3 会议核对、E4 作者被删几位（先实验，过门槛才合并）；然后跑 heldout7，发 0.5.0
+- [ ] 中文实验线 X1–X6（工作区 `zh-experiments/`），结果写进 `reports/paper preflight 中文实验结果.md`
+- [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；0.5.0 发布时 MCP Registry 设备授权
 
 ## 已知问题与备忘
 
