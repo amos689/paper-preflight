@@ -17,6 +17,7 @@ from paper_preflight.match import (
     check_venue,
     check_year,
     evaluate,
+    first_page,
     given_names_differ,
     surname_key,
     suspicious_reason,
@@ -892,3 +893,32 @@ def test_a_chapter_in_springers_inbook_export() -> None:
     )
     numbered = parse_bib_text("@inbook{c, chapter={7}, title={A Book}}", Path("x.bib")).entries[0]
     assert EntryInfo.from_entry(numbered).title == "A Book"
+
+
+# ------------------------------------------------------------------ journal coordinates
+
+
+@pytest.mark.parametrize(
+    ("pages", "first"),
+    [
+        ("523--537", "523"),
+        ("523–537", "523"),
+        ("L25--L28", "l25"),
+        ("083509", "083509"),
+        ("47, 59", "47"),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_first_page(pages: str | None, first: str | None) -> None:
+    assert first_page(pages) == first
+
+
+def test_entry_info_keeps_volume_and_first_page() -> None:
+    (entry,) = parse_bib_text(
+        "@article{k, author={Burkert, A.}, journal={The Astrophysical Journal Letters},"
+        " volume={447}, pages={L25--L28}, year={1995}}",
+        Path("refs.bib"),
+    ).entries
+    info = EntryInfo.from_entry(entry)
+    assert (info.volume, info.first_page) == ("447", "l25")
