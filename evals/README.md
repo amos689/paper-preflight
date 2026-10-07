@@ -116,7 +116,7 @@ candidate's (main 43a5544); the last four are each batch as it came out:
 | `heldout4` | 2026-07-29..08-04 | held out for 0.2.1; studied for 0.3.0 (#112-#114) | 1,005 | 88 | 66 | 19 | 3 | 1.9 |
 | `heldout5` | 2026-08-05..11 | held out for 0.3.0; studied for 0.4.0 (#126-#128) | 1,043 | 136 | 109 | 20 | 7 | 1.9 |
 | `heldout6` | 2026-08-12..18 | held out for 0.4.0; studied for 0.5.0 (#139-#141) | 753 | 86 | 77 | 9 | 0 | 1.2 |
-| `heldout7` | 2026-08-19..25 | held out for 0.5.0 (list committed before any change, #138) | 962 | 53 | 41 | 10 | 2 | 1.0 |
+| `heldout7` | 2026-08-19..25 | held out for 0.5.0 (list committed before any change, #138); studied for 0.5.1 | 962 | 53 | 41 | 10 | 2 | 1.0 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -124,6 +124,9 @@ candidate's (main 43a5544); the last four are each batch as it came out:
   Registries' author lists that stop short (DataCite, KISTI) give three; collaboration names
   ("MAGPI Team") two; a truncated title bound to another paper of the shorter title two; a
   Zenodo concept DOI, an English given name and a registry's garbled symbol one each.
+
+A ninth batch, `heldout8` (2026-08-26..09-01), was collected on 2026-10-07 and its list committed
+before any change made for heldout7's false positives; it is run once, when they are done.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
