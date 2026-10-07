@@ -255,10 +255,12 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #143 | E2：同一作品的两条记录标题只差连字符或空格（SoftMatch 的预印本与 ICLR 版）时算一篇，不再判"有歧义"；真实题名配编造作者因此报 REF010。七批回放无变化；HALLMARK test 召回 89.1% → 89.4%，误报率不变；GPTZero 136 → 137。只署一个人名的条目（iclr 24）仍不判：机构署名（"Meta AI"）会因此误报 |
 | #144 | E3：三四个词的短题名，在 dblp 完整收录的会议或期刊、过去的年份、所有来源都答"没有"时，可以判查无此文；若找到的标题以它开头（真实论文被截短引用，如 GPTZero 第 14 条）仍弃权。七批回放无变化；GPTZero 137 → 139；HALLMARK test 伪造口径召回 49.3% → 50.2%，误报率不变 |
 | #145 | 第八批 heldout7（0.5.0 保留集，只跑一次）：962 条、53 个报警、41 个真问题、10 个误报、2 个不确定，每百条 1.0（门槛 1.5，通过）。E4 不改：作者被删几位已有提示级 REF011，升为警告会误报 |
+| #146 | 0.5.0 发布准备：版本号、CHANGELOG、README（heldout7 每百条 1.0；GPTZero 139/151；HALLMARK test 伪造口径召回 50.2%、误报率 1.9%）、路线图 |
 
 ## 下一步
 
-- [ ] 第五轮英文主线完成，heldout7 通过；发布 0.5.0（需用户确认）。heldout7 的 10 个误报留作下一轮开发数据：登记库作者不全（DataCite、KISTI）、团队署名、截短标题绑到同名短标题论文、Zenodo 总 DOI、英文名、登记库乱码符号
+- [ ] 发布 0.5.0：GitHub Release（需用户确认），之后 MCP Registry 发布（需用户设备授权）
+- [ ] heldout7 的 10 个误报是下一轮开发数据：登记库作者不全（DataCite、KISTI）、团队署名、截短标题绑到同名短标题论文、Zenodo 总 DOI、英文名、登记库乱码符号
 - [ ] 中文实验线 X1–X6（工作区 `zh-experiments/`），结果写进 `reports/paper preflight 中文实验结果.md`
 - [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；0.5.0 发布时 MCP Registry 设备授权
 
