@@ -174,12 +174,12 @@ BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 98.1% | 88.9% | 2.2% | 97.0% |
+| `test_public`: 831 entries, never used during development | Any issue | 98.1% | 89.1% | 2.2% | 97.0% |
 | | Fabrication | 99.0% | 49.0% | 0.6% | 97.0% |
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 90.7% | 2.1% | 98.4% |
 | | Fabrication | 98.1% | 52.7% | 1.0% | 98.4% |
 
-HALLMARK v1.2.3, every entry of both public splits, run on 2026-10-04. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.4.1 on 2026-10-07. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
