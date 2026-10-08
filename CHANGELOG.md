@@ -53,6 +53,27 @@ All notable changes to this project are documented here. The format follows
   - Reports cited as articles that name their issuer ("Report to the ...").
   - The authors of a preprint against a journal article the entry cites with volume and pages
     are an info: the published version may list others.
+- **False positives found on heldout16** (the week before, also never used; 18 false
+  positives, 1.8 per 100 references, the second week in a row over the gate): 17 of them gone
+  on a replay of 340 papers, 4 more on earlier weeks; no real problem lost, nothing new
+  flagged; HALLMARK `dev_public` and GPTZero unchanged.
+  - Grey literature: a technical report named by its number (`eprint = {JWST-STScI-008296}`)
+    or institution, not only by a venue that names its issuer; meetings' abstracts (an AAS 243
+    abstract) and astronomy's bulletins and circulars that only NASA ADS indexes (ESO's The
+    Messenger, IAU and GCN circulars, ATels) are not called "not found".
+  - Authors: one found on another version of the work a search turned up (dblp's CoRR record
+    of LLaVA-OneVision, made from a version without Peiyuan Zhang, against its TMLR record); a
+    record that credits only a group ("Gemini Robotics Team"); groups by their acronyms
+    ("ROTAC"); a letter a registry lost in a long surname, with initials only ("Trakhenbrot");
+    a romanised given name (Iurii and Yuri, Dmitriy and Dmitri); an organisation's own
+    document whose title names it ("OpenAI GPT-5 System Card", cited as OpenAI's "GPT-5 System
+    Card"), whose people the entry need not list.
+  - Years: software cited by its project's year, the DOI standing for its latest release
+    (RDKit, 2006); a paper accepted "to appear" whose record has only the issue to come (2028);
+    a preprint its venue says it is, without an arXiv number ("Preprint posted online
+    October", 2017; ICLR 2018).
+  - KDD as "ACM SIGKDD ... Knowledge discovery in data mining"; a title the record follows with
+    the acronym its words spell ("Spitzer Enhanced Imaging Products (SEIP)").
 
 ## [0.8.0] - 2026-10-09
 
