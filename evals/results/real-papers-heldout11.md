@@ -9,7 +9,7 @@
 
 | References checked | Flags | Real problems | False positives | Unclear | False positives per 100 references | Cannot determine |
 |---|---|---|---|---|---|---|
-| 868 | 89 | 75 | 14 | 0 | 1.6 | 4% |
+| 868 | 89 | 76 | 13 | 0 | 1.5 | 4% |
 
 ## By paper
 
@@ -33,7 +33,7 @@
 | 2609.17979v1 | quant-ph | 37 | 3 | 1 | 2 | 0 | 0% |
 | 2609.17991v1 | quant-ph | 33 | 5 | 5 | 0 | 0 | 12% |
 | 2609.18006v1 | astro-ph.GA | 33 | 0 | 0 | 0 | 0 | 0% |
-| 2609.18160v1 | astro-ph.GA | 91 | 4 | 0 | 4 | 0 | 1% |
+| 2609.18160v1 | astro-ph.GA | 91 | 4 | 1 | 3 | 0 | 1% |
 | 2609.18291v1 | cs.SE | 62 | 1 | 1 | 0 | 0 | 8% |
 
 ## By rule
@@ -44,7 +44,7 @@
 | REF002 | 1 | 0 | 0 |
 | REF003 | 2 | 2 | 0 |
 | REF010 | 1 | 0 | 0 |
-| REF011 | 4 | 6 | 0 |
+| REF011 | 5 | 5 | 0 |
 | REF012 | 0 | 2 | 0 |
 | REF013 | 7 | 3 | 0 |
 | REF014 | 0 | 1 | 0 |

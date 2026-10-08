@@ -4466,8 +4466,8 @@ verdict = "false_positive"
 note = "Crossref's title keeps the AAS markup '[CSC]i[/CSC]' for 'H I'; the entry's title is right."
 
 [finding."2609.18160v1:2020AJ....159...82B:REF011"]
-verdict = "false_positive"
-note = "ADS writes 'Santos, João F. C., Jr.', with 'Jr.' last; read as BibTeX's 'von Last, Jr, First', the given name became 'Jr.'. João F. C. Santos Jr. is on the record."
+verdict = "correct"
+note = "ADS writes 'Santos, Jo\u00e3o F. C., Jr.', with 'Jr.' last; BibTeX reads that as von Last, Jr, First, so 'Jr.' is the given name and the list prints 'Jr. Santos'. A real problem, as real-1991rc3-corwin (2607.13739v1) was judged; first reviewed as a false positive."
 
 [finding."2609.18160v1:2022MNRAS.509..272C:REF011"]
 verdict = "false_positive"

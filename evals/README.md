@@ -132,7 +132,7 @@ candidate's (main 43a5544); the last eight are each batch as it came out:
 | `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147); studied for 0.5.2 | 780 | 101 | 81 | 19 | 1 | 2.4 |
 | `heldout9` | 2026-09-02..08 | held out for 0.5.2 (#152-#154; list committed before them, #149); studied for #157 | 975 | 48 | 31 | 13 | 4 | 1.3 |
 | `heldout10` | 2026-09-09..15 | held out for #157 (list committed before it, #155); studied for #160 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
-| `heldout11` | 2026-09-16..22 | held out for 0.6.0 (#160-#161; list committed before them, #158) | 868 | 89 | 75 | 14 | 0 | 1.6 |
+| `heldout11` | 2026-09-16..22 | held out for 0.6.0 (#160-#161; list committed before them, #158) | 868 | 89 | 76 | 13 | 0 | 1.5 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -172,15 +172,16 @@ candidate's (main 43a5544); the last eight are each batch as it came out:
   Salakhutdinov) 1, a book's online date (Nielsen & Chuang) 1, an ePrint copy's year against
   its conference paper 1 and literal braces in a title 1.
 
-- **On `heldout11`**, run once with 0.6.0's changes (#160-#161): 75 real problems (51
-  published preprints, 8 identifiers written as URLs, wrong or invented authors in 5 entries,
-  7 years, a DOI of another paper, a PMID that does not exist, two titles not the work's) and
-  14 false positives, 1.6 per 100 references, over the 1.5 gate. They are registries' records
-  with errors of their own (a short author list, misspelt or 'Prof.' names, an HTML entity,
-  AAS markup '[CSC]', a typo in a title, BLEU's year 2001, Cambridge Core's 2012 for a 2010
-  book) 8, real works no source indexes (a RePEc-listed journal, an EJDE conference volume) 2,
-  a chapter compared with its reprint 1, a renamed journal 1, ADS's 'Santos, João F. C., Jr.'
-  1 and an arXiv author list compared instead of the journal's 1.
+- **On `heldout11`**, run once with 0.6.0's changes (#160-#161): 76 real problems (51
+  published preprints, 8 identifiers written as URLs, wrong or invented authors in 6 entries
+  (one an ADS name with 'Jr.' where BibTeX reads the given name), 7 years, a DOI of another
+  paper, a PMID that does not exist, two titles not the work's) and 13 false positives, 1.50
+  per 100 references: at the 1.5 gate, so the release is measured on the next week too.
+  They are registries' records with errors of their own (a short author list, misspelt or
+  'Prof.' names, an HTML entity, AAS markup '[CSC]', a typo in a title, BLEU's year 2001,
+  Cambridge Core's 2012 for a 2010 book) 8, real works no source indexes (a RePEc-listed
+  journal, an EJDE conference volume) 2, a chapter compared with its reprint 1, a renamed
+  journal 1 and an arXiv author list compared instead of the journal's 1.
 
 A thirteenth batch, `heldout12` (2026-09-23..29), was collected on 2026-10-08 and its list
 committed before any change made for heldout11's false positives.
