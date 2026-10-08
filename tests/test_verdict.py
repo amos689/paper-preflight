@@ -1061,6 +1061,16 @@ def test_corr_names_a_preprint(venue: str) -> None:
         # a web-only publication cited as a journal (2607.27230v2, elhage2021mathematical)
         ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
           "journal = {Transformer Circuits Thread}"}, (Reason.UNINDEXED_VENUE,)),
+        # a law review (2609.02954v1, metzler2002importance), a position paper on OpenReview
+        # (2609.04261v1, lecun2022path)
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {University of Detroit Mercy Law Review}"}, (Reason.UNINDEXED_VENUE,)),
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {Open Review}"}, (Reason.UNINDEXED_VENUE,)),
+        # a blog post's URL in the journal field (2609.05532v1, Vicuna)
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {See https://vicuna.lmsys.org (accessed 14 April 2023)}"},
+         (Reason.UNINDEXED_LINK,)),
         # an anonymous submission under review (2607.13389v1, genrm2025)
         ({"Smith, Ann and Jones, Bob and Lee, Carol": "Anonymous Authors",
           "Proceedings of ACL": "OpenReview"}, (Reason.ANONYMOUS,)),

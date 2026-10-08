@@ -73,6 +73,11 @@ def test_parse_authors_and_others() -> None:
     assert [p.family for p in authors.people] == ["Doe", "Research and Development Team"]
     assert authors.truncated
     assert parse_authors("").people == ()
+    # "et al." run into the one name given (2610.00027v1, ralph2020empirical)
+    cut = parse_authors("Paul Ralph et al.")
+    assert [(p.given, p.family) for p in cut.people] == [("Paul", "Ralph")]
+    assert cut.truncated
+    assert not parse_authors("Ralph, Paul").truncated
 
 
 # ------------------------------------------------------------------ titles
@@ -862,6 +867,23 @@ def test_other_names_stay_other_people() -> None:
     assert check_authors(parse_authors("Li, Wei"), other).disjoint
 
 
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
+        # dblp's "Sabela Ramos Garea" (2609.02006v1, agarwal2024gkd), split as given "Sabela Ramos"
+        ("Ramos, Sabela", Person.from_display("Sabela Ramos Garea")),
+        ("Dehghani, Zahra", Person.from_display("Zahra Dehghani Tafti")),  # dehghani2026universal
+    ],
+)
+def test_a_double_surname_cited_by_its_first_part(written: str, recorded: Person) -> None:
+    record = SourceRecord(source="dblp", source_id="x", title="t", authors=(recorded,))
+    check = check_authors(parse_authors(written), record)
+    assert (check.missing, check.renamed, check.first_author_match) == ((), (), True)
+    # another given name is another person
+    family = written.split(",")[0]
+    assert check_authors(parse_authors(f"{family}, Ana"), record).disjoint
+
+
 def test_a_registry_label_after_the_title() -> None:
     # Semantic Scholar's title of Holmberg (1937) ends in the plates section ADS lists apart
     record = SourceRecord(
@@ -946,6 +968,24 @@ def test_a_workshop_in_a_joint_dblp_volume_is_not_another_venue() -> None:
     workshop = "International Workshop on Statistical Atlases and Computational Models of the Heart"
     assert check_venue(workshop, record).status == "unknown"
     assert check_venue("Annual Conference on Spatial Intelligence", record).status == "mismatch"
+    # a challenge's volume too: "HECKTOR@MICCAI" (2609.05532v1, entry 16)
+    hecktor = replace(record, venue="HECKTOR@MICCAI")
+    challenge = "3D Head and Neck Tumor Segmentation in PET/CT Challenge"
+    assert check_venue(challenge, hecktor).status == "unknown"
+
+
+def test_a_workshop_paper_is_cited_by_its_workshops_year() -> None:
+    # Classifier-Free Diffusion Guidance: NeurIPS 2021 workshop, arXiv 2022 (2609.01997v1)
+    record = SourceRecord(
+        source="dblp", source_id="journals/corr/abs-2207-12598", title="Classifier-Free ...",
+        year=2022, years=frozenset({2022}), venue="CoRR",
+    )  # fmt: skip
+    workshop = "{NeurIPSW} on Deep Generative Models and Downstream Applications"
+    assert check_year(2021, record, venue=workshop).status == "variant"
+    assert check_year(2020, record, venue=workshop).status == "mismatch"
+    assert check_year(2021, record, venue="NeurIPS").status == "mismatch"
+    published = replace(record, source_id="conf/nips/HoS21", venue="NeurIPS")
+    assert check_year(2021, replace(published, year=2022), venue=workshop).status == "mismatch"
 
 
 @pytest.mark.parametrize(
@@ -975,6 +1015,18 @@ def test_a_collaboration_under_a_longer_name_is_on_the_record() -> None:
     )  # fmt: skip
     found = check_authors(parse_authors("Mendel, J. T. and {MAGPI Team}"), record)
     assert found.missing == ()
+
+
+def test_a_laboratory_credited_among_the_people_is_a_group() -> None:
+    # arXiv 2407.14668 lists the people; the entry also credits the collaboration
+    # (2609.01971v2, zhang2024universaltranslatorneuraldynamics)
+    record = SourceRecord(
+        source="arxiv", source_id="2407.14668", title="Towards a Universal Translator ...",
+        authors=(Person("Zhang", "Yizi"), Person("Winter", "Olivier"), Person("Dyer", "Eva")),
+    )  # fmt: skip
+    lab = "{The International Brain Laboratory}"
+    written = f"Zhang, Yizi and Winter, Olivier and {lab} and Dyer, Eva"
+    assert check_authors(parse_authors(written), record).missing == ()
 
 
 def test_software_is_matched_by_its_repository_name() -> None:

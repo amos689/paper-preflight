@@ -1384,3 +1384,80 @@ source = "real_papers:2608.25341v1"
 key = "Fluetsch_2019"
 expect = []
 note = "was REF013: MNRAS 483, 4586, online 19 December 2018 with no volume in Crossref yet, cited as 2019."
+
+[[case]]
+name = "fp-agarwal2024-double-surname"
+source = "real_papers:2609.02006v1"
+key = "agarwal2024gkd"
+expect = []
+note = "was REF011: dblp names her Sabela Ramos Garea (given 'Sabela Ramos'); the entry cites 'Ramos, Sabela', her first surname."
+
+[[case]]
+name = "fp-dehghani2026-double-surname"
+source = "real_papers:2609.02018v1"
+key = "dehghani2026universal"
+expect = []
+note = "was REF011: dblp's Zahra Dehghani Tafti cited as 'Dehghani, Zahra'."
+
+[[case]]
+name = "fp-zhang2024-laboratory-author"
+source = "real_papers:2609.01971v2"
+key = "zhang2024universaltranslatorneuraldynamics"
+expect = []
+note = "was REF011: {The International Brain Laboratory}, the collaboration credited after the people, read as a person."
+
+[[case]]
+name = "fp-metzler2002-law-review"
+source = "real_papers:2609.02954v1"
+key = "metzler2002importance"
+expect = []
+note = "was REF003: a law review article (80 U. Det. Mercy L. Rev. 501); law reviews are rarely in the queried sources."
+
+[[case]]
+name = "fp-vicuna-url-in-journal"
+source = "real_papers:2609.05532v1"
+key = "20"
+expect = []
+note = "was REF003: the Vicuna blog post, its lmsys.org URL given in the journal field, which was not read as a link."
+
+[[case]]
+name = "fp-hecktor2021-challenge-at-miccai"
+source = "real_papers:2609.05532v1"
+key = "16"
+expect = []
+note = "was REF014: the HECKTOR 2021 overview in the challenge's LNCS volume, which dblp names 'HECKTOR@MICCAI'."
+
+[[case]]
+name = "fp-ho2021-workshop-year"
+source = "real_papers:2609.01997v1"
+key = "ho2021CFG"
+expect = []
+note = "was REF013: Classifier-Free Diffusion Guidance, NeurIPS 2021 workshop ('NeurIPSW'), on arXiv only in 2022."
+
+[[case]]
+name = "fp-cover2006-book-printed-september"
+source = "real_papers:2609.02029v1"
+key = "cover_thomas"
+expect = []
+note = "was REF013: Elements of Information Theory, 2nd edition, printed September 2005 and dated 2006."
+
+[[case]]
+name = "fp-lecun2022-open-review"
+source = "real_papers:2609.04261v1"
+key = "lecun2022path"
+expect = []
+note = "was REF003: LeCun's position paper, posted on OpenReview, cited with the journal 'Open Review'."
+
+[[case]]
+name = "fp-ralph2020-et-al-in-name"
+source = "real_papers:2610.00027v1"
+key = "ralph2020empirical"
+expect = []
+note = "was REF010: the author field 'Paul Ralph et al.', one name with 'et al.' run into it, shared no author with the record."
+
+[[case]]
+name = "fp-guest2006-crossref-subtitle"
+source = "real_papers:2610.00027v1"
+key = "guest2006many"
+expect = []
+note = "was REF003: 'How Many Interviews Are Enough?' cited with its subtitle, which Crossref keeps apart from the title; the search result was compared without it."

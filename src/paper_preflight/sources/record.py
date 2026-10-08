@@ -17,7 +17,7 @@ _MISENCODED = str.maketrans({"⊘": "ø"})
 # "Cursor Research" on arXiv 2603.24477, "RDKit Contributors" as RDKit asks to be cited)
 COLLECTIVE_WORDS = frozenset(
     "team collaboration consortium project committee community initiative group alliance lab "
-    "labs research contributors developers".split()
+    "labs laboratory laboratories institute research contributors developers".split()
 )
 
 

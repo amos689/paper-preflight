@@ -14,6 +14,7 @@ from paper_preflight.bib.parse import latex_to_text
 from paper_preflight.sources.record import Person
 
 _AND_RE = re.compile(r"\s+and\s+", re.IGNORECASE)
+_ET_AL_AFTER = re.compile(r",?\s+et\.?\s+al\.?$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -128,5 +129,9 @@ def parse_authors(value: str | None) -> AuthorList:
         if part.lower() in {"others", "et al.", "et al"}:
             truncated = True
             continue
+        cut = _ET_AL_AFTER.sub("", part)
+        if cut != part:  # "Paul Ralph et al." written as one name
+            truncated = True
+            part = cut
         people.append(parse_name(part))
     return AuthorList(tuple(people), truncated)
