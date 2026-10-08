@@ -135,15 +135,19 @@ error reviewed by hand:
 | 2026-08-19..25 | 0.5.0 | 962 | 53 | 41 | 10 | 2 | 1.0 |
 | 2026-08-26..09-01 | 0.5.1 | 780 | 101 | 81 | 19 | 1 | 2.4 |
 | 2026-09-02..08 | 0.5.2 | 975 | 48 | 31 | 13 | 4 | 1.3 |
+| 2026-09-09..15 | 0.5.3 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
 
-- **The latest week: about one false alarm every one and a half papers** (49 references on
-  average), against 31 real problems: identifiers of other papers (LLaMA cited with the Llama 3
-  arXiv ID), wrong given names, years and venues, placeholder identifiers, and 17 cited
-  preprints since published. The false alarms are double surnames, works no source indexes
-  cited as journal articles (a law review, a report, a blog), and years a workshop version,
-  a book's online date or a journal volume explain.
-- **The week before was over our target of 1.5** (2.4); 11 of its 19 false alarms are fixed in
-  0.5.2.
+- **The latest week: about one false alarm every one and a half papers** (53 references on
+  average), against 83 real problems: 51 cited preprints since published, 15 identifiers
+  written as links or not identifiers at all, wrong authors and given names (7 in one paper),
+  and two references whose journal, volume and page belong to other papers. The false alarms
+  are ACM Digital Library links with ACM's unregistered 10.5555 numbers, KDD written with an
+  ampersand, preprint servers named as the published version, garbled registry titles, and
+  records with short author lists.
+- **The week before:** 31 real problems and 13 false alarms (double surnames, works no source
+  indexes cited as journal articles, years a workshop version or a book's print date explain);
+  11 of them are fixed in 0.5.3.
+- **One week was over our target of 1.5** (2.4); 11 of its 19 false alarms are fixed in 0.5.2.
 - **In the first week, one false alarm every two papers** (48 references on average), against
   41 real problems:
   16 errors in the entries (wrong years, given names and titles, a missing first author, one
@@ -190,7 +194,7 @@ BibTeX entries.
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 91.7% | 2.1% | 98.9% |
 | | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.5.2 on 2026-10-08. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.5.3 on 2026-10-08. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
@@ -454,9 +458,10 @@ or "complete" references from memory, or name and shame authors.
   agents, an agent-judged `support`, and recall measured on hallucinations found in published
   papers (v0.4); references without titles found by journal, volume and page, short titles and
   real titles with invented authors judged where the sources allow it (v0.5); Chinese-language
-  works cited in English no longer called "not found" (v0.5.2)
-- Next: Word (.docx) manuscripts; the false positives of the latest week of real papers (double
-  surnames, unindexed works cited as articles)
+  works cited in English no longer called "not found" (v0.5.2); fewer false alarms on double
+  surnames, subtitles, workshop papers and books (v0.5.3)
+- Next: Word (.docx) manuscripts; the false positives of the latest week of real papers (ACM
+  Digital Library links, preprint servers named as publications)
 - Being tried: references in Chinese script, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
