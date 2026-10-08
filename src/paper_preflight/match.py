@@ -256,6 +256,21 @@ _SECTION_LABEL = re.compile(
     re.I,
 )
 _ARTICLES = frozenset({"a", "an", "the"})
+_ACRONYM_AFTER = re.compile(r"^(?P<head>.{8,}?)\s*\((?P<acronym>[A-Z][A-Za-z]{1,11})\)\s*$")
+
+
+def _without_acronym(title: str) -> str:
+    """The title without the acronym after it that its words spell: DataCite's "Spitzer
+    Enhanced Imaging Products (SEIP)" is the entry's "Spitzer Enhanced Imaging Products"."""
+    found = _ACRONYM_AFTER.match(title)
+    if not found:
+        return title
+    initials = iter(word[0] for word in re.findall(r"[^\W\d_]+", fold(found["head"])))
+    # each letter an initial, in order (an iterator consumed as it goes)
+    spelled = all(letter in initials for letter in found["acronym"].lower())
+    return found["head"] if spelled else title
+
+
 # A letter a registry lost: U+FFFD in "Berechnung der nat\ufffdrlichen Linienbreite" (Crossref)
 _LOST = "\ufffd"
 _LOST_MARK = "zzlostzz"
@@ -400,7 +415,11 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     entry_title = _CHAPTER_NUMBER.sub("", entry_title) or entry_title
     labelled = _SECTION_LABEL.sub("", record.title)
     titles = [(record.title, "")] + ([(labelled, "")] if labelled != record.title else [])
-    for bare in (_CHAPTER_NUMBER.sub("", record.title), _EDITION.sub("", record.title)):
+    for bare in (
+        _CHAPTER_NUMBER.sub("", record.title),
+        _EDITION.sub("", record.title),
+        _without_acronym(record.title),
+    ):
         if bare and bare != record.title:
             titles.append((bare, ""))
     for candidate, note in titles + [(t, EARLIER_VERSION) for t in record.alt_titles]:
@@ -1082,7 +1101,16 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
     ("eccv", ("eccv", "european conference on computer vision")),
     ("aaai", ("aaai", "national conference on artificial intelligence")),
     ("ijcai", ("ijcai", "international joint conference on artificial intelligence")),
-    ("kdd", ("kdd", "knowledge discovery and data mining")),
+    # "ACM SIGKDD international conference on Knowledge discovery in data mining" (KDD 2005)
+    (
+        "kdd",
+        (
+            "kdd",
+            "sigkdd",
+            "knowledge discovery and data mining",
+            "knowledge discovery in data mining",
+        ),
+    ),
     ("sigir", ("sigir",)),
     ("jmlr", ("jmlr", "journal of machine learning research")),
     ("tpami", ("tpami", "pattern analysis and machine intelligence")),

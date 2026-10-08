@@ -9,6 +9,7 @@ from paper_preflight.bib.names import parse_authors, parse_name
 from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.match import (
     EntryInfo,
+    _without_acronym,
     best_candidate,
     canonical_venue,
     changed_words,
@@ -372,6 +373,8 @@ def test_a_volume_the_record_leaves_out() -> None:
         ("Proceedings of the Thirty-Seventh Conference on Uncertainty in Artificial Intelligence",
          "uai"),
         ("International Conference on Artificial Intelligence and Statistics", "aistats"),
+        ("Proceedings of the eleventh ACM SIGKDD international conference on Knowledge discovery"
+         " in data mining", "kdd"),
         ("Proceedings of Thirty Fifth Conference on Learning Theory", "colt"),
         ("WWW '22: Proceedings of the ACM Web Conference 2022", "www"),
         ("ICASSP 2023 - IEEE International Conference on Acoustics, Speech and Signal Processing",
@@ -1021,11 +1024,21 @@ def test_a_registry_label_after_the_title() -> None:
          "Chapter 1 Förster resonance energy transfer, what is it", "match"),
         ("A Different Book on Missing Data",
          "Statistical Analysis with Missing Data, Third Edition", "mismatch"),
+        # DataCite's title ends with the acronym its words spell (IRSA's SEIP, heldout16)
+        ("Spitzer Enhanced Imaging Products", "Spitzer Enhanced Imaging Products (SEIP)", "match"),
     ],
 )  # fmt: skip
 def test_a_chapters_number_and_a_books_edition(entry: str, recorded: str, status: str) -> None:
     record = SourceRecord(source="crossref", source_id="x", title=recorded)
     assert check_title(entry, record).status == status
+
+
+def test_an_acronym_its_words_do_not_spell_stays() -> None:
+    assert _without_acronym("Spitzer Enhanced Imaging Products (SEIP)") == (
+        "Spitzer Enhanced Imaging Products"
+    )
+    assert _without_acronym("Deep Nets for Vision (Abstract)").endswith("(Abstract)")
+    assert _without_acronym("Spitzer Enhanced Imaging Products (SPEC)").endswith("(SPEC)")
 
 
 def test_a_chapter_in_springers_inbook_export() -> None:
