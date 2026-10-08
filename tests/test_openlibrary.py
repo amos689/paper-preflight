@@ -49,3 +49,32 @@ async def test_a_book_without_a_doi_is_confirmed_by_title_author_and_edition_yea
     other = verdicts["goodfellow2014deep"]
     assert other.verdict is Verdict.CANNOT_DETERMINE
     assert [f.rule_id for f in other.findings] == ["REF090"]
+
+
+CDI = "MacArthur-Bates Communicative Development Inventories"
+CDI_TEST = {  # SYNTHETIC, after APA PsycTests' record of the test, dated by the test
+    "DOI": "10.1037/synthetic-t1", "type": "dataset", "title": [f"{CDI}, Second Edition"],
+    "author": [{"given": "Larry", "family": "Fenson"}, {"given": "Virginia", "family": "Marchman"}],
+    "issued": {"date-parts": [[2006]]}, "published-online": {"date-parts": [[2012, 2, 13]]},
+}  # fmt: skip
+CDI_BOOK = {  # Open Library's work record of the manual, trimmed (CC0)
+    "key": "/works/OL18723410W", "title": CDI, "author_name": ["Larry Fenson"],
+    "first_publish_year": 2007, "publish_year": [2007], "publisher": ["Paul H. Brookes"],
+}  # fmt: skip
+
+
+@pytest.mark.anyio
+async def test_a_book_a_record_dates_otherwise_is_asked_of_open_library(
+    recorded_web: FakeWeb, tmp_path: Path, fast: None
+) -> None:
+    recorded_web.crossref_search["MacArthur-Bates"] = [CDI_TEST]
+    recorded_web.openlibrary["MacArthur-Bates"] = [CDI_BOOK]
+    people = "Fenson, Larry and Marchman, Virginia"
+    bib = f"@book{{fenson2007, title={{{CDI}}}, author={{{people}}}, year={{2007}}}}"
+    entries = parse_bib_text(bib, Path("refs.bib")).entries
+    options = VerifyOptions(cache_path=tmp_path / "c.sqlite3", current_year=2026, environ={})
+    _, verdicts, _ = await verify_entries(entries, options)
+    found = verdicts["fenson2007"]
+    assert found.verdict is Verdict.VERIFIED
+    assert found.record is not None
+    assert found.record.source == "openlibrary"
