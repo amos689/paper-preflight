@@ -35,12 +35,16 @@ runs:
   steps:
     - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
 
-    # Answers are cached per bibliography, so re-runs are fast and the sources see fewer requests.
+    # Answers are cached, so re-runs are fast and the sources see fewer requests. Every run
+    # starts from the latest cache (the same bibliography's first) and saves what it learnt:
+    # answers that expired or were too new to find are asked once, not again on every run.
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ runner.temp }}/paper-preflight-cache
-        key: paper-preflight-${{ runner.os }}-${{ hashFiles('**/*.bib') }}
-        restore-keys: paper-preflight-${{ runner.os }}-
+        key: paper-preflight-${{ runner.os }}-${{ hashFiles('**/*.bib', '**/*.bbl') }}-${{ github.run_id }}
+        restore-keys: |
+          paper-preflight-${{ runner.os }}-${{ hashFiles('**/*.bib', '**/*.bbl') }}-
+          paper-preflight-${{ runner.os }}-
 
     - id: check
       shell: bash
