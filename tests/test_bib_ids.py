@@ -73,6 +73,15 @@ def test_acm_digital_library_numbers_in_a_link_are_not_dois() -> None:
     assert ids("@misc{a, doi={10.5555/3045390.3045531}}") == ["doi:10.5555/3045390.3045531"]
 
 
+def test_a_publishers_page_for_the_doi_is_not_another_doi() -> None:
+    # deep-review's CSL-JSON: OUP's page adds an article number and a slug after the DOI
+    entry = (
+        "@article{a, doi={10.1093/bib/bbw110}, url={https://academic.oup.com/bib/article/doi/"
+        "10.1093/bib/bbw110/2562646/A-review-of-validation-strategies-for}}"
+    )
+    assert ids(entry) == ["doi:10.1093/bib/bbw110"]
+
+
 def test_isbn_and_issn_checksums() -> None:
     assert ids("@book{a, isbn={978-0-262-03561-3}}") == ["isbn:9780262035613"]
     assert ids("@book{a, isbn={978-0-262-03561-4}}") == []  # bad checksum

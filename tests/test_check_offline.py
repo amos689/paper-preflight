@@ -84,6 +84,22 @@ def test_hygiene_findings(project: Path) -> None:
     assert severities == sorted(severities, key={"error": 0, "warning": 1, "info": 2}.get)
 
 
+def test_chapters_of_one_book_may_share_its_doi(tmp_path: Path) -> None:
+    refs = tmp_path / "refs.bib"
+    refs.write_text(
+        "@incollection{a, title={Machine Learning Techniques}, booktitle={Information and "
+        "Knowledge Organisation in Digital Humanities}, doi={10.4324/9781003131816}, year=2021}\n"
+        "@incollection{b, title={Linked Data Strategies}, booktitle={Information and "
+        "Knowledge Organisation in Digital Humanities}, doi={10.4324/9781003131816}, year=2021}\n"
+        "@incollection{c, title={Linked Data Strategies}, booktitle={Information and "
+        "Knowledge Organisation in Digital Humanities}, doi={10.4324/9781003131816}, year=2021}\n",
+        encoding="utf-8",
+    )
+    found = rules_of(refs)
+    assert ("CIT004", "b") not in found  # another chapter
+    assert ("CIT004", "c") in found  # the same chapter twice
+
+
 def test_undefined_key_reports_all_sites(tmp_path: Path) -> None:
     (tmp_path / "main.tex").write_text(
         "\\documentclass{article}\\begin{document}\n\\cite{x}\n\\cite{x}\n"

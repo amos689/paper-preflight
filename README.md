@@ -228,9 +228,22 @@ uvx paper-preflight check path/to/paper
 A project that ships no `.bib`, as many arXiv sources do, is read from its compiled `.bbl`
 (checked, but never edited).
 
-No LaTeX at all? A reference list as plain text works too, in the common styles (APA, IEEE,
-ACM, Nature, Vancouver, Springer, Elsevier, Chicago, MLA), one reference per line, per
-paragraph or numbered:
+Writing in Word, Markdown or Typst? The manuscript is checked the same way:
+
+```bash
+uvx paper-preflight check paper.docx     # Word: Zotero, Mendeley or EndNote citations, or the typed list
+uvx paper-preflight check paper.qmd      # Markdown, Quarto, R Markdown: [@key] against its bibliography
+uvx paper-preflight check paper.typ      # Typst: @key against #bibliography(...), .bib or Hayagriva .yml
+```
+
+In a Word manuscript, citations inserted by Zotero, Mendeley or EndNote carry the reference
+manager's own record of each work (field codes), which is read first; Word's source manager
+next; else the reference list as typed, after its "References" heading. A bibliography may also
+be checked on its own as CSL-JSON (`.json`), RIS (`.ris`) or YAML (`.yml`, Hayagriva or CSL).
+
+No manuscript at all? A reference list as plain text works too, in the common styles (APA,
+IEEE, ACM, Nature, Vancouver, Springer, Elsevier, MDPI, GOST, Chicago, MLA), one reference per
+line, per paragraph or numbered:
 
 ```bash
 uvx paper-preflight check references.txt

@@ -6,6 +6,64 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Word manuscripts (`.docx`).** Citations inserted by a reference manager carry its record of
+  each work in the document's field codes: Zotero's and Mendeley's CSL-JSON, EndNote's XML (also
+  base64-encoded, as "EN.CITE.DATA"). These are read first, with every field the manager holds;
+  then Word's own source manager; else the reference list as typed, after its "References"
+  heading or in Word's Bibliography style, up to the first table, caption or following section.
+  An entry keeps the citation key the manager holds, if any, else is numbered (`ref1`, `ref2`,
+  ...). Read with the standard library only; positions are paragraph numbers.
+- **Markdown, Quarto, R Markdown and Pandoc manuscripts** (`.md`, `.qmd`, `.Rmd`): the keys
+  cited (`[@key]`, `@key`; Quarto's cross-references and code left out) are checked against the
+  bibliography the front matter or `_quarto.yml` names, as for a LaTeX project. A Quarto book is
+  read across the chapters its `_quarto.yml` lists, in parts and folders, and the files they
+  include; a bookdown book across its `rmd_files`.
+- **Typst manuscripts** (`.typ`): `@key` and `#cite(<key>)` against `#bibliography(...)`, with
+  labels, comments and packages (`@preview/cetz:0.2.0`) left out.
+- **Bibliography formats:** CSL-JSON (`.json`), RIS (`.ris`), and YAML (`.yml`, `.yaml`):
+  Typst's Hayagriva and Pandoc's CSL YAML. Their keys are kept as written. The same works in any
+  of them, or in a Word document's field codes, are read as from BibTeX (a test holds them to it).
+- **More reference styles in plain text and typed Word lists:** MDPI and ACS (names separated by
+  semicolons), GOST ("Boyd S., Vandenberghe L. Title // Journal. 2021. Vol. 115."), Vancouver
+  lists that start with a particle ("de Smalen LM", "ten Brummelaar T") or a collaboration
+  ("Planck Collaboration, Ade PAR, ..."), and list numbers without a space after them
+  ("3.LeCun Y").
+- `evals/docx_agreement.py`: each development paper's references written into Word documents,
+  with field codes and as typed lists in APA, IEEE and NLM (rendered by citeproc-py), checked
+  against the .bib's verdicts: the same verdict for 99.6% (field codes), 94.0% (APA), 96.9%
+  (IEEE) and 96.0% (NLM) of 924 references.
+
+### Changed
+
+- PyYAML is now a dependency (YAML bibliographies, Quarto and bookdown projects).
+
+### Fixed
+
+- A link to a publisher's page for the entry's own DOI, with more path after it
+  (`academic.oup.com/bib/article/doi/10.1093/bib/bbw110/2562646/A-review-...`), is no longer
+  taken for a second DOI that does not exist (REF002).
+- Names in a registry's record that were stored with the wrong encoding ("DuÅ¡ica VidoviÄ‡") are
+  read as meant, as titles already were: no more "not on the record" for them (REF011).
+- An author cited with both Spanish or Portuguese surnames, recorded with the first only
+  ("Schatan Pérez, C." for Claudia Schatan), is the same person.
+- Chapters of one book that each give the book's DOI are no longer reported as one work cited
+  twice (CIT004); the same chapter twice still is.
+- A notice in a government gazette (Federal Register, Congressional Record, Official Journal of
+  the European Union) that no source indexes is not called "not found".
+- Plain text: an NLM reference whose title is in capitals ("Root Mean Square Layer
+  Normalization"), or starts with "The", is no longer taken for a list of names; a title in
+  numbered parts ("Interstellar Dust. IV. The Silicate-Graphite-PAH Model", "Circinus - II. A thin
+  dusty disc") is read whole; the year is the one before the volume ("2018;478(1):399"), never a
+  number in an arXiv ID or a page; APA's description after a title ("(arXiv:2312.16903)",
+  "(Version 2)", "(22nd ed.)") and its translation of a title in brackets are left out of the
+  title; APA names ending in "et al." ("Hassen, A. et al.") or with a name in brackets ("Dada,
+  O. (L.)"); a publisher's place written with a space before its colon ("Pittsburgh, PA :
+  University of Pittsburgh Press"); a GOST title of two sentences; names and initials with a
+  capital outside A–Z ("Życzkowski", "Nordlund Å", "Uysal, Ö."); "bioRxiv." and "medRxiv." end a
+  title.
+
 ## [0.6.0] - 2026-10-08
 
 Faster, fewer false alarms, and references written whole in a note. On two new held-out weeks

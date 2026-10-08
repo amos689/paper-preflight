@@ -150,10 +150,8 @@ def main() -> None:
     lines += [f"- {key.upper()}: {', '.join(fields)}" for key, fields in misses] or ["- none"]
     lines += [
         "",
-        "P1R14's title keeps the version the document adds (\"Marlowe: ... Instrument (Version "
-        '0.1)"), which the transcription leaves out. P2R13 (and P3R29 below) lose letters the '
-        'CSV dropped ("Micha? Marci?czuk", "Kamile? Luko?iut?e"), which the transcription '
-        "restores from the documents.",
+        'P2R13 (and P3R29 below) lose letters the CSV dropped ("Micha? Marci?czuk", '
+        '"Kamile? Luko?iut?e"), which the transcription restores from the documents.',
     ]
 
     if check:

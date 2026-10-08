@@ -28,7 +28,8 @@ from paper_preflight.bib.normalize import deaccent
 from paper_preflight.bib.parse import BibFile, BibIssue, parse_bib_text
 from paper_preflight.textio import read_text
 
-_NUMBERED = re.compile(r"^\s*(?:\[(\d{1,4})\]|(\d{1,4})[.)](?=\s)|\((\d{1,4})\))\s*")
+# "[3] ", "3. ", "(3) ", and "3.LeCun" with the tab after the number lost
+_NUMBERED = re.compile(r"^\s*(?:\[(\d{1,4})\]|(\d{1,4})[.)](?=\s|[A-Z])|\((\d{1,4})\))\s*")
 _DOI = re.compile(
     r"\bdoi:\s*(?P<labelled>\S+?)[.,;]?(?=\s|$)|\b(?P<bare>10\.\d{4,9}/[^\s\"<>]+?)(?=[.,;)]?(?:\s|$))",
     re.I,
@@ -65,7 +66,7 @@ _YEAR_AFTER = re.compile(
 # A sentence ends at ". " unless the word before is an initial ("Daniel S. Weld"); it always ends
 # after "et al.", and at a missing space between two words ("Andrew Y. Ng.Dynamic pooling").
 _SENTENCE = re.compile(
-    r"(?<!\b[A-Z])(?<!\bSt)(?<!\bJr)\.\s+(?=[A-Z0-9“\"(]|arXiv|pp?\.\s*\d)|(?<=\bal)\.\s+"
+    r"(?<!\b[A-Z])(?<!\bSt)(?<!\bJr)\.\s+(?=[A-Z0-9“\"(]|arXiv|bioRxiv|medRxiv|pp?\.\s*\d)|(?<=\bal)\.\s+"
     r"|(?<=[a-z])\.(?=[A-Z][a-z])"
 )
 # a title that asks runs into its venue: "Can machine learning improve delta hedging? Journal of
@@ -74,6 +75,8 @@ _ASKING_TITLE = re.compile(r"^(?P<title>.{8,}?[a-z][?!])\s+(?P<venue>[A-Z].*)$")
 _VOLUME = re.compile(r"\d+\s*\(\d+\)|,\s*\d")  # "9(1)", ", 12"
 _BROKEN_HOST = re.compile(r"\b((?:arxiv|doi)\.org/)\s+(?=\S)", re.I)
 _SECOND_NUMBER = re.compile(r"^\[\d{1,4}\]\s*")
+# Vancouver's date before the volume: "2018;478(1):399", "2019 Mar 5;3:12"
+_VANCOUVER_DATE = re.compile(r"\b((?:1[89]|20)\d\d)(?:\s+[A-Z][a-z]{2}(?:\s+\d{1,2})?)?;\s*\d")
 _TITLE_YEAR = re.compile(r"^(?P<title>.{8,}?)(?:,\s*|\s+\()(?P<year>(?:1[89]|20)\d\d)[a-z]?\)?$")
 # a venue may start with its edition or year: "37th International Conference ...", "2009 IEEE ..."
 _EDITION = re.compile(r"^(?:\d+(?:st|nd|rd|th)|(?:1[89]|20)\d\d)\s+(?=[A-Z])")
@@ -95,16 +98,32 @@ _FUNCTION_WORDS = frozenset(
     "a an the of on in for to at by and or with from via into is are as its".split()
 )
 _ET_AL = re.compile(r",?\s*(?:and\s+)?et\.?\s+al\.?$")
-# Nature, LNCS: "Smith, J. A., Lee, K. & Wu, X." and what follows
+# Nature, LNCS: "Smith, J. A., Lee, K. & Wu, X." and what follows; MDPI and ACS separate the
+# a capital that starts a name or is an initial: A-Z, or a Latin capital beyond ("Życzkowski",
+# "Ødegaard", "Nordlund Å")
+_CAPITAL = "[A-Z" + "".join(c for c in map(chr, range(0xC0, 0x250)) if c.isupper()) + "]"
+# names with semicolons: "Chowdhury, D.; Mazumdar, P.; Desai, P."
 _FAMILY_INITIALS = re.compile(
-    r"\s*(?:,\s*)?(?:&|and)?\s*"
-    r"(?P<family>(?:(?:van|von|de|der|den|del|della|di|da|du|la|le|dos)\s+)*[A-Z][^,.&():]*?),"
-    r"\s+(?P<initials>(?:[A-Z][a-z]?\.\s?-?\s?)+)"
+    r"\s*(?:[,;]\s*)?(?:&|and)?\s*"
+    r"(?P<family>(?:(?:van|von|de|der|den|del|della|di|da|du|la|le|dos|ten|ter)\s+)*"
+    rf"{_CAPITAL}[^,.&():]*?),"
+    rf"\s+(?P<initials>(?:{_CAPITAL}[a-z]?\.\s?-?\s?)+)"
 )
 # Vancouver: "Smith JA, Lee K, et al." and what follows
-_VANCOUVER_NAME = r"[A-Z][\w'’\-]*(?:\s+(?:[a-z]+\s+)*[A-Z][\w'’\-]+)*\s+[A-Z]{1,3}"
+# also with a particle first ("de Smalen LM"), and GOST's dotted initials ("Boyd S., Pham N. T.")
+_VANCOUVER_NAME = (
+    r"(?:(?:van|von|de|der|den|del|della|di|da|du|la|le|dos|ten|ter)\s+)*"
+    rf"{_CAPITAL}[\w'’\-]*(?:\s+(?:[a-z]+\s+)*{_CAPITAL}[\w'’\-]+)*"
+    rf"\s+(?:(?:{_CAPITAL}\.\s?){{1,3}}|{_CAPITAL}{{1,3}}\b)"
+)
+# "Planck Collaboration, Ade PAR, Aghanim N, et al."
+_VANCOUVER_GROUP = r"(?:[A-Z][\w\-]*\s+){1,4}(?:Collaboration|Consortium|Team|Group)"
 _VANCOUVER = re.compile(
-    rf"(?P<authors>(?:{_VANCOUVER_NAME},\s+)*(?:{_VANCOUVER_NAME}|et\s+al)\.)\s+(?P<rest>.+)$"
+    rf"(?P<authors>(?:(?:{_VANCOUVER_GROUP}|{_VANCOUVER_NAME}),\s+)*"
+    rf"(?:{_VANCOUVER_NAME}|{_VANCOUVER_GROUP}|et\s+al))\.?\s+(?P<rest>.+)$"
+)
+_VANCOUVER_PARTS = re.compile(
+    rf"^(?P<family>.+?)\s+(?P<initials>(?:{_CAPITAL}\.\s?)+|{_CAPITAL}{{1,3}})$"
 )
 
 
@@ -303,12 +322,18 @@ def parse_reference(text: str) -> tuple[str, dict[str, str]]:
         ):
             entry_type, fields["title"] = venue_type, asking["title"]
             fields.update(venue)
+    if fields.get("title"):
+        fields["title"] = _TITLE_NOTE.sub("", fields["title"])
+        bracket = _TITLE_BRACKET.search(fields["title"])
+        if bracket and _apa_bracket(bracket["inner"]):
+            fields["title"] = fields["title"][: bracket.start()]
     dated = _TITLE_YEAR.match(fields.get("title", ""))  # "Title, 2025. URL ...": no venue
     if dated:
         fields["title"] = dated["title"]
         fields.setdefault("year", dated["year"])
     if "year" not in fields:
-        years = _YEAR.findall(plain)
+        dated = _VANCOUVER_DATE.search(plain)
+        years = [dated[1]] if dated else _YEAR.findall(_ARXIV.sub(" ", _DOI.sub(" ", plain)))
         if years:
             fields["year"] = years[-1]
     return entry_type, fields
@@ -356,7 +381,9 @@ def _venue_name(text: str) -> str | None:
     for stop in re.finditer(
         r",\s*(?:\d|pp?\.|pages|vol\b|volume|no\.|[A-Z][a-z]+\.?\s+\d)|\s+\d+(?:\.\d+)?\s*(?:[(,:]|$)"
         r"|\s*\((?![A-Z][\w&@-]{1,15}\))|\.\s+(?:Publisher|ISSN|ISBN|Ed\.|Eds\.|Edited)\b"
-        r"|[.,]?\s+(?:1[89]|20)\d\d(?=[;.,)]|\s*$)",  # Vancouver: "J Mach Learn Res. 2020;21:1-9"
+        r"|[.,]?\s+(?:1[89]|20)\d\d(?=[;.,)]|\s*$)"  # Vancouver: "J Mach Learn Res. 2020;21:1-9"
+        # a place and its publisher: ". London: Routledge", ". Pittsburgh, PA : University of"
+        r"|\.\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*(?:,\s*[A-Z]{2})?\s?:\s+[A-Z]",
         text,
         re.I,
     ):
@@ -426,12 +453,17 @@ def _apa_authors(text: str) -> str:
         ellipsis = re.match(r"(?:…|\.\.\.)\s*", part)
         if ellipsis:
             others, part = True, part[ellipsis.end() :]
+        tail = re.search(r"\s+(?:et\.?\s*al\.?|…)$", part)
+        if tail and part[: tail.start()]:  # "Hassen, A. et al. (2025)"
+            others, part = True, part[: tail.start()]
         if not part:
             continue
+        # a name the author goes by, in brackets after the initials: "Dada, O. (L.)"
+        initials = re.sub(r"\s*\([^()]{1,20}\)\.?$", "", part)
         if _APA_OTHERS.fullmatch(part):
             others = True
-        elif _APA_INITIALS.fullmatch(part) and people and "," not in people[-1]:
-            people[-1] = f"{people[-1]}, {part.strip()}"
+        elif _APA_INITIALS.fullmatch(initials) and people and "," not in people[-1]:
+            people[-1] = f"{people[-1]}, {initials.strip()}"
         else:
             people.append(part)
     return " and ".join(people + (["others"] if others else []))
@@ -477,20 +509,63 @@ def _family_initials(text: str) -> tuple[str, dict[str, str]] | None:
 def _vancouver(text: str) -> tuple[str, dict[str, str]] | None:
     """Vancouver: Smith JA, Lee K, et al. Title. J Mach Learn Res. 2020;21(3):1-9."""
     match = _VANCOUVER.match(text)
-    if match is None or _looks_like_names(_SENTENCE.split(match["rest"], maxsplit=1)[0]):
-        return None  # "Alexandros N. Angelopoulos, Stephen Bates, ...": given names first
+    if match is None or re.match(r"et\s+al\b", match["rest"]):
+        return None  # "Planck Collaboration et al. A&A, 536:A17, 2011": no Vancouver list
+    following = _SENTENCE.split(match["rest"], maxsplit=1)[0]
+    if (
+        _looks_like_names(following)
+        and not _NOT_NAMES.search(following)
+        and (re.search(r",|\band\b|&", following) or len(following.split()) <= 2)
+    ):
+        # "Alexandros N. Angelopoulos, Stephen Bates, ...": given names first. A title in
+        # capitals ("Root Mean Square Layer Normalization") is no list of names.
+        return None
     names = []
-    for part in re.split(r",\s+", match["authors"].strip(" .")):
-        if re.fullmatch(r"et\s+al", part.removesuffix(".")):
+    for part in re.split(r",\s+", match["authors"].strip(" ")):
+        if re.fullmatch(r"et\s+al\.?", part):
             names.append("others")
             continue
-        family, initials = part.rsplit(" ", 1)
-        names.append(f"{family}, {' '.join(f'{c}.' for c in initials)}")
+        if re.fullmatch(_VANCOUVER_GROUP, part.strip()):
+            names.append(part.strip())  # as the other styles give it
+            continue
+        parts = _VANCOUVER_PARTS.match(part.strip())
+        if parts is None:
+            return None
+        letters = re.findall(_CAPITAL, parts["initials"])
+        names.append(f"{parts['family']}, {' '.join(f'{c}.' for c in letters)}")
     return _title_then_venue(match["rest"], " and ".join(names))
 
 
+# what starts a title, not a list of names: "The Open Cluster ... and Mapping Survey", "OCCASO"
+_NOT_NAMES = re.compile(r"^(?:The|A|An)\s|\b[A-Z]{3,}\b")
+
+
 def _title_then_venue(rest: str, authors: str) -> tuple[str, dict[str, str]]:
-    sentences = _SENTENCE.split(rest, maxsplit=2)
+    gost = _GOST_IN.search(rest)
+    if gost and not _YEAR.search(rest[: gost.start()]):
+        # GOST: "Title // Journal. 2021. Vol. 115. P. 78-81.", the title in two sentences too
+        # ("Centrality and power. The struggle over ... order // Policy & Internet. 2022.")
+        entry_type, fields = _venue(rest[gost.end() :])
+        fields.update(author=authors, title=rest[: gost.start()].strip(" ."))
+        return entry_type, fields
+    sentences = _SENTENCE.split(rest)
+    title, taken = sentences[0], 1
+    while (
+        taken < len(sentences) - 1
+        and (
+            _PART_END.search(title)
+            or _PART_END.fullmatch(sentences[taken].strip())
+            or _PART_START.match(sentences[taken])
+        )
+        and not sentences[taken + 1].lstrip()[:1].isdigit()  # "J Hist. 2018;3:1" is a venue
+    ):
+        # a title in numbered parts: "Dust. IV. The Silicate-Graphite-PAH Model", "Circinus -
+        # II. A thin dusty disc", "Open Clusters. V. Be 31, Be 32"
+        title, taken = f"{title}. {sentences[taken].strip()}", taken + 1
+    if taken > 1:
+        sentences = [title, *_SENTENCE.split(". ".join(sentences[taken:]), maxsplit=1)]
+    else:
+        sentences = _SENTENCE.split(rest, maxsplit=2)
     title = sentences[0]
     if (
         len(sentences) == 3
@@ -505,6 +580,37 @@ def _title_then_venue(rest: str, authors: str) -> tuple[str, dict[str, str]]:
     entry_type, fields = _venue(venue if len(sentences) > 1 else "")
     fields.update(author=authors, title=title)
     return entry_type, fields
+
+
+_GOST_IN = re.compile(r"\s+//\s+")
+# a title's part number: "... Dust. IV.", "Circinus - II.", "survey: VIII.", and "V. Be 31, ..."
+_PART_END = re.compile(r"(?:^|[\s\-–:])(?:[IVX]{1,5}|Part\s+\d+)$")
+_PART_START = re.compile(r"(?:[IVX]{1,5}|Part\s+\d+)\.\s")
+# APA's bracketed description after a title: "(arXiv:2510.07841)", "(Version 2)", "(No. 15)",
+# "(22nd ed.)", and its translation of a title in another language: "[Brazilian artemia as ...]"
+_TITLE_NOTE = re.compile(
+    r"\s*\((?:arxiv|biorxiv|medrxiv|ssrn|version|report no|no\.|working paper|"
+    r"\d+(?:st|nd|rd|th)\s+(?:rev\.\s+)?ed\.|rev\.\s+ed\.)[^()]*\)$",
+    re.I,
+)
+_TITLE_BRACKET = re.compile(r"\s*\[(?P<inner>[^\[\]]{4,})\]$")
+# what APA puts in brackets after a title: its form, or its translation
+_APA_FORM = re.compile(
+    r"(?:data ?set|computer software|software|doctoral dissertation|master'?s thesis|thesis|"
+    r"video|audio|podcast|unpublished|preprint|conference (?:paper|presentation|session)|"
+    r"poster|blog post|lecture notes|white paper|press release|fact sheet)\b",
+    re.I,
+)
+
+
+def _apa_bracket(inner: str) -> bool:
+    """A bracket APA adds after a title, not one the title has: "[Data set]", "[Doctoral
+    dissertation, MIT]", a translation in sentence case ("[Brazilian artemia as feed for ...]");
+    not IEEE's "[Historical Perspectives]" or "[Lecture Notes]", which the magazines register."""
+    words = inner.split()
+    if len(words) >= 4 and all(w[:1].islower() or not w[:1].isalpha() for w in words[1:3]):
+        return True
+    return bool(_APA_FORM.match(inner)) and not (inner.istitle() and len(words) > 1)
 
 
 # A sentence that may still be the title's: words, no digits, nothing a venue starts with

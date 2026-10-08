@@ -204,8 +204,20 @@ uvx paper-preflight check path/to/paper
 `path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。没有 `.bib` 的项目（很多 arXiv
 源码就是这样）会读取编译生成的 `.bbl`（只检查，不修改）。
 
-没有 LaTeX？纯文本的参考文献列表也可以检查，支持常见格式（APA、IEEE、ACM、Nature、Vancouver、
-Springer、Elsevier、Chicago、MLA），每行一条、每段一条或带编号均可：
+用 Word、Markdown 或 Typst 写作？稿件同样可以检查：
+
+```bash
+uvx paper-preflight check paper.docx     # Word：Zotero、Mendeley、EndNote 插入的引用，或手打的列表
+uvx paper-preflight check paper.qmd      # Markdown、Quarto、R Markdown：[@key] 对照其文献库
+uvx paper-preflight check paper.typ      # Typst：@key 对照 #bibliography(...)，.bib 或 Hayagriva .yml
+```
+
+Word 稿件里由 Zotero、Mendeley 或 EndNote 插入的引用，域代码中带有文献管理软件对每篇作品的完整记录，优先读取；
+其次是 Word 自带的源管理器；都没有时，读取"参考文献"标题之后手打的列表。文献库也可以单独检查：
+CSL-JSON（`.json`）、RIS（`.ris`）、YAML（`.yml`，Hayagriva 或 CSL）。
+
+没有稿件？纯文本的参考文献列表也可以检查，支持常见格式（APA、IEEE、ACM、Nature、Vancouver、
+Springer、Elsevier、MDPI、GOST、Chicago、MLA），每行一条、每段一条或带编号均可：
 
 ```bash
 uvx paper-preflight check references.txt

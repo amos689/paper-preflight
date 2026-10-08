@@ -282,7 +282,7 @@ noise. The results are in [`results/badalova-mayr.md`](results/badalova-mayr.md)
 `check references.txt` reads a reference list as formatted text. `evals/plaintext_badalova.py`
 measures it on Badalova & Mayr's 104 references as the documents print them (APA, biblatex's
 default style, a natbib author-year style), against the hand transcription
-`evals/badalova_mayr.bib`. The text gives the transcription's title for 103 of 104
+`evals/badalova_mayr.bib`. The text gives the transcription's title for all 104
 references, its first author for 103, its year for all 104 and every one of its 48 DOIs and
 arXiv IDs. Checked against the live sources both ways, 102 of the 104 references are flagged,
 or not, alike; the two others are names whose letters the dataset's CSV lost. The results are
@@ -294,9 +294,33 @@ in [`results/plaintext-badalova-mayr.md`](results/plaintext-badalova-mayr.md).
 reads the PDF arXiv serves for each paper of a real-paper batch and compares it with the check of
 the paper's own `.bib`. A `.bib` reference is found in the PDF when the PDF's list has its DOI or
 arXiv ID, a title 90% alike, or, in a style that prints no titles, the only reference with its
-first author and year. On the 20 papers of `dev` (924 references), the PDF gives 814 of them
-(88%), with the same first author for 98% and the same year for 95%, and the same verdict for
-749 (92%). The results, paper by paper, are in [`results/pdf-dev.md`](results/pdf-dev.md).
+first author and year. On the 20 papers of `dev` (924 references), the PDF gives 820 of them
+(89%), with the same first author for 98% and the same year for 95%, and the same verdict for
+756 (92%). The results, paper by paper, are in [`results/pdf-dev.md`](results/pdf-dev.md).
+
+## Word manuscripts: the real papers' references in .docx
+
+`check paper.docx` reads a Word manuscript: the reference manager's records in its field codes
+(Zotero, Mendeley, EndNote), Word's source manager, or else the reference list as typed.
+`evals/docx_agreement.py` writes each paper's cited `.bib` entries into Word documents, as a
+reference manager leaves them (Zotero's CSL-JSON in field codes) and as typed lists in three
+styles, APA, IEEE and NLM (rendered by citeproc-py from the CSL project's styles, which
+`evals/.data/csl-styles` holds with the commit they come from), and compares each document's
+check with the check of the `.bib`. On the 20 papers of `dev` (924 references), the field codes
+give the same verdict for 99.6%, the typed lists for 94.0% (APA), 96.9% (IEEE) and 96.0% (NLM).
+The results are in [`results/docx-agreement.md`](results/docx-agreement.md).
+
+The styles (CC BY-SA 3.0) are not in the repository; to fetch them:
+
+```bash
+c=0151fd1ed467ec54f4f2554d68fce9ccc6ff0118
+mkdir -p evals/.data/csl-styles && echo $c > evals/.data/csl-styles/COMMIT
+for s in apa ieee nlm-citation-sequence-brackets; do
+  curl -sL -o evals/.data/csl-styles/$s.csl \
+    https://raw.githubusercontent.com/citation-style-language/styles/$c/$s.csl
+done
+uv run python evals/docx_agreement.py --batch dev --fill
+```
 
 ## Citation support: the gold set
 
