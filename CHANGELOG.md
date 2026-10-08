@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **A JSON Schema for the JSON report** (`docs/schema/check-report.schema.json`,
+  `schema_version` 0.1): fields may be added, none removed or changed in meaning without a new
+  version. The tests check every report against it. Exit code 4 (internal error) is documented.
 - **References too new to be indexed are searched for again.** A reference from this year or
   next that no source has yet is remembered in the local cache, and its title is searched for
   again on later runs, once a day, instead of being answered from cached searches for two

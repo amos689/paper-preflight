@@ -282,6 +282,11 @@ Exit codes:
 | 1 | Blocking findings |
 | 2 | No blocking findings, but a source was unavailable and nothing could answer in its place, so the paper cannot be called clean yet |
 | 3 | Usage error |
+| 4 | Internal error (please report it) |
+
+The JSON report follows [a published JSON Schema](docs/schema/check-report.schema.json)
+(`schema_version` 0.1): fields may be added, but none is removed or changes meaning without a
+new `schema_version`. The tests check every report against it.
 
 ## Fetch verified BibTeX
 

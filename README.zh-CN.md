@@ -255,6 +255,10 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 | 1 | 有阻塞性发现 |
 | 2 | 没有阻塞性发现，但有数据源不可用，也没有其他来源能替它回答，暂时不能宣称"没问题" |
 | 3 | 用法错误 |
+| 4 | 内部错误（请报告给我们） |
+
+JSON 报告遵循[公开的 JSON Schema](docs/schema/check-report.schema.json)（`schema_version` 0.1）：
+可以新增字段，但不会删除字段或改变含义，除非换新的 `schema_version`。测试会用它校验每一份报告。
 
 ## 获取已核实的 BibTeX
 
