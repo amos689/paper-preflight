@@ -998,9 +998,11 @@ def check_year(
         # implies (the International Conference on Fifth Generation Computer Systems, 1981,
         # whose proceedings are a 1982 book)
         return FieldCheck("match")
-    if min(years) < year < max(years):
+    if min(years) < year < max(years) <= min(years) + 2:
         # between two of the article's own dates: an issue dated between its appearance online
-        # and in print (Int. J. Epidemiol. 49(6), December 2020: online 2019, print 2021)
+        # and in print (Int. J. Epidemiol. 49(6), December 2020: online 2019, print 2021). Not
+        # between a print date and a backfile's years later (SIAM J. Control Optim. 42(4),
+        # 2003, online in 2006: 2004 is wrong)
         return FieldCheck("match")
     if abs(year - min(years)) == 1 and year == _doi_year(record.doi):
         # the year the publisher wrote into the DOI, where Crossref has only another date
