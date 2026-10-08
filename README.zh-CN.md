@@ -29,7 +29,7 @@
 
 大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
 读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
-了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library）：
+了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library，软件问 GitHub、PyPI 和 CRAN）：
 
 - 它真的存在吗？
 - 和你写的一致吗？
@@ -397,6 +397,7 @@ npx skills add amos689/paper-preflight
 | `PAPER_PREFLIGHT_EMAIL` | 进入 Crossref 的礼貌池：更快、更稳定 |
 | `OPENALEX_API_KEY` | 更多的 OpenAlex 额度，用于撤稿核查 |
 | `S2_API_KEY` | 用 Semantic Scholar 补查其他来源都找不到的文献 |
+| `GITHUB_TOKEN` | 引用代码仓库时使用 GitHub 更大的额度（每小时 5,000 次，而不是 60 次） |
 
 `paper-preflight doctor` 会显示哪些已经设置，以及每个数据源此刻能否连通。
 

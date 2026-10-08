@@ -324,6 +324,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #170 | heldout13 的 7 个误报全部修掉（另修 heldout3、heldout12 各一个）：Crossref 只有在线日期的文章差一年时，取一次完整记录，用期号自带的日期（AMS 两篇、CiCP 一篇）；出版社后补的图书记录（DOI 比书的日期晚两年以上注册）可能带着后来印次的日期和作者顺序，条目年份更早、作者相同只顺序不同时不报，且只在没有别的记录对得上时才选它（Bhatia 2007、Paley–Wiener），随书注册的记录照旧（Gravity 2014 仍报 2012）；IEEE 标题里的 `<tex-math>` 标签、太阳质量的写法（M sub sun / M(solar)）、普林斯顿的丛书编号 (PMS-30)；DataCite 与 dblp 的软件、数据记录（论文代码的 Zenodo 存档）不再当成预印本的正式版本。十四批回放：去掉 8 个误报和 1 个不确定，新增 1 个真问题（作者写了两遍），13 本经典图书由无法确定变为核实；HALLMARK 两个划分逐条不变，GPTZero 不变，实跑冒烟通过；博物馆加 11 例 |
 | #171 | C8、C3：太新的条目（今年或明年、还没有任何来源收录）记在本地缓存里，之后每次运行每天重查一次标题检索，`check --recheck` 立即重查；评测脚本关掉这一机制（`remember_too_new=False`），回放照旧只用缓存。RFC 按编号核实：`type={RFC}, number=…`、"RFC 791"、rfc-editor.org/IETF 链接都换成 RFC Editor 在 Crossref 注册的 DOI（10.17487/rfc791，Crossref 不补零）|
 | #172 | C1：没有 DOI 的图书用 Open Library 核实（每秒 1 次、缓存；有联系邮箱时写进 User-Agent）。只问其他来源都没找到的图书条目，按 ISBN 或书名＋第一作者检索，书名、作者和某一版次的年份都对得上才采用，对不上的记录放一边、从不拿来指错。十四批回放：原先无法判断的 102 本书中 48 本变为核实（Pearl 1988、Cormen 2022、Misner–Thorne–Wheeler 1973……），报警无增无减；演示论文的 Deep Learning 由无法确定变为核实；`doctor` 检查 Open Library 是否应答 |
+| #173 | C2：引用软件时，用 GitHub 仓库、PyPI、CRAN（经 R-hub 的 crandb）核实：只问链接到仓库或软件包、其他来源都没找到的条目；仓库或软件包存在，且它的名字或描述就是条目标题时判为核实，不比作者和年份（软件按版本引用，所有者是账号）；链接的仓库或软件包不存在时报新规则 REF019（提示）。GitHub 无令牌每小时 60 次，有 `GITHUB_TOKEN` 时 5,000 次。十四批回放：47 条软件引用由无法确定变为核实（smolagents、TRL、Alpaca、aider……），报警无增无减，没有出现 REF019 |
 
 ## 下一步
 

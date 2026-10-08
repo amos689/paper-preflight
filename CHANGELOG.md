@@ -16,6 +16,14 @@ All notable changes to this project are documented here. The format follows
 - **RFCs are verified by their number.** An RFC cited as `type={RFC}, number={8446}`, as
   "RFC 791" or by its rfc-editor.org or IETF link is checked as its DOI, which the RFC
   Editor registers with Crossref (10.17487/rfc791).
+- **References to software are confirmed by GitHub, PyPI and CRAN.** A reference that links to
+  a repository (github.com/langchain-ai/langmem) or a package (pypi.org/project/ldpc,
+  cran.r-project.org/package=ggplot2), and that nothing else found, is verified when the
+  repository or package exists and its name or description is the reference's title. Software
+  is cited by its version and its owner is an account, so nothing else is compared. A link to a
+  repository or package that does not exist is worth a look (REF019, an info). On the
+  development papers, 47 references to software are now verified, with no finding gained or
+  lost. GitHub allows 60 requests an hour without a token; `GITHUB_TOKEN` raises it to 5,000.
 - **Books without a DOI are confirmed by Open Library.** Goodfellow, Bengio and Courville's Deep
   Learning (MIT Press, 2016) and Golub and Van Loan's Matrix Computations have no DOI, so no
   registry knew them. A book nothing else found is now looked up in Open Library, by its ISBN
