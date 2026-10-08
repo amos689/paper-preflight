@@ -49,7 +49,9 @@ Outputs: `sarif` (the report's path) and `exit-code`:
 
 - **Report.** The human-readable report goes to the job summary, and the findings can show up
   as code-scanning alerts on the `.bib` lines through the SARIF upload.
-- **Caching.** Answers are cached per bibliography (`actions/cache`, keyed by the `.bib` files),
-  so re-runs are fast and the scholarly sources see fewer requests.
+- **Caching.** Answers are cached (`actions/cache`): every run starts from the latest cache of
+  the same bibliography, or else the latest of any, and saves what it learnt, so re-runs are
+  fast, an answer that expired is asked for once rather than on every run, and the scholarly
+  sources see fewer requests. A cold run takes about half a second per reference.
 - **Installation.** The action builds paper-preflight from its own checkout; no PyPI release is
   needed.

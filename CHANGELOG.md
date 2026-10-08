@@ -93,6 +93,15 @@ and heldout12:
   and data (a Zenodo deposit of the paper's code) are no longer offered as where a preprint was
   published (REF015).
 
+### Changed
+
+- **The GitHub Action's cache is kept up to date.** Every run starts from the latest cache of
+  the same bibliography (`.bib` or `.bbl`), or else the latest of any, and saves what it
+  learnt. Before, a bibliography that had not changed reused its first cache for ever: answers
+  that had expired since, and references too new to be found then, were asked for again on
+  every run. A cold run takes about 0.44 seconds per reference (209 references of four
+  papers of heldout13, each with an empty cache).
+
 ## [0.7.0] - 2026-10-08
 
 Manuscripts beyond LaTeX: Word, Markdown, Quarto, R Markdown and Typst, and bibliographies in

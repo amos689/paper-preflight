@@ -331,6 +331,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #177 | D3（提前做）：Python API `paper_preflight.check_paper(path)`，返回简单、不可变的数据类（Report、Reference、MatchedRecord、Finding），选项与命令行一致（是否联网、缓存、项目设置、语言），`report.to_dict()` 即 JSON 报告；包的 `__init__` 延迟导入，命令行启动不受影响。函数名不用 `check`：它会被同名的内部模块 `paper_preflight.check` 遮住。文档 docs/python-api.md |
 | #178 | C4：网页链接。其他来源都没找到、链接到未收录网站的条目，用 HEAD 请求检查链接（说页面不在时再用不读正文的 GET 确认，Kaggle 这类对 HEAD 回 404、对 GET 回 200 的网站因此不误报），返回 404/410 且 Wayback Machine 从未存档时报 REF021（提示）；401/403/429/5xx/超时一律不下结论；不访问本机和内网地址。十四批回放：280 篇论文里 5 处，警告和错误无增无减 |
 | #179 | D4：`bib fix --level unsafe` 修 REF015，把已正式发表的预印本改引正式版本：条目类型改为正式版本的类型（`@misc` 改 `@inproceedings`），按记录写入发表场所、年份、卷（期刊）、页码和 DOI，只写着 arXiv preprint 的 journal/booktitle/howpublished 删掉，保留 eprint；记录没说是哪种出版物（期刊文章、会议论文、书的章节）时不修。新增的字段与条目原有字段的等号对齐。演示论文的 ResNet 预印本应用修复后再查，不再报 REF015 |
+| #180 | D6：性能收尾。冷缓存实测（heldout13 的 4 篇论文，每篇各用空缓存，含阶段 C 新增的 Open Library、GitHub、场所目录、网页链接查询）：209 条 93 秒，每条 0.44 秒，达到 ≤0.6 秒的目标（最慢一篇 0.62 秒）。GitHub Action 的缓存改为每次运行都保存：先取同一参考文献表（.bib 或 .bbl）最近的缓存，没有就取任意最近的缓存；原先参考文献表不变时永远复用第一次的缓存，之后过期的答案和当时太新的条目每次运行都要重查 |
 
 ## 下一步
 
