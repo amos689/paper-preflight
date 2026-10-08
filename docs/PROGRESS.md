@@ -337,6 +337,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #183 | D5（第二部分）：用户手册 `docs/README.md`（安装、各用途对应的页面、判定方式），新增 `docs/inputs.md`（各种输入格式）、`docs/configuration.md`（逐条目消除、项目设置、`check` 的选项、退出码、输出格式、环境变量、缓存及各类答复的保留时间）、`docs/false-positives.md`（误报从何而来、怎么处理、哪些不算误报，中英文）、`docs/sources.md`（每个来源问什么、不做什么、接入新来源的七个步骤）；测试检查 README、CONTRIBUTING 和 docs 下所有页面的相对链接和标题锚点都存在。顺带更正过时的说明：README 的状态行（v0.4）、MCP 文档里“等首个 PyPI 版本”、pre-commit 示例的 `rev: main`、CONTRIBUTING 的 pre-alpha、web.py 里“只发 HEAD 请求”。另写兼容性约定 `docs/stability.md`（D1 的“1.0 之后遵守语义化版本”）：从 1.0 起，规则编号、退出码、JSON schema、命令行、设置项、Python API、MCP 工具只在大版本中做不兼容的改动；判定结果、措辞、严重度可以在任何版本中改进 |
 | #184 | `NCBI_API_KEY` 真正用上：`doctor` 一直列出它，但 PubMed 从未带着它查询；有 key 时 PMID、PMCID 按每秒 10 次查询（原为 3 次）。key 按 NCBI 的要求放在查询参数里，不进入缓存键，测试确认缓存文件里没有它；`doctor` 显示是否带 key。README 中英文凭据表补上这一行 |
 | #185 | `explain --lang zh` 的严重度和修复级别也显示中文（原先仍是 warning、unsafe 等英文），规则列表同样 |
+| #186 | C5 收窄（为升级成警告做准备）：开发集 280 篇里“漏掉列表中间的某某”提示共 46 条，其中 19 条点名的并不是人：登记机构把单位当成作者（Qassim University、Ural Federal University、Sandia National Laboratories、Austrian Research Institute……）、占位名（Paper Authors、(Primary Paper Contributors)）、合作组（DESI Collaboration、SciPy 1.0 Contributors、The Cancer Genome Atlas Research Network）、单名，以及上百人的合作组长列表（200/1140、485/486）。现在这些不再点名，超过 30 人的列表也不点名；仍是提示，升级与否看 heldout14 |
 
 ## 下一步
 

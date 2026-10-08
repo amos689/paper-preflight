@@ -718,6 +718,25 @@ def _group(person: Person) -> bool:
     return any(word in COLLECTIVE_WORDS for word in _name_words(person.display))
 
 
+# words of a name that is no person's: an affiliation a registry took for an author ("Ural
+# Federal University"), a placeholder ("Paper Authors")
+_NOT_A_PERSON = frozenset(
+    "university universities college school department centre center academy hospital "
+    "authors network".split()
+)
+# a list this long is a collaboration's, which citing authors shorten as they see fit
+_LONG_LIST = 30
+
+
+def _left_out_person(person: Person) -> bool:
+    """Someone whose absence from the middle of a list is worth naming: not a group, an
+    organisation, a single name, or an affiliation ("Qassim University, Buraidah, Kingdom of
+    Saudi Arabia" in Crossref's record of a two-author article)."""
+    if _group(person) or _organisation(person) or "," in person.display:
+        return False
+    return not (_name_words(person.display) & _NOT_A_PERSON)
+
+
 def _same_group(a: Person, b: Person) -> bool:
     """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team"."""
     ours = _name_words(a.display) - {"and", "the"}
@@ -831,7 +850,13 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         first = any(same_person(first_person, other) for other in people)
     missing_names = tuple(missing)
     last = max(taken, default=-1)
-    left_out = tuple(people[i].display for i in range(last) if i not in taken)
+    left_out = (
+        tuple(
+            people[i].display for i in range(last) if i not in taken and _left_out_person(people[i])
+        )
+        if len(people) <= _LONG_LIST
+        else ()
+    )
 
     def result(status: Status, note: str = "", *, disjoint: bool = False) -> AuthorCheck:
         return AuthorCheck(
