@@ -113,11 +113,11 @@ uv run python evals/replay.py new --against base      # verdicts moved, findings
 uv run python evals/replay.py new --against base --fill   # if the change asks something new
 ```
 
-There are thirteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are fourteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last nine are each batch as it came out:
+candidate's (main 43a5544); the last ten are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -134,6 +134,7 @@ candidate's (main 43a5544); the last nine are each batch as it came out:
 | `heldout10` | 2026-09-09..15 | held out for #157 (list committed before it, #155); studied for #160 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
 | `heldout11` | 2026-09-16..22 | held out for 0.6.0 (#160-#161; list committed before them, #158); studied for #164 | 868 | 89 | 76 | 13 | 0 | 1.5 |
 | `heldout12` | 2026-09-23..29 | held out for 0.6.0 with #164 (list committed before it, #163) | 786 | 48 | 42 | 6 | 0 | 0.8 |
+| `heldout13` | 2026-09-30..10-06 | held out for 0.7.0 (#167; list committed before it, #165) | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -191,6 +192,14 @@ candidate's (main 43a5544); the last nine are each batch as it came out:
   title, a 2013 e-book DOI on a 1988 book, an online-first record against the issue's year,
   a journal's series label the registry leaves out of a title, and two software releases
   cited with their owner and version.
+- **On `heldout13`**, run once with 0.7.0's code (#167): 79 real problems (47 published
+  preprints, 8 wrong years, 7 identifiers written as URLs or with LaTeX escapes, wrong authors
+  or given names in 5 entries, 4 wrong venues, 5 titles misquoted or taken from the preprint,
+  two references that match no work, a doi field holding two DOIs) and 7 false positives, 0.7
+  per 100 references; 0.43 s per reference live. They are three articles whose volume year
+  Crossref records only by the online date, a 2007 book against its 2009 online edition, two
+  titles that differ only in how a registry writes a symbol (TeX markup, ADS's 'M sub sun'),
+  and a paper's code on Zenodo offered as the paper's published version.
 
 A fourteenth batch, `heldout13` (2026-09-30..10-06), was collected on 2026-10-08 and its list
 committed before any change made for heldout12's false positives.
