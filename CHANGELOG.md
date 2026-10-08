@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-08
+
+Fewer false alarms on real papers. On a new held-out week, run once with these changes: 1.3
+false positives per 100 references (1,067 references, 83 real problems). HALLMARK and GPTZero's
+hallucinated references are unchanged.
+
 ### Fixed
 
 Eleven of the thirteen false positives on the tenth batch of real papers (heldout9):
@@ -583,7 +589,12 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/amos689/paper-preflight/compare/v0.5.2...v0.5.3
+[0.5.2]: https://github.com/amos689/paper-preflight/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/amos689/paper-preflight/compare/v0.5.0...v0.5.1
+[0.5.0]: https://github.com/amos689/paper-preflight/compare/v0.4.1...v0.5.0
+[0.4.1]: https://github.com/amos689/paper-preflight/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/amos689/paper-preflight/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/amos689/paper-preflight/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/amos689/paper-preflight/compare/v0.2.0...v0.2.1

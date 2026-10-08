@@ -1,2 +1,2 @@
 # The release workflow (.github/workflows/space.yml) pins this to the version it publishes.
-paper-preflight[pdf]==0.5.2
+paper-preflight[pdf]==0.5.3

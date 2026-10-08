@@ -1,9 +1,9 @@
 # Real-world recall: GPTZero's hallucinated references (NeurIPS 2025, ICLR 2026)
 
-- **Tool:** paper-preflight 0.5.2 (main 445ce3b)
+- **Tool:** paper-preflight 0.5.3 (main 23d9911)
 - **Data:** the references GPTZero's staff confirmed as hallucinated: 100 in NeurIPS 2025 papers, 51 in ICLR 2026 submissions ([NeurIPS](https://gptzero.me/news/neurips/), [ICLR](https://gptzero.me/news/iclr-2026/)). The tables are not redistributed; rows are numbered as in GPTZero's tables.
 - **Input:** each reference as the paper printed it, read by paper-preflight's plain-text reader (`check refs.txt`), checked against live sources
-- **Run:** 2026-10-07
+- **Run:** 2026-10-08
 
 ## Summary
 
