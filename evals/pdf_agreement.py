@@ -117,7 +117,9 @@ def main() -> None:
         checked = json.loads(report.read_text(encoding="utf-8"))
         verdicts = {r["key"]: r["verdict"] for r in checked["references"]}
         entries = bib_entries(arxiv_id)
-        result = run_check(pdf, verify=VerifyOptions(cache_path=real_papers.CACHE))
+        result = run_check(
+            pdf, verify=VerifyOptions(cache_path=real_papers.CACHE, remember_too_new=False)
+        )
         read = result.bib_files[0].entries
         found = author = year = same = 0
         for key, verdict in verdicts.items():

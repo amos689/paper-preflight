@@ -17,6 +17,7 @@ import json
 import random
 import time
 from collections.abc import Awaitable, Callable, Iterable, Mapping
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
@@ -118,6 +119,12 @@ Classifier = Callable[[Any], EntryKind]
 _NEGATIVE_STATUS = "__negative_status__"
 
 
+# Answers stored before this time are asked again for the reference being searched: one found
+# too new to be indexed on an earlier run (see check.verify_entries). Set per task, so it
+# touches only that reference's requests.
+RECHECK_BEFORE: ContextVar[float | None] = ContextVar("recheck_before", default=None)
+
+
 class SourceClient:
     def __init__(
         self,
@@ -148,6 +155,11 @@ class SourceClient:
     def _cached(self, key: str) -> CachedItem | None:
         item = self.cache.get(self.name, key, allow_stale=self.offline)
         if item is not None and self.fresh_after is not None and item.stored_at < self.fresh_after:
+            return None
+        before = RECHECK_BEFORE.get()
+        recheck = before is not None and not self.offline
+        # inclusive: Windows' clock ticks every 16 ms, so "now" may equal a time just stored
+        if item is not None and recheck and item.stored_at <= (before or 0.0):
             return None
         return item
 

@@ -128,7 +128,7 @@ def run(args: argparse.Namespace) -> None:
             "\n\n".join(f"[{n}] {row['reference']}" for n, row in enumerate(references, 1)) + "\n",
             encoding="utf-8",
         )
-        result = run_check(listing, verify=VerifyOptions(cache_path=CACHE))
+        result = run_check(listing, verify=VerifyOptions(cache_path=CACHE, remember_too_new=False))
         payload = to_json_dict(result)
         run_date = f"{datetime.now(UTC):%Y-%m-%d}"
         payload["eval"] = {"set": name, "version": __version__, "run": run_date}

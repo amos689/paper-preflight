@@ -107,7 +107,7 @@ def main() -> None:
     ]
 
     started = datetime.now(UTC)
-    result = run_check(BIB, verify=VerifyOptions(cache_path=CACHE))
+    result = run_check(BIB, verify=VerifyOptions(cache_path=CACHE, remember_too_new=False))
     minutes = (datetime.now(UTC) - started).total_seconds() / 60
     flags: dict[str, set[str]] = {}
     for f in result.findings:
