@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/amos689/paper-preflight/blob/main/docs/schema/check-report.schema.json",
+  "title": "paper-preflight check report",
+  "description": "What `paper-preflight check --format json` writes (schema_version 0.1). Fields may be added; none is removed or changes meaning without a new schema_version.",
+  "type": "object",
+  "required": ["schema_version", "tool", "run", "project", "summary", "verification", "references", "findings", "pagination"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "0.1"},
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"const": "paper-preflight"},
+        "version": {"type": "string"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["complete", "started_at", "finished_at", "build_data", "notes"],
+      "properties": {
+        "complete": {"type": "boolean", "description": "False when a required source did not answer: results may change on a later run (exit code 2)."},
+        "started_at": {"type": "string", "format": "date-time"},
+        "finished_at": {"type": "string", "format": "date-time"},
+        "build_data": {"type": ["string", "null"], "description": "The LaTeX build file (.aux, .bcf) the cited keys were read from, or null."},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": ["root", "main", "bib_files", "entries", "cited_keys"],
+      "properties": {
+        "root": {"type": "string"},
+        "main": {"type": ["string", "null"]},
+        "bib_files": {"type": "array", "items": {"type": "string"}},
+        "entries": {"type": "integer", "minimum": 0},
+        "cited_keys": {"type": "integer", "minimum": 0}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["errors", "warnings", "infos", "total_findings"],
+      "properties": {
+        "errors": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "integer", "minimum": 0},
+        "infos": {"type": "integer", "minimum": 0},
+        "total_findings": {"type": "integer", "minimum": 0}
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["mode", "verdicts", "unverified_offline", "sources"],
+      "properties": {
+        "mode": {"enum": ["online", "offline", "skipped"]},
+        "verdicts": {
+          "type": "object",
+          "properties": {
+            "verified": {"type": "integer", "minimum": 0},
+            "metadata_mismatch": {"type": "integer", "minimum": 0},
+            "identifier_conflict": {"type": "integer", "minimum": 0},
+            "not_found": {"type": "integer", "minimum": 0},
+            "cannot_determine": {"type": "integer", "minimum": 0}
+          },
+          "additionalProperties": {"type": "integer"}
+        },
+        "unverified_offline": {"type": "integer", "minimum": 0},
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["requests", "cache_hits", "stale_hits", "negatives", "unavailable"],
+            "properties": {
+              "requests": {"type": "integer", "minimum": 0},
+              "cache_hits": {"type": "integer", "minimum": 0},
+              "stale_hits": {"type": "integer", "minimum": 0},
+              "negatives": {"type": "integer", "minimum": 0},
+              "unavailable": {"type": "object", "additionalProperties": {"type": "integer"}}
+            }
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "verdict", "reasons", "flags", "matched", "findings"],
+        "properties": {
+          "key": {"type": "string"},
+          "verdict": {"enum": ["verified", "metadata_mismatch", "identifier_conflict", "not_found", "cannot_determine"]},
+          "reasons": {"type": "array", "items": {"type": "string"}, "description": "Why a reference could not be judged (cannot_determine), e.g. GREY_LITERATURE, TOO_NEW."},
+          "flags": {"type": "array", "items": {"type": "string"}},
+          "matched": {
+            "description": "The record the reference was compared with, or null.",
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object",
+                "required": ["source", "id", "title", "year", "venue", "doi"],
+                "properties": {
+                  "source": {"type": "string"},
+                  "id": {"type": "string"},
+                  "title": {"type": "string"},
+                  "year": {"type": ["integer", "null"]},
+                  "venue": {"type": ["string", "null"]},
+                  "doi": {"type": ["string", "null"]}
+                }
+              }
+            ]
+          },
+          "findings": {"type": "array", "items": {"type": "string"}, "description": "IDs of this reference's findings in `findings`."}
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "rule", "severity", "key", "field", "location", "related", "message", "data"],
+        "properties": {
+          "id": {"type": "string", "description": "Stable across runs and line moves: derived from rule, key, field and detail."},
+          "rule": {"type": "string", "pattern": "^[A-Z]{3}[0-9]{3}$"},
+          "severity": {"enum": ["error", "warning", "info"]},
+          "key": {"type": ["string", "null"]},
+          "field": {"type": ["string", "null"]},
+          "location": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/location"}]},
+          "related": {"type": "array", "items": {"$ref": "#/$defs/location"}},
+          "message": {
+            "type": "object",
+            "required": ["en", "zh"],
+            "properties": {"en": {"type": "string"}, "zh": {"type": "string"}}
+          },
+          "data": {"type": "object"}
+        }
+      }
+    },
+    "pagination": {
+      "type": "object",
+      "required": ["offset", "returned", "truncated"],
+      "properties": {
+        "offset": {"type": "integer", "minimum": 0},
+        "returned": {"type": "integer", "minimum": 0},
+        "truncated": {"type": "boolean"}
+      }
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "required": ["file", "line", "column"],
+      "properties": {
+        "file": {"type": "string"},
+        "line": {"type": ["integer", "null"]},
+        "column": {"type": ["integer", "null"]}
+      }
+    }
+  }
+}
