@@ -208,6 +208,11 @@ def test_authors_match_and_truncation(demo: dict[str, EntryInfo], cvpr: SourceRe
     omitted = check_authors(two, cvpr)
     assert omitted.status == "variant"
     assert omitted.note == "some authors omitted"
+    assert omitted.left_out == ()  # a list cut short: nobody is left out before a listed name
+    # ResNet's Shaoqing Ren dropped from between Zhang and Sun
+    dropped = check_authors(parse_authors("He, Kaiming and Zhang, Xiangyu and Sun, Jian"), cvpr)
+    assert dropped.note == "some authors omitted"
+    assert [name.split()[-1] for name in dropped.left_out] == ["Ren"]
     assert (
         check_authors(parse_authors("He, Kaiming and Zhang, Xiangyu and others"), cvpr).status
         == "match"

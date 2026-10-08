@@ -598,10 +598,19 @@ def _field_findings(
                 suggestion=protect_title(record.title),
             )
         )  # fmt: skip
-    elif m.title.changed and versions_known(record):
+    elif m.title.changed and (
+        versions_known(record)
+        or any(
+            o.source == "arxiv"
+            and versions_known(o)
+            and title_key(o.title) == title_key(record.title)
+            for o in others
+        )
+    ):
         # Close but reworded ("towards" for "for", "Hidden" for "Latent"): HALLMARK's near-miss
         # titles. Only when every title the work has had is known: a preprint's earlier version
-        # may carry the entry's wording.
+        # may carry the entry's wording. DataCite's record of an arXiv DOI has the latest title
+        # only, arXiv's own record of a one-version paper all of them.
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
@@ -682,12 +691,19 @@ def _field_findings(
             )  # fmt: skip
     elif authors.status == "variant" and authors.note == "some authors omitted":
         listed, total = len(info.authors.people), len(record.authors)
+        detail = f"the entry lists {listed} of {total} authors without 'and others'"
+        detail_zh = f"条目只列出了 {total} 位作者中的 {listed} 位，且没有写 'and others'"
+        if authors.left_out:
+            # a name dropped from the middle, not a list cut short (an info until a held-out
+            # week shows it never fires on a correct list)
+            dropped, dropped_zh = ", ".join(authors.left_out), "、".join(authors.left_out)
+            detail += f"; it leaves out {dropped} from the middle of the list"
+            detail_zh += f"；漏掉了列表中间的 {dropped_zh}"
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
                 severity=Severity.INFO, source=source, suggestion=format_authors(record),
-                detail=f"the entry lists {listed} of {total} authors without 'and others'",
-                detail_zh=f"条目只列出了 {total} 位作者中的 {listed} 位，且没有写 'and others'",
+                detail=detail, detail_zh=detail_zh,
             )
         )  # fmt: skip
     if m.year.status == "mismatch" and (published_known or not _published_later(info.year, record)):
@@ -1013,8 +1029,17 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         addable = _addable_doi(entry, evidence, bound.record)
         if addable is not None:
             findings.append(addable)
+        if evidence.venue_known is False and is_preprint(bound.record):
+            # the work is real, as a preprint; the venue the entry names is in no catalogue
+            # of journals and conferences (HALLMARK's invented venues)
+            findings.append(
+                make_finding(
+                    "REF020", _location(entry, info.venue_field), key=entry.key,
+                    field=info.venue_field, venue=info.venue, found=_found_id(bound.record),
+                )
+            )  # fmt: skip
         field_problem = any(
-            f.rule_id in {"REF010", "REF011", "REF012", "REF013", "REF014"}
+            f.rule_id in {"REF010", "REF011", "REF012", "REF013", "REF014", "REF020"}
             and f.severity is not Severity.INFO
             for f in findings
         )
@@ -1082,6 +1107,12 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         findings=kept,
         suppressed=frozenset(f.rule_id for f in findings if entry.suppressed(f.rule_id)),
     )
+
+
+def _found_id(record: SourceRecord) -> str:
+    if record.source == "arxiv":
+        return f"arXiv {record.source_id}"
+    return record.doi or f"{source_name(record.source)} {record.source_id}"
 
 
 def _other_works(evidence: Evidence) -> list[SourceRecord]:

@@ -47,6 +47,7 @@ from paper_preflight.sources import (
     pubmed,
     semanticscholar,
     software,
+    venues,
 )
 from paper_preflight.sources.base import (
     RECHECK_BEFORE,
@@ -126,6 +127,9 @@ class Evidence:
     software_links: list[tuple[str, str]] = field(default_factory=list)
     software: list[SourceRecord] = field(default_factory=list)
     missing_software: list[tuple[str, str]] = field(default_factory=list)
+    # whether a catalogue of journals and conferences knows the venue the entry names, for a
+    # work found as a preprint alone (C6); None when not asked or not answered
+    venue_known: bool | None = None
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
     pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
     # anchored by journal, volume and page: an untitled entry (see _search_coordinates)
@@ -415,6 +419,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 9. Software an entry links to: a GitHub repository, a PyPI or CRAN package.
     linked = [i for i in evidence.values() if _unfound_software(i)]
     await asyncio.gather(*(_search_software(item, sources) for item in linked))
+    # 10. The venue an entry names for a work found as a preprint alone: does it exist?
+    named = [i for i in evidence.values() if _venue_to_check(i)]
+    await asyncio.gather(*(_check_venue(item, sources) for item in named))
 
     # 8. Books no registry knows (no DOI), from Open Library.
     books = [i for i in evidence.values() if _unfound_book(i)]
@@ -882,6 +889,64 @@ async def _search_software(item: Evidence, sources: Sources) -> None:
         elif _names_the_software(item.info.title, record):
             item.software.append(record)
             return
+
+
+# what a venue's own citation carries and an invented one lacks: an edition, an acronym, a year,
+# "Proceedings of"
+_SPECIFIC_VENUE = re.compile(
+    r"\([A-Z][A-Za-z0-9&-]{1,15}\)|\d|\bproceedings\b|\b(?:first|second|third|fourth|fifth|"
+    r"sixth|seventh|eighth|ninth|tenth|eleventh|twelfth)\b",
+    re.I,
+)
+# venues that are no venue to look up: a preprint server, a status, a repository
+_NOT_A_VENUE = re.compile(
+    r"arxiv|corr\b|preprint|submitted|under review|to appear|in press|accepted|manuscript|"
+    r"thesis|technical report|tech\. ?rep|github|openreview|biorxiv|medrxiv|ssrn|zenodo",
+    re.I,
+)
+
+
+def _venue_to_check(item: Evidence) -> bool:
+    """An entry that names a journal or a conference for a work found as a preprint alone,
+    with no published version: HALLMARK's invented venues ("journal = {Symposium on
+    Regularization Techniques}" for arXiv 2602.12132)."""
+    from paper_preflight.match import canonical_venue, evaluate, is_preprint
+
+    info = item.info
+    venue = info.venue or ""
+    if info.venue_field not in {"journal", "booktitle"} or not venue:
+        return False
+    if canonical_venue(venue) or _NOT_A_VENUE.search(venue) or not venues.names_a_venue(venue):
+        return False
+    if _SPECIFIC_VENUE.search(venue):
+        # a venue cited the way it asks to be ("Proceedings of the First Workshop on Large
+        # Language Model Security (LLMSEC)"): real workshops are in no catalogue either
+        return False
+    if item.published_versions:
+        return False
+    fitting = [
+        r
+        for r in (*item.anchored, *item.candidates)
+        if evaluate(info, r).title.status in {"match", "variant"}
+    ]
+    return bool(fitting) and all(is_preprint(r) for r in fitting)
+
+
+async def _check_venue(item: Evidence, sources: Sources) -> None:
+    """OpenAlex's sources, dblp's streams, then Crossref's containers: the venue is known as
+    soon as one has it, unknown when none does, unchecked when one cannot answer."""
+    name = item.info.venue or ""
+    try:
+        found = await venues.openalex_names(
+            sources.openalex, name, api_key=sources.openalex_key, mailto=sources.mailto
+        )
+        if not any(venues.same_venue(name, n) for n in found):
+            found = await venues.dblp_names(sources.dblp, name)
+        if not any(venues.same_venue(name, n) for n in found):
+            found = await venues.crossref_containers(sources.crossref, name, mailto=sources.mailto)
+    except SourceUnavailable:
+        return
+    item.venue_known = any(venues.same_venue(name, n) for n in found)
 
 
 BOOK_ENTRY_TYPES = frozenset({"book", "mvbook"})

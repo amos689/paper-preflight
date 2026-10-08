@@ -231,6 +231,13 @@ RULES: dict[str, Rule] = {
              "link: the project may have been renamed, moved or made private.",
              "'{key}' 链接到 {registry} 上的 {name}，但 {registry} 没有它。请检查链接："
              "项目可能已改名、迁移或设为私有。"),
+            "REF020", "venue-unknown", W,
+            ("Venue not found in any catalogue", "发表场所查无此处"),
+            ("'{key}' names {venue} as its venue, which no catalogue of journals and conferences "
+             "has (OpenAlex, dblp, Crossref); the work itself was found as a preprint ({found}). "
+             "Check where it was published.",
+             "'{key}' 写的发表场所是 {venue}，但期刊与会议目录（OpenAlex、dblp、Crossref）"
+             "中都没有它；该作品只找到预印本（{found}）。请核对它实际发表在哪里。"),
         ),
         _rule(
             "REF090", "cannot-determine", I,
