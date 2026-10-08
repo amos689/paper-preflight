@@ -1,5 +1,6 @@
 import json
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -330,6 +331,23 @@ def test_years_a_registry_records_badly() -> None:
                       work_type="book-chapter")  # fmt: skip
     venue = "International Conference on Fifth Generation Computer Systems"
     assert check_year(1981, chapter, venue=venue).status == "mismatch"
+
+
+def test_software_by_its_first_year_and_an_issue_to_come() -> None:
+    this_year = date.today().year
+    # RDKit cited as 2006; Zenodo's concept DOI resolves to the latest release
+    release = SourceRecord(
+        source="datacite", source_id="10.5281/zenodo.591637", title="rdkit/rdkit: Release",
+        year=this_year, years=frozenset({this_year}), work_type="software",
+    )  # fmt: skip
+    assert check_year(2006, release).status == "variant"
+    assert check_year(2006, replace(release, work_type="journal-article")).status == "mismatch"
+    # accepted "to appear": Crossref has only the issue it is scheduled for
+    scheduled = replace(release, work_type="journal-article", year=this_year + 2,
+                        years=frozenset({this_year + 2}))  # fmt: skip
+    assert check_year(this_year - 1, scheduled).status == "variant"
+    past = replace(scheduled, year=this_year - 1, years=frozenset({this_year - 1}))
+    assert check_year(this_year - 3, past).status == "mismatch"
 
 
 def test_a_jmlr_volume_runs_into_the_next_year() -> None:

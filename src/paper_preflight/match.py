@@ -1071,6 +1071,15 @@ def check_year(
         # a database or service is cited by the year it was used, as its maintainers ask (USGS
         # NWIS: DataCite's 1994 is when the service started)
         return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
+    if record.work_type == "software" and year < min(years):
+        # software is cited by the year its makers name, often the project's first; a DOI that
+        # stands for every version resolves to the latest release (RDKit, 2006: Zenodo's record
+        # is the 2026_09_1 release; heldout16)
+        return FieldCheck("variant", None, f"a later release, recorded year(s) {sorted(years)}")
+    if year < min(years) and min(years) > date.today().year:
+        # only a date still to come: the issue a paper accepted "to appear" is scheduled for
+        # (Statistica Sinica, accepted 2025: Crossref has 2028; heldout16)
+        return FieldCheck("variant", None, f"a scheduled issue, recorded year(s) {sorted(years)}")
     # No general ±1 tolerance: refchecker dropped it because it silently hid real year errors.
     # Only preprint/published pairs legitimately differ by a year or two.
     distance = min(abs(year - y) for y in years)

@@ -1038,8 +1038,16 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     findings, dead = _dead_identifiers(entry, evidence)
     preprint = cites_preprint(evidence)  # a published version may then be a year or two later
     # so may a copy on a preprint or report server the entry names (Cryptology ePrint Archive
-    # 2015/193, the CHES 2013 paper)
-    preprint_pair = preprint or bool(_PREPRINT_COPY.search(info.venue or ""))
+    # 2015/193, the CHES 2013 paper), or a preprint or draft its venue says it is without an
+    # identifier ("Preprint posted online October", 2017: ICLR 2018; heldout16)
+    preprint_pair = (
+        preprint
+        or bool(_PREPRINT_COPY.search(info.venue or ""))
+        or (
+            info.venue_field in NAMED_VENUE_FIELDS
+            and bool(_PREPRINT_VENUE.search(info.venue or ""))
+        )
+    )
 
     # 1. Records reached through the entry's own identifiers.
     same: list[Match] = []
