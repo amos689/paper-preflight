@@ -339,6 +339,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #185 | `explain --lang zh` 的严重度和修复级别也显示中文（原先仍是 warning、unsafe 等英文），规则列表同样 |
 | #186 | C5 收窄（为升级成警告做准备）：开发集 280 篇里“漏掉列表中间的某某”提示共 46 条，其中 19 条点名的并不是人：登记机构把单位当成作者（Qassim University、Ural Federal University、Sandia National Laboratories、Austrian Research Institute……）、占位名（Paper Authors、(Primary Paper Contributors)）、合作组（DESI Collaboration、SciPy 1.0 Contributors、The Cancer Genome Atlas Research Network）、单名，以及上百人的合作组长列表（200/1140、485/486）。现在这些不再点名，超过 30 人的列表也不点名；仍是提示，升级与否看 heldout14 |
 | #187 | 覆盖（1.0 目标“无法确定 ≤4%”）：链接到 Hugging Face 模型或数据集、OpenML 数据集、其他来源都没找到的条目，像软件一样核实：仓库或数据集存在、名字就是条目标题即判为核实。OpenML 答复“Unknown dataset”时报 REF019；Hugging Face 对不存在和私有仓库都答 401，所以从不报。可选来源 `huggingface`、`openml`，`doctor` 探测二者。十四批回放（补查）：29 条由无法确定变为核实（Hub 23 条：FLUX.1-dev、Qwen3.5-9B、DAPO-Math-17K、Nemotron-CC-v2……；OpenML 6 条），逐条核对无误，报警无增无减；280 篇的“无法确定”由 4.24% 降到 4.02%。灰色文献弃权由阶段 C 前的 502 条降到 380 条，其中 245 条是网页（按 C4 设计不判真伪），网页以外由 188 条降到 135 条 |
+| #188 | 冻结三个留出批次（经你同意，用 7 月以前从未抽过的周代替等待新周）：heldout14（2026-06-24..30，1,638 个条目）、heldout15（06-17..23，1,784 个）、heldout16（06-10..16，3,564 个），各 20 篇，同一抽样脚本和学科配额，在 #170–#187 全部合并之后、任何一批运行之前提交名单。与以往各批、彼此之间都不重复；和以往一样，arXiv 的日期筛选会带进少数编号在后几个月的论文（heldout14 4 篇、heldout15 2 篇）；heldout16 的 2606.13475 曾在 support 实验里作为被引文献读过正文，参考文献从未用于调规则，照常保留。这些论文是几个月后才查，被引作品收录更全，误报和弃权可能略偏乐观，所以 10-07..13 的新周仍会作为对照。用法：heldout14 测 0.8.0；后两批测之后的改动；三批与新周一起作为 1.0 的精度依据 |
 
 ## 下一步
 
