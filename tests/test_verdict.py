@@ -522,12 +522,14 @@ def test_abstracts_and_bulletins_only_ads_has(journal: str, reported: bool) -> N
     assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
 
 
-@pytest.mark.parametrize(("journal", "reported"), [("Preprint posted online October", False),
-                                                    ("Journal of Sparse Methods", True)])  # fmt: skip
+@pytest.mark.parametrize(
+    ("journal", "reported"),
+    [("Preprint posted online October", False), ("Journal of Sparse Methods", True)],
+)
 def test_a_preprint_its_venue_says_it_is(journal: str, reported: bool) -> None:
     # Arvanitidis et al., "Latent space oddity": the October 2017 preprint, ICLR 2018 (heldout16)
-    entry = bib(CS_ENTRY.replace("booktitle = {Proceedings of ACL}", f"journal = {{{journal}}}")
-                .replace("  doi = {10.1234/acl.2023.1},\n", "").replace("2023", "2017"))  # fmt: skip
+    text = CS_ENTRY.replace("booktitle = {Proceedings of ACL}", f"journal = {{{journal}}}")
+    entry = bib(text.replace("  doi = {10.1234/acl.2023.1},\n", "").replace("2023", "2017"))
     published = record(source="dblp", year=2018, venue="ICLR")
     item = evidence_for(entry, candidates=[published], searched={"dblp"})
     assert ("REF013" in rules(assess(entry, item, current_year=YEAR))) is reported
