@@ -817,6 +817,21 @@ def _lost_letters(person: Person, written: tuple[Person, ...]) -> Person:
 
 
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
+    check = _check_authors(authors, record)
+    if check.disjoint and len(record.authors) >= 2:
+        # a registry that put Chinese names the other way round: given "LI", family
+        # "Zhen-qiang" (Chinese Astronomy and Astrophysics 45, 559, in Crossref)
+        swapped = tuple(
+            Person(family=p.given, given=p.family) if p.given and not p.literal else p
+            for p in record.authors
+        )
+        other = _check_authors(authors, replace(record, authors=swapped))
+        if other.status in {"match", "variant"}:
+            return other
+    return check
+
+
+def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
     recorded = [_lost_letters(p, authors.people) for p in record.authors]
     people = [_as_meant(p, written) for p in recorded if surname_key(p)]

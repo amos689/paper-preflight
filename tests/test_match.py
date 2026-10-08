@@ -745,6 +745,20 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     assert check_authors(written, cms).missing == ()
 
 
+def test_names_a_registry_put_the_other_way_round() -> None:
+    # Crossref's record of Chin. Astron. Astrophys. 45, 559: given "LI", family "Zhen-qiang"
+    record = SourceRecord(
+        source="crossref", source_id="10.1016/j.chinastron.2021.11.008", title="Delingha",
+        authors=(Person("Zhen-qiang", "LI"), Person("Xu-guo", "ZHANG"), Person("Ji-bin", "LI")),
+    )  # fmt: skip
+    written = parse_authors("{Li}, Zhenqiang and {Zhang}, Xuguo and {Li}, Jibin")
+    check = check_authors(written, record)
+    assert check.status in {"match", "variant"}
+    assert not check.disjoint
+    # other people stay other people
+    assert check_authors(parse_authors("Wu, Dan and Ito, Ken"), record).disjoint
+
+
 def test_a_solar_symbol_is_the_word_sun() -> None:
     # ADS writes "M$_{sun}$" where Crossref has "M_⊙" (Girardi et al. 2000, real paper)
     entry = "Isochrones for low- and intermediate-mass stars: From 0.15 to 7 M_sun"
