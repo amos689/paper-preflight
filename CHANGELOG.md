@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-08
+
+Faster, fewer false alarms, and references written whole in a note. On two new held-out weeks
+of real papers, each run once: 1.5 false positives per 100 references (868 references), then,
+with the fixes for that week, 0.8 (786). A live run takes about half a second per reference.
+HALLMARK and GPTZero's hallucinated references are unchanged.
+
 ### Changed
 
 - About twice as fast on a cold cache: 0.43 s per reference instead of 0.89 on a 75-reference
@@ -650,7 +657,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/amos689/paper-preflight/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/amos689/paper-preflight/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/amos689/paper-preflight/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/amos689/paper-preflight/compare/v0.5.0...v0.5.1
