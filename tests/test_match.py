@@ -19,6 +19,7 @@ from paper_preflight.match import (
     evaluate,
     first_page,
     given_names_differ,
+    is_preprint,
     same_person,
     surname_key,
     suspicious_reason,
@@ -333,6 +334,9 @@ def test_a_volume_the_record_leaves_out() -> None:
         ("Medical Image Computing and Computer-Assisted Intervention", "miccai"),
         ("Transactions on Machine Learning Research", "tmlr"),
         ("\\url{https://www.tensorflow.org/}", None),  # a URL is not the Web Conference
+        # an ampersand for "and" (2609.09561v1, zhang2018taxogen)
+        ("Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery "
+         "& Data Mining", "kdd"),
     ],
 )  # fmt: skip
 def test_canonical_venue(text: str, key: str | None) -> None:
@@ -497,6 +501,7 @@ def test_only_venue_names_are_judged() -> None:
         ("Gates, Bill", "Gates, William", False),
         ("Belkin, Mikhail", "Belkin, Misha", False),
         ("Cottrell, Garrison W.", "Cottrell, Gary", False),  # dblp's name for him
+        ("Salakhutdinov, Russ R", "Salakhutdinov, Ruslan", False),  # NeurIPS's name for him
         ("Cohen-Or, Daniel", "Cohen-Or, Danny", False),  # Crossref's name for him
         ("Brown, JR", "Brown, John R.", False),  # Google Scholar's initials, without dots
         ("Krathwohl, DR", "Krathwohl, David R.", False),
@@ -972,6 +977,44 @@ def test_a_workshop_in_a_joint_dblp_volume_is_not_another_venue() -> None:
     hecktor = replace(record, venue="HECKTOR@MICCAI")
     challenge = "3D Head and Neck Tumor Segmentation in PET/CT Challenge"
     assert check_venue(challenge, hecktor).status == "unknown"
+
+
+def test_preprint_and_report_archives_in_dblp_are_preprints() -> None:
+    eprint = SourceRecord(
+        source="dblp", source_id="journals/iacr/BabbushZGBKNBDB26", title="t",
+        venue="IACR Cryptol. ePrint Arch.",
+    )  # fmt: skip
+    assert is_preprint(eprint)
+    assert is_preprint(replace(eprint, venue="Electron. Colloquium Comput. Complex."))
+    assert not is_preprint(replace(eprint, venue="ITCS"))
+
+
+def test_a_whole_reference_in_a_note_is_read_as_one() -> None:
+    # 2609.10121v2 writes each reference as a note, with no title or author fields
+    note = (
+        r"Boiko, D. A., MacKnight, R., Kline, B. \& Gomes, G. Autonomous chemical research with "
+        r"large language models. \emph{Nature} \textbf{624}, 570--578 (2023). "
+        r"\url{https://doi.org/10.1038/s41586-023-06792-0}"
+    )
+    entry = parse_bib_text(f"@misc{{ref02, key = {{02}}, note = {{{note}}}}}", Path("r.bib"))
+    info = EntryInfo.from_entry(entry.entries[0])
+    assert info.title == "Autonomous chemical research with large language models"
+    assert [p.family for p in info.authors.people] == ["Boiko", "MacKnight", "Kline", "Gomes"]
+    assert (info.venue, info.venue_field, info.year) == ("Nature", "journal", 2023)
+    # a note beside a title is only a note
+    titled = parse_bib_text(
+        f"@misc{{k, title = {{Own Title}}, note = {{{note}}}}}", Path("r.bib")
+    ).entries[0]
+    assert EntryInfo.from_entry(titled).authors.people == ()
+
+
+def test_braces_shown_in_a_title_are_not_searched_for() -> None:
+    # PairNorm (2609.09561v1): "{\{}GNN{\}}s" prints as "{GNN}s"
+    entry = parse_bib_text(
+        r"@inproceedings{k, title = {PairNorm: Tackling Oversmoothing in {\{}GNN{\}}s}}",
+        Path("refs.bib"),
+    ).entries[0]
+    assert EntryInfo.from_entry(entry).title == "PairNorm: Tackling Oversmoothing in GNNs"
 
 
 def test_a_workshop_paper_is_cited_by_its_workshops_year() -> None:

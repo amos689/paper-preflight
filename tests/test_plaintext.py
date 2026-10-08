@@ -225,6 +225,30 @@ def test_a_word_broken_at_a_line_end_is_joined() -> None:
         ("[3] K. Arnold, J. Smith, and A. Doe. Variability in triage decision making. "
          "Resuscitation, 85:12341239, 2014.",
          {"author": "K. Arnold and J. Smith and A. Doe", "journal": "Resuscitation"}),
+        # Nature's style as \url prints it (2609.10121v2): a link in angle brackets, a family
+        # name with a lower-case particle
+        ("Myung, Y., de Sá, A. G. C. & Ascher, D. B. Deep-PK: deep learning for small molecule "
+         "pharmacokinetic and toxicity prediction. Nucleic Acids Research 52, W469–W475 "
+         "(2024). <https://doi.org/10.1093/nar/gkae254>",
+         {"author": "Myung, Y. and de Sá, A. G. C. and Ascher, D. B.",
+          "title": "Deep-PK: deep learning for small molecule pharmacokinetic and toxicity "
+                   "prediction",
+          "journal": "Nucleic Acids Research", "year": "2024"}),
+        ("Breiman, L. Random Forests. Machine Learning 45, 5–32 (2001). "
+         "<https://doi.org/10.1023/a:1010933404324>",
+         {"author": "Breiman, L.", "title": "Random Forests", "journal": "Machine Learning"}),
+        # a title of two sentences, its journal's volume after them
+        ("Nilakantan, R., Bauman, N., Dixon, J. S. & Venkataraghavan, R. Topological torsion: a "
+         "new molecular descriptor for SAR applications. Comparison with other descriptors. "
+         "Journal of Chemical Information and Computer Sciences 27, 82–85 (1987).",
+         {"title": "Topological torsion: a new molecular descriptor for SAR applications. "
+                   "Comparison with other descriptors",
+          "journal": "Journal of Chemical Information and Computer Sciences"}),
+        # no venue, the year in brackets
+        ("Ning, J., Li, X. & Ke, G. Closed-loop Auto Research for Molecular Property "
+         "Prediction (2026).",
+         {"title": "Closed-loop Auto Research for Molecular Property Prediction",
+          "year": "2026"}),
     ],
 )  # fmt: skip
 def test_reference_styles(reference: str, expected: dict[str, str | None]) -> None:

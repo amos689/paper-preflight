@@ -63,6 +63,16 @@ def test_doi_in_url_field() -> None:
     ]
 
 
+def test_acm_digital_library_numbers_in_a_link_are_not_dois() -> None:
+    # QLoRA's ACM DL page (2609.09569v1): 10.5555 is registered with no agency, the page works
+    assert ids("@misc{a, url={https://dl.acm.org/doi/10.5555/3666122.3666563}}") == []
+    assert ids("@misc{a, url={https://dl.acm.org/doi/10.1145/3219819.3220064}}") == [
+        "doi:10.1145/3219819.3220064"
+    ]
+    # a doi field holding one is still checked (it is not a DOI)
+    assert ids("@misc{a, doi={10.5555/3045390.3045531}}") == ["doi:10.5555/3045390.3045531"]
+
+
 def test_isbn_and_issn_checksums() -> None:
     assert ids("@book{a, isbn={978-0-262-03561-3}}") == ["isbn:9780262035613"]
     assert ids("@book{a, isbn={978-0-262-03561-4}}") == []  # bad checksum

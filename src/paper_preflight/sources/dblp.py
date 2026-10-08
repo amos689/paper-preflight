@@ -27,6 +27,11 @@ POLICY = SourcePolicy(name="dblp", min_interval=1.0, max_concurrency=1, timeout=
 SPARQL_ACCEPT = {"Accept": "application/sparql-results+json"}
 CHUNK = 50  # IRIs or DOIs per batch query; keeps the GET request short
 TITLE_CHUNK = 10  # title prefixes per query: ten range scans take about a second together
+# dblp's streams of preprints and technical reports: another copy of a preprint, never its
+# published version (arXiv 2108.03171 is in ECCC 2021 and at ITCS 2022; only ITCS counts)
+PREPRINT_ARCHIVES = frozenset(
+    {"CoRR", "IACR Cryptol. ePrint Arch.", "Electron. Colloquium Comput. Complex."}
+)
 
 
 def _escape(value: str) -> str:
@@ -275,7 +280,7 @@ async def published_versions(
         links: dict[str, list[list[Any]]] = {}
         for row in _bindings(await _select(client, corr_link_query(chunk))):
             venue = row.get("venue", "")
-            if venue == "CoRR":
+            if venue in PREPRINT_ARCHIVES:
                 continue
             year = int(row["year"]) if row.get("year", "").isdigit() else None
             links.setdefault(row["corr"], []).append([row["other"], venue, year])

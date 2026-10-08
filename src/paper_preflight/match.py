@@ -26,6 +26,8 @@ from paper_preflight import chinese
 from paper_preflight.bib.names import AuthorList, parse_authors
 from paper_preflight.bib.normalize import fold, title_key, word_count
 from paper_preflight.bib.parse import BibEntry
+from paper_preflight.bib.plaintext import parse_reference
+from paper_preflight.sources.dblp import PREPRINT_ARCHIVES
 from paper_preflight.sources.record import COLLECTIVE_WORDS, Person, SourceRecord
 
 Status = Literal["match", "variant", "mismatch", "unknown"]
@@ -97,11 +99,20 @@ class EntryInfo:
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
         author_field = entry.fields.get("author") or entry.fields.get("editor")
-        year_text = entry.text("year") or (entry.text("date") or "")[:4]
+        author_value = author_field.value if author_field else None
+        # braces left in the text were escaped to show, as protection meant: "Oversmoothing in
+        # {\{}GNN{\}}s" (PairNorm, ICLR 2020) is "GNNs" to every source searched
+        title = (entry.text("title") or "").replace("{", "").replace("}", "")
+        written = {} if title or author_value else reference_in_note(entry)
+        year_text = entry.text("year") or (entry.text("date") or "")[:4] or written.get("year")
         match = re.search(r"\d{4}", year_text or "")
         venue_field = next((f for f in VENUE_FIELDS if entry.text(f)), None)
         venue = entry.text(venue_field) if venue_field else None
-        title = entry.text("title") or ""
+        if written:
+            title, author_value = written["title"], written["author"]
+            named = next((f for f in ("journal", "booktitle") if written.get(f)), None)
+            if named:
+                venue_field, venue = named, written[named]
         chapter = entry.text("chapter") or ""
         if entry.entry_type == "inbook" and len(re.findall(r"[^\W\d_]{2,}", chapter)) >= 3:
             # Springer's export: the paper in "chapter", the volume it is in as the title
@@ -114,17 +125,34 @@ class EntryInfo:
         return cls(
             key=entry.key,
             title=chinese.strip_mark(title),
-            authors=parse_authors(author_field.value if author_field else None),
+            authors=parse_authors(author_value),
             year=int(match.group(0)) if match else None,
             venue=venue,
             entry_type=entry.entry_type,
             venue_field=venue_field,
             link_hosts=tuple(dict.fromkeys(h.removeprefix("www.") for h in hosts if h)),
             issns=frozenset(_ISSN_RE.findall((entry.text("issn") or "").upper())),
-            volume=(entry.text("volume") or "").strip() or None,
-            first_page=first_page(entry.text("pages") or entry.text("eid")),
+            volume=(entry.text("volume") or written.get("volume") or "").strip() or None,
+            first_page=first_page(entry.text("pages") or entry.text("eid") or written.get("pages")),
             translated=is_translated,
         )
+
+
+def reference_in_note(entry: BibEntry) -> dict[str, str]:
+    """A whole formatted reference written in an entry's note, with no title or author fields,
+    read as plain text: 2609.10121v2 gives each of its 46 references as "@misc{ref02, note =
+    {Boiko, D. A., ... Autonomous chemical research with large language models. Nature 624,
+    570-578 (2023). url}}". Empty unless a title and authors come out."""
+    text = entry.text("note") or entry.text("howpublished") or ""
+    if len(text) < 30 or not _NOTE_YEAR.search(text):
+        return {}
+    _, fields = parse_reference(text)
+    if not fields.get("title") or not fields.get("author"):
+        return {}
+    return fields
+
+
+_NOTE_YEAR = re.compile(r"(?<!\d)(?:1[89]|20)\d{2}(?!\d)")
 
 
 # ---------------------------------------------------------------- titles
@@ -522,7 +550,7 @@ _NICKNAMES = {
         "pete/peter greg/gregory sue/susan susie/susan kim/kimberly ray/raymond liam/william "
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
-        "yura/yuri gary/garrison danny/daniel freddy/frederic freddy/frederick "
+        "yura/yuri gary/garrison danny/daniel freddy/frederic freddy/frederick russ/ruslan "
         "freddie/frederick fred/frederic fred/frederick "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
@@ -813,6 +841,7 @@ def is_preprint(record: SourceRecord) -> bool:
         record.source == "arxiv"
         or record.work_type in {"preprint", "posted-content"}
         or canonical_venue(record.venue) == "arxiv"
+        or (record.source == "dblp" and record.venue in PREPRINT_ARCHIVES)
     )
 
 
@@ -916,10 +945,16 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
 _URL = re.compile(r"(?:https?://|www\.)\S+", re.I)
 
 
+def _venue_words(text: str) -> str:
+    """A venue name as lower-case words, links dropped and "&" read as "and" ("Knowledge
+    Discovery & Data Mining" is KDD)."""
+    return " ".join(re.findall(r"[\w-]+", fold(_URL.sub(" ", text).replace("&", " and "))))
+
+
 def canonical_venue(text: str | None) -> str | None:
     if not text:
         return None
-    folded = " ".join(re.findall(r"[\w-]+", fold(_URL.sub(" ", text))))
+    folded = _venue_words(text)
     for key, patterns in _VENUES:
         for pattern in patterns:
             if re.search(rf"(?<!\w){re.escape(pattern)}(?!\w)", folded):
@@ -951,7 +986,7 @@ def canonical_venues(text: str | None) -> set[str]:
     """Every recognised venue a name names: "COLING/ACL 2006" names COLING and ACL."""
     if not text:
         return set()
-    folded = " ".join(re.findall(r"[\w-]+", fold(_URL.sub(" ", text))))
+    folded = _venue_words(text)
     return {
         key
         for key, patterns in _VENUES

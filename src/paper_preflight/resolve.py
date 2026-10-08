@@ -32,6 +32,7 @@ from paper_preflight.match import (
     at_coordinates,
     check_authors,
     check_title,
+    is_preprint,
     long_prefix,
     title_score,
 )
@@ -554,8 +555,8 @@ async def _published_versions(
         arxiv_id = arxiv_dois.get(doi)
         for pub, _, _ in links.get(corr_pub, []):
             record = records.get(pub.removeprefix(dblp.REC))
-            if record is None:
-                continue
+            if record is None or is_preprint(record):
+                continue  # another copy of the preprint (an IACR ePrint or ECCC report)
             for item in by_arxiv.get(arxiv_id or "", []):
                 item.published_versions.append(record)
 

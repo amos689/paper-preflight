@@ -6,6 +6,39 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- A whole reference written in an entry's note, with no title or author fields
+  (`@misc{ref02, note = {Boiko, D. A., ... Nature 624, 570--578 (2023). \url{...}}}`), is
+  read as plain text. One paper of the eleventh batch writes all 46 references this way; 37 are
+  now verified, where all 46 were undecided.
+- The plain-text reader also takes links in angle brackets (as `\url` prints them), lower-case
+  particles in Nature-style names ("de Sá, A. G. C."), a title of two sentences followed by a
+  journal's volume, and a year in brackets after a title.
+
+### Fixed
+
+Twelve of the fourteen false positives on the eleventh batch of real papers (heldout10): eleven
+are no longer reported, and one now names the right published version.
+
+- ACM Digital Library links (`dl.acm.org/doi/10.5555/...`) are not read as DOIs: ACM's 10.5555
+  numbers are registered with no agency. A doi field holding one is still reported (REF002).
+- "&" in a venue name reads as "and": "Knowledge Discovery & Data Mining" is KDD (REF014).
+- Preprint and report archives (IACR Cryptology ePrint Archive, ECCC) are not a preprint's
+  published version: ITCS 2022 is named, not the ECCC report (REF015). An entry that cites such
+  a copy may be a year or two from the paper (REF013).
+- Registry titles: UTF-8 read as Latin-1 is repaired, and LaTeX font switches
+  (`\fontshape{it}`) are dropped (REF012).
+- When arXiv does not answer and DataCite stands in, people missing from DataCite's record,
+  which has only the latest version, are a hint, not a warning (REF011).
+- "Russ" is a short form of Ruslan (REF011).
+- Braces escaped to show in a title (`{\{}GNN{\}}s`) are not searched for (REF003).
+- A preprint's title that differs from an entry citing a journal's volume and pages is a hint:
+  titles change on publication (REF012).
+
+Not fixed: Nielsen & Chuang's 2010 edition, whose Crossref record has only Cambridge Core's
+2012 online date (REF013).
+
 ## [0.5.3] - 2026-10-08
 
 Fewer false alarms on real papers. On a new held-out week, run once with these changes: 1.3
