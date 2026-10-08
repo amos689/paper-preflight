@@ -13,6 +13,7 @@ import re
 from collections.abc import Iterable
 from dataclasses import replace
 from typing import Any
+from urllib.parse import quote
 
 from paper_preflight.cache import EntryKind
 from paper_preflight.sources.base import PartialUnavailable, SourceClient, SourcePolicy
@@ -58,6 +59,10 @@ UPDATE_STATUS = {
 }
 
 
+# a series number after a book's title: "(PMS-30)", "(AM-63)"
+_SERIES_NUMBER = re.compile(r"^(.*\S)\s+\([A-Z]{1,5}-\d{1,4}\)$")
+
+
 def _year(item: dict[str, Any], key: str) -> int | None:
     parts = (item.get(key) or {}).get("date-parts") or [[None]]
     if parts and parts[0] and parts[0][0]:
@@ -71,6 +76,9 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     title = plain_title(str(titles[0]))
     subtitles = [plain_title(str(s)) for s in item.get("subtitle") or [] if s]
     alt_titles = tuple(f"{title}: {s}" for s in subtitles)
+    series = _SERIES_NUMBER.match(title)
+    if series:  # Princeton's "... Functions (PMS-30)": the book's number in its series
+        alt_titles += (series.group(1),)
 
     authors: list[Person] = []
     for author in item.get("author") or []:
@@ -95,6 +103,9 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     # deposit no online date, only the DOI's creation (DOI 10.1109/tpami.2023.3330794: online
     # November 2023, issue April 2024). Authors cite either year.
     created = _year(item, "created")
+    reissue = bool(
+        item.get("type") in _BOOK_TYPES and created and years and created - min(years) >= 2
+    )
     if (
         item.get("type") == "journal-article"
         and not item.get("published-online")
@@ -113,7 +124,8 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     if item.get("type") in _BOOK_TYPES and len(printed) >= 2 and printed[0] and printed[1] >= 9:
         years.add(int(printed[0]) + 1)
     # An article online late in the year, with no print date, is often in next year's volume
-    # (Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, volume 4 is 2019).
+    # (Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, volume 4 is 2019). Other gaps
+    # are settled by the issue's own date (:func:`issue_years`).
     online = ((item.get("published-online") or {}).get("date-parts") or [[None]])[0]
     if (
         item.get("type") == "journal-article"
@@ -197,6 +209,7 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         url=item.get("URL"),
         venue_aliases=aliases,
         issns=frozenset(str(i).upper() for i in item.get("ISSN") or []),
+        reissue=reissue,
     )
 
 
@@ -241,6 +254,22 @@ async def works_by_doi(
     except PartialUnavailable as partial:
         raise partial.with_found(_records(partial.found)) from None
     return _records(items)
+
+
+async def issue_years(
+    client: SourceClient, doi: str, *, mailto: str | None = None
+) -> frozenset[int]:
+    """The years of the issue an article is in. Crossref's record holds the issue's own date
+    ("journal-issue": J. Amer. Math. Soc. 30(1), January 2017, for an article online in March
+    2016), but no select can ask for it, so the whole record is fetched: one request, made
+    only for an article a year off the entry's year."""
+    fetched = await client.get_json(
+        f"{WORKS_URL}/{quote(doi, safe='/')}", params=_params({}, mailto)
+    )
+    issue = (((fetched.data or {}).get("message") or {}).get("journal-issue")) or {}
+    return frozenset(
+        year for key in ("published-print", "published-online") if (year := _year(issue, key))
+    )
 
 
 def _records(items: dict[str, Any]) -> dict[str, SourceRecord]:

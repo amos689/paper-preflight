@@ -377,6 +377,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 5b. Journal articles cited without a title, by journal, volume and page.
     untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
     await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
+
+    # 7. The issue's date for Crossref articles a year off the entry's year.
+    await _issue_years(list(evidence.values()), sources)
     return evidence
 
 
@@ -594,6 +597,45 @@ async def _registered_years(items: list[Evidence], sources: Sources) -> None:
     for doi, record in found.items():
         for item in wanted.get(doi, []):
             item.candidates.append(record)
+
+
+async def _issue_years(items: list[Evidence], sources: Sources) -> None:
+    """Crossref's articles a year off the entry's year, with their issue's date added.
+
+    Crossref dates many articles only by their appearance online, which can be a year before
+    or after the issue authors cite: J. Amer. Math. Soc. 30(1), the January 2017 issue, went
+    online in March 2016; Commun. Comput. Phys. 32(5), in the 2022 volume, in January 2023. The
+    record's "journal-issue" has the issue's date. If Crossref cannot answer, the records stay
+    as they are, and nothing is marked unavailable.
+    """
+    wanted: dict[str, list[tuple[list[SourceRecord], int]]] = {}
+    for item in items:
+        year = item.info.year
+        if year is None:
+            continue
+        for records in (item.anchored, item.candidates):
+            for index, record in enumerate(records):
+                years = record.all_years
+                if (
+                    record.source == "crossref" and record.work_type == "journal-article"
+                    and record.doi and years and year not in years
+                    and min(abs(year - y) for y in years) == 1
+                ):  # fmt: skip
+                    wanted.setdefault(record.doi, []).append((records, index))
+    if not wanted:
+        return
+
+    async def fetch(doi: str) -> frozenset[int]:
+        try:
+            return await crossref.issue_years(sources.crossref, doi, mailto=sources.mailto)
+        except SourceUnavailable:
+            return frozenset()
+
+    found = await asyncio.gather(*(fetch(doi) for doi in wanted))
+    for places, issue in zip(wanted.values(), found, strict=True):
+        for records, index in places:
+            if issue - records[index].all_years:
+                records[index] = replace(records[index], years=records[index].years | issue)
 
 
 def _extending(entry: str, found: list[str]) -> list[str]:

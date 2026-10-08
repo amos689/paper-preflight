@@ -190,6 +190,9 @@ def records_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, SourceRecord]
             # dblp files "conf/acl/ShaoLF0LQ24" (10.18653/v1/2024.findings-acl.833) under 2014
             year = int(doi_year.group(1))
         work_type = row.get("type", "").rsplit("#", 1)[-1].lower() or None
+        if key.startswith("data/"):
+            # dblp's research data and code ("data/12/HichamRGM26", a Zenodo DOI), typed Misc
+            work_type = "dataset"
         records[key] = SourceRecord(
             source="dblp",
             source_id=key,
