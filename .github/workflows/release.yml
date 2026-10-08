@@ -56,3 +56,38 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+  # The MCP Registry entry (server.json) points at the PyPI package, so it is published after it.
+  # GitHub's OIDC token proves the io.github.amos689/ namespace: no secret, no device code.
+  mcp-registry:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      PUBLISHER: v1.8.1
+      PUBLISHER_SHA256: a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install mcp-publisher (pinned, checksum verified)
+        shell: bash
+        run: |
+          curl -fsSL -o publisher.tar.gz \
+            "https://github.com/modelcontextprotocol/registry/releases/download/$PUBLISHER/mcp-publisher_linux_amd64.tar.gz"
+          echo "$PUBLISHER_SHA256  publisher.tar.gz" | sha256sum --check
+          tar xzf publisher.tar.gz mcp-publisher
+      - name: Wait until PyPI serves this version
+        shell: bash
+        run: |
+          version=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/paper_preflight/__init__.py)
+          for attempt in $(seq 1 30); do
+            if curl -fsS "https://pypi.org/pypi/paper-preflight/$version/json" > /dev/null; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::paper-preflight $version is not on PyPI after five minutes"
+          exit 1
+      - run: ./mcp-publisher login github-oidc
+      - run: ./mcp-publisher publish

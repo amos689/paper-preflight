@@ -302,6 +302,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | PR | 内容 |
 |---|---|
 | #160 | A1、A2：heldout10 的 14 个误报解决 12 个（11 个不再报，1 个改为指出正确的正式版本）：ACM 10.5555 网址、"&"、IACR ePrint/ECCC 不算正式发表（含 ePrint 版与会议版年份）、登记处乱码与 `\fontshape`、arXiv 宕机时对 DataCite 最新版的作者比较降为提示、Russ/Ruslan、标题里的字面花括号；引用期刊卷页时与预印本标题的差异降为提示。note 里写整条引用的 @misc 按纯文本读出（2609.10121v2：46 条弃权 → 37 条核实）；纯文本读取支持尖括号链接、"de Sá" 这类小写词缀、两句式标题、括号里的年份。十一批回放：去掉 11 个误报，新增 2 个真问题（标题后缀年份）；HALLMARK 两个划分逐条不变，GPTZero 不变，Badalova & Mayr 纯文本字段一致率不变；博物馆加 9 例 |
+| #161 | A4、A5、A3：提速与发布自动化。Crossref 礼貌池按其应答头宣布的配额（每秒 3 次、并发 3）请求，任何数据源宣布更严的配额时立即放慢；S2 兜底不再等全部标题检索结束，某条目的 dblp 与 Crossref 都答完就问。冷缓存 75 条的论文：66 秒 → 32 秒（每条 0.89 → 0.43 秒），十一批回放结果不变。release.yml 加 MCP Registry 发布（GitHub OIDC，钉住 mcp-publisher v1.8.1 并校验 SHA256），发版不再需要设备码；`scripts/bump_version.py` 一次改完所有版本号并开 CHANGELOG 小节，测试同时检查 space 的版本。A3 熔断原已有（失败后冷却 10 分钟），不另做 |
 
 ## 下一步
 

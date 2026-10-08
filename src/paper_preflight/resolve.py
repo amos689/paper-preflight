@@ -159,6 +159,7 @@ class Sources:
     ) -> Sources:
         env = environ if environ is not None else dict(os.environ)
         s2_key = env.get("S2_API_KEY") or None
+        mailto = env.get("PAPER_PREFLIGHT_EMAIL") or None
 
         def client(policy: SourcePolicy) -> SourceClient:
             # copy the module-level policy: a client may slow itself down during a run
@@ -168,13 +169,13 @@ class Sources:
 
         return cls(
             doiorg=client(doiorg.POLICY),
-            crossref=client(crossref.POLICY),
+            crossref=client(crossref.POLITE_POLICY if mailto else crossref.POLICY),
             datacite=client(datacite.POLICY),
             arxiv=client(arxiv.POLICY),
             dblp=client(dblp.POLICY),
             openalex=client(openalex.POLICY),
             pubmed=client(pubmed.POLICY),
-            mailto=env.get("PAPER_PREFLIGHT_EMAIL") or None,
+            mailto=mailto,
             openalex_key=env.get("OPENALEX_API_KEY") or None,
             s2=client(semanticscholar.POLICY) if s2_key else None,
             s2_key=s2_key,
@@ -340,44 +341,42 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
     in_dblp = [i for i in unanchored if looks_cs(i.info) or i.info.entry_type not in GREY_TYPES]
-    searched = 0
+    searched = rescued = 0
+    lost: list[Evidence] = []
+    dblp_answered = asyncio.Event()
+    s2, s2_key = sources.s2, sources.s2_key
+
+    async def search_dblp() -> None:
+        try:
+            await _search_dblp(in_dblp, sources)
+        finally:
+            dblp_answered.set()
 
     async def title_search(item: Evidence) -> None:
-        nonlocal searched
+        nonlocal searched, rescued
         await _search_crossref(item, sources)
         searched += 1
         sources.report("title", searched, len(unanchored))
+        if s2 is None or not s2_key:
+            return
+        # 6. Rescue: ask Semantic Scholar (only with an API key) about what nobody else found,
+        # as soon as dblp and Crossref have both answered for the entry, while the others are
+        # still being searched
+        await dblp_answered.wait()
+        if len(item.candidates) == len(item.by_subtitle) and word_count(item.info.title) >= 3:
+            lost.append(item)
+            await _search_s2(item, s2, s2_key)
+            rescued += 1
+            sources.report("rescue", rescued, len(lost))
 
     if unanchored:
         sources.report("title", 0, len(unanchored))
-    await asyncio.gather(
-        _search_dblp(in_dblp, sources), *(title_search(item) for item in unanchored)
-    )
-    await _registered_years(unanchored, sources)
+    await asyncio.gather(search_dblp(), *(title_search(item) for item in unanchored))
+    await _registered_years(unanchored, sources)  # Semantic Scholar's records carry no year
 
     # 5b. Journal articles cited without a title, by journal, volume and page.
     untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
     await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
-
-    # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
-    if sources.s2 is not None and sources.s2_key:
-        s2, key = sources.s2, sources.s2_key
-        lost = [
-            i
-            for i in unanchored
-            if len(i.candidates) == len(i.by_subtitle) and word_count(i.info.title) >= 3
-        ]
-        rescued = 0
-
-        async def rescue(item: Evidence) -> None:
-            nonlocal rescued
-            await _search_s2(item, s2, key)
-            rescued += 1
-            sources.report("rescue", rescued, len(lost))
-
-        if lost:
-            sources.report("rescue", 0, len(lost))
-        await asyncio.gather(*(rescue(item) for item in lost))
     return evidence
 
 

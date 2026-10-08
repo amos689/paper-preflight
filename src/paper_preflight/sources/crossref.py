@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable
+from dataclasses import replace
 from typing import Any
 
 from paper_preflight.cache import EntryKind
@@ -32,6 +33,10 @@ SELECT = ",".join(
 COORDINATE_SELECT = f"{SELECT},article-number"
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
+# With a contact address (mailto) requests go to the polite pool, whose answers announce
+# "x-rate-limit-limit: 3", "x-rate-limit-interval: 1s" and "x-concurrency-limit: 3" (checked
+# 2026-10-08); the client slows down if the announced limit ever tightens.
+POLITE_POLICY = replace(POLICY, min_interval=0.34, max_concurrency=3)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
 _BOOK_TYPES = frozenset({"book", "monograph", "edited-book", "reference-book"})
 _IEEE_YEAR = re.compile(r"^10\.1109/[a-z]+\.(\d{4})\.\d{5,}$")

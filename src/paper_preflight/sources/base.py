@@ -323,6 +323,19 @@ class SourceClient:
                     attempt += 1
                 await asyncio.sleep(retry.delay)
 
+    def _follow_limits(self, headers: httpx.Headers) -> None:
+        """Slow down to a rate limit an answer announces ("x-rate-limit-limit: 3" requests per
+        "x-rate-limit-interval: 1s", as Crossref's do), when it is stricter than the policy."""
+        limit, interval = headers.get("x-rate-limit-limit"), headers.get("x-rate-limit-interval")
+        if not limit or not interval:
+            return
+        try:
+            seconds = float(interval.strip().rstrip("s")) / float(limit)
+        except (ValueError, ZeroDivisionError):
+            return
+        if seconds > self.policy.min_interval:
+            self.slow_down(seconds)
+
     def _retryable(
         self, reason: UnavailableReason, detail: str, attempt: int
     ) -> SourceUnavailable | None:
@@ -375,6 +388,7 @@ class SourceClient:
         if looks_html:
             # Bot walls such as Anubis answer 200 with an HTML page: not data, not a negative.
             raise self._unavailable(UnavailableReason.CHALLENGE, "HTML instead of JSON")
+        self._follow_limits(response.headers)
         data: Any
         if expect_json:
             try:
