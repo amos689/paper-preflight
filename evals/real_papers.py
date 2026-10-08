@@ -75,7 +75,8 @@ BATCHES = {
     "heldout9": ("202609020000", "202609082359"),  # held out for 0.5.2, then studied
     "heldout10": ("202609090000", "202609152359"),  # held out for heldout9's fixes, then studied
     "heldout11": ("202609160000", "202609222359"),  # held out for 0.6.0, then studied
-    "heldout12": ("202609230000", "202609292359"),  # held out for heldout11's fixes
+    "heldout12": ("202609230000", "202609292359"),  # held out for 0.6.0 (#164), then studied
+    "heldout13": ("202609300000", "202610062359"),  # held out for the next changes
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,

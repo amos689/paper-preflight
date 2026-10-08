@@ -4480,3 +4480,195 @@ note = "Crossref's record misspells two authors ('R. J. Saul' for Sault, 'Stavel
 [finding."2609.18291v1:li2023survey:REF015"]
 verdict = "correct"
 note = "arXiv 2311.12399 appeared in IJCAI (2024) (dblp, same title and authors)."
+
+[finding."2609.27173v1:https://doi.org/10.1207/s15516709cog1202:REF017"]
+verdict = "correct"
+note = "The doi field keeps a LaTeX escape ('1202\\_4') and a URL prefix."
+
+[finding."2609.27176v2:chen2025recent:REF012"]
+verdict = "false_positive"
+note = "arXiv's own title has the typo ('Langauge'); the entry spells the title right."
+
+[finding."2609.27176v2:deng2024spectrum:REF011"]
+verdict = "correct"
+note = "arXiv 2406.14644's authors are Yilun Zhao, Yuzhao Heng, Yitong Li and Jiannan Cao; the entry gives four other given names."
+
+[finding."2609.27176v2:sainz2023evaluation:REF015"]
+verdict = "correct"
+note = "arXiv 2310.18018 appeared in EMNLP (Findings) (2023), DOI 10.18653/v1/2023.findings-emnlp.722 (dblp, same title and authors)."
+
+[finding."2609.27176v2:shi2023detecting:REF015"]
+verdict = "correct"
+note = "arXiv 2310.16789 appeared in ICLR (2024) (dblp, same title and authors)."
+
+[finding."2609.27176v2:tao2025detecting:REF015"]
+verdict = "correct"
+note = "arXiv 2510.09259 appeared in ICLR (2026) (dblp, same title and authors)."
+
+[finding."2609.27176v2:zhang2024finetuning:REF015"]
+verdict = "correct"
+note = "arXiv 2410.10880 appeared in ICLR (2025) (dblp, same title and authors)."
+
+[finding."2609.27176v2:zhu2024inference:REF015"]
+verdict = "correct"
+note = "arXiv 2406.13990 appeared in EMNLP (Findings) (2024), DOI 10.18653/v1/2024.findings-emnlp.532 (dblp, same title and authors)."
+
+[finding."2609.27205v1:vig2p:REF011"]
+verdict = "correct"
+note = "The NICS 2020 paper is by Do Tri Nhan, Nguyen Minh Tri and Cao Xuan Nam (Crossref); the entry leaves out the first author."
+
+[finding."2609.27199v1:yuan2014randomized:REF002"]
+verdict = "correct"
+note = "10.1109/TNNLS.2014.2339035 does not exist; the paper is 10.1109/TNNLS.2014.2336806."
+
+[finding."2609.27199v1:cai2020zeroth:REF015"]
+verdict = "correct"
+note = "arXiv 2003.13001 appeared in SIAM J. Optim. (2022), DOI 10.1137/21m1392966 (dblp, same title and authors)."
+
+[finding."2609.27199v1:golovin2019gradientless:REF015"]
+verdict = "correct"
+note = "arXiv 1911.06317 appeared in ICLR (2020) (dblp, same title and authors)."
+
+[finding."2609.27201v1:attentiontracing:REF015"]
+verdict = "correct"
+note = "arXiv 2010.04922 appeared in BlackboxNLP@EMNLP (2020), DOI 10.18653/v1/2020.blackboxnlp-1.24 (dblp, same title and authors)."
+
+[finding."2609.27201v1:attention_not_working2:REF015"]
+verdict = "correct"
+note = "arXiv 1906.03731 appeared in ACL (1) (2019), DOI 10.18653/v1/p19-1282 (dblp, same title and authors)."
+
+[finding."2609.27201v1:pandey2026timesliver:REF015"]
+verdict = "correct"
+note = "arXiv 2601.21289 appeared in ICLR (2026) (dblp, same title and authors)."
+
+[finding."2609.27201v1:lan2019albert:REF015"]
+verdict = "correct"
+note = "arXiv 1909.11942 appeared in ICLR (2020) (dblp, same title and authors)."
+
+[finding."2609.27201v1:debug:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.27201v1:pcc:REF013"]
+verdict = "false_positive"
+note = "Cohen's second edition is 1988, as cited; the DOI given is Routledge's 2013 e-book reissue, whose Crossref record has only 2013."
+
+[finding."2609.27201v1:vitshap:REF015"]
+verdict = "correct"
+note = "arXiv 2206.05282 appeared in ICLR (2023) (dblp, same title and authors)."
+
+[finding."2609.27194v1:lucidppn:REF010"]
+verdict = "correct"
+note = "LucidPPN (ICLR 2025) is by Pach et al.; the entry gives another paper's authors, venue (CVPR 2023) and pages."
+
+[finding."2609.27194v1:protopool:REF011"]
+verdict = "correct"
+note = "ProtoPool (ECCV 2022) is by Rymarczyk, Struski, Górszczak, Lewandowska, Tabor and Zieliński (Crossref); Aleksandra Borowa is not an author."
+
+[finding."2609.27194v1:SAM:REF015"]
+verdict = "correct"
+note = "arXiv 2304.02643 appeared in ICCV (2023), DOI 10.1109/iccv51070.2023.00371 (dblp, same title and authors)."
+
+[finding."2609.27194v1:pip-net:REF011"]
+verdict = "correct"
+note = "PIP-Net's second author is Jörg Schlötterer; the entry has 'Christin Schlottmann'."
+
+[finding."2609.27194v1:lucidppn:REF014"]
+verdict = "correct"
+note = "LucidPPN is an ICLR 2025 paper, not CVPR; the entry mixes it with another paper."
+
+[finding."2609.27194v1:lucidppn:REF013"]
+verdict = "correct"
+note = "LucidPPN is 2025; the entry's 2023 belongs to the other paper it is mixed with."
+
+[finding."2609.27194v1:vit-net:REF011"]
+verdict = "correct"
+note = "ViT-NeT (ICML 2022) is by Sangwon Kim, Jaeyeal Nam and Byoung Chul Ko (dblp); the entry's 'Joo' and 'Kang' are wrong."
+
+[finding."2609.27208v1:zhu2024asign:REF015"]
+verdict = "correct"
+note = "arXiv 2412.03026 appeared in CVPR (2025), DOI 10.1109/cvpr52734.2025.02871 (dblp, same title and authors)."
+
+[finding."2609.27238v1:luo2026enhanced:REF013"]
+verdict = "false_positive"
+note = "The entry cites the 2026 issue (volume 86); Crossref's record is the online-first version, volume 0, created December 2025."
+
+[finding."2609.27238v1:zhang2017mixup:REF015"]
+verdict = "correct"
+note = "arXiv 1710.09412 appeared in ICLR (Poster) (2018) (dblp, same title and authors)."
+
+[finding."2610.00233v1:bills2024cooperation:REF015"]
+verdict = "correct"
+note = "arXiv 2412.12409 appeared in AAAI (2025), DOI 10.1609/aaai.v39i13.33492 (dblp, same title and authors)."
+
+[finding."2610.00233v1:hossain2024multisender:REF015"]
+verdict = "correct"
+note = "arXiv 2402.04971 appeared in ICML (2024) (dblp, same title and authors)."
+
+[finding."2609.27197v1:001_shen2016minimumrisktrainingneural:REF015"]
+verdict = "correct"
+note = "arXiv 1512.02433 appeared in ACL (1) (2016), DOI 10.18653/v1/p16-1159 (dblp, same title and authors)."
+
+[finding."2609.27197v1:006_hasan2026assessingsmalllanguagemodels:REF015"]
+verdict = "correct"
+note = "arXiv 2507.03160 appeared in J. Syst. Softw. (2026), DOI 10.1016/j.jss.2026.112815 (dblp, same title and authors)."
+
+[finding."2609.27197v1:011_yan2023bleurtuniversaltranslationsanalysis:REF015"]
+verdict = "correct"
+note = "arXiv 2307.03131 appeared in ACL (1) (2023), DOI 10.18653/v1/2023.acl-long.297 (dblp, same title and authors)."
+
+[finding."2609.27197v1:012_wang2023esrlefficientsamplingbasedreinforcement:REF015"]
+verdict = "correct"
+note = "arXiv 2308.02223 appeared in AAAI (2024), DOI 10.1609/aaai.v38i17.29878 (dblp, same title and authors)."
+
+[finding."2609.27197v1:013_suzgun2022followwisdomcrowdeffective:REF015"]
+verdict = "correct"
+note = "arXiv 2211.07634 appeared in ACL (Findings) (2023), DOI 10.18653/v1/2023.findings-acl.262 (dblp, same title and authors)."
+
+[finding."2609.27197v1:015_heineman2024improvingminimumbayesrisk:REF015"]
+verdict = "correct"
+note = "arXiv 2407.15343 appeared in EMNLP (2024), DOI 10.18653/v1/2024.emnlp-main.1255 (dblp, same title and authors)."
+
+[finding."2609.27197v1:017_Waqwoya:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.27180v1:camilli2024anthracycline:REF003"]
+verdict = "false_positive"
+note = "The paper is JACC: CardioOncology 6(5) 655-677 (10.1016/j.jaccao.2024.07.016), titled 'Anthracycline Cardiotoxicity in Adult Cancer Patients' in Crossref, without the series label the entry keeps."
+
+[finding."2609.27180v1:g_computation:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.27180v1:imbens2015causal:REF012"]
+verdict = "correct"
+note = "The book is 'Causal Inference for Statistics, Social, and Biomedical Sciences'; the entry has 'in'."
+
+[finding."2609.27180v1:annurev:/content/journals/10.1146/annurev-statistics-032921-035359:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.27180v1:CAI2024106336:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.27180v1:van2026calibeating:REF012"]
+verdict = "correct"
+note = "The paper is 'Calibeating Prediction-Powered Inference' (calibeating is the method's name); the entry has 'Calibrating'."
+
+[finding."2609.27668v1:cooper2020chaste:REF011"]
+verdict = "correct"
+note = "The entry writes 'Jonatha Cooper' for Jonathan Cooper."
+
+[finding."2609.27668v1:pyclesperanto:REF012"]
+verdict = "false_positive"
+note = "Zenodo's release is pyclesperanto_prototype; the entry writes it with its owner and version ('clEsperanto/pyclesperanto_prototype, version 0.24.2')."
+
+[finding."2609.27668v1:apoc:REF012"]
+verdict = "false_positive"
+note = "Zenodo's release is napari-accelerated-pixel-and-object-classification; the entry adds its acronym and version ('(APOC), version 0.14.1')."
+
+[finding."2609.27177v1:grewal2023efficient:REF015"]
+verdict = "correct"
+note = "arXiv 2305.13409 appeared in Quantum (2025), DOI 10.22331/q-2025-11-06-1907 (dblp, same title and authors)."
