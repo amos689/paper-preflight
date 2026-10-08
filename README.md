@@ -476,6 +476,7 @@ and more complete; their values are never printed or logged.
 | `OPENALEX_API_KEY` | A larger OpenAlex budget for retraction checks |
 | `S2_API_KEY` | Semantic Scholar as a rescue source for references nobody else found |
 | `GITHUB_TOKEN` | GitHub's larger budget (5,000 requests an hour, not 60) for references to repositories |
+| `NCBI_API_KEY` | PubMed's larger budget (10 requests a second, not 3) for PMIDs and PMCIDs |
 
 `paper-preflight doctor` shows which are set and whether each source answers right now.
 

@@ -55,6 +55,7 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
     openalex_key = env.get("OPENALEX_API_KEY") or None
     s2_key = env.get("S2_API_KEY") or None
     github_token = env.get("GITHUB_TOKEN") or None
+    ncbi_key = env.get("NCBI_API_KEY") or None
     s2_call: Call | None = None
     if s2_key:
         key = s2_key
@@ -77,7 +78,11 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
             lambda c: openalex.work_by_doi(c, KNOWN_DOI, api_key=openalex_key),
             "with API key" if openalex_key else "without API key",
         ),
-        (pubmed.POLICY, lambda c: pubmed.by_pmids(c, [KNOWN_PMID], email=mailto), ""),
+        (
+            pubmed.KEYED_POLICY if ncbi_key else pubmed.POLICY,
+            lambda c: pubmed.by_pmids(c, [KNOWN_PMID], email=mailto, api_key=ncbi_key),
+            "with API key" if ncbi_key else "without API key (3 requests a second)",
+        ),
         (semanticscholar.POLICY, s2_call, "" if s2_key else "S2_API_KEY not set"),
         (
             openlibrary.POLICY,

@@ -335,6 +335,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #181 | D5（第一部分）：每条规则一页说明（`docs/rules/`，中英文）：检查什么、什么时候可能误报、怎么处理、怎样消除；内容写在 `guides.py`，`explain`、MCP 的 `preflight_explain`、SARIF 报告的帮助文本（GitHub 代码扫描里显示）与这些页面同源，`scripts/rule_docs.py` 生成页面，测试保证页面与源同步、每条规则都有中英文说明。顺带修好：SARIF 报告里每条规则的帮助链接原先指向不存在的 `docs/rules/<规则>.md`。README 的规则表补上 REF018–REF021 |
 | #182 | 修回归：0.7.0（#167）为“同一本书的两章可共用书的 DOI”加的豁免太宽，只要两个条目都有 booktitle、标题不同就不报 CIT004，演示论文里 BERT 条目借用 ResNet 的 DOI 因此不再报出（EXPECTED.md 写着应报，但没有测试守住）。改为两个条目的 booktitle 必须相同才算同一本书的章节。新增测试：演示论文 EXPECTED.md 的每条离线行都必须成立。十四批回放：CIT004 无增无减 |
 | #183 | D5（第二部分）：用户手册 `docs/README.md`（安装、各用途对应的页面、判定方式），新增 `docs/inputs.md`（各种输入格式）、`docs/configuration.md`（逐条目消除、项目设置、`check` 的选项、退出码、输出格式、环境变量、缓存及各类答复的保留时间）、`docs/false-positives.md`（误报从何而来、怎么处理、哪些不算误报，中英文）、`docs/sources.md`（每个来源问什么、不做什么、接入新来源的七个步骤）；测试检查 README、CONTRIBUTING 和 docs 下所有页面的相对链接和标题锚点都存在。顺带更正过时的说明：README 的状态行（v0.4）、MCP 文档里“等首个 PyPI 版本”、pre-commit 示例的 `rev: main`、CONTRIBUTING 的 pre-alpha、web.py 里“只发 HEAD 请求”。另写兼容性约定 `docs/stability.md`（D1 的“1.0 之后遵守语义化版本”）：从 1.0 起，规则编号、退出码、JSON schema、命令行、设置项、Python API、MCP 工具只在大版本中做不兼容的改动；判定结果、措辞、严重度可以在任何版本中改进 |
+| #184 | `NCBI_API_KEY` 真正用上：`doctor` 一直列出它，但 PubMed 从未带着它查询；有 key 时 PMID、PMCID 按每秒 10 次查询（原为 3 次）。key 按 NCBI 的要求放在查询参数里，不进入缓存键，测试确认缓存文件里没有它；`doctor` 显示是否带 key。README 中英文凭据表补上这一行 |
 
 ## 下一步
 

@@ -80,6 +80,9 @@ All notable changes to this project are documented here. The format follows
 - **A compatibility policy** (`docs/stability.md`): from 1.0, rule IDs, exit codes, the JSON
   schema, the command line, the settings, the Python API and the MCP tools change incompatibly
   only in a major version; verdicts, wording and severities may improve in any release.
+- **`NCBI_API_KEY` is used.** `doctor` listed it, but PubMed was always asked without it; with
+  a key, PMIDs and PMCIDs are looked up at ten requests a second instead of three. The key is
+  sent as NCBI asks, in the query, and kept out of the cache.
 
 ### Fixed
 
