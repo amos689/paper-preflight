@@ -718,11 +718,15 @@ def _field_findings(
                     "arXiv 未应答，DataCite 只有最新版本",
                 )
             )
+        # A preprint compared with an entry that cites the journal's volume and pages: author
+        # lists change on publication too (bioRxiv's Tabula Sapiens lists the consortium and
+        # Quake; Science 376, eabl4896 the people the entry names). As for titles above.
+        cited_published = is_preprint(record) and bool(info.volume and info.first_page)
         if details:  # nothing left when only a backfile's author order differs
             out.append(
                 make_finding(
                     "REF011", _location(entry, author_field), key=key, field=author_field,
-                    severity=Severity.INFO if short_record else None,
+                    severity=Severity.INFO if short_record or cited_published else None,
                     source=source, missing=names, suggestion=format_authors(record),
                     detail="; ".join(d[0] for d in details),
                     detail_zh="；".join(d[1] for d in details),

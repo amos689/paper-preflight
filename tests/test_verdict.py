@@ -859,6 +859,18 @@ def test_a_report_cited_as_an_article(journal: str, reason: bool) -> None:
         assert "REF003" not in rules(result)
 
 
+def test_a_preprints_authors_against_a_cited_journal_article() -> None:
+    # Tabula Sapiens: bioRxiv lists the consortium and Quake, Science 376, eabl4896 the people
+    # the entry names; only the preprint was found
+    venue = "journal = {Science}, volume = {376}, pages = {eabl4896}"
+    text = NO_DOI.replace("@inproceedings", "@article")
+    entry = bib(text.replace("booktitle = {Proceedings of ACL}", venue))
+    preprint = record(authors=(ANN,), work_type="posted-content", source="crossref")
+    result = assess(entry, search_result(entry, preprint), current_year=YEAR)
+    (authors,) = [f for f in result.findings if f.rule_id == "REF011"]
+    assert authors.severity is Severity.INFO
+
+
 CUT = "Robust Sparse Attention Revisited"
 
 
