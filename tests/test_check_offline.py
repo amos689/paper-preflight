@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -98,6 +99,36 @@ def test_chapters_of_one_book_may_share_its_doi(tmp_path: Path) -> None:
     found = rules_of(refs)
     assert ("CIT004", "b") not in found  # another chapter
     assert ("CIT004", "c") in found  # the same chapter twice
+
+
+def test_papers_in_different_proceedings_may_not_share_a_doi(tmp_path: Path) -> None:
+    refs = tmp_path / "refs.bib"
+    refs.write_text(
+        "@inproceedings{a, title={Deep Residual Learning for Image Recognition}, booktitle={CVPR},"
+        " doi={10.1109/CVPR.2016.90}, year=2016}\n"
+        "@inproceedings{b, title={BERT: Pre-training of Deep Bidirectional Transformers},"
+        " booktitle={NAACL-HLT}, doi={10.1109/CVPR.2016.90}, year=2019}\n",
+        encoding="utf-8",
+    )
+    assert ("CIT004", "b") in rules_of(refs)
+
+
+def test_the_demo_papers_offline_rows_hold() -> None:
+    # examples/demo-paper/EXPECTED.md: every "offline" row, without the network
+    demo = Path(__file__).parent.parent / "examples" / "demo-paper"
+    found = {(f.rule_id, f.key) for f in run_check(demo).findings}
+    rows = re.findall(
+        r"^\| (?P<keys>[^|]+) \|[^|]*\| (?P<rule>[^|]+) \| offline \|",
+        (demo / "EXPECTED.md").read_text(encoding="utf-8"),
+        re.M,
+    )
+    assert len(rows) >= 6
+    for keys, rule in rows:
+        named = re.findall(r"`([^`]+)`", keys)
+        if rule.startswith("no finding"):
+            assert not any(key == k for _, key in found for k in named), keys
+        else:
+            assert (rule.split()[0], named[0]) in found, (keys, rule)
 
 
 def test_undefined_key_reports_all_sites(tmp_path: Path) -> None:

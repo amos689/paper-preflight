@@ -75,6 +75,10 @@ All notable changes to this project are documented here. The format follows
   same, from one source.
 
 ### Fixed
+- **Two entries sharing a DOI are reported again** (CIT004) when they are papers in different
+  proceedings: 0.7.0 took them for two chapters of one book, which may share the book's DOI,
+  and the demo paper's BERT entry, with ResNet's DOI, went unreported. Chapters must now name
+  the same book. A test now holds every offline row of the demo's EXPECTED.md.
 
 - **SARIF reports linked to rule pages that did not exist** (`docs/rules/REF003.md`); they exist
   now.
