@@ -305,6 +305,28 @@ def test_a_meetings_year_named_by_its_venue() -> None:
     assert check_year(2003, article, venue="Journal of SAT 2003").status == "mismatch"
 
 
+def test_years_a_registry_records_badly() -> None:
+    # Int. J. Epidemiol. 49(6), December 2020: Crossref has the online date and the print one
+    ije = SourceRecord(
+        source="crossref", source_id="10.1093/ije/dyz223", title="Ensemble modelling",
+        year=2019, years=frozenset({2019, 2021}), work_type="journal-article",
+        identifiers={"doi": "10.1093/ije/dyz223"},
+    )  # fmt: skip
+    assert check_year(2020, ije).status == "match"
+    assert check_year(2018, ije).status == "mismatch"
+    # the July 2020 issue, by its DOI; Crossref dates it 2021 only
+    jds = replace(ije, source_id="x", identifiers={"doi": "10.6339/jds.202007_18(3).0003"},
+                  year=2021, years=frozenset({2021}))  # fmt: skip
+    assert check_year(2020, jds).status == "match"
+    assert check_year(2019, jds).status == "mismatch"  # the DOI's year only one year off
+    # a conference's year, its proceedings a book the year after (FGCS 1981)
+    chapter = replace(ije, source_id="y", identifiers={}, year=1982, years=frozenset({1982}),
+                      work_type="book-chapter")  # fmt: skip
+    venue = "International Conference on Fifth Generation Computer Systems"
+    assert check_year(1981, chapter, venue=venue).status == "match"
+    assert check_year(1981, chapter, venue="Fifth Generation Computer Systems").status == "mismatch"
+
+
 def test_a_jmlr_volume_runs_into_the_next_year() -> None:
     # JMLR cites 18(167) as 2018; dblp files volume 18 under 2017 (journals/jmlr/ChowGJP17)
     record = SourceRecord(

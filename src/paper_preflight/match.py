@@ -919,6 +919,15 @@ _BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-b
 
 # a workshop, also as a conference's acronym with a W ("NeurIPSW on Deep Generative Models")
 _WORKSHOP = re.compile(r"\bworkshops?\b|\b(?:neurips|nips|icml|iclr|cvpr|iccv|eccv)w\b", re.I)
+# a venue that is a meeting, held in its own year whatever year its proceedings appear
+_HELD_MEETING = re.compile(r"\b(?:conference|symposium|workshop|congress|meeting)\b", re.I)
+# a year a publisher wrote into a DOI's suffix: ".202007_", ".2022096"
+_DOI_YEAR = re.compile(r"\.((?:19|20)\d\d)(?:\d{2,3})?(?=[._(]|$)")
+
+
+def _doi_year(doi: str | None) -> int | None:
+    match = _DOI_YEAR.search(doi.split("/", 1)[-1]) if doi else None
+    return int(match.group(1)) if match else None
 
 
 def _names_year(venue: str | None, year: int) -> bool:
@@ -944,9 +953,20 @@ def check_year(
     if (
         year + 1 in years
         and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
-        and _names_year(venue, year)
+        and (_names_year(venue, year) or _HELD_MEETING.search(venue or ""))
     ):
-        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
+        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004) or
+        # implies (the International Conference on Fifth Generation Computer Systems, 1981,
+        # whose proceedings are a 1982 book)
+        return FieldCheck("match")
+    if min(years) < year < max(years):
+        # between two of the article's own dates: an issue dated between its appearance online
+        # and in print (Int. J. Epidemiol. 49(6), December 2020: online 2019, print 2021)
+        return FieldCheck("match")
+    if abs(year - min(years)) == 1 and year == _doi_year(record.doi):
+        # the year the publisher wrote into the DOI, where Crossref has only another date
+        # (J. Data Sci. 10.6339/jds.202007_18(3).0003, the July 2020 issue, dated 2021;
+        # 10.3934/mbe.2022096, volume 19, 2022, dated 2021)
         return FieldCheck("match")
     if year - 1 in years and record.source_id.startswith("journals/jmlr/"):
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
@@ -990,7 +1010,7 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
     ("cvpr", ("cvpr", "computer vision and pattern recognition")),
     ("iccv", ("iccv", "international conference on computer vision")),
     ("eccv", ("eccv", "european conference on computer vision")),
-    ("aaai", ("aaai",)),
+    ("aaai", ("aaai", "national conference on artificial intelligence")),
     ("ijcai", ("ijcai", "international joint conference on artificial intelligence")),
     ("kdd", ("kdd", "knowledge discovery and data mining")),
     ("sigir", ("sigir",)),
