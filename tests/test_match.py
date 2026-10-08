@@ -745,6 +745,27 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
     assert check_authors(written, cms).missing == ()
 
 
+def test_letters_a_registry_lost_in_a_name() -> None:
+    # Crossref's Astropy 2013: "G" + two marks + "nther", one per byte of the lost "ü"
+    astropy = SourceRecord(
+        source="crossref", source_id="10.1051/0004-6361/201322068", title="Astropy",
+        authors=(Person("Robitaille", "T. P."), Person("G��nther", "Hans M."),
+                 Person("Lim", "P. L.")),
+    )  # fmt: skip
+    written = parse_authors('Robitaille, T. P. and G{\\"u}nther, H. M. and Lim, P. L.')
+    assert check_authors(written, astropy).missing == ()
+    # ApJ 596, L191: Ivezić as "Ivezi", the "ć" dropped without a mark
+    newberg = SourceRecord(
+        source="crossref", source_id="10.1086/379316", title="Sagittarius",
+        authors=(Person("Newberg", "Heidi Jo"), Person("Ivezi", "eljko"), Person("Rix", "H.")),
+    )  # fmt: skip
+    written = parse_authors("Newberg, Heidi Jo and {Ivezi{\\'c}}, {\\v{Z}}eljko and Rix, H.")
+    assert check_authors(written, newberg).missing == ()
+    # a name that is only longer in ASCII is another name
+    other = parse_authors("Newberg, Heidi Jo and Ivezich, Z. and Rix, H.")
+    assert check_authors(other, newberg).missing == ("Z. Ivezich",)
+
+
 def test_names_a_registry_put_the_other_way_round() -> None:
     # Crossref's record of Chin. Astron. Astrophys. 45, 559: given "LI", family "Zhen-qiang"
     record = SourceRecord(

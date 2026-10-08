@@ -810,8 +810,18 @@ def _lost_letters(person: Person, written: tuple[Person, ...]) -> Person:
     "nle", Crossref) as the entry writes it, when exactly one of the entry's names fits it
     letter for letter."""
     if _LOST not in person.family:
-        return person
-    pattern = ".{1,2}".join(map(re.escape, person.family.split(_LOST)))
+        # or dropped without a trace: Crossref's "Ivezi" for Ivezić (ApJ 596, L191), the
+        # entry's name the recorded one and a letter or two outside ASCII
+        fits = [
+            p for p in written
+            if p.family.lower().startswith(person.family.lower())
+            and 0 < len(p.family) - len(person.family) <= 2
+            and not p.family[len(person.family):].isascii()
+            and len(person.family) >= 4
+        ]  # fmt: skip
+        return replace(person, family=fits[0].family) if len(fits) == 1 else person
+    # one letter may have become two marks, one per byte ("G" + 2 marks + "nther", Günther)
+    pattern = ".{1,2}".join(map(re.escape, re.split(f"{_LOST}+", person.family)))
     fits = [p for p in written if re.fullmatch(pattern, p.family, re.IGNORECASE)]
     return replace(person, family=fits[0].family) if len(fits) == 1 else person
 
