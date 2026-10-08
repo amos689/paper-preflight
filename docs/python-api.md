@@ -6,23 +6,23 @@ plain, frozen dataclasses: for scripts, notebooks, other tools and agents that c
 ```python
 import paper_preflight
 
-report = paper_preflight.check_paper("paper/")       # a LaTeX project, a manuscript or a .bib
+report = paper_preflight.check_paper("paper/")  # a LaTeX project, a manuscript or a .bib
 
-report.complete               # False when a source needed did not answer (exit code 2)
-report.verification           # "online" | "offline" | "skipped"
-report.blocking("error")      # True when the CLI would exit with 1 at --fail-on error
+report.complete  # False when a source needed did not answer (exit code 2)
+report.verification  # "online" | "offline" | "skipped"
+report.blocking("error")  # True when the CLI would exit with 1 at --fail-on error
 
-for ref in report.references:                     # one per checked reference
+for ref in report.references:  # one per checked reference
     print(ref.key, ref.verdict, ref.reasons)
-    if ref.matched:                               # the record it was compared with
+    if ref.matched:  # the record it was compared with
         print("  ", ref.matched.source, ref.matched.id, ref.matched.doi)
     for finding in ref.findings:
         print("  ", finding.rule, finding.severity, finding.message)
 
-for finding in report.findings:                   # every finding, errors first
+for finding in report.findings:  # every finding, errors first
     print(finding.file, finding.line, finding.rule, finding.message)
 
-report.to_dict()              # the JSON report, as --format json writes it
+report.to_dict()  # the JSON report, as --format json writes it
 ```
 
 ## Arguments
