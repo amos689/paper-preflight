@@ -1078,6 +1078,14 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         else:
             verdict = Verdict.CANNOT_DETERMINE
 
+    if bound is None and evidence.dead_link and not evidence.software:
+        # web pages are never judged; a gone one nobody archived is worth a look
+        findings.append(
+            make_finding(
+                "REF021", _location(entry, "url"), key=entry.key, field="url",
+                url=evidence.dead_link,
+            )
+        )  # fmt: skip
     if bound is None and not evidence.software:
         for kind, name in evidence.missing_software:
             # a link to a repository or package that does not exist: worth a look, no more

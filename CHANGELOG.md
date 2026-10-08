@@ -16,6 +16,13 @@ All notable changes to this project are documented here. The format follows
   and entries to ignore (glob patterns allowed), severities, optional sources to turn off, and
   `fail-on`. The command line wins; mistakes in the file are errors (exit code 3). The MCP
   server reads the same file.
+- **Links to web pages that are gone** (REF021, an info). A reference nothing else found that
+  links to a page no source indexes has the link tried: a HEAD request, confirmed by a GET whose
+  body is never read when it says the page is gone. A page that answers 404 or 410 and that the
+  Wayback Machine never archived is worth a look; anything else (401, 403, 429, a server error,
+  a timeout) tells nothing, since many sites turn tools away. Web pages are never judged true or
+  false, and no request goes to the user's own machine or network. On the development papers:
+  5 such links in 280 papers, no warning or error gained or lost.
 - **References too new to be indexed are searched for again.** A reference from this year or
   next that no source has yet is remembered in the local cache, and its title is searched for
   again on later runs, once a day, instead of being answered from cached searches for two

@@ -207,6 +207,42 @@ class SourceClient:
             url, params, headers, classify, negative_statuses, cache_key, expect_json=True
         )
 
+    async def head_status(self, url: str) -> int | None:
+        """The HTTP status a HEAD request for ``url`` ends with (redirects followed), cached;
+        None when no status came back (a timeout, a refused connection) or offline without
+        a cached answer. Never raises: a page that cannot be reached tells nothing."""
+        key = f"STATUS {url}"  # a HEAD, confirmed by a GET when it says the page is gone
+        cached = self._cached(key)
+        if cached is not None:
+            self.stats.cache_hits += 1
+            return int((cached.payload or {}).get("status", 0)) or None
+        if self.offline or time.monotonic() < self._cooldown_until:
+            return None
+        async with self._semaphore:
+            await self._pace()
+            self.stats.requests += 1
+            headers = {"User-Agent": USER_AGENT}
+            try:
+                response = await self.http.head(
+                    url, headers=headers, timeout=self.policy.timeout, follow_redirects=True
+                )
+                status = response.status_code
+                if status in (404, 405, 410):
+                    # some servers answer HEAD with 404 and GET with the page (Kaggle's datasets):
+                    # a GET, whose body is never read, has the last word
+                    async with self.http.stream(
+                        "GET", url, headers=headers, timeout=self.policy.timeout,
+                        follow_redirects=True,
+                    ) as streamed:  # fmt: skip
+                        status = streamed.status_code
+            except httpx.HTTPError:
+                return None
+        if status in (404, 410):  # gone, for now: asked again in a few days
+            self.cache.put(self.name, key, {"status": status}, EntryKind.NEGATIVE)
+        elif status < 400:
+            self.cache.put(self.name, key, {"status": status}, EntryKind.POSITIVE)
+        return status  # 401, 403, 429, 5xx: not stored, they tell nothing lasting
+
     async def get_text(
         self,
         url: str,

@@ -68,6 +68,12 @@ class FakeWeb:
         # GitHub repositories ("owner/repo" -> the API's JSON) and PyPI packages (name -> JSON);
         # unknown ones are 404s
         self.github: dict[str, dict[str, object]] = {}
+        # web pages: HEAD requests answer 200 unless the page is gone (404); the Wayback Machine
+        # has a copy of the pages in ``archived`` only
+        self.gone: set[str] = set()
+        self.archived: set[str] = set()
+        # pages that answer HEAD with 404 and GET with the page (Kaggle's datasets)
+        self.head_only_404: set[str] = set()
         self.pypi: dict[str, dict[str, object]] = {}
         # Open Library's book search: a phrase in the title asked for -> its docs (CC0). The
         # demo's Deep Learning, as Open Library has it (trimmed)
@@ -95,6 +101,16 @@ class FakeWeb:
                     headers={"content-type": "text/html"},
                 )  # fmt: skip
         host = request.url.host
+        if request.method == "HEAD":
+            missing = str(request.url) in self.gone | self.head_only_404
+            return httpx.Response(404 if missing else 200)
+        if str(request.url) in self.head_only_404:
+            return httpx.Response(200, text="<html>the page</html>")
+        if host == "archive.org" and request.url.path == "/wayback/available":
+            page = request.url.params.get("url", "")
+            closest = {"available": True, "url": f"http://web.archive.org/web/2020/{page}"}
+            snapshots = {"closest": closest} if page in self.archived else {}
+            return httpx.Response(200, json={"url": page, "archived_snapshots": snapshots})
         if host == "doi.org" and request.url.path.startswith("/doiRA/"):
             return self._doira(request)
         if host == "api.crossref.org":

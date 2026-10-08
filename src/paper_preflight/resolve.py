@@ -48,6 +48,7 @@ from paper_preflight.sources import (
     semanticscholar,
     software,
     venues,
+    web,
 )
 from paper_preflight.sources.base import (
     RECHECK_BEFORE,
@@ -125,6 +126,9 @@ class Evidence:
     # repositories and packages the entry links to ("github", "owner/repo"), the records
     # that confirm one, and those that do not exist (C2)
     software_links: list[tuple[str, str]] = field(default_factory=list)
+    # the web pages the entry links to, and one that is gone with no archived copy (C4)
+    links: list[str] = field(default_factory=list)
+    dead_link: str | None = None
     software: list[SourceRecord] = field(default_factory=list)
     missing_software: list[tuple[str, str]] = field(default_factory=list)
     # whether a catalogue of journals and conferences knows the venue the entry names, for a
@@ -157,6 +161,9 @@ class Sources:
     pypi: SourceClient | None = None
     cran: SourceClient | None = None
     github_token: str | None = None
+    # web pages an entry links to: do they still open, has the Wayback Machine a copy? (C4)
+    web: SourceClient | None = None
+    wayback: SourceClient | None = None
     s2_key: str | None = None
     # told (stage, done, total) as the slow stages advance: "title", then "rescue"
     progress: Callable[[str, int, int], None] | None = None
@@ -209,6 +216,8 @@ class Sources:
             pypi=optional(software.PYPI_POLICY),
             cran=optional(software.CRAN_POLICY),
             github_token=env.get("GITHUB_TOKEN") or None,
+            web=optional(web.LINK_POLICY),
+            wayback=optional(web.WAYBACK_POLICY),
         )
 
     def all_clients(self) -> list[SourceClient]:
@@ -216,7 +225,15 @@ class Sources:
                    self.pubmed]  # fmt: skip
         optional = [
             c
-            for c in (self.s2, self.openlibrary, self.github, self.pypi, self.cran)
+            for c in (
+                self.s2,
+                self.openlibrary,
+                self.github,
+                self.pypi,
+                self.cran,
+                self.web,
+                self.wayback,
+            )
             if c is not None
         ]
         return clients + optional
@@ -264,6 +281,7 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
             software_links=software.software_links(
                 " ".join(entry.text(name) or "" for name in SOFTWARE_FIELDS)
             ),
+            links=_links(entry),
         )  # fmt: skip
 
     # 1. DOIs: registration agency for all, then batched lookups per agency.
@@ -419,6 +437,10 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 5b. Journal articles cited without a title, by journal, volume and page.
     untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
     await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
+
+    # 11. Web pages: a link to a page that is gone, with no archived copy, is worth a look.
+    pages = [i for i in evidence.values() if _unfound_page(i)]
+    await asyncio.gather(*(_check_page(item, sources) for item in pages))
 
     # 9. Software an entry links to: a GitHub repository, a PyPI or CRAN package.
     linked = [i for i in evidence.values() if _unfound_software(i)]
@@ -831,6 +853,42 @@ async def _search_coordinates(item: Evidence, sources: Sources) -> None:
     if found and len({title_key(r.title) for r in found}) == 1:
         item.anchored.extend(found)
         item.by_coordinates = True
+
+
+_URL_IN_TEXT = re.compile(r"https?://[^\s{}\\<>\"]+")
+
+
+def _links(entry: BibEntry) -> list[str]:
+    text = " ".join(entry.text(name) or "" for name in ("url", "howpublished", "note"))
+    return list(dict.fromkeys(u.rstrip(".,;)") for u in _URL_IN_TEXT.findall(text)))
+
+
+def _unfound_page(item: Evidence) -> bool:
+    """A link to a page no source indexes, from an entry nothing else found."""
+    from paper_preflight.match import evaluate
+
+    if item.anchored or item.software_links or not item.links:
+        return False
+    if not unindexed_hosts(item.info.link_hosts):
+        return False
+    return not any(
+        evaluate(item.info, record).title.status in {"match", "variant"}
+        for record in item.candidates
+    )
+
+
+async def _check_page(item: Evidence, sources: Sources) -> None:
+    """The first public link: gone (404, 410), and never archived by the Wayback Machine?"""
+    url = next((u for u in item.links if web.public_url(u)), None)
+    if url is None or sources.web is None or sources.wayback is None:
+        return
+    if await web.link_gone(sources.web, url) is not True:
+        return
+    try:
+        if not await web.archived(sources.wayback, url):
+            item.dead_link = url
+    except SourceUnavailable as error:
+        item.optional_unavailable.setdefault(error.source, error.reason.value)
 
 
 # where an entry links to its software
