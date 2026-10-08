@@ -307,15 +307,17 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #163 | 第十二批 heldout11（0.6.0 的保留集，只跑一次）：868 条、89 个报警、76 个真问题、13 个误报、0 个不确定，每百条 1.50，**恰在 1.5 的门槛上**（初判 14 个误报、1.6；ADS 的 'Santos, João F. C., Jr.' 按博物馆 real-1991rc3-corwin 的先例改判为真问题：BibTeX 会把 'Jr.' 当名字。因改判发生在看到结果之后，0.6.0 仍在 heldout12 上再测一次）。实跑每条 0.48 秒（heldout10 是 1.22）。误报：登记处记录自身的错误 8（作者不全、名字拼错或写成 'Prof.'、HTML 实体、AAS 的 [CSC] 标记、标题错字、BLEU 记成 2001、剑桥 2012 的上线日期）、无索引的真实作品 2、章节与重印本 1、期刊改名 1、拿 arXiv 作者表代替期刊版 1。另：dblp 把两篇 ACL Findings 2024 记成 2014（REF015 文字里的年份错）。冻结第十三批 heldout12（2026-09-23..29）|
 | #164 | heldout11 的 13 个误报修掉 5 个（另修 heldout10 的 nielsen-chuang）：mEDRA 名字里的 HTML 实体、登记处把 'Prof.'/'Dr.' 当名字、AAS 的 [CSC] 标记、剑桥 Books Online 只有上线日期的书不比年份、一份记录写错名字而作品的另一份记录（含 OpenAlex 对该 DOI 的记录）写对时不报、dblp 的年份在键与 DOI 一致反驳时更正；'Jr.' 被 BibTeX 当成名字时 REF011 说明原因。十二批回放：去掉 6 个误报和 1 个不确定，无新增；HALLMARK 两个划分逐条不变，GPTZero 不变；博物馆加 5 例。不修：登记处作者不全/拼错、标题错字、年份错、无索引的真实作品、重印本、期刊改名 |
 | #165 | 第十三批 heldout12（0.6.0 含 #164 的保留集，只跑一次）：786 条、48 个报警、42 个真问题、6 个误报、0 个不确定，**每百条 0.8（门槛 1.5、目标 1.0 均通过）**；实跑每条 0.47 秒。误报：arXiv 自身标题错字、1988 年的书配 2013 年电子版 DOI、在线优先记录（卷 0）对正式期年份、登记处标题省掉期刊栏目名、两个软件引用带所有者与版本号。冻结第十四批 heldout13（2026-09-30..10-06）|
+| #166 | 0.6.0 发布：#160–#162、#164；README 加 heldout11（0.6.0 候选，1.5）与 heldout12（0.6.0，0.8）两行、路线图；HALLMARK、GPTZero 用 0.6.0 重跑（不变）；首次由 release.yml 的 GitHub OIDC 发布到 MCP Registry |
 
 ## 下一步
 
 - [x] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报，heldout9 每百条 1.3。中文 MVP 暂缓（用户决定）
 - [x] heldout10 跑一次：每百条 1.3，过门槛（#158）
 - [x] 0.5.3 发布（#159，用户 2026-10-08 确认）
-- [ ] heldout10 的误报类型（ACM 10.5555 网址、"&"、预印本库、登记库乱码、arXiv 宕机时的作者比较……），用 heldout11 验证；note 里整条引用的 @misc 按纯文本解析
-- [ ] 11 月：.docx 输入
-- [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；每次发布时 MCP Registry 设备授权
+- [x] 第六轮阶段 A（0.6.0，#160–#166）：heldout11 每百条 1.5、heldout12 每百条 0.8；实跑每条约 0.47 秒；发版自动化（MCP Registry 走 GitHub OIDC，不再需要设备码）
+- [ ] 第六轮阶段 B（0.7.0）：Word（.docx）、Markdown/Quarto/R Markdown、Typst、RIS、CSL-JSON；用 heldout13（已冻结）衡量；.docx 另做合成一致性评测与真实稿件抽查
+- [ ] 阶段 C（0.8.0）、阶段 D（1.0）：见 `plans/paper-preflight 第六轮长期开发方案.md`
+- 宣发不在本轮范围内（用户决定）；awesome-mcp-servers、awesome-LaTeX 的 PR 保持开着
 
 ## 已知问题与备忘
 

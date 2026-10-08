@@ -1,6 +1,6 @@
 # HALLMARK evaluation
 
-- **Tool:** paper-preflight 0.5.3 (main 23d9911)
+- **Tool:** paper-preflight 0.6.0 (main a418bad)
 - **Data:** HALLMARK v1.2.3, split `test_public`
 - **Run:** 2026-10-08, 0.1 min, live sources
 - **Unavailable during the run:** none
