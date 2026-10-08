@@ -535,12 +535,15 @@ def _field_findings(
     published_known: bool = True,
     coordinates: bool = False,
     others: tuple[SourceRecord, ...] = (),
+    latest_version_only: bool = False,
 ) -> list[Finding]:
     """Findings on the fields of a bound entry.
 
     ``published_known``: a published (non-preprint) record of the bound work is known; without
     one, a preprint record cannot correct the year of a published version. ``others``: other
-    records of the same work, reached through the entry's identifiers.
+    records of the same work, reached through the entry's identifiers. ``latest_version_only``:
+    the record is DataCite's for an arXiv preprint, answering because arXiv did not; it has
+    only the latest version's authors (arXiv 2511.02200v1 lists two people v2 drops).
     """
     key, record = entry.key, m.record
     source = source_name(record.source)
@@ -548,13 +551,18 @@ def _field_findings(
     score = f"{m.title.score or 0.0:.2f}"
     # a Chinese-language work's title, translated by the citing author: other wording than the
     # journal's own English title is no error (Big Data Research 2015, "... Development Trend")
-    translation = Severity.INFO if info.translated else None
+    title_hint = Severity.INFO if info.translated else None
+    # Nor against a preprint when the entry cites a journal's volume and pages: titles change on
+    # publication (A&A 352, 447 is "Analytical properties of the R^(1/m) law", arXiv
+    # astro-ph/9911078 its "... luminosity law"). Worth a look, not a warning.
+    if is_preprint(record) and info.volume and info.first_page:
+        title_hint = Severity.INFO
     if m.title.status == "mismatch":
         few = 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                severity=translation, found_title=record.title, score=score,
+                severity=title_hint, found_title=record.title, score=score,
                 difference=(
                     _describe_changes(m.title.changed, "en") if few else f"similarity {score}"
                 ),
@@ -571,7 +579,7 @@ def _field_findings(
         out.append(
             make_finding(
                 "REF012", _location(entry, "title"), key=key, field="title", source=source,
-                severity=translation, found_title=record.title, score=score,
+                severity=title_hint, found_title=record.title, score=score,
                 difference=_describe_changes(m.title.changed, "en"),
                 difference_zh=_describe_changes(m.title.changed, "zh"),
                 suggestion=protect_title(record.title),
@@ -609,13 +617,18 @@ def _field_findings(
         # Found by journal, volume and page, with the right first author, on a record that lists
         # fewer people than the entry: Crossref's records of older articles often stop short
         # (Biometrika 85(2) 379 without Vohra, MNRAS 441, 2986 without Wadsley), and no other
-        # source was asked. Worth a look, not a warning.
+        # source was asked. Or DataCite standing in for arXiv with the latest version's
+        # authors only. Worth a look, not a warning.
         short_record = (
-            coordinates
-            and authors.first_author_match
-            and not authors.renamed
-            and len(record.authors) < len(info.authors.people)
-        )
+            (coordinates and len(record.authors) < len(info.authors.people)) or latest_version_only
+        ) and (authors.first_author_match and not authors.renamed)
+        if latest_version_only and short_record:
+            details.append(
+                (
+                    "arXiv did not answer and DataCite has only the latest version",
+                    "arXiv 未应答，DataCite 只有最新版本",
+                )
+            )
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
@@ -709,6 +722,15 @@ def _status_findings(
 _PREPRINT_VENUE = re.compile(
     r"arxiv|\bcorr\b|preprint|biorxiv|medrxiv|chemrxiv|ssrn|techrxiv|research square|"
     r"submitted|under review|in press|to appear",
+    re.I,
+)
+
+
+# Servers of preprints and reports that are not arXiv, as an entry names them
+_PREPRINT_COPY = re.compile(
+    r"eprint archive|cryptology eprint|electronic colloquium on computational complexity|"
+    r"\beccc\b|biorxiv|medrxiv|chemrxiv|ssrn|techrxiv|research square|osf preprints|"
+    r"preprints\.org|\bhal\b",
     re.I,
 )
 
@@ -862,6 +884,9 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     info = evidence.info
     findings, dead = _dead_identifiers(entry, evidence)
     preprint = cites_preprint(evidence)  # a published version may then be a year or two later
+    # so may a copy on a preprint or report server the entry names (Cryptology ePrint Archive
+    # 2015/193, the CHES 2013 paper)
+    preprint_pair = preprint or bool(_PREPRINT_COPY.search(info.venue or ""))
 
     # 1. Records reached through the entry's own identifiers.
     same: list[Match] = []
@@ -869,7 +894,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     corrupted = False
     anchored = [r for r in evidence.anchored if not _container(info, r)]
     for record in anchored:
-        m = evaluate(info, record, preprint_pair=preprint)
+        m = evaluate(info, record, preprint_pair=preprint_pair)
         relation = _relation(m)
         if relation in {"same", "retitled"}:
             same.append(m)
@@ -898,7 +923,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     bound = min(same, key=_rank) if same else None
     if bound is None and not anchored:
         bound = _bind_candidate(
-            info, evidence.candidates, preprint_pair=preprint, current_year=current_year,
+            info, evidence.candidates, preprint_pair=preprint_pair, current_year=current_year,
             extending=evidence.extending,
         )  # fmt: skip
 
@@ -918,6 +943,11 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
                 entry, info, bound, published_known=published_known,
                 coordinates=evidence.by_coordinates,
                 others=tuple(m.record for m in same if m is not bound),
+                latest_version_only=(
+                    "arxiv" in evidence.substituted
+                    and bound.record.source == "datacite"
+                    and (bound.record.doi or "").startswith("10.48550/")
+                ),
             )
         )  # fmt: skip
         same_records = [m.record for m in same] or [bound.record]

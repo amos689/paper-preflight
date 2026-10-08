@@ -1461,3 +1461,66 @@ source = "real_papers:2610.00027v1"
 key = "guest2006many"
 expect = []
 note = "was REF003: 'How Many Interviews Are Enough?' cited with its subtitle, which Crossref keeps apart from the title; the search result was compared without it."
+
+[[case]]
+name = "fp-zhao2020-braces-shown-in-title"
+source = "real_papers:2609.09561v1"
+key = "zhao2020pairnorm"
+expect = []
+note = "was REF003: PairNorm (ICLR 2020) with its title's braces escaped to show ('in {GNN}s'); no source was searched without them."
+
+[[case]]
+name = "fp-zhang2018-kdd-ampersand"
+source = "real_papers:2609.09561v1"
+key = "zhang2018taxogen"
+expect = []
+note = "was REF014: 'Knowledge Discovery & Data Mining' with an ampersand was not recognised as KDD."
+
+[[case]]
+name = "fp-qlora-acm-dl-link"
+source = "real_papers:2609.09569v1"
+key = "3666122.3666563"
+expect = []
+note = "was REF002: an ACM Digital Library link with ACM's unregistered 10.5555 number, read as a DOI that does not exist."
+
+[[case]]
+name = "fp-yang2019-russ-salakhutdinov"
+source = "real_papers:2609.09595v1"
+key = "yang.etal2019a"
+expect = []
+note = "was REF011: Russ R. Salakhutdinov, as NeurIPS's proceedings name Ruslan Salakhutdinov."
+
+[[case]]
+name = "fp-bigou2015-eprint-copy-year"
+source = "real_papers:2609.09582v2"
+key = "bigou-tisserand15"
+expect = []
+note = "was REF013: the entry cites Cryptology ePrint Archive 2015/193 with its year; the record compared is the CHES 2013 chapter."
+
+[[case]]
+name = "fp-google26-iacr-eprint-not-published"
+source = "real_papers:2609.09582v2"
+key = "google26"
+expect = []
+note = "was REF015: dblp's IACR Cryptology ePrint Archive copy named as the arXiv preprint's published version."
+
+[[case]]
+name = "fp-bergemann2010-crossref-mojibake"
+source = "real_papers:2609.09645v2"
+key = "2010MNRAS.401.1334B"
+expect = []
+note = "was REF012: Crossref's title has UTF-8 read as Latin-1 around 'Co I/Co II' (an em space)."
+
+[[case]]
+name = "fp-springel2001-fontshape-in-title"
+source = "real_papers:2609.09729v1"
+key = "Springel_2001_subfind1"
+expect = []
+note = "was REF012: Crossref's title keeps a LaTeX font switch, read as 'Results at itz=0'."
+
+[[case]]
+name = "fp-ciotti1999-preprint-title-against-journal"
+source = "real_papers:2609.09729v1"
+key = "Sersic2"
+expect = []
+note = "was REF012 (warning): A&A 352, 447 cited with its own title; arXiv's preprint adds 'luminosity'. Now a hint."

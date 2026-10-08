@@ -43,7 +43,7 @@ _URL = re.compile(r"https?://\S+")
 # "URL https://...", "doi: 10...", "Available from: https://..." and what they introduce
 _LINK = re.compile(
     r"(?:\b(?:url|doi|available(?:\s+(?:at|from))?|retrieved\s+from)\s*:?\s*)?"
-    r"(?:https?://\S+|\b10\.\d{4,9}/\S+)",
+    r"<?(?:https?://\S+|\b10\.\d{4,9}/\S+)",  # "<https://doi.org/...>", as \url prints
     re.I,
 )
 # when the reader looked a page up, not when the work appeared
@@ -74,7 +74,7 @@ _ASKING_TITLE = re.compile(r"^(?P<title>.{8,}?[a-z][?!])\s+(?P<venue>[A-Z].*)$")
 _VOLUME = re.compile(r"\d+\s*\(\d+\)|,\s*\d")  # "9(1)", ", 12"
 _BROKEN_HOST = re.compile(r"\b((?:arxiv|doi)\.org/)\s+(?=\S)", re.I)
 _SECOND_NUMBER = re.compile(r"^\[\d{1,4}\]\s*")
-_TITLE_YEAR = re.compile(r"^(?P<title>.{8,}?),\s*(?P<year>(?:1[89]|20)\d\d)[a-z]?$")
+_TITLE_YEAR = re.compile(r"^(?P<title>.{8,}?)(?:,\s*|\s+\()(?P<year>(?:1[89]|20)\d\d)[a-z]?\)?$")
 # a venue may start with its edition or year: "37th International Conference ...", "2009 IEEE ..."
 _EDITION = re.compile(r"^(?:\d+(?:st|nd|rd|th)|(?:1[89]|20)\d\d)\s+(?=[A-Z])")
 _IN = re.compile(r"^In(?::|\s)\s*", re.I)
@@ -97,7 +97,9 @@ _FUNCTION_WORDS = frozenset(
 _ET_AL = re.compile(r",?\s*(?:and\s+)?et\.?\s+al\.?$")
 # Nature, LNCS: "Smith, J. A., Lee, K. & Wu, X." and what follows
 _FAMILY_INITIALS = re.compile(
-    r"\s*(?:,\s*)?(?:&|and)?\s*(?P<family>[A-Z][^,.&():]*?),\s+(?P<initials>(?:[A-Z][a-z]?\.\s?-?\s?)+)"
+    r"\s*(?:,\s*)?(?:&|and)?\s*"
+    r"(?P<family>(?:(?:van|von|de|der|den|del|della|di|da|du|la|le|dos)\s+)*[A-Z][^,.&():]*?),"
+    r"\s+(?P<initials>(?:[A-Z][a-z]?\.\s?-?\s?)+)"
 )
 # Vancouver: "Smith JA, Lee K, et al." and what follows
 _VANCOUVER_NAME = r"[A-Z][\w'’\-]*(?:\s+(?:[a-z]+\s+)*[A-Z][\w'’\-]+)*\s+[A-Z]{1,3}"
@@ -488,10 +490,29 @@ def _vancouver(text: str) -> tuple[str, dict[str, str]] | None:
 
 
 def _title_then_venue(rest: str, authors: str) -> tuple[str, dict[str, str]]:
-    sentences = _SENTENCE.split(rest, maxsplit=1)
-    entry_type, fields = _venue(sentences[1] if len(sentences) > 1 else "")
-    fields.update(author=authors, title=sentences[0])
+    sentences = _SENTENCE.split(rest, maxsplit=2)
+    title = sentences[0]
+    if (
+        len(sentences) == 3
+        and _SECOND_TITLE_SENTENCE.fullmatch(sentences[1].strip())
+        and _VENUE_WITH_VOLUME.match(sentences[2])
+    ):
+        # "Topological torsion: a new molecular descriptor for SAR applications. Comparison
+        # with other descriptors. Journal of Chemical Information ... 27, 82-85 (1987)"
+        title = f"{title}. {sentences[1].strip()}"
+        sentences = [title, sentences[2]]
+    venue = sentences[1] if len(sentences) == 2 else ". ".join(sentences[1:])
+    entry_type, fields = _venue(venue if len(sentences) > 1 else "")
+    fields.update(author=authors, title=title)
     return entry_type, fields
+
+
+# A sentence that may still be the title's: words, no digits, nothing a venue starts with
+_SECOND_TITLE_SENTENCE = re.compile(
+    r"(?!In\b|Proc|arXiv|CoRR|Preprint|Technical|Tech\.)[A-Z][^\d.:;]{2,80}"
+)
+# what a journal reference looks like: a capitalised name, then its volume ("Nature 624, 570")
+_VENUE_WITH_VOLUME = re.compile(r"[A-Z][^.\d]{2,120}?\s\d+(?:\s*\(\d+\))?\s*[,:]")
 
 
 def _numbered(text: str) -> tuple[str, dict[str, str]] | None:

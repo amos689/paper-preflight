@@ -30,6 +30,7 @@ _ARXIV_DOI_RE = re.compile(r"^10\.48550/arxiv\.(.+)$", re.IGNORECASE)
 _ARXIV_DOI_VERSION_RE = re.compile(r"v\d+$", re.IGNORECASE)
 _PMCID_RE = re.compile(r"\bPMC\d{4,9}\b", re.IGNORECASE)
 _TRAILING_PUNCTUATION = ".,;:)]}/"
+ACM_UNREGISTERED = "10.5555/"
 
 
 @dataclass(frozen=True)
@@ -133,7 +134,12 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         if not value:
             continue
         if field in ("url", "note", "howpublished") and "doi" in value.lower():
-            add_doi(value, field)
+            doi = normalize_doi(value)
+            # ACM's own 10.5555 numbers are registered with no agency: a Digital Library link
+            # carrying one (dl.acm.org/doi/10.5555/3666122.3666563) is a working page, not a
+            # DOI to look up. A doi field holding one is still checked.
+            if not (doi and doi.startswith(ACM_UNREGISTERED)):
+                add_doi(value, field)
         arxiv = _arxiv_in(value, require_context=True)
         if arxiv:
             add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=value))

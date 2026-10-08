@@ -63,6 +63,26 @@ def _aas_repeat(match: re.Match[str]) -> str:
 
 
 _TITLE_FOOTNOTE = re.compile(r"\s*\*\*\s*[A-Z].*$", re.S)
+# UTF-8 that a registry read as Latin-1 or Windows-1252: Crossref's "NLTE analysis of
+# Co\u00e2\u0080\u0083i" (10.1111/j.1365-2966.2009.15736.x) is "Co\u2003i", with an em space
+_MOJIBAKE = re.compile(
+    "[\u00c2-\u00f4][\u0080-\u00bf\u0152\u0153\u0160\u0161\u0178\u017d\u017e\u0192\u02c6\u02dc"
+    "\u2013\u2014\u2018-\u201e\u2020-\u2022\u2026\u2030\u2039\u203a\u20ac\u2122]"
+)
+# LaTeX font switches whose argument is a font name, not text: Crossref's "Results at
+# \fontshape{it}{z}=0" (10.1046/j.1365-8711.2001.04912.x)
+_FONT_SWITCH = re.compile(r"\\font(?:shape|series|family)\{[^{}]*\}")
+
+
+def _unmojibake(text: str) -> str:
+    if not _MOJIBAKE.search(text):
+        return text
+    for codec in ("latin-1", "cp1252"):
+        try:
+            return text.encode(codec).decode("utf-8")
+        except UnicodeError:
+            continue
+    return text  # mixed with correctly encoded letters: leave it
 
 
 def plain_title(text: str) -> str:
@@ -81,13 +101,13 @@ def plain_title(text: str) -> str:
         if unescaped == text:
             break
         text = unescaped
-    text = MARKUP_TAG_RE.sub("", text)
+    text = _unmojibake(MARKUP_TAG_RE.sub("", text))
     text = _EMBEDDED_DOCUMENT_RE.sub(r" \1 ", text)
     text = _AAS_TAG_RE.sub("", _AAS_REPEAT_RE.sub(_aas_repeat, text))
     if "$" in text or "\\" in text:
         from paper_preflight.bib.parse import latex_to_text
 
-        text = latex_to_text(text)
+        text = latex_to_text(_FONT_SWITCH.sub("", text))
     return collapse(text)
 
 

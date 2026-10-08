@@ -624,6 +624,64 @@ def test_arxiv_confirming_the_cited_version_answers_for_datacite() -> None:
     assert "REF001" not in rules(result)
 
 
+def test_datacite_standing_in_for_arxiv_knows_only_the_latest_authors() -> None:
+    # arXiv 2511.02200v1 lists two people its latest version drops (2609.09565v1); arXiv did not
+    # answer, and DataCite's record is the latest version
+    entry = bib(ARXIV_ENTRY.replace("Lee, Carol", "Lee, Carol and Kim, Dana"))
+    latest = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2101.00001", title=TITLE,
+        authors=(ANN, BOB, CAROL), year=2021, years=frozenset({2021}), venue="arXiv",
+        work_type="preprint", identifiers={"doi": "10.48550/arxiv.2101.00001"},
+    )  # fmt: skip
+    stood_in = evidence_for(entry, anchored=[latest], substituted={"arxiv": "datacite"})
+    (finding,) = assess(entry, stood_in, current_year=YEAR).findings
+    assert (finding.rule_id, finding.severity) == ("REF011", Severity.INFO)
+    assert "only the latest version" in finding.message.en
+    # with arXiv answering, the same gap is a warning
+    answered = assess(entry, evidence_for(entry, anchored=[latest]), current_year=YEAR)
+    assert [f.severity for f in answered.findings if f.rule_id == "REF011"] == [Severity.WARNING]
+
+
+def test_a_preprints_title_is_a_hint_against_a_cited_journal_version() -> None:
+    # Sersic2 (2609.09729v1): A&A 352, 447 is "... the R^(1/m) law"; arXiv's "... luminosity law"
+    shorter = ARXIV_ENTRY.replace("Long Document", "Document")
+    preprint = with_versions((TITLE, (ANN, BOB, CAROL)))
+    journal = bib(
+        shorter.replace(
+            "year =", "journal = {A&A}, volume = {352},\n  pages = {447--451},\n  year ="
+        )
+    )
+    (title,) = [
+        f
+        for f in assess(
+            journal, evidence_for(journal, anchored=[preprint]), current_year=YEAR
+        ).findings
+        if f.rule_id == "REF012"
+    ]
+    assert title.severity is Severity.INFO
+    cited_preprint = bib(shorter)
+    found = assess(
+        cited_preprint, evidence_for(cited_preprint, anchored=[preprint]), current_year=YEAR
+    )
+    assert [f.severity for f in found.findings if f.rule_id == "REF012"] == [Severity.WARNING]
+
+
+def test_a_preprint_servers_copy_may_be_years_from_its_paper() -> None:
+    # Cryptology ePrint Archive 2015/193 is the CHES 2013 paper (2609.09582v2, bigou-tisserand15)
+    eprint = "howpublished = {Cryptology ePrint Archive, Paper 2015/193}"
+    entry = bib(
+        NO_DOI.replace("@inproceedings", "@misc")
+        .replace("booktitle = {Proceedings of ACL}", eprint)
+        .replace("year = {2023}", "year = {2015}")
+    )  # fmt: skip
+    chapter = record(year=2013, venue="Lecture Notes in Computer Science")
+    result = assess(entry, search_result(entry, chapter), current_year=YEAR)
+    assert "REF013" not in rules(result)
+    # cited as the paper itself, 2015 is the wrong year
+    paper = bib(NO_DOI.replace("year = {2023}", "year = {2015}"))
+    assert "REF013" in rules(assess(paper, search_result(paper, chapter), current_year=YEAR))
+
+
 NO_DOI = CS_ENTRY.replace("  doi = {10.1234/acl.2023.1},\n", "")
 
 

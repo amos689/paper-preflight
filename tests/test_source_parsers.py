@@ -243,6 +243,13 @@ def test_csl_parsing() -> None:
             "Hubble Space Telescope Observations of the CfA Seyfert 2 Galaxies",
         ),
         ("[ITAL]A[/ITAL][ITAL]B[/ITAL] and M[SUB]sun[/SUB]", "A B and Msun"),
+        # UTF-8 read as Latin-1 (10.1111/j.1365-2966.2009.15736.x, an em space), and a font
+        # switch whose argument is no text (10.1046/j.1365-8711.2001.04912.x)
+        ("NLTE analysis of Coâ\u0080\u0083i lines", "NLTE analysis of Co i lines"),
+        ("CafÃ© â\u0080\u0094 a study", "Café — a study"),
+        (r"Results at \fontshape{it}{z}=0", "Results at z=0"),
+        # correctly encoded letters stay as they are
+        ("Ångström-scale Café", "Ångström-scale Café"),
     ],
 )
 def test_plain_title(raw: str, plain: str) -> None:
