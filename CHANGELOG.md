@@ -92,6 +92,8 @@ All notable changes to this project are documented here. The format follows
   the same book. A test now holds every offline row of the demo's EXPECTED.md.
 - **SARIF reports linked to rule pages that did not exist** (`docs/rules/REF003.md`); they exist
   now.
+- **`explain --lang zh` is Chinese throughout:** the severity and the fix were still printed in
+  English ("warning", "unsafe").
 
 The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3
 and heldout12:

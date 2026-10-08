@@ -74,6 +74,8 @@ def test_explain_a_rule_in_both_languages() -> None:
     assert "severity: error" in en.output
     zh = runner.invoke(app, ["explain", "REF003", "--lang", "zh"])
     assert "所有来源均未找到该文献" in zh.output
+    assert "严重度: 错误" in zh.output  # the severity and the fix in Chinese too
+    assert "修复: 无" in zh.output
     assert "{sources}" in zh.output
     assert "_zh}" not in zh.output  # internal placeholder names stay internal
     # what it checks, when it can be wrong and what to do: docs/rules/REF003.md's text
