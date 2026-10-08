@@ -29,7 +29,7 @@
 
 大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
 读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
-了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library，软件问 GitHub、PyPI 和 CRAN）：
+了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library，软件、模型和数据集问 GitHub、PyPI、CRAN、Hugging Face 和 OpenML）：
 
 - 它真的存在吗？
 - 和你写的一致吗？
@@ -95,7 +95,7 @@ paper-preflight 0.4.0 · main.tex · 12 条参考文献，12 个被引用的键
 | REF016 | 登记机构有 DOI 而条目里没有（作为安全修复提供） |
 | REF017 | 标识符写法会导致链接失效（`10.1162/tacl\_a\_00276`、`…v1`） |
 | REF018 | 引用的 arXiv 预印本已被作者撤回 |
-| REF019 · REF021 | 链接的代码仓库或软件包不存在；链接的网页已失效且没有存档 |
+| REF019 · REF021 | 链接的代码仓库、软件包或数据集不存在；链接的网页已失效且没有存档 |
 | REF020 | 引用预印本时写的发表场所，期刊与会议目录中都查不到 |
 | CIT001–CIT008 | 引用键未定义、重复、未被引用或疑似重复；`.bib` 语法错误 |
 | REF090 | 无法确定，并且一定给出原因（来源不可用、灰色文献等） |
@@ -352,7 +352,7 @@ fail-on = "warning"                        # 同 --fail-on；命令行参数优�
 ```
 
 也可以用 `check --config <路径>` 指定文件。可选来源有 `s2`、`openlibrary`、`github`、`pypi`、`cran`、
-`web`（网页链接）和 `wayback`；判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
+`huggingface`、`openml`、`web`（网页链接）和 `wayback`；判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
 会直接报错，不会被悄悄忽略。JSON 报告在 `run.notes` 里写明用了哪个文件；MCP 服务也会读取它。
 
 ## 实验功能：为每处引用找到原文出处

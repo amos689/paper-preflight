@@ -75,6 +75,10 @@ class FakeWeb:
         # pages that answer HEAD with 404 and GET with the page (Kaggle's datasets)
         self.head_only_404: set[str] = set()
         self.pypi: dict[str, dict[str, object]] = {}
+        # Hugging Face repositories ("models/owner/name" -> the API's JSON; unknown ones answer
+        # 401, as the Hub does) and OpenML datasets (number -> description; unknown: 412)
+        self.huggingface: dict[str, dict[str, object]] = {}
+        self.openml: dict[str, dict[str, object]] = {}
         # Open Library's book search: a phrase in the title asked for -> its docs (CC0). The
         # demo's Deep Learning, as Open Library has it (trimmed)
         self.openlibrary: dict[str, list[dict[str, object]]] = {
@@ -136,6 +140,17 @@ class FakeWeb:
         if host == "pypi.org" and request.url.path.startswith("/pypi/"):
             package = self.pypi.get(request.url.path.split("/")[2])
             return httpx.Response(200, json=package) if package else httpx.Response(404, json={})
+        if host == "huggingface.co" and request.url.path.startswith("/api/"):
+            repo = self.huggingface.get(request.url.path.removeprefix("/api/"))
+            if repo:
+                return httpx.Response(200, json=repo)
+            return httpx.Response(401, json={"error": "Invalid username or password."})
+        if host == "www.openml.org" and request.url.path.startswith("/api/v1/json/data/"):
+            dataset = self.openml.get(request.url.path.rsplit("/", 1)[-1])
+            if dataset:
+                return httpx.Response(200, json={"data_set_description": dataset})
+            unknown = {"error": {"code": "111", "message": "Unknown dataset"}}
+            return httpx.Response(412, json=unknown)
         if host == "openlibrary.org" and request.url.path == "/search.json":
             asked = request.url.params.get("title", "")
             docs = next((d for phrase, d in self.openlibrary.items() if phrase in asked), [])

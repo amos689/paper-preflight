@@ -139,9 +139,11 @@ SOURCE_PRIORITY = {
 }  # fmt: skip
 # Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
 # entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
-AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2", "openlibrary", "github", "pypi", "cran"})
+AUTHORS_NOT_CHECKED_AGAINST = frozenset(
+    {"s2", "openlibrary", "github", "pypi", "cran", "huggingface", "openml"}
+)
 # the registries of the repositories and packages entries link to (REF019)
-_REGISTRIES = {"github": "GitHub", "pypi": "PyPI", "cran": "CRAN"}
+_REGISTRIES = {"github": "GitHub", "pypi": "PyPI", "cran": "CRAN", "openml": "OpenML"}
 
 
 def source_name(source: str) -> str:

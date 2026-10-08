@@ -42,7 +42,7 @@ fail-on = "warning"                           # as --fail-on; the command line w
 | `ignore-rules` | Rule IDs, see [the rules](rules/README.md) |
 | `ignore-keys` | Entry keys or glob patterns (`*`, `?`, `[...]`) |
 | `severity` | A table of rule ID to `"error"`, `"warning"` or `"info"` |
-| `disable-sources` | `s2`, `openlibrary`, `github`, `pypi`, `cran`, `web`, `wayback` |
+| `disable-sources` | `s2`, `openlibrary`, `github`, `pypi`, `cran`, `huggingface`, `openml`, `web`, `wayback` |
 | `fail-on` | `"error"` (the default), `"warning"` or `"never"` |
 
 - `check --config <path>` names the file instead of looking for it.

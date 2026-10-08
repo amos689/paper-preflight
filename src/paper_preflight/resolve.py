@@ -160,6 +160,9 @@ class Sources:
     github: SourceClient | None = None
     pypi: SourceClient | None = None
     cran: SourceClient | None = None
+    # models and datasets on the Hugging Face Hub and OpenML
+    huggingface: SourceClient | None = None
+    openml: SourceClient | None = None
     github_token: str | None = None
     ncbi_key: str | None = None
     # web pages an entry links to: do they still open, has the Wayback Machine a copy? (C4)
@@ -216,6 +219,8 @@ class Sources:
             github=optional(software.GITHUB_POLICY),
             pypi=optional(software.PYPI_POLICY),
             cran=optional(software.CRAN_POLICY),
+            huggingface=optional(software.HF_POLICY),
+            openml=optional(software.OPENML_POLICY),
             github_token=env.get("GITHUB_TOKEN") or None,
             ncbi_key=env.get("NCBI_API_KEY") or None,
             web=optional(web.LINK_POLICY),
@@ -233,6 +238,8 @@ class Sources:
                 self.github,
                 self.pypi,
                 self.cran,
+                self.huggingface,
+                self.openml,
                 self.web,
                 self.wayback,
             )
@@ -947,13 +954,18 @@ async def _search_software(item: Evidence, sources: Sources) -> None:
                 record = await software.github_repo(client, name, token=sources.github_token)
             elif kind == "pypi":
                 record = await software.pypi_package(client, name)
+            elif kind == "huggingface":
+                record = await software.hf_repo(client, name)
+            elif kind == "openml":
+                record = await software.openml_dataset(client, name)
             else:
                 record = await software.cran_package(client, name)
         except SourceUnavailable as error:
             item.optional_unavailable.setdefault(error.source, error.reason.value)
             continue
         if record is None:
-            item.missing_software.append((kind, name))
+            if kind != "huggingface":  # its 401 is a private repository as well as none
+                item.missing_software.append((kind, name))
         elif _names_the_software(item.info.title, record):
             item.software.append(record)
             return
