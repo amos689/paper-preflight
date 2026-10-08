@@ -63,6 +63,8 @@ class FakeWeb:
         # Semantic Scholar answers are SYNTHETIC (its licence forbids storing real responses):
         # lower-cased title -> paper JSON in S2's schema. Unknown titles get S2's 404.
         self.s2_papers: dict[str, dict[str, object]] = {}
+        # Crossref title searches: a phrase in the query -> the items Crossref returns
+        self.crossref_search: dict[str, list[dict[str, object]]] = {}
 
     def fail(self, host_fragment: str, mode: str = "html") -> None:
         self.failing[host_fragment] = mode
@@ -150,6 +152,9 @@ class FakeWeb:
             items = [CROSSREF_ITEMS[d] for d in wanted if d in CROSSREF_ITEMS]
             return httpx.Response(200, json={"message": {"items": items}})
         query = params.get("query.bibliographic", "")
+        for phrase, items in self.crossref_search.items():
+            if phrase in query:
+                return httpx.Response(200, json={"message": {"items": items}})
         if "Quantum Gradient Folding" in query:
             return httpx.Response(200, json=_load("crossref/biblio_t8.json"))
         if "Deep Residual Learning" in query:

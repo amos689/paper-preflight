@@ -6,6 +6,35 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+Eleven of the thirteen false positives on the tenth batch of real papers (heldout9):
+
+- A double surname cited by its first part is the same person: the entry's "Ramos, Sabela" is
+  dblp's Sabela Ramos Garea, read as given name "Sabela Ramos" (REF011). Both surnames must have
+  four letters or more ("Li, Wei" is not "Zhang, Wei Li").
+- "Laboratory", "Laboratories" and "Institute" end a group's name: {The International Brain
+  Laboratory}, credited among the people, is not a person missing from the record (REF011).
+- "et al." run into the one name given ("Paul Ralph et al.") cuts the author list short, as
+  "and others" does (REF010).
+- Crossref's search results are compared with their subtitle, which Crossref keeps apart from
+  the title: Field Methods' "How Many Interviews Are Enough?" is the entry's title with its
+  subtitle (REF003). A record found only that way does not stop the Semantic Scholar rescue,
+  so MIT Press's 2010 edition of Marr's Vision does not hide the 1982 book. On the development
+  batches ten more books are verified this way.
+- A workshop paper (the entry names a workshop, or writes "NeurIPSW") matches its arXiv version
+  a year apart (REF013).
+- A book printed in September or later counts the next year too, its copyright year: Cover &
+  Thomas's second edition was printed in September 2005 and is dated 2006; Rasmussen &
+  Williams's Gaussian Processes for Machine Learning, November 2005 and 2006 (REF013).
+- dblp's name for a challenge's volume at a conference ("HECKTOR@MICCAI") is no other venue
+  than the challenge the entry names (REF014).
+- Law reviews and a journal given as "Open Review" are venues no queried source indexes, and a
+  URL in the journal field ("See https://vicuna.lmsys.org") is a link (REF003).
+
+Not fixed: an MNRAS volume printed in late November and cited by the next year (a November print
+date is as often that year's issue), and a report cited as a journal article.
+
 ## [0.5.2] - 2026-10-08
 
 Fewer false alarms, for English and for Chinese-language works cited in English. On a new

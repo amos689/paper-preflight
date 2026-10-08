@@ -106,7 +106,7 @@ class EntryInfo:
         if entry.entry_type == "inbook" and len(re.findall(r"[^\W\d_]{2,}", chapter)) >= 3:
             # Springer's export: the paper in "chapter", the volume it is in as the title
             title, venue, venue_field = chapter, title, "booktitle"
-        links = " ".join(entry.text(f) or "" for f in ("url", "howpublished", "note"))
+        links = " ".join(entry.text(f) or "" for f in ("url", "howpublished", "note", "journal"))
         hosts = (urlsplit(url).hostname or "" for url in _LINK_RE.findall(links))
         other = " ".join(entry.text(f) or "" for f in ("note", "pages", "howpublished"))
         language = entry.text("language") or entry.text("langid") or ""
@@ -450,6 +450,25 @@ def _in_other_order(a: Person, b: Person) -> bool:
     return given_a[0] in {family_b[0], family_b} and given_b[0] in {family_a[0], family_a}
 
 
+def _double_surname(a: Person, b: Person) -> bool:
+    """``a`` cites a double surname by its first part, and ``b`` was split as if the first were
+    a given name: the entry's "Ramos, Sabela" is dblp's "Sabela Ramos Garea" (given "Sabela
+    Ramos"), "Dehghani, Zahra" is "Zahra Dehghani Tafti". Short surnames are left out: "Li, Wei"
+    is not "Zhang, Wei Li"."""
+    given_b = re.findall(r"\w+", fold(b.given))
+    first_a = re.findall(r"\w+", fold(a.given))
+    family_a = fold(a.family).replace(" ", "")
+    return (
+        len(given_b) >= 2
+        and bool(first_a)
+        and len(first_a[0]) > 1
+        and len(family_a) >= 4
+        and len(fold(b.family)) >= 4
+        and given_b[0] == first_a[0]
+        and given_b[-1] == family_a
+    )
+
+
 def _same_letters(a: Person, b: Person) -> bool:
     """The same names and initials in any order: "Rouse D. M." (Vancouver style, which BibTeX
     reads as given "Rouse D.", family "M.") is David M. Rouse; "Mallikarjun B. R." is the same
@@ -477,7 +496,7 @@ def same_person(a: Person, b: Person) -> bool:
         return True
     if _same_letters(a, b):
         return True
-    if _in_other_order(a, b):
+    if _in_other_order(a, b) or _double_surname(a, b) or _double_surname(b, a):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree.
@@ -803,6 +822,10 @@ _PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inprocee
 _LIVING_TYPES = frozenset({"dataset", "service", "database", "collection"})
 
 
+# a workshop, also as a conference's acronym with a W ("NeurIPSW on Deep Generative Models")
+_WORKSHOP = re.compile(r"\bworkshops?\b|\b(?:neurips|nips|icml|iclr|cvpr|iccv|eccv)w\b", re.I)
+
+
 def _names_year(venue: str | None, year: int) -> bool:
     """The venue names the year: "Proceedings of SAT-2003", "ICML 2019", "NeurIPS'19"."""
     if not venue:
@@ -843,6 +866,10 @@ def check_year(
     distance = min(abs(year - y) for y in years)
     preprint = preprint_pair or record.work_type in {"preprint", "posted-content"}
     if preprint and distance <= 2:
+        return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
+    if distance == 1 and is_preprint(record) and _WORKSHOP.search(venue or ""):
+        # a workshop paper is cited by its workshop's year, and many reach arXiv only later
+        # (Classifier-Free Diffusion Guidance: NeurIPS 2021 workshop, arXiv 2022)
         return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
     return FieldCheck("mismatch", None, f"recorded year(s) {sorted(years)}")
 
@@ -1017,9 +1044,12 @@ def _check_venue(
             # ICLR 2025 BuildingTrust workshop, then ICML 2025)
             return FieldCheck("unknown")
         return FieldCheck("mismatch", None, f"{mine} vs {theirs}")
-    if "@" in (record.venue or "") and re.search(r"\bworkshops?\b", venue or "", re.I):
-        # dblp names a workshop by its acronyms at its conference: "CMRxRecon/MBAS/STACOM@MICCAI"
-        # for the Workshop on Statistical Atlases and Computational Models of the Heart
+    if "@" in (record.venue or "") and re.search(
+        r"\b(?:workshops?|challenges?)\b", venue or "", re.I
+    ):
+        # dblp names a workshop or challenge by its acronyms at its conference: "CMRxRecon/MBAS/
+        # STACOM@MICCAI" for the Workshop on Statistical Atlases and Computational Models of the
+        # Heart, "HECKTOR@MICCAI" for the 3D Head and Neck Tumor Segmentation in PET/CT Challenge
         return FieldCheck("unknown")
     if mine is None and theirs is not None and named and venue:
         ours = venue_words(VENUE_SERIES.sub(" ", venue))

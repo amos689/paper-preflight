@@ -316,6 +316,25 @@ def test_crossref_december_print_counts_the_next_year() -> None:
     assert crossref.parse_work(item).years == {2020}
 
 
+def test_crossref_book_printed_late_in_the_year_counts_the_next() -> None:
+    # Cover & Thomas, Elements of Information Theory, 2nd edition: online April 2005, printed
+    # September 2005, copyright 2006 (2609.02029v1, cover_thomas); Rasmussen & Williams's GPML
+    # (MIT Press) is printed November 2005, copyright 2006
+    item = {
+        "DOI": "10.1002/047174882x", "type": "monograph",
+        "title": ["Elements of Information Theory"],
+        "issued": {"date-parts": [[2005, 4, 7]]},
+        "published-online": {"date-parts": [[2005, 4, 7]]},
+        "published-print": {"date-parts": [[2005, 9, 16]]},
+    }  # fmt: skip
+    assert crossref.parse_work(item).years == {2005, 2006}
+    item["published-print"] = {"date-parts": [[2005, 6]]}
+    assert crossref.parse_work(item).years == {2005}
+    item["type"] = "journal-article"
+    item["published-print"] = {"date-parts": [[2005, 9, 16]]}
+    assert crossref.parse_work(item).years == {2005}
+
+
 def test_crossref_late_online_date_counts_the_next_volume() -> None:
     # Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, no print date; volume 4 is 2019
     item = {

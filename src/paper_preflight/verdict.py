@@ -1035,7 +1035,7 @@ def _under_review(info: EntryInfo) -> bool:
 # {Transformer Circuits Thread}"); no queried source indexes them
 _WEB_VENUES = re.compile(
     r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b|"
-    r"\bblack ?hat\b|\bdef ?con\b",
+    r"\bblack ?hat\b|\bdef ?con\b|\blaw review\b|\bl\.\s?rev\.|^open review$",
     re.IGNORECASE,
 )
 

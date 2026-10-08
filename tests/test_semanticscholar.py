@@ -10,7 +10,7 @@ from typing import Any
 import httpx
 import pytest
 
-from paper_preflight.bib.parse import parse_bib_file
+from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.cache import Cache
 from paper_preflight.resolve import Evidence, Sources, resolve
 from paper_preflight.sources.semanticscholar import POLICY, parse_paper
@@ -110,6 +110,68 @@ async def test_s2_rescues_a_work_the_other_sources_missed() -> None:
     assert rescued.verdict is Verdict.VERIFIED  # title and authors agree; S2 has no year to check
     assert rescued.record is not None
     assert rescued.record.source == "s2"
+
+
+VISION = (
+    "Vision: A Computational Investigation into the Human Representation and Processing of "
+    "Visual Information"
+)
+BOOKS = f"""
+@book{{marr1982vision,
+  title = {{{VISION}}},
+  author = {{Marr, David}},
+  year = {{1982}},
+  publisher = {{W. H. Freeman}},
+}}
+@article{{guest2006many,
+  title = {{How many interviews are enough? An experiment with data saturation and variability}},
+  author = {{Guest, Greg and Bunce, Arwen and Johnson, Laura}},
+  journal = {{Field Methods}},
+  volume = {{18}},
+  pages = {{59--82}},
+  year = {{2006}},
+}}
+"""
+# Crossref keeps a subtitle apart from the title (both records as Crossref has them)
+MIT_PRESS_VISION = {
+    "DOI": "10.7551/mitpress/9780262514620.001.0001", "type": "monograph", "title": ["Vision"],
+    "subtitle": [VISION.partition(": ")[2]], "author": [{"given": "David", "family": "Marr"}],
+    "issued": {"date-parts": [[2010, 7, 9]]}, "publisher": "The MIT Press",
+}  # fmt: skip
+FIELD_METHODS = {
+    "DOI": "10.1177/1525822x05279903", "type": "journal-article",
+    "title": ["How Many Interviews Are Enough?"],
+    "subtitle": ["An Experiment with Data Saturation and Variability"],
+    "author": [{"given": "Greg", "family": "Guest"}, {"given": "Arwen", "family": "Bunce"},
+               {"given": "Laura", "family": "Johnson"}],
+    "issued": {"date-parts": [[2006, 2]]}, "container-title": ["Field Methods"],
+    "volume": "18", "page": "59-82",
+}  # fmt: skip
+
+
+@pytest.mark.anyio
+async def test_a_record_found_by_its_subtitle_does_not_stop_the_rescue() -> None:
+    web = FakeWeb()
+    web.crossref_search = {"Vision": [MIT_PRESS_VISION], "interviews": [FIELD_METHODS]}
+    web.s2_papers[VISION.lower()] = {  # SYNTHETIC
+        "paperId": "0000synthetic", "title": VISION, "authors": [{"name": "David Marr"}],
+    }  # fmt: skip
+    entries = parse_bib_text(BOOKS, Path("refs.bib")).entries
+    async with httpx.AsyncClient(transport=httpx.MockTransport(web)) as http:
+        sources = Sources.create(http, Cache(None), environ={"S2_API_KEY": KEY})
+        evidence = await resolve(entries, sources)
+    verdicts = assess_all(entries, evidence, current_year=2026)
+    # Crossref's record of the article is its title and subtitle as the entry cites them
+    guest = verdicts["guest2006many"]
+    assert guest.verdict is Verdict.VERIFIED
+    assert guest.record is not None
+    assert guest.record.doi == "10.1177/1525822x05279903"
+    # MIT Press's 2010 edition does not hide Marr's 1982 book from Semantic Scholar
+    assert evidence["marr1982vision"].by_subtitle
+    marr = verdicts["marr1982vision"]
+    assert marr.verdict is Verdict.VERIFIED
+    assert marr.record is not None
+    assert marr.record.source == "s2"
 
 
 @pytest.mark.anyio

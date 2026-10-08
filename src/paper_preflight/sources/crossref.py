@@ -33,6 +33,7 @@ COORDINATE_SELECT = f"{SELECT},article-number"
 
 POLICY = SourcePolicy(name="crossref", min_interval=1.0, max_concurrency=1)
 _WILEY_YEAR = re.compile(r"^10\.\d{4,9}/j\.\d{4}-\d{3}[\dx]\.(\d{4})\.\d+\.x$")
+_BOOK_TYPES = frozenset({"book", "monograph", "edited-book", "reference-book"})
 _IEEE_YEAR = re.compile(r"^10\.1109/[a-z]+\.(\d{4})\.\d{5,}$")
 # Chinese journals' DOIs: Science Press's "10.3724/sp.j.1087.2012.00322" (J. Computer Applications
 # 32(2), 2012; Crossref has 2013) and "10.11959/j.issn.2096-0271.2015030"
@@ -90,9 +91,13 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     ):
         years.add(created)
     # A December print date is often next year's first issue (MNRAS 500(4), cover date January
-    # 2021, printed 10 December 2020); the issue's year is cited too.
+    # 2021, printed 10 December 2020); the issue's year is cited too. A book printed late in the
+    # year carries next year's copyright date (Cover & Thomas, 2nd edition: printed September
+    # 2005, dated 2006).
     printed = ((item.get("published-print") or {}).get("date-parts") or [[None]])[0]
     if len(printed) >= 2 and printed[0] and printed[1] == 12:
+        years.add(int(printed[0]) + 1)
+    if item.get("type") in _BOOK_TYPES and len(printed) >= 2 and printed[0] and printed[1] >= 9:
         years.add(int(printed[0]) + 1)
     # An article online late in the year, with no print date, is often in next year's volume
     # (Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, volume 4 is 2019).

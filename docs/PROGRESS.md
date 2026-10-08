@@ -281,9 +281,19 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #155 | 第十批 heldout9（0.5.2 的保留集，只跑一次）：975 条、48 个报警、31 个真问题、13 个误报、4 个不确定，每百条 1.3（门槛 1.5，通过）。冻结第十一批 heldout10（2026-09-09..15）的名单 |
 | #156 | 0.5.2 发布：#152–#154；README 加 heldout9（0.5.2，1.3）一行与路线图；HALLMARK、GPTZero 用最终代码重跑（不变）（用户 2026-10-08 确认） |
 
+0.5.2 已于 2026-10-08 发布到 PyPI 与 MCP Registry。
+
+## 0.5.3：heldout9 的误报（2026-10-08 起）
+
+| PR | 内容 |
+|---|---|
+| #157 | heldout9 的 13 个误报修掉 11 个：复姓只引第一部分（dblp 的 Sabela Ramos Garea，两部分都要 ≥4 个字母）；"Laboratory/Laboratories/Institute" 结尾算群体署名；"Paul Ralph et al." 写成一个名字时算截断；Crossref 检索结果连同其单独存放的副标题比较（Field Methods 的 "How Many Interviews Are Enough?"），只靠副标题找到的记录不挡 S2 兜底（MIT Press 2010 年重印的 Marr《Vision》）；workshop 论文与晚一年的 arXiv 版本；9 月及以后印刷的书算下一年（Cover & Thomas 第 2 版、GPML）；dblp 的 "HECKTOR@MICCAI"；法律评论、"Open Review"、journal 字段里的网址。不修：MNRAS 11 月印刷算下一年（11 月印刷也常是当年的期，改了会坏既有测试）、报告写成 @article。十批回放：去掉 11 个误报和 1 个"不确定"，另有 10 本书由"无法确定"变为核实，无新增报警 |
+
 ## 下一步
 
-- [ ] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报（见 `reports/paper preflight 中文实验结果.md` 8.3 节），用 heldout9 与 X1/X6c 回放验证。中文 MVP 暂缓（用户决定）
+- [x] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报，heldout9 每百条 1.3。中文 MVP 暂缓（用户决定）
+- [ ] 0.5.3：#157 之后跑一次 heldout10（2026-09-09..15，名单已冻结），过 1.5 的门槛后发布（需用户确认、MCP Registry 设备授权）
+- [ ] 11 月：.docx 输入
 - [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；每次发布时 MCP Registry 设备授权
 
 ## 已知问题与备忘

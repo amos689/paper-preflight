@@ -105,6 +105,10 @@ class Evidence:
     # their records, kept apart from the candidates: only a title cut short binds to one
     # (verdict._bind_candidate), and they neither make an entry ambiguous nor stop the rescue
     extending: list[SourceRecord] = field(default_factory=list)
+    # candidates Crossref's search found only with their subtitle (see _search_crossref); they
+    # do not stop the rescue: a reissue's record must not hide the original (Marr's Vision,
+    # 1982, and MIT Press's 2010 edition)
+    by_subtitle: list[SourceRecord] = field(default_factory=list)
     negative: set[str] = field(default_factory=set)  # sources that answered "no such work"
     unavailable: dict[str, str] = field(default_factory=dict)  # source -> reason
     # optional sources (Semantic Scholar) that failed: reported, but never block a verdict
@@ -357,7 +361,11 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 6. Rescue: ask Semantic Scholar about what nobody else found (only with an API key).
     if sources.s2 is not None and sources.s2_key:
         s2, key = sources.s2, sources.s2_key
-        lost = [i for i in unanchored if not i.candidates and word_count(i.info.title) >= 3]
+        lost = [
+            i
+            for i in unanchored
+            if len(i.candidates) == len(i.by_subtitle) and word_count(i.info.title) >= 3
+        ]
         rescued = 0
 
         async def rescue(item: Evidence) -> None:
@@ -680,7 +688,12 @@ async def _search_crossref(item: Evidence, sources: Sources) -> None:
     longer = _extending(info.title, [r.title for r in records])
     item.extended += longer
     item.extending += [r for r in records if r.title in longer]
-    close = [r for r in records if _close_title(info.title, r.title)]
+    # with its subtitle too, which Crossref keeps apart ("How Many Interviews Are Enough?" and
+    # "An Experiment with Data Saturation and Variability", Field Methods 2006)
+    close = [
+        r for r in records if any(_close_title(info.title, t) for t in (r.title, *r.alt_titles))
+    ]
+    item.by_subtitle += [r for r in close if not _close_title(info.title, r.title)]
     if close:
         item.candidates.extend(close)
     else:
