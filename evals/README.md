@@ -204,6 +204,15 @@ candidate's (main 43a5544); the last ten are each batch as it came out:
 A fourteenth batch, `heldout13` (2026-09-30..10-06), was collected on 2026-10-08 and its list
 committed before any change made for heldout12's false positives.
 
+Three more, `heldout14` (2026-06-24..30), `heldout15` (06-17..23) and `heldout16` (06-10..16),
+were collected on 2026-10-09 with every change since 0.7.0 merged (#170-#187), and their lists
+committed before any of them was run. They are weeks *before* `dev`, never sampled until then:
+a release need not wait for next week's papers to be announced. Each is the same mechanical
+sample as the weekly batches and is run once. They are checked months after the papers were
+written, when the works they cite are better indexed, so "too new" abstentions and registries'
+first-days errors are rarer than in a fresh week: their rates may read a little better. The
+next fresh week (2026-10-07..13) is run too, as a control.
+
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
 - **On `heldout`**, 0.1.1 found 2.3 false positives per 100 references; the fixes for 0.1.2 bring
