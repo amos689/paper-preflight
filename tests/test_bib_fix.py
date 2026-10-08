@@ -85,6 +85,17 @@ def test_keys_and_json(paper: Path) -> None:
     assert only["level"] == "unsafe"
 
 
+def test_explain_says_what_bib_fix_does() -> None:
+    from paper_preflight.fixes import SAFE_RULES, UNSAFE_RULES
+    from paper_preflight.rules import RULES
+
+    for rule_id in SAFE_RULES | UNSAFE_RULES:
+        level = "safe" if rule_id in SAFE_RULES else "unsafe"
+        fix_level = RULES[rule_id].fix
+        assert fix_level is not None, rule_id
+        assert fix_level.value == level, rule_id
+
+
 def test_a_missing_doi_is_added(tmp_path: Path) -> None:
     bib = tmp_path / "refs.bib"
     bib.write_text(
