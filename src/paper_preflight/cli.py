@@ -354,20 +354,31 @@ def explain(
 
     _safe_stdout()
     language = resolve_lang(lang)
+    zh = language == "zh"
+    severity_zh = {"error": "错误", "warning": "警告", "info": "提示"}
     if rule_id is None:
         for rule in sorted(RULES.values(), key=lambda r: r.id):
-            typer.echo(f"{rule.id}  {rule.severity.value:<8} {rule.summary.get(language)}")
+            level = severity_zh[rule.severity.value] if zh else f"{rule.severity.value:<8}"
+            typer.echo(f"{rule.id}  {level} {rule.summary.get(language)}")
         return
     described = describe(rule_id)
     if described is None:
         typer.echo(f"paper-preflight: unknown rule '{rule_id}'", err=True)
         raise typer.Exit(EXIT_USAGE)
-    zh = language == "zh"
-    fix = described["fix"] or ("无" if zh else "none")
+    fix = described["fix"] or "none"
+    severity = described["severity"]
+    if zh:
+        severity = severity_zh[severity]
+        fix = {
+            "safe": "bib fix 自动修复（默认的 safe 级别）",
+            "unsafe": "bib fix --level unsafe（应用前请先检查差异）",
+            "suggestion": "按消息中的建议手动修改",
+            "none": "无",
+        }[fix]
     labels = ("严重度", "消息", "修复") if zh else ("severity", "message", "fix")
     typer.echo(f"{described['rule']}  {described['name']}")
     typer.echo(described["summary"][language])
-    typer.echo(f"{labels[0]}: {described['severity']}")
+    typer.echo(f"{labels[0]}: {severity}")
     typer.echo(f"{labels[1]}: {described['message_template'][language]}")
     typer.echo(f"{labels[2]}: {fix}")
     headings = (
