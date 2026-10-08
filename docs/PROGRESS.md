@@ -315,6 +315,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 |---|---|
 | #167 | B1–B4：Word（.docx）稿件、Markdown/Quarto/R Markdown/Pandoc 与 Typst 项目、CSL-JSON/RIS/YAML（Hayagriva、CSL YAML）文献库。Word 先读文献管理器的域代码（Zotero、Mendeley 的 CSL-JSON，EndNote 的 XML，含 base64 的 EN.CITE.DATA），再读 Word 自带的源管理器，最后读"References/参考文献"标题之后手打的列表（遇表格、图注、下一节停止），只用标准库。Quarto 书按 `_quarto.yml` 列出的章节（含分部、子目录和 include），bookdown 书按 `rmd_files`。合成一致性（开发批 20 篇、924 条，citeproc-py 渲染）：域代码判定一致 99.6%，APA 94.0%、IEEE 96.9%、NLM 96.0%（门槛 98% 与 90%）。真实稿件：Zenodo 的 12 份 .docx、3 篇 JOSS 论文（paper.md）、mlr3book（Quarto 书）、TMwR（bookdown 书）、egwalker 论文（Typst＋Hayagriva），引用键与 grep 逐一核对一致；真实导出的 3 份 RIS、4 份 CSL-JSON、1 份 Hayagriva 全部读出。跨格式测试：同样三条文献写成 .bib、CSL-JSON、CSL YAML、RIS、Hayagriva、Word 域代码，读出的标题、作者、年份、出处、类型、标识符完全一致。真实样例发现并修好：Quarto 书只读了首章、Typst 包导入 `@preview/...` 被当成引用、出版社页面网址里 DOI 后带路径被当成另一个 DOI（REF002 错误）、登记处人名乱码（"DuÅ¡ica"）、同一本书的不同章节共用书的 DOI 被报重复（CIT004）、APA 的 "Hassen, A. et al."、"Dada, O. (L.)"、地名冒号前有空格。纯文本：NLM 的分部标题（"Dust. IV. The ..."）、年份取卷号前的（不取 arXiv 编号或页码）、协作组作者、"ten"/"ter" 词缀、A–Z 以外的大写字母与首字母。十三批回放：判定与报警逐条不变；HALLMARK 两个划分逐条不变，GPTZero 不变，PDF 判定一致 756/820（92%，原 749/814），Badalova & Mayr 纯文本标题 104/104 |
 | #168 | 第十四批 heldout13（0.7.0 的保留集，#167 的代码，只跑一次）：1,014 条、89 个报警、79 个真问题、7 个误报、3 个不确定，**每百条 0.7（门槛 1.5、目标 1.0 均通过）**；实跑每条 0.43 秒。误报：Crossref 只有在线日期的三篇（AMS 两篇、CiCP 一篇，引用的是卷年）、2007 年的书对 2009 年的电子版、两处登记处的符号写法（TeX 标记的 ℓ、ADS 的 M sub sun）、把论文在 Zenodo 上的代码当成论文的正式版本。不确定：两篇 arXiv 与会议记录作者表不同、一处 ADS 与 Crossref 标题不同。heldout14（10-07..10-13）要等这一周过完、arXiv 公布后再冻结 |
+| #169 | 0.7.0 发布：#167、#168；README 加 heldout13（0.7.0，0.7）一行、路线图；HALLMARK、GPTZero 用 0.7.0 重跑（不变）|
 
 ## 下一步
 
@@ -322,7 +323,8 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 - [x] heldout10 跑一次：每百条 1.3，过门槛（#158）
 - [x] 0.5.3 发布（#159，用户 2026-10-08 确认）
 - [x] 第六轮阶段 A（0.6.0，#160–#166）：heldout11 每百条 1.5、heldout12 每百条 0.8；实跑每条约 0.47 秒；发版自动化（MCP Registry 走 GitHub OIDC，不再需要设备码）
-- [ ] 第六轮阶段 B（0.7.0）：Word（.docx）、Markdown/Quarto/R Markdown、Typst、RIS、CSL-JSON；用 heldout13（已冻结）衡量；.docx 另做合成一致性评测与真实稿件抽查
+- [x] 第六轮阶段 B（0.7.0，#167–#169）：Word、Markdown/Quarto/R Markdown、Typst、CSL-JSON/RIS/YAML；.docx 合成一致性 99.6%/94.0%/96.9%/96.0%；heldout13 每百条 0.7
+- [ ] heldout14（10-07..10-13）：这一周过完、arXiv 公布后冻结，作为阶段 C 的保留集；heldout13 的 7 个误报（Crossref 只有在线日期的卷年、书的电子版日期、登记处的符号写法、Zenodo 上的代码被当成正式版本）在阶段 C 处理
 - [ ] 阶段 C（0.8.0）、阶段 D（1.0）：见 `plans/paper-preflight 第六轮长期开发方案.md`
 - 宣发不在本轮范围内（用户决定）；awesome-mcp-servers、awesome-LaTeX 的 PR 保持开着
 

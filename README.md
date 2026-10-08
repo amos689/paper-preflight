@@ -138,17 +138,18 @@ error reviewed by hand:
 | 2026-09-09..15 | 0.5.3 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
 | 2026-09-16..22 | 0.6.0 candidate | 868 | 89 | 76 | 13 | 0 | 1.5 |
 | 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
+| 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
 
-- **The latest week: about one false alarm every three papers** (39 references on average),
-  against 42 real problems: 24 cited preprints since published, wrong authors or given names in
-  7 entries (one a title paired with another paper's authors, venue and year), 6 identifiers
-  written as links, a DOI that does not exist and two misquoted titles. The false alarms are a
-  typo in arXiv's own title, an e-book DOI on a 1988 book, an online-first record, a journal's
-  series label a registry leaves out of the title, and two software releases cited with their
-  owner and version.
-- **The week before was at our target of 1.5:** 8 of its 13 false alarms were registries' own
-  errors (a short author list, misspelt names, an HTML entity, a typo, a wrong year); 5 are fixed
-  in 0.6.0.
+- **The latest week: about one false alarm every three papers** (51 references on average),
+  against 79 real problems: 47 cited preprints since published, 8 wrong years, 7 identifiers
+  written as links or with LaTeX escapes, wrong authors or given names in 5 entries, 4 wrong
+  venues, 5 misquoted titles and two references that match no work at all. The false alarms
+  are three articles a registry dates only by their online appearance, a book against its
+  online edition, two symbols a registry writes its own way, and a paper's code offered as its
+  published version.
+- **The two weeks before (0.6.0): 1.5, then 0.8.** 8 of the first week's 13 false alarms were
+  registries' own errors (a short author list, misspelt names, an HTML entity, a typo, a wrong
+  year); 5 are fixed in 0.6.0.
 - **One week was over our target of 1.5** (2.4); 11 of its 19 false alarms are fixed in 0.5.2.
 - **In the first week, one false alarm every two papers** (48 references on average), against
   41 real problems:
@@ -196,7 +197,7 @@ BibTeX entries.
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 91.7% | 2.1% | 98.9% |
 | | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.6.0 on 2026-10-08. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.7.0 on 2026-10-08. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
@@ -475,9 +476,10 @@ or "complete" references from memory, or name and shame authors.
   real titles with invented authors judged where the sources allow it (v0.5); Chinese-language
   works cited in English no longer called "not found" (v0.5.2); fewer false alarms on double
   surnames, subtitles, workshop papers and books (v0.5.3); twice as fast, and references written
-  whole in a note read as plain text (v0.6)
-- Next: Word (.docx), Markdown, Quarto and Typst manuscripts, RIS and CSL-JSON (v0.7); then
-  books, software and standards checked against their own registries (v0.8)
+  whole in a note read as plain text (v0.6); Word, Markdown, Quarto, R Markdown and Typst
+  manuscripts, and CSL-JSON, RIS and YAML bibliographies (v0.7)
+- Next: books, software and standards checked against their own registries, and fewer misses on
+  shortened author lists, invented venues and near-miss titles (v0.8); then a stable 1.0
 - Being tried: references in Chinese script, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
