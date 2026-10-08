@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-08
+
+Manuscripts beyond LaTeX: Word, Markdown, Quarto, R Markdown and Typst, and bibliographies in
+CSL-JSON, RIS and YAML. On a new held-out week of real papers, run once: 0.7 false positives
+per 100 references (1,014 references). HALLMARK and GPTZero's hallucinated references are
+unchanged.
+
 ### Added
 
 - **Word manuscripts (`.docx`).** Citations inserted by a reference manager carry its record of
@@ -715,7 +722,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/amos689/paper-preflight/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/amos689/paper-preflight/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/amos689/paper-preflight/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/amos689/paper-preflight/compare/v0.5.1...v0.5.2
