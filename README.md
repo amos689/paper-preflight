@@ -98,10 +98,14 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 | REF015 | A cited preprint has been formally published |
 | REF016 | The registry has a DOI the entry lacks (offered as a safe fix) |
 | REF017 | An identifier is written so that links break (`10.1162/tacl\_a\_00276`, `…v1`) |
+| REF018 | A cited arXiv preprint was withdrawn by its authors |
+| REF019 · REF021 | A linked repository or package does not exist; a linked web page is gone, with no archived copy |
+| REF020 | A preprint is cited with a venue no catalogue of journals and conferences has |
 | CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
 | REF090 | Cannot determine, always with the reason (source unavailable, grey literature, …) |
 
-`paper-preflight explain REF003` describes any rule.
+Every rule has [a page](docs/rules/README.md): what it checks, when it can be wrong, and what to
+do. `paper-preflight explain REF003` prints it in the terminal.
 
 ## How accurate is it?
 

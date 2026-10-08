@@ -17,7 +17,8 @@ from urllib.parse import quote
 from paper_preflight import __version__
 from paper_preflight.check import CheckResult
 from paper_preflight.findings import Finding, Location, Severity
-from paper_preflight.rules import RULES
+from paper_preflight.guides import GUIDES
+from paper_preflight.rules import RULES, docs_url
 
 SARIF_SCHEMA = "https://json.schemastore.org/sarif-2.1.0.json"
 INFORMATION_URI = "https://github.com/amos689/paper-preflight"
@@ -74,12 +75,20 @@ def to_sarif_dict(result: CheckResult, uri_base: Path | None = None) -> dict[str
     rules = []
     for rule_id in used:
         rule = RULES[rule_id]
+        guide = GUIDES[rule_id]
         rules.append(
             {
                 "id": rule.id,
                 "name": rule.name,
                 "shortDescription": {"text": rule.summary.en},
-                "helpUri": f"{INFORMATION_URI}/blob/main/docs/rules/{rule.id}.md",
+                "fullDescription": {"text": guide.checks.en},
+                "help": {
+                    "text": f"{guide.checks.en}\n\nWhen it can be wrong: {guide.wrong.en}\n\n"
+                    f"What to do: {guide.action.en}",
+                    "markdown": f"{guide.checks.en}\n\n**When it can be wrong.** "
+                    f"{guide.wrong.en}\n\n**What to do.** {guide.action.en}",
+                },
+                "helpUri": docs_url(rule.id),
                 "defaultConfiguration": {"level": _LEVEL[rule.severity]},
                 "properties": {"tags": ["references", rule.id[:3].lower()]},
             }

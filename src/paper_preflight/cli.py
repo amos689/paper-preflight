@@ -370,6 +370,14 @@ def explain(
     typer.echo(f"{labels[0]}: {described['severity']}")
     typer.echo(f"{labels[1]}: {described['message_template'][language]}")
     typer.echo(f"{labels[2]}: {fix}")
+    headings = (
+        ("检查什么", "什么时候可能误报", "怎么处理")
+        if zh
+        else ("What it checks", "When it can be wrong", "What to do")
+    )
+    for heading, part in zip(headings, ("checks", "wrong", "action"), strict=True):
+        typer.echo(f"\n{heading}\n{described['guide'][part][language]}")
+    typer.echo(f"\n{described['docs']}")
 
 
 @app.command()

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from paper_preflight.findings import Finding, FixLevel, Location, Message, Severity
+from paper_preflight.guides import GUIDES
 
 
 @dataclass(frozen=True)
@@ -279,11 +280,17 @@ RULES: dict[str, Rule] = {
 DOCS_URL = "https://github.com/amos689/paper-preflight"
 
 
+def docs_url(rule_id: str) -> str:
+    """The rule's page in docs/rules/ (written by scripts/rule_docs.py)."""
+    return f"{DOCS_URL}/blob/main/docs/rules/{rule_id}.md"
+
+
 def describe(rule_id: str) -> dict[str, Any] | None:
     """A rule as data, for `explain` and the MCP server; None when the ID is unknown."""
     rule = RULES.get(rule_id.strip().upper())
     if rule is None:
         return None
+    guide = GUIDES[rule.id]
     return {
         "rule": rule.id,
         "name": rule.name,
@@ -295,7 +302,15 @@ def describe(rule_id: str) -> dict[str, Any] | None:
             "zh": re.sub(r"\{(\w+?)_zh\}", r"{\1}", rule.template.zh),
         },
         "fix": rule.fix.value if rule.fix else None,
-        "docs": DOCS_URL,
+        "guide": {
+            part: {"en": text.en, "zh": text.zh}
+            for part, text in (
+                ("checks", guide.checks),
+                ("wrong", guide.wrong),
+                ("action", guide.action),
+            )
+        },
+        "docs": docs_url(rule.id),
     }
 
 

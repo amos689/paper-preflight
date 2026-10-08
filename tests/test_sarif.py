@@ -7,6 +7,8 @@ import pytest
 from paper_preflight.check import run_check
 from paper_preflight.report.sarif import to_sarif_dict
 
+ROOT = Path(__file__).resolve().parent.parent
+
 SCHEMA = json.loads(
     (Path(__file__).parent / "fixtures" / "schemas" / "sarif-schema-2.1.0.json").read_text(
         encoding="utf-8"
@@ -41,6 +43,10 @@ def test_sarif_content(project: Path) -> None:
     run = sarif["runs"][0]
     rule_ids = [r["id"] for r in run["tool"]["driver"]["rules"]]
     assert rule_ids == sorted(rule_ids)
+    for rule in run["tool"]["driver"]["rules"]:  # code scanning shows the rule's guide
+        assert (ROOT / "docs" / "rules" / f"{rule['id']}.md").exists()
+        assert rule["helpUri"].endswith(f"/docs/rules/{rule['id']}.md")
+        assert "**What to do.**" in rule["help"]["markdown"]
     by_rule = {r["ruleId"]: r for r in run["results"]}
     undefined = by_rule["CIT001"]
     assert undefined["level"] == "error"
