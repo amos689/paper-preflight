@@ -94,6 +94,11 @@ All notable changes to this project are documented here. The format follows
   now.
 - **`explain --lang zh` is Chinese throughout:** the severity and the fix were still printed in
   English ("warning", "unsafe").
+- **Nobody is named as left out of an author list when the record's "author" is no person:**
+  an affiliation a registry took for an author ("Ural Federal University", "Sandia National
+  Laboratories"), a placeholder ("Paper Authors"), a collaboration or a single name. Nor in
+  lists of more than 30, which citing authors shorten as they see fit. On the development
+  papers, 19 of the 46 names the info gave were of these kinds, and none is named now.
 
 The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3
 and heldout12:

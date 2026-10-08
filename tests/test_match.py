@@ -213,6 +213,15 @@ def test_authors_match_and_truncation(demo: dict[str, EntryInfo], cvpr: SourceRe
     dropped = check_authors(parse_authors("He, Kaiming and Zhang, Xiangyu and Sun, Jian"), cvpr)
     assert dropped.note == "some authors omitted"
     assert [name.split()[-1] for name in dropped.left_out] == ["Ren"]
+    # an affiliation or a placeholder in the record is nobody left out, nor is anyone in a
+    # collaboration's list of hundreds
+    for odd in ("Westbrook Polytechnic University, Northvale", "Paper Authors",
+                "The Fictional Survey Collaboration"):  # fmt: skip
+        record = replace(cvpr, authors=(cvpr.authors[0], Person(family=odd), cvpr.authors[1]))
+        assert check_authors(two, record).left_out == (), odd
+    many = tuple(Person(family=f"Quill{i}", given="Ada") for i in range(40))
+    crowd = replace(cvpr, authors=(cvpr.authors[0], *many, cvpr.authors[1]))
+    assert check_authors(two, crowd).left_out == ()
     assert (
         check_authors(parse_authors("He, Kaiming and Zhang, Xiangyu and others"), cvpr).status
         == "match"
