@@ -4124,3 +4124,359 @@ note = "The doi field is not in canonical form, as the finding says."
 [finding."2609.09769v1:Lee:1978:TQA:800025.1198348:REF017"]
 verdict = "correct"
 note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17956v3:brown2020language:REF015"]
+verdict = "correct"
+note = "arXiv 2005.14165 appeared in NeurIPS (2020) (dblp, same title and authors)."
+
+[finding."2609.17956v3:bleu2002:REF013"]
+verdict = "false_positive"
+note = "BLEU is ACL 2002 (40th Annual Meeting, July 2002), as cited; Crossref's record of 10.3115/1073083.1073135 gives 2001."
+
+[finding."2609.17956v3:rei2020comet:REF015"]
+verdict = "correct"
+note = "arXiv 2009.09025 appeared in EMNLP (1) (2020), DOI 10.18653/v1/2020.emnlp-main.213 (dblp, same title and authors)."
+
+[finding."2609.17956v3:tirumala2023d4:REF015"]
+verdict = "correct"
+note = "arXiv 2308.12284 appeared in NeurIPS (2023) (dblp, same title and authors)."
+
+[finding."2609.17956v3:shao2024balanceddatasamplinglanguage:REF015"]
+verdict = "correct"
+note = "arXiv 2402.14526 appeared in Findings of ACL 2024 (10.18653/v1/2024.findings-acl.833). The finding shows dblp's year as 2014, which is wrong; the advice is right."
+
+[finding."2609.17956v3:xie2023dataselectionlanguagemodels:REF015"]
+verdict = "correct"
+note = "arXiv 2302.03169 appeared in NeurIPS (2023) (dblp, same title and authors)."
+
+[finding."2609.17956v3:wan2024tntllmtextminingscale:REF015"]
+verdict = "correct"
+note = "arXiv 2403.12173 appeared in KDD (2024), DOI 10.1145/3637528.3671647 (dblp, same title and authors)."
+
+[finding."2609.17956v3:zeng2024chainoflayeriterativelypromptinglarge:REF015"]
+verdict = "correct"
+note = "arXiv 2402.07386 appeared in CIKM (2024), DOI 10.1145/3627673.3679608 (dblp, same title and authors)."
+
+[finding."2609.17956v3:sellam2020bleurtlearningrobustmetrics:REF015"]
+verdict = "correct"
+note = "arXiv 2004.04696 appeared in ACL (2020), DOI 10.18653/v1/2020.acl-main.704 (dblp, same title and authors)."
+
+[finding."2609.17956v3:SALTON1988513:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17956v3:chaganty2018price:REF012"]
+verdict = "false_positive"
+note = "The registry's title has a typo ('evalaution', as the ACL Anthology lists it); the entry spells it right."
+
+[finding."2609.18047v1:Montague1974:REF013"]
+verdict = "false_positive"
+note = "The entry cites the chapter in Formal Philosophy: Selected Papers of Richard Montague (Yale, 1974); the record compared is its reprint in De Gruyter's Logic and Philosophy for Linguists (1975)."
+
+[finding."2609.18047v1:alain2017understanding:REF015"]
+verdict = "correct"
+note = "arXiv 1610.01644 appeared at the ICLR 2017 workshop track (dblp); the entry cites the preprint (with 2018)."
+
+[finding."2609.18047v1:hewitt2019designing:REF015"]
+verdict = "correct"
+note = "arXiv 1909.03368 appeared in EMNLP/IJCNLP (1) (2019), DOI 10.18653/v1/d19-1275 (dblp, same title and authors)."
+
+[finding."2609.18047v1:fodor1988connectionism:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.18135v1:yao2025arctictext2sqlr1:REF015"]
+verdict = "correct"
+note = "arXiv 2505.20315 appeared in ACL (Findings) (2026), DOI 10.18653/v1/2026.findings-acl.1345 (dblp, same title and authors)."
+
+[finding."2609.18135v1:sheng2024hybridflow:REF015"]
+verdict = "correct"
+note = "arXiv 2409.19256 appeared in EuroSys (2025), DOI 10.1145/3689031.3696075 (dblp, same title and authors)."
+
+[finding."2609.18135v1:liu2025xiyan:REF015"]
+verdict = "correct"
+note = "arXiv 2507.04701 appeared in IEEE Trans. Knowl. Data Eng. (2026), DOI 10.1109/tkde.2026.3657851 (dblp, same title and authors)."
+
+[finding."2609.18135v1:gao2023dailsql:REF015"]
+verdict = "correct"
+note = "arXiv 2308.15363 appeared in Proc. VLDB Endow. (2024), DOI 10.14778/3641204.3641221 (dblp, same title and authors)."
+
+[finding."2609.18135v1:ma2025db:REF015"]
+verdict = "correct"
+note = "arXiv 2503.04959 appeared in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.1032 (dblp, same title and authors)."
+
+[finding."2609.18135v1:ma2025sqlr1:REF015"]
+verdict = "correct"
+note = "arXiv 2504.08600 appeared in NeurIPS (2025) (dblp, same title and authors)."
+
+[finding."2609.18135v1:xue2025simpletir:REF015"]
+verdict = "correct"
+note = "arXiv 2509.02479 appeared in ICLR (2026) (dblp, same title and authors)."
+
+[finding."2609.18135v1:xu2025not:REF015"]
+verdict = "correct"
+note = "arXiv 2504.13818 appeared in Trans. Mach. Learn. Res. (2026) (dblp, same title and authors)."
+
+[finding."2609.18135v1:zheng2025parallel:REF015"]
+verdict = "correct"
+note = "arXiv 2509.07980 appeared in ICLR (2026) (dblp, same title and authors)."
+
+[finding."2609.18135v1:wang2025beyond:REF015"]
+verdict = "correct"
+note = "arXiv 2506.01939 appeared in NeurIPS (2025) (dblp, same title and authors)."
+
+[finding."2609.18135v1:dong2025agentic:REF015"]
+verdict = "correct"
+note = "arXiv 2507.19849 appeared in ICLR (2026) (dblp, same title and authors)."
+
+[finding."2609.18135v1:du2025context:REF015"]
+verdict = "correct"
+note = "arXiv 2510.05381 appeared in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.1264 (dblp, same title and authors)."
+
+[finding."2609.17942v1:ren2025causal:REF003"]
+verdict = "false_positive"
+note = "The article exists: European Journal of Business, Economics & Management 1(4), 94-104 (2025), listed on IDEAS/RePEc; the journal has no DOIs and no queried source indexes it."
+
+[finding."2609.17943v1:ou2024lossless:REF011"]
+verdict = "false_positive"
+note = "Crossref's record has 'Prof. Tian' as Wenhong Tian's given name; the entry names him right."
+
+[finding."2609.17997v1:skean2025comparative:REF010"]
+verdict = "correct"
+note = "arXiv 2510.06640 is by Hoang et al.; none of the entry's three authors (Skean, Utkarsh, Kolter) wrote it."
+
+[finding."2609.17997v1:ChKaPeWa2023:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17997v1:wang2025oversmoothing:REF011"]
+verdict = "correct"
+note = "The ICLR 2025 paper is by Peihao Wang, Ruisi Cai, Yuehao Wang, Jiajun Zhu, Pragya Srivastava, Zhangyang Wang and Pan Li (dblp); the entry's other five names are not on it."
+
+[finding."2609.17997v1:waleffe2024empirical:REF011"]
+verdict = "correct"
+note = "The third author is Duncan Riach; the entry writes 'Riber'."
+
+[finding."2609.17997v1:merrill2024illusion:REF015"]
+verdict = "correct"
+note = "arXiv 2404.08819 appeared in ICML (2024) (dblp, same title and authors)."
+
+[finding."2609.17997v1:dosovitskiy2020image:REF015"]
+verdict = "correct"
+note = "arXiv 2010.11929 appeared in ICLR (2021) (dblp, same title and authors)."
+
+[finding."2609.17997v1:alcalde2024clustering:REF015"]
+verdict = "correct"
+note = "arXiv 2407.01602 appeared in SIAM J. Math. Data Sci. (2025), DOI 10.1137/24m167086x (dblp, same title and authors)."
+
+[finding."2609.17953v1:balasubramanian2025cotbias:REF015"]
+verdict = "correct"
+note = "arXiv 2505.23945 appeared in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.723 (dblp, same title and authors)."
+
+[finding."2609.17953v1:zhang2024countercurate:REF015"]
+verdict = "correct"
+note = "arXiv 2402.13254 appeared in Findings of ACL 2024 (10.18653/v1/2024.findings-acl.915); the year shown, 2014, comes from dblp's record and is wrong, the advice is right."
+
+[finding."2609.17953v1:zhang2025cf:REF015"]
+verdict = "correct"
+note = "arXiv 2506.17267 appeared in NeurIPS (2025) (dblp, same title and authors)."
+
+[finding."2609.17953v1:uppaal2025journey:REF015"]
+verdict = "correct"
+note = "arXiv 2512.12218 appeared in EACL (Volume 1: Long Papers) (2026), DOI 10.18653/v1/2026.eacl-long.194 (dblp, same title and authors)."
+
+[finding."2609.17953v1:liu2025counterfactual:REF015"]
+verdict = "correct"
+note = "arXiv 2507.23453 appeared in IJCNLP-AACL (long papers) (2025), DOI 10.18653/v1/2025.ijcnlp-long.33 (dblp, same title and authors)."
+
+[finding."2609.17953v1:ravi2024sam:REF015"]
+verdict = "correct"
+note = "arXiv 2408.00714 appeared in ICLR (2025) (dblp, same title and authors)."
+
+[finding."2609.17953v1:ma20253dsrbenchcomprehensive3dspatial:REF015"]
+verdict = "correct"
+note = "arXiv 2412.07825 appeared in ICCV (2025), DOI 10.1109/iccv51701.2025.00651 (dblp, same title and authors)."
+
+[finding."2609.18034v1:chen24mvsplat360::REF003"]
+verdict = "correct"
+note = "MVSplat360 (NeurIPS 2024) is titled 'MVSplat360: Feed-Forward 360 Scene Synthesis from Sparse Views' (arXiv); the entry's 'Benchmarking 360 Generalizable 3D Novel View Synthesis ...' is not its title."
+
+[finding."2609.18034v1:re10k:REF015"]
+verdict = "correct"
+note = "arXiv 1805.09817 appeared in ACM Trans. Graph. (2018), DOI 10.1145/3197517.3201323 (dblp, same title and authors)."
+
+[finding."2609.18034v1:mast3r:REF015"]
+verdict = "correct"
+note = "arXiv 2406.09756 appeared in ECCV (72) (2025), DOI 10.1007/978-3-031-73220-1_5 (dblp, same title and authors)."
+
+[finding."2609.18034v1:simeoni2025dinov3:REF015"]
+verdict = "correct"
+note = "arXiv 2508.10104 appeared in Trans. Mach. Learn. Res. (2026) (dblp, same title and authors)."
+
+[finding."2609.18034v1:hong2023lrm:REF015"]
+verdict = "correct"
+note = "arXiv 2311.04400 appeared in ICLR (2024) (dblp, same title and authors)."
+
+[finding."2609.18034v1:ye2024noposplat:REF015"]
+verdict = "correct"
+note = "arXiv 2410.24207 appeared in ICLR (2025) (dblp, same title and authors)."
+
+[finding."2609.18034v1:jiang2025rayzer:REF015"]
+verdict = "correct"
+note = "arXiv 2505.00702 appeared in ICCV (2025), DOI 10.1109/iccv51701.2025.00468 (dblp, same title and authors)."
+
+[finding."2609.18034v1:xia2024wildrgbd:REF015"]
+verdict = "correct"
+note = "arXiv 2401.12592 appeared in CVPR (2024), DOI 10.1109/cvpr52733.2024.02112 (dblp, same title and authors)."
+
+[finding."2609.18034v1:huang2025spfsplat:REF015"]
+verdict = "correct"
+note = "arXiv 2508.01171 appeared in ICCV (2025), DOI 10.1109/iccv51701.2025.02594 (dblp, same title and authors)."
+
+[finding."2609.18037v1:shaharabany2023autosam:REF011"]
+verdict = "correct"
+note = "AutoSAM's first author is Tal Shaharabany, not Tomer."
+
+[finding."2609.17969v1:shani2022surrogate:REF001"]
+verdict = "correct"
+note = "10.1145/3534678.3539112 is FederatedScope-GNN (KDD 2022), not the cited paper."
+
+[finding."2609.17969v1:zhou2019dien:REF011"]
+verdict = "correct"
+note = "DIEN (AAAI 2019) is by Zhou, Mou, Fan, Pi, Bian, Zhou, Zhu and Gai; Runpeng Cui is not an author."
+
+[finding."2609.17969v1:zhang2024survey:REF015"]
+verdict = "correct"
+note = "arXiv 2404.13501 appeared in ACM Trans. Inf. Syst. (2025), DOI 10.1145/3748302 (dblp, same title and authors)."
+
+[finding."2609.17969v1:zhong2023memorybank:REF015"]
+verdict = "correct"
+note = "arXiv 2305.10250 appeared in AAAI (2024), DOI 10.1609/aaai.v38i17.29946 (dblp, same title and authors)."
+
+[finding."2609.17969v1:wang2023longmem:REF015"]
+verdict = "correct"
+note = "arXiv 2306.07174 appeared in NeurIPS (2023) (dblp, same title and authors)."
+
+[finding."2609.17969v1:ning2024userllm:REF015"]
+verdict = "correct"
+note = "arXiv 2402.13598 appeared in WWW (Companion Volume) (2025), DOI 10.1145/3701716.3715463 (dblp, same title and authors)."
+
+[finding."2609.17969v1:chen2026trace:REF015"]
+verdict = "correct"
+note = "arXiv 2602.21230 appeared in WWW (2026), DOI 10.1145/3774904.3792738 (dblp, same title and authors)."
+
+[finding."2609.17969v1:li2026genair:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17969v1:qi2026trust:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17969v1:zhang2026semacdr:REF015"]
+verdict = "correct"
+note = "arXiv 2604.09551 appeared in WWW (2026), DOI 10.1145/3774904.3792651 (dblp, same title and authors)."
+
+[finding."2609.17983v1:pan2026kvflow:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-4208 is 2025. Same as xu2026mem."
+
+[finding."2609.17983v1:ye2026kvcomm:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-0605 is 2025."
+
+[finding."2609.17983v1:hcr:83:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.18118v1:Hundsdorfer2003:REF002"]
+verdict = "correct"
+note = "The entry's pmid field (25252005) is no PubMed record; the book (Springer, 2003) has no PMID."
+
+[finding."2609.18118v1:Pathiraja2024:REF013"]
+verdict = "correct"
+note = "The paper appeared in Phil. Trans. R. Soc. A in 2025 (10.1098/rsta.2024.0241); the entry cites the journal as accepted, 2024."
+
+[finding."2609.18118v1:halder_gradient_2017:REF015"]
+verdict = "correct"
+note = "arXiv 1710.00064 appeared in ACC (2018), DOI 10.23919/acc.2018.8431003 (dblp, same title and authors)."
+
+[finding."2609.19202v1:Kowalczyk2005:REF003"]
+verdict = "correct"
+note = "The NIPS 17 paper is titled 'Newscast EM' (dblp); the entry adds a subtitle the paper does not have, so its title is not the work's."
+
+[finding."2609.19202v1:managoli2025robust:REF015"]
+verdict = "correct"
+note = "arXiv 2504.19955 appeared in ISIT (2025), DOI 10.1109/isit63088.2025.11195580 (dblp, same title and authors)."
+
+[finding."2609.19202v1:ghosh2021:REF015"]
+verdict = "correct"
+note = "arXiv 2006.04088 appeared in NeurIPS (2020) (dblp, same title and authors)."
+
+[finding."2609.19202v1:dziugaite2015:REF015"]
+verdict = "correct"
+note = "arXiv 1505.03906 appeared in UAI (2015) (dblp, same title and authors)."
+
+[finding."2609.18631v1:knowles2014methods:REF003"]
+verdict = "false_positive"
+note = "The paper exists: Electronic Journal of Differential Equations, Conference 21 (2014), 235-246; the series has no DOIs and no queried source indexes it."
+
+[finding."2609.18631v1:chartrand2011numerical:REF014"]
+verdict = "false_positive"
+note = "ISRN Applied Mathematics was renamed International Scholarly Research Notices; the entry names the same journal by its later name."
+
+[finding."2609.21394v1:delis2013:REF011"]
+verdict = "false_positive"
+note = "The Frontiers paper is by Delis, Berret, Pozzo and Panzeri; Crossref's record lists Delis only."
+
+[finding."2609.17979v1:Hein2006:REF011"]
+verdict = "false_positive"
+note = "mEDRA's record lists all six authors but writes 'D&uuml;r W.' with an HTML entity, which was not decoded; the entry's Dür is on it."
+
+[finding."2609.17979v1:Sachdev2011:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17979v1:Nielsen2010:REF013"]
+verdict = "false_positive"
+note = "The 10th anniversary edition (2010) is right; Crossref's record has only Cambridge Core's online date, 2012. Same as heldout10's nielsen-chuang."
+
+[finding."2609.17991v1:stroblFourierFingerprintsAnsatzes2025:REF017"]
+verdict = "correct"
+note = "The doi field is not in canonical form, as the finding says."
+
+[finding."2609.17991v1:stroblFourierFingerprintsAnsatzes2025:REF013"]
+verdict = "correct"
+note = "Quantum Sci. Technol. published it in 2026 (Crossref, 10.1088/2058-9565/ae8df8); the entry cites the journal with 2025."
+
+[finding."2609.17991v1:Tur18:REF013"]
+verdict = "correct"
+note = "Physics Letters A 2019 (10.1016/j.physleta.2019.01.063) cited as 2018."
+
+[finding."2609.17991v1:Wan23:REF013"]
+verdict = "correct"
+note = "Physics Letters A 2026 (10.1016/j.physleta.2026.131849) cited as 2023."
+
+[finding."2609.17991v1:Sha20:REF013"]
+verdict = "correct"
+note = "Phys. Rev. Lett. 128, 180505 is 2022; the entry gives 2020."
+
+[finding."2609.18160v1:1999AJ....118.2797K:REF012"]
+verdict = "false_positive"
+note = "Crossref's title keeps the AAS markup '[CSC]i[/CSC]' for 'H I'; the entry's title is right."
+
+[finding."2609.18160v1:2020AJ....159...82B:REF011"]
+verdict = "false_positive"
+note = "ADS writes 'Santos, João F. C., Jr.', with 'Jr.' last; read as BibTeX's 'von Last, Jr, First', the given name became 'Jr.'. João F. C. Santos Jr. is on the record."
+
+[finding."2609.18160v1:2022MNRAS.509..272C:REF011"]
+verdict = "false_positive"
+note = "MNRAS 509, 272 lists Jaeyeon Kim (Crossref), as the entry does; the arXiv record compared names Jenny J. Kim."
+
+[finding."2609.18160v1:1997MNRAS.289..225S:REF011"]
+verdict = "false_positive"
+note = "Crossref's record misspells two authors ('R. J. Saul' for Sault, 'Stavely-Smith'); the entry spells them right."
+
+[finding."2609.18291v1:li2023survey:REF015"]
+verdict = "correct"
+note = "arXiv 2311.12399 appeared in IJCAI (2024) (dblp, same title and authors)."
