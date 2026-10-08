@@ -624,6 +624,17 @@ def test_a_team_is_one_author_named_by_its_project() -> None:
     assert not other.first_author_match
 
 
+def test_a_title_deposited_as_a_given_name_is_no_name() -> None:
+    # Crossref's "Prof." for Wenhong Tian (10.18653/v1/2024.naacl-industry.2, 2609.17943v1)
+    assert Person.from_parts("Prof.", "Tian") == Person("Tian", "")
+    assert Person.from_parts("Prof. Dr. Anna", "Schmidt") == Person("Schmidt", "Anna")
+    assert Person.from_parts("Drew", "Bagnell").given == "Drew"  # a name, not "Dr."
+    record = SourceRecord(source="crossref", source_id="x", title="t",
+                          authors=(Person.from_parts("Prof.", "Tian"),))  # fmt: skip
+    check = check_authors(parse_authors("Tian, Wenhong"), record)
+    assert (check.missing, check.renamed) == ((), ())
+
+
 @pytest.mark.parametrize(
     ("written", "recorded"),
     [

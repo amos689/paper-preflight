@@ -11,6 +11,8 @@ _SUFFIXES = {"jr", "jr.", "sr", "sr.", "ii", "iii", "iv"}
 # An affiliation mark deposited as part of a family name: "Asmussen c" (Crossref, Albrecher,
 # Asmussen & Kortschak 2006), "Smith*"-style marks written apart
 _AFFILIATION_MARK = re.compile(r"[a-z]|[*†‡§¶]+|\d{1,2}")
+# Titles deposited as given names: "Prof." (Crossref, 10.18653/v1/2024.naacl-industry.2)
+_HONORIFIC = re.compile(r"^(?:(?:Prof|Dr|Professor|Mr|Mrs|Ms)\.?(?:\s+|$))+", re.I)
 # Letters deposited as look-alike symbols: "S⊘ren" for Søren (the same record)
 _MISENCODED = str.maketrans({"⊘": "ø"})
 # Last words that make a display name a group, not a person ("Gemma Team" on arXiv 2503.19786,
@@ -54,7 +56,7 @@ _EMBEDDED_DOCUMENT_RE = re.compile(
 # TELESCOPE[/ITAL][ITAL]Hubble Space Telescope[/ITAL] Observations of the C[CLC]f[/CLC]A ...",
 # where a phrase in capitals is followed by the same phrase in its usual case.
 _AAS_REPEAT_RE = re.compile(r"\[(ITAL|BOLD|SC)\]([^\[\]]+)\[/\1\]\s*\[\1\]([^\[\]]+)\[/\1\]")
-_AAS_TAG_RE = re.compile(r"\[/?(?:ITAL|BOLD|ROM|CLC|SC|SUP|SUB|TT)\]")
+_AAS_TAG_RE = re.compile(r"\[/?(?:ITAL|BOLD|ROM|CLC|CSC|SC|SUP|SUB|TT)\]")
 
 
 def _aas_repeat(match: re.Match[str]) -> str:
@@ -122,8 +124,10 @@ class Person:
         """A registry's given and family name. A generational suffix in the family name
         ("Davidson Jr.", Crossref) and a name repeated in its original script are dropped.
         """
-        given, family = _romanised(collapse(given or "")), _romanised(collapse(family or ""))
+        given, family = (html.unescape(collapse(part or "")) for part in (given, family))
+        given, family = _romanised(given), _romanised(family)
         given, family = given.translate(_MISENCODED), family.translate(_MISENCODED)
+        given = _HONORIFIC.sub("", given)  # Crossref's "Prof." for Wenhong Tian
         parts = family.split(" ")
         while len(parts) > 1 and (
             parts[-1].lower().strip(",") in _SUFFIXES or _AFFILIATION_MARK.fullmatch(parts[-1])

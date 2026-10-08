@@ -527,6 +527,26 @@ def _missing_everywhere(
     return [name for name in missing if name not in found]
 
 
+_SUFFIX_AS_GIVEN = re.compile(r"(?:Jr|Sr|II|III|IV)\.?\s", re.I)
+
+
+def _renamed_everywhere(
+    info: EntryInfo, renamed: tuple[tuple[str, str], ...], others: tuple[SourceRecord, ...]
+) -> tuple[tuple[str, str], ...]:
+    """The entry's people named otherwise on the bound record and on no other record of the
+    work: arXiv 2010.13788 names Jenny J. Kim where MNRAS 509, 272 (Crossref) has the entry's
+    Jaeyeon Kim."""
+    named_right = {
+        ours
+        for record in others
+        if record.source not in AUTHORS_NOT_CHECKED_AGAINST
+        for check in (check_authors(info.authors, record),)
+        for ours, _ in renamed
+        if ours not in check.missing and all(o != ours for o, _ in check.renamed)
+    }
+    return tuple(pair for pair in renamed if pair[0] not in named_right)
+
+
 def _field_findings(
     entry: BibEntry,
     info: EntryInfo,
@@ -600,8 +620,9 @@ def _field_findings(
     elif (
         authors.status in {"mismatch", "variant"}
         and (_missing_everywhere(info, authors.missing, others) or not authors.first_author_match)
-    ) or authors.renamed:
+    ) or _renamed_everywhere(info, authors.renamed, others):
         names = _missing_everywhere(info, authors.missing, others)
+        renamed = _renamed_everywhere(info, authors.renamed, others)
         details: list[tuple[str, str]] = []
         if names:
             en, zh = ", ".join(names), "、".join(names)
@@ -609,11 +630,23 @@ def _field_findings(
         if not authors.first_author_match and record.authors:
             first = record.authors[0].display
             details.append((f"the first author is {first}", f"第一作者应为 {first}"))
-        if authors.renamed:
+        suffixed = [pair for pair in renamed if _SUFFIX_AS_GIVEN.match(pair[0])]
+        renamed_otherwise = [pair for pair in renamed if pair not in suffixed]
+        if renamed_otherwise:
             # the surname is right, the person is not (HALLMARK's "Aviral" for Archit Sharma)
-            en = ", ".join(f"{ours} (recorded: {theirs})" for ours, theirs in authors.renamed)
-            zh = "、".join(f"{ours}（记录为 {theirs}）" for ours, theirs in authors.renamed)
+            en = ", ".join(f"{ours} (recorded: {theirs})" for ours, theirs in renamed_otherwise)
+            zh = "、".join(f"{ours}（记录为 {theirs}）" for ours, theirs in renamed_otherwise)
             details.append((f"other given names: {en}", f"名字不同：{zh}"))
+        for ours, theirs in suffixed:
+            # ADS's "Santos, João F. C., Jr.": BibTeX's form is "von Last, Jr, First", so the
+            # suffix is read as the given name and the list prints "Jr. Santos"
+            details.append(
+                (
+                    f"'{ours}' has the suffix as its given name: write 'Last, Jr., First' "
+                    f"(recorded: {theirs})",
+                    f"'{ours}' 把后缀当成了名字：应写成 'Last, Jr., First'（记录为 {theirs}）",
+                )
+            )
         # Found by journal, volume and page, with the right first author, on a record that lists
         # fewer people than the entry: Crossref's records of older articles often stop short
         # (Biometrika 85(2) 379 without Vohra, MNRAS 441, 2986 without Wadsley), and no other
@@ -621,7 +654,7 @@ def _field_findings(
         # authors only. Worth a look, not a warning.
         short_record = (
             (coordinates and len(record.authors) < len(info.authors.people)) or latest_version_only
-        ) and (authors.first_author_match and not authors.renamed)
+        ) and (authors.first_author_match and not renamed)
         if latest_version_only and short_record:
             details.append(
                 (
@@ -942,7 +975,12 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
             _field_findings(
                 entry, info, bound, published_known=published_known,
                 coordinates=evidence.by_coordinates,
-                others=tuple(m.record for m in same if m is not bound),
+                # OpenAlex's record of the entry's DOI too: Crossref's record of Frontiers'
+                # 10.3389/fncom.2013.00008 lists one of its four authors, OpenAlex all four
+                others=(
+                    *(m.record for m in same if m is not bound),
+                    *(r for r in evidence.status_records if same_doi(r, bound.record)),
+                ),
                 latest_version_only=(
                     "arxiv" in evidence.substituted
                     and bound.record.source == "datacite"
@@ -1225,3 +1263,7 @@ def run_findings(evidence: dict[str, Evidence]) -> list[Finding]:
             )
         )  # fmt: skip
     return findings
+
+
+def same_doi(a: SourceRecord, b: SourceRecord) -> bool:
+    return bool(a.doi) and a.doi == b.doi

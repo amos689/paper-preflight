@@ -7,6 +7,7 @@ mEDRA, JaLC, KISTI, CNKI, ISTIC, ...) owns each DOI, or that the DOI does not ex
 
 from __future__ import annotations
 
+import html
 from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any
@@ -118,13 +119,18 @@ async def handle_exists(client: SourceClient, doi: str) -> bool | None:
     return True if code == 1 else (False if code == 100 else None)
 
 
+def _unescaped(text: str) -> str:
+    """mEDRA's CSL keeps HTML entities: "D&uuml;r W.", "&ldquo;Enrico Fermi&rdquo;"."""
+    return collapse(html.unescape(text))
+
+
 def parse_csl(doi: str, csl: dict[str, Any], agency: str) -> SourceRecord:
     """Normalise a CSL-JSON record from doi.org content negotiation."""
     title = csl.get("title") or ""
     if isinstance(title, list):
         title = title[0] if title else ""
     authors = tuple(
-        Person(literal=collapse(a["literal"]), family=collapse(a["literal"]))
+        Person(literal=_unescaped(a["literal"]), family=_unescaped(a["literal"]))
         if "literal" in a
         else Person.from_parts(a.get("given"), a.get("family"))
         for a in csl.get("author", [])
@@ -138,6 +144,8 @@ def parse_csl(doi: str, csl: dict[str, Any], agency: str) -> SourceRecord:
     container = csl.get("container-title") or None
     if isinstance(container, list):
         container = container[0] if container else None
+    if container:
+        container = _unescaped(str(container))
     return SourceRecord(
         source=f"doiorg:{agency.lower()}",
         source_id=doi.lower(),

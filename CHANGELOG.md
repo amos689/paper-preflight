@@ -47,8 +47,25 @@ are no longer reported, and one now names the right published version.
 - A preprint's title that differs from an entry citing a journal's volume and pages is a hint:
   titles change on publication (REF012).
 
-Not fixed: Nielsen & Chuang's 2010 edition, whose Crossref record has only Cambridge Core's
-2012 online date (REF013).
+Five of the thirteen false positives on the twelfth batch (heldout11), and one more of
+heldout10's:
+
+- Registries' records with errors of their own: mEDRA's HTML entities ("D&uuml;r W.") are
+  decoded; "Prof." or "Dr." deposited as a given name is no name (REF011); the AAS journals'
+  `[CSC]` markup is dropped from titles (REF012); a Cambridge Books Online record, which
+  carries only the date a printed book went online (Nielsen & Chuang's 2010 edition, "2012"),
+  has no year to compare (REF013).
+- A person named otherwise on one record of the work but as the entry has it on another (arXiv
+  2010.13788's Jenny J. Kim, MNRAS's Jaeyeon Kim) is not reported; OpenAlex's record of the
+  entry's DOI now counts among the work's records (REF011).
+- dblp's year is corrected when its key and the DOI agree on another: it files Findings of ACL
+  2024 papers under 2014 (REF015's message).
+- A name whose suffix BibTeX reads as the given name (ADS's "Santos, João F. C., Jr.") is still
+  reported, now saying so: write it "Last, Jr., First" (REF011).
+
+Not fixed: registries' short author lists and misspelt names, a typo in a registry's title, a
+year a registry has wrong (BLEU, 2001), real works no source indexes, a chapter compared with
+its reprint, and a journal cited by its later name.
 
 ## [0.5.3] - 2026-10-08
 

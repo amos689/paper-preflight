@@ -666,6 +666,27 @@ def test_a_preprints_title_is_a_hint_against_a_cited_journal_version() -> None:
     assert [f.severity for f in found.findings if f.rule_id == "REF012"] == [Severity.WARNING]
 
 
+def test_a_name_another_record_of_the_work_has_right_is_not_reported() -> None:
+    # 2022MNRAS.509..272C: arXiv names Jenny J. Kim, MNRAS (Crossref) the entry's Jaeyeon Kim
+    entry = bib(CS_ENTRY.replace("Lee, Carol", "Kim, Jaeyeon"))
+    jenny = Person("Kim", "Jenny J.")
+    preprint = replace(arxiv_record(), authors=(ANN, BOB, jenny))
+    journal = record(authors=(ANN, BOB, Person("Kim", "Jaeyeon")))
+    both = assess(entry, evidence_for(entry, anchored=[preprint, journal]), current_year=YEAR)
+    assert "REF011" not in rules(both)
+    wrong = replace(journal, authors=(ANN, BOB, jenny))
+    alone = assess(entry, evidence_for(entry, anchored=[wrong]), current_year=YEAR)
+    assert "REF011" in rules(alone)
+
+
+def test_a_suffix_read_as_the_given_name_is_explained() -> None:
+    # ADS's "Santos, João F. C., Jr.": BibTeX reads "Jr." as the given name
+    entry = bib(CS_ENTRY.replace("Lee, Carol", "Lee, Carol, Jr."))
+    result = assess(entry, evidence_for(entry, anchored=[record()]), current_year=YEAR)
+    (finding,) = [f for f in result.findings if f.rule_id == "REF011"]
+    assert "has the suffix as its given name: write 'Last, Jr., First'" in finding.message.en
+
+
 def test_a_preprint_servers_copy_may_be_years_from_its_paper() -> None:
     # Cryptology ePrint Archive 2015/193 is the CHES 2013 paper (2609.09582v2, bigou-tisserand15)
     eprint = "howpublished = {Cryptology ePrint Archive, Paper 2015/193}"

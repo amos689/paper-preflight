@@ -83,6 +83,14 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     years = {
         y for y in (_year(item, k) for k in ("issued", "published-print", "published-online")) if y
     }
+    if (
+        doi.startswith("10.1017/cbo")
+        and item.get("type") in _BOOK_TYPES
+        and not item.get("published-print")
+    ):
+        # Cambridge Books Online put printed books online years later and deposited only that
+        # date: 10.1017/cbo9780511976667 is Nielsen & Chuang's 2010 edition, "2012". No year.
+        years = set()
     # Early access: IEEE and others put an article online a year or more before its issue but
     # deposit no online date, only the DOI's creation (DOI 10.1109/tpami.2023.3330794: online
     # November 2023, issue April 2024). Authors cite either year.
@@ -172,7 +180,7 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         source_id=doi,
         title=title,
         authors=tuple(authors),
-        year=_year(item, "issued") or (min(years) if years else None),
+        year=(_year(item, "issued") if years else None) or (min(years) if years else None),
         years=frozenset(years),
         venue=venue,
         work_type=item.get("type"),

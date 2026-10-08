@@ -135,6 +135,8 @@ def parse_full_records(payload: Any) -> dict[str, SourceRecord]:
 
 
 _KEY_YEAR_RE = re.compile(r"(\d{2})[a-z]?$")
+# a year in a DOI's suffix: the ACL Anthology's "10.18653/v1/2024.findings-acl.833"
+_DOI_YEAR = re.compile(r"/(?:v\d+/)?((?:19|20)\d\d)\.")
 
 
 def key_year(key: str, year: int | None) -> int | None:
@@ -176,6 +178,17 @@ def records_from_rows(rows: Iterable[dict[str, str]]) -> dict[str, SourceRecord]
             else:
                 identifiers["doi"] = doi
         year = int(row["year"]) if row.get("year", "").isdigit() else None
+        doi_year = _DOI_YEAR.search(identifiers.get("doi", ""))
+        key_digits = _KEY_YEAR_RE.search(key.rsplit("/", 1)[-1])
+        if (
+            year is not None
+            and doi_year is not None
+            and key_digits is not None
+            and int(doi_year.group(1)) % 100 == int(key_digits.group(1))
+            and abs(int(doi_year.group(1)) - year) >= 2
+        ):
+            # dblp files "conf/acl/ShaoLF0LQ24" (10.18653/v1/2024.findings-acl.833) under 2014
+            year = int(doi_year.group(1))
         work_type = row.get("type", "").rsplit("#", 1)[-1].lower() or None
         records[key] = SourceRecord(
             source="dblp",

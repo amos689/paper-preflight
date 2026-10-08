@@ -305,6 +305,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #161 | A4、A5、A3：提速与发布自动化。Crossref 礼貌池按其应答头宣布的配额（每秒 3 次、并发 3）请求，任何数据源宣布更严的配额时立即放慢；S2 兜底不再等全部标题检索结束，某条目的 dblp 与 Crossref 都答完就问。冷缓存 75 条的论文：66 秒 → 32 秒（每条 0.89 → 0.43 秒），十一批回放结果不变。release.yml 加 MCP Registry 发布（GitHub OIDC，钉住 mcp-publisher v1.8.1 并校验 SHA256），发版不再需要设备码；`scripts/bump_version.py` 一次改完所有版本号并开 CHANGELOG 小节，测试同时检查 space 的版本。A3 熔断原已有（失败后冷却 10 分钟），不另做 |
 | #162 | A6：`evals/replay.py`（逐批回放并与基线比较，带复核结论）与 `evals/review_list.py`（未复核的报警清单）进仓库，evals/README 写明改动的检验方法 |
 | #163 | 第十二批 heldout11（0.6.0 的保留集，只跑一次）：868 条、89 个报警、76 个真问题、13 个误报、0 个不确定，每百条 1.50，**恰在 1.5 的门槛上**（初判 14 个误报、1.6；ADS 的 'Santos, João F. C., Jr.' 按博物馆 real-1991rc3-corwin 的先例改判为真问题：BibTeX 会把 'Jr.' 当名字。因改判发生在看到结果之后，0.6.0 仍在 heldout12 上再测一次）。实跑每条 0.48 秒（heldout10 是 1.22）。误报：登记处记录自身的错误 8（作者不全、名字拼错或写成 'Prof.'、HTML 实体、AAS 的 [CSC] 标记、标题错字、BLEU 记成 2001、剑桥 2012 的上线日期）、无索引的真实作品 2、章节与重印本 1、期刊改名 1、拿 arXiv 作者表代替期刊版 1。另：dblp 把两篇 ACL Findings 2024 记成 2014（REF015 文字里的年份错）。冻结第十三批 heldout12（2026-09-23..29）|
+| #164 | heldout11 的 13 个误报修掉 5 个（另修 heldout10 的 nielsen-chuang）：mEDRA 名字里的 HTML 实体、登记处把 'Prof.'/'Dr.' 当名字、AAS 的 [CSC] 标记、剑桥 Books Online 只有上线日期的书不比年份、一份记录写错名字而作品的另一份记录（含 OpenAlex 对该 DOI 的记录）写对时不报、dblp 的年份在键与 DOI 一致反驳时更正；'Jr.' 被 BibTeX 当成名字时 REF011 说明原因。十二批回放：去掉 6 个误报和 1 个不确定，无新增；HALLMARK 两个划分逐条不变，GPTZero 不变；博物馆加 5 例。不修：登记处作者不全/拼错、标题错字、年份错、无索引的真实作品、重印本、期刊改名 |
 
 ## 下一步
 
