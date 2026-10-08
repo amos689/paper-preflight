@@ -1524,3 +1524,38 @@ source = "real_papers:2609.09729v1"
 key = "Sersic2"
 expect = []
 note = "was REF012 (warning): A&A 352, 447 cited with its own title; arXiv's preprint adds 'luminosity'. Now a hint."
+
+[[case]]
+name = "fp-ou2024-prof-as-given-name"
+source = "real_papers:2609.17943v1"
+key = "ou2024lossless"
+expect = []
+note = "was REF011: Crossref's record gives 'Prof.' as Wenhong Tian's given name."
+
+[[case]]
+name = "fp-hein2006-medra-html-entity"
+source = "real_papers:2609.17979v1"
+key = "Hein2006"
+expect = []
+note = "was REF011: mEDRA's CSL writes 'D&uuml;r W.', an HTML entity that was not decoded."
+
+[[case]]
+name = "fp-nielsen2010-cambridge-books-online"
+source = "real_papers:2609.17979v1"
+key = "Nielsen2010"
+expect = []
+note = "was REF013: Cambridge Books Online's record of the 2010 edition carries only its 2012 online date."
+
+[[case]]
+name = "fp-kim1999-aas-csc-markup"
+source = "real_papers:2609.18160v1"
+key = "1999AJ....118.2797K"
+expect = []
+note = "was REF012: Crossref's title keeps the AAS markup '[CSC]i[/CSC]' for 'H I'."
+
+[[case]]
+name = "fp-chevance2022-arxiv-kim-vs-journal"
+source = "real_papers:2609.18160v1"
+key = "2022MNRAS.509..272C"
+expect = []
+note = "was REF011: arXiv names Jenny J. Kim where MNRAS (Crossref) has the entry's Jaeyeon Kim; a name is reported only when no record of the work has it."

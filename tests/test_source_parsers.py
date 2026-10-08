@@ -208,6 +208,46 @@ def test_csl_parsing() -> None:
     assert record.authors[0].family == "Vaswani"
 
 
+def test_csl_html_entities_are_decoded() -> None:
+    # mEDRA's CSL for 10.3254/978-1-61499-018-5-115 (2609.17979v1, Hein2006)
+    csl = {
+        "title": "Entanglement in graph states and its applications",
+        "author": [{"literal": "Hein M."}, {"literal": "D&uuml;r W."}],
+        "container-title": "International School of Physics &ldquo;Enrico Fermi&rdquo;",
+        "issued": {"date-parts": [[2006]]},
+    }
+    record = doiorg.parse_csl("10.3254/978-1-61499-018-5-115", csl, "mEDRA")
+    assert [p.display for p in record.authors] == ["Hein M.", "Dür W."]
+    assert record.venue == "International School of Physics “Enrico Fermi”"
+
+
+def test_dblp_year_the_key_and_doi_contradict() -> None:
+    # dblp files conf/acl/ShaoLF0LQ24 (Findings of ACL 2024) under 2014
+    key = "conf/acl/ShaoLF0LQ24"
+    row = {"pub": dblp.REC + key, "title": "Balanced Data Sampling", "year": "2014",
+           "doi": "https://doi.org/10.18653/V1/2024.FINDINGS-ACL.833"}  # fmt: skip
+    assert dblp.records_from_rows([row])[key].year == 2024
+    # the key alone, or a DOI without a year, changes nothing
+    alone = {**row, "doi": "https://doi.org/10.1145/3219819.3220064"}
+    assert dblp.records_from_rows([alone])[key].year == 2014
+
+
+def test_crossref_cambridge_books_online_date_is_no_year() -> None:
+    # 10.1017/cbo9780511976667: Nielsen & Chuang's 2010 edition, deposited with its 2012 date
+    item = {
+        "DOI": "10.1017/CBO9780511976667", "type": "monograph",
+        "title": ["Quantum Computation and Quantum Information"],
+        "issued": {"date-parts": [[2012, 6, 5]]},
+        "published-online": {"date-parts": [[2012, 6, 5]]},
+    }  # fmt: skip
+    record = crossref.parse_work(item)
+    assert (record.year, record.years) == (None, frozenset())
+    printed = crossref.parse_work({**item, "published-print": {"date-parts": [[2010, 12, 9]]}})
+    assert 2010 in printed.years
+    other = crossref.parse_work({**item, "DOI": "10.1017/9781108627771"})
+    assert other.year == 2012
+
+
 @pytest.mark.parametrize(
     ("raw", "plain"),
     [
@@ -243,6 +283,10 @@ def test_csl_parsing() -> None:
             "Hubble Space Telescope Observations of the CfA Seyfert 2 Galaxies",
         ),
         ("[ITAL]A[/ITAL][ITAL]B[/ITAL] and M[SUB]sun[/SUB]", "A B and Msun"),
+        (
+            "H [CSC]i[/CSC] Shells in the Large Magellanic Cloud",
+            "H i Shells in the Large Magellanic Cloud",
+        ),
         # UTF-8 read as Latin-1 (10.1111/j.1365-2966.2009.15736.x, an em space), and a font
         # switch whose argument is no text (10.1046/j.1365-8711.2001.04912.x)
         ("NLTE analysis of Coâ\u0080\u0083i lines", "NLTE analysis of Co i lines"),
