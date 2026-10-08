@@ -535,6 +535,21 @@ def test_a_preprint_its_venue_says_it_is(journal: str, reported: bool) -> None:
     assert ("REF013" in rules(assess(entry, item, current_year=YEAR))) is reported
 
 
+def test_an_author_on_another_version_a_search_found() -> None:
+    # dblp's CoRR record of LLaVA-OneVision lacks Peiyuan Zhang; its TMLR record has him
+    entry = bib(CS_ENTRY)
+    corr = record(authors=(ANN, BOB), source="dblp", venue="CoRR")
+    tmlr = record(source="dblp", year=2024, venue="TMLR")
+    found = rules(assess(entry, evidence_for(entry, anchored=[corr]), current_year=YEAR))
+    assert "REF011" in found
+    item = evidence_for(entry, anchored=[corr], candidates=[tmlr])
+    assert "REF011" not in rules(assess(entry, item, current_year=YEAR))
+    # another work's people are no evidence: a record led by someone else
+    other = record(authors=(CAROL, ANN, BOB), source="dblp", year=2024, venue="TMLR")
+    item = evidence_for(entry, anchored=[corr], candidates=[other])
+    assert "REF011" in rules(assess(entry, item, current_year=YEAR))
+
+
 def test_an_arxiv_number_names_no_issuer() -> None:
     for eprint in ("2401.01234", "hep-th/9901001", "arXiv:2401.01234"):
         entry = bib(f"@techreport{{x, title = {{T}}, eprint = {{{eprint}}}, year = 2024}}")

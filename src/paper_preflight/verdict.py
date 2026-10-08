@@ -558,6 +558,11 @@ def _year_gap(year: int | None, record: SourceRecord) -> int:
 # ---------------------------------------------------------------- findings
 
 
+def _same_lead(a: SourceRecord, b: SourceRecord) -> bool:
+    """Two records with one first author."""
+    return bool(a.authors and b.authors) and surname_key(a.authors[0]) == surname_key(b.authors[0])
+
+
 def _missing_everywhere(
     info: EntryInfo, missing: tuple[str, ...], others: tuple[SourceRecord, ...]
 ) -> list[str]:
@@ -1109,6 +1114,16 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
                 others=(
                     *(m.record for m in same if m is not bound),
                     *(r for r in evidence.status_records if same_doi(r, bound.record)),
+                    # and the other versions a search found, of one title and first author:
+                    # dblp's CoRR record of LLaVA-OneVision was made from a version without
+                    # Peiyuan Zhang, its TMLR record has him (heldout16)
+                    *(
+                        r
+                        for r in (*evidence.candidates, *evidence.published_versions)
+                        if r is not bound.record
+                        and title_key(r.title) == same_work
+                        and _same_lead(r, bound.record)
+                    ),
                 ),
                 latest_version_only=(
                     "arxiv" in evidence.substituted

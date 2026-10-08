@@ -576,6 +576,9 @@ def test_only_venue_names_are_judged() -> None:
         ("Korbak, Tomek", "Korbak, Tomasz", False),  # a Polish diminutive
         ("Spiridonov, Aleksandar", "Spiridonov, Alexander", False),
         ("Levine, Sergey", "Levine, Sergei", False),
+        ("Makarov, Iurii", "Makarov, Yuri", False),  # arXiv and dblp romanise him otherwise
+        ("Ivanov, Dmitriy", "Ivanov, Dmitri", False),
+        ("Petrov, Iuliia", "Petrov, Yulia", False),
         ("{OpenAI}", "{OpenAI}", False),
         ("Ren, Freddy", "Ren, Frederic", False),  # Crossref's Frederic Ren
         ("Chen, Ricky T. Q.", "Chen, Tian Qi", False),  # dblp's Tian Qi Chen
@@ -803,6 +806,56 @@ def test_names_a_registry_put_the_other_way_round() -> None:
     assert not check.disjoint
     # other people stay other people
     assert check_authors(parse_authors("Wu, Dan and Ito, Ken"), record).disjoint
+
+
+def test_a_letter_a_registry_lost_in_a_long_surname() -> None:
+    # Crossref and arXiv have "Trakhenbrot" for B. Trakhtenbrot (ApJ 819, 62; heldout16)
+    record = SourceRecord(
+        source="crossref", source_id="10.3847/0004-637x/819/1/62", title="Chandra COSMOS",
+        authors=(Person("Civano", "F."), Person("Toft", "S."), Person("Trakhenbrot", "B.")),
+    )  # fmt: skip
+    written = parse_authors("{Civano}, F. and {Toft}, S. and {Trakhtenbrot}, B.")
+    assert check_authors(written, record).missing == ()
+    # not in a short surname, nor between other initials
+    short = replace(record, authors=(Person("Civano", "F."), Person("Tof", "S.")))
+    assert check_authors(parse_authors("{Civano}, F. and {Toft}, S."), short).missing
+    other = parse_authors("{Civano}, F. and {Toft}, S. and {Trakhtenbrot}, R.")
+    assert check_authors(other, record).missing == ("R. Trakhtenbrot",)
+
+
+def test_a_record_crediting_only_a_group() -> None:
+    # dblp's record of arXiv 2503.20020 lists only "Gemini Robotics Team" (heldout16)
+    record = SourceRecord(
+        source="dblp", source_id="journals/corr/abs-2503-20020", title="Gemini Robotics",
+        authors=(Person("Team", "Gemini Robotics"),),
+    )  # fmt: skip
+    written = parse_authors("Team, Gemini Robotics and Abeyruwan, Saminda and Ainslie, Joshua")
+    assert check_authors(written, record).status == "unknown"
+
+
+def test_a_group_by_its_acronym() -> None:
+    # arXiv 2505.10574, credited to "{ROTAC} and {CCSDC}" (heldout16)
+    record = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2505.10574", title="Roman Observations",
+        authors=(Person("Committee", "Roman Observations Time Allocation"),
+                 Person("Committees", "Core Community Survey Definition")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("{ROTAC} and {CCSDC}"), record)
+    assert (check.status, check.first_author_match) == ("match", True)
+    assert check_authors(parse_authors("{NASA} and {ESA}"), record).disjoint
+
+
+def test_the_organisation_an_entry_credits_named_in_the_records_title() -> None:
+    # arXiv 2601.03267, "OpenAI GPT-5 System Card", lists 486 people (heldout16)
+    record = SourceRecord(
+        source="arxiv", source_id="2601.03267", title="OpenAI GPT-5 System Card",
+        authors=(Person("Singh", "Aaditya"), Person("Fry", "Adam")), year=2025,
+    )  # fmt: skip
+    entry = parse_bib_text(
+        "@article{gpt5, title={{GPT-5} System Card}, author={{OpenAI}}, year={2025}}", Path("x.bib")
+    ).entries[0]
+    m = evaluate(EntryInfo.from_entry(entry), record)
+    assert (m.title.status, m.authors.status) == ("match", "unknown")
 
 
 def test_a_solar_symbol_is_the_word_sun() -> None:

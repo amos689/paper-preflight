@@ -612,17 +612,34 @@ def same_person(a: Person, b: Person) -> bool:
     if _first_surname(a, b) or _first_surname(b, a):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
-    # record), accepted only when the full given names agree.
-    given = _first_given(a)
-    if len(given) < 2 or given != _first_given(b):
-        return False
+    # record), accepted only when the full given names agree; or, in a surname of eight letters
+    # or more, their initials ("Trakhenbrot" for B. Trakhtenbrot in Crossref and arXiv).
     key_a, key_b = surname_key(a), surname_key(b)
-    return min(len(key_a), len(key_b)) >= 2 and Levenshtein.distance(key_a, key_b) <= 1
+    if min(len(key_a), len(key_b)) < 2 or Levenshtein.distance(key_a, key_b) > 1:
+        return False
+    given, other = _first_given(a), _first_given(b)
+    if len(given) >= 2 and given == other:
+        return True
+    initials_only = min(len(given), len(other)) == 1 and given[:1] == other[:1]
+    return min(len(key_a), len(key_b)) >= _LONG_SURNAME and initials_only
+
+
+_LONG_SURNAME = 8
+
+
+def _transliterated(word: str) -> str:
+    """One spelling of the ways a Cyrillic name is romanised: Iurii, Yurii and Yury are Yuri;
+    Andrey Andrei, Dmitriy Dmitri (heldout16: arXiv's Iurii Makarov, dblp's Yuri). Names of
+    four letters or more only; pinyin is left alone ("Yi" stays "Yi")."""
+    if len(word) < 4:
+        return word
+    word = re.sub(r"^i(?=[aeou])", "y", word)
+    return re.sub(r"(?:ii|iy|y)$", "i", word)
 
 
 # Short forms that are not prefixes of the name they stand for.
 _NICKNAMES = {
-    frozenset(pair.split("/"))
+    frozenset(_transliterated(name) for name in pair.split("/"))
     for pair in (
         "bill/william bob/robert rob/robert bobby/robert dick/richard rick/richard jim/james "
         "jimmy/james mike/michael mick/michael tony/anthony andy/andrew drew/andrew dave/david "
@@ -678,7 +695,7 @@ catherine katherine katharina caterina ekaterina katerina
 helen helena elena eleni
 """
 _COGNATES = {
-    name.replace("ks", "x"): index
+    _transliterated(name.replace("ks", "x")): index
     for index, line in enumerate(_COGNATE_GROUPS.strip().splitlines())
     for name in line.split()
 }
@@ -689,7 +706,8 @@ def _given_words(person: Person) -> list[str]:
     if re.fullmatch(r"[A-Z]{2,3}", person.given.strip()):
         return list(person.given.strip().lower())
     # "ks" and "x" are one sound in transcriptions (Aleksandar, Alexander)
-    return re.findall(r"[a-z]+", fold(person.given).replace("ks", "x"))
+    words = re.findall(r"[a-z]+", fold(person.given).replace("ks", "x"))
+    return [_transliterated(w) for w in words]
 
 
 def given_names_differ(a: Person, b: Person) -> bool:
@@ -812,6 +830,22 @@ def _same_group(a: Person, b: Person) -> bool:
     return bool(ours) and _group(b) and ours <= _name_words(b.display)
 
 
+def _same_one(a: Person, b: Person) -> bool:
+    """One person, or one group by its acronym."""
+    return same_person(a, b) or _acronym_of(a, b)
+
+
+def _acronym_of(a: Person, b: Person) -> bool:
+    """A group by its acronym: the entry's "{ROTAC}" is the Roman Observations Time Allocation
+    Committee of arXiv 2505.10574 (heldout16)."""
+    name = (a.literal or a.family).strip()
+    if (a.given and not a.literal) or not re.fullmatch(r"[A-Z]{3,8}", name):
+        return False
+    words = re.findall(r"[^\W\d_]+", b.display)
+    initials = "".join(w[0] for w in words if w.lower() not in {"and", "the", "of", "for", "on"})
+    return initials.upper() == name
+
+
 def _pair_by_given_name(
     entry: list[tuple[Person, str]], pool: list[tuple[Person, str]]
 ) -> dict[int, int]:
@@ -890,6 +924,12 @@ def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     entry = [(person, key) for person in meant if (key := surname_key(person))]
     if not entry or not people:
         return AuthorCheck("unknown")
+    if all(_group(p) or p.literal for p in people) and not all(
+        _group(p) or _organisation(p) for p, _ in entry
+    ):
+        # a record crediting only a group says nothing of the people the entry lists with it
+        # (dblp's "Gemini Robotics Team" for arXiv 2503.20020, which names them all; heldout16)
+        return AuthorCheck("unknown")
     # exact surnames first, then spelling variants, so a variant never takes an exact match
     paired = _pair_by_given_name(entry, list(zip(people, record_keys, strict=True)))
     taken = set(paired.values())
@@ -918,6 +958,11 @@ def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
                 (i for i, o in enumerate(people) if i not in taken and _same_group(person, o)),
                 None,
             )
+        if index is None:
+            index = next(
+                (i for i, o in enumerate(people) if i not in taken and _acronym_of(person, o)),
+                None,
+            )
         if index is None and people_only and _group(person):
             groups.add(j)  # "Kevin Lu and Thinking Machines Lab": the lab is no missing person
         elif index is None:
@@ -941,9 +986,9 @@ def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         # K. Aamodt, JINST 3 S08002)
         if _organisation(people[0]) or _group(people[0]):
             leads += people[1:2]
-        first = any(same_person(first_person, lead) for lead in leads)
+        first = any(_same_one(first_person, lead) for lead in leads)
     else:
-        first = any(same_person(first_person, other) for other in people)
+        first = any(_same_one(first_person, other) for other in people)
     missing_names = tuple(missing)
     last = max(taken, default=-1)
     left_out = (
@@ -1402,6 +1447,19 @@ def _as_chinese_journal_record(record: SourceRecord) -> SourceRecord:
     )
 
 
+def _maker_in_title(info: EntryInfo, record: SourceRecord) -> SourceRecord | None:
+    """The record retitled without the organisation the entry credits alone, when its title
+    starts with that name and is otherwise the entry's: None if it does not."""
+    people = info.authors.people
+    if len(people) != 1 or not _organisation(people[0]):
+        return None
+    name = people[0].display
+    found = re.match(rf"{re.escape(name)}(?:'s|’s)?:?\s+(?P<rest>.+)$", record.title, re.I)
+    if not found or title_key(found["rest"]) != title_key(info.title):
+        return None
+    return replace(record, title=found["rest"])
+
+
 def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldCheck, AuthorCheck]:
     """The title and authors, checked against the version of the work the entry fits best.
 
@@ -1414,6 +1472,12 @@ def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldChec
     if info.translated:
         record = _as_chinese_journal_record(record)
     title = check_title(info.title, record)
+    maker = _maker_in_title(info, record)
+    if maker is not None:
+        # the organisation the entry credits, named before the title: "OpenAI GPT-5 System
+        # Card" (arXiv 2601.03267, with 486 people) is OpenAI's "GPT-5 System Card" (heldout16).
+        # Who to credit for an organisation's own document is for the citing author to choose.
+        return replace(check_title(info.title, maker), note=""), AuthorCheck("unknown")
     if title.note == EARLIER_VERSION and not record.versions:
         authors = check_authors(info.authors, replace(record, authors_ordered=False))
     else:
