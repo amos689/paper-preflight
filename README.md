@@ -269,6 +269,7 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 | `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |
 | `--offline` | Never touch the network; use only answers already in the local cache |
 | `--refresh` | Ask every source again instead of using cached answers (after a correction, say) |
+| `--recheck` | Search again now for references found too new to be indexed on earlier runs (otherwise once a day) |
 | `--fail-on warning` | Make warnings fail the run too (the default is errors) |
 | `--details` | List every finding; by default a suggestion that applies to many entries (published preprints, available DOIs) is one line |
 | `--lang zh` | Chinese messages (also chosen automatically from your locale) |

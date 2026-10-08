@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **References too new to be indexed are searched for again.** A reference from this year or
+  next that no source has yet is remembered in the local cache, and its title is searched for
+  again on later runs, once a day, instead of being answered from cached searches for two
+  weeks; `check --recheck` searches again at once. Indexes catch up within days: 6 to 18
+  references a week of real papers were too new.
+
 ### Fixed
 
 The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3

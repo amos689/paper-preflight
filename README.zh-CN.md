@@ -242,6 +242,7 @@ uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
 | `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描） |
 | `--offline` | 完全不联网，只用本地缓存里已有的结果 |
 | `--refresh` | 不用缓存，向所有来源重新查询（例如记录刚被更正之后） |
+| `--recheck` | 立即重新检索以前因"太新、尚未被收录"而无法判断的条目（不加时每天自动重查一次） |
 | `--fail-on warning` | 警告也算失败（默认只有错误算失败） |
 | `--details` | 逐条列出所有发现；默认情况下，适用于很多条目的建议（预印本已发表、可补的 DOI）合并成一行 |
 | `--lang zh` | 中文输出（也会按系统语言自动选择） |
