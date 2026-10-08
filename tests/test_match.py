@@ -729,6 +729,20 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
         authors=(Person.from_display("Cursor Research"), Person.from_display("Aaron Chan")),
     )  # fmt: skip
     assert check_authors(parse_authors("Aaron Chan"), cursor).first_author_match
+    # Crossref files a collaboration as a person: given "The ALICE", family "Collaboration"
+    alice = SourceRecord(
+        source="crossref", source_id="10.1088/1748-0221/3/08/s08002", title="The ALICE",
+        authors=(Person("Collaboration", "The ALICE"), Person("Aamodt", "K"),
+                 Person("Quintana", "A Abrahantes")),
+    )  # fmt: skip
+    assert check_authors(parse_authors("K. Aamodt and others"), alice).first_author_match
+    # "on behalf of the CMS Collaboration" credits the collaboration (J. Phys. Conf. Ser.)
+    cms = SourceRecord(
+        source="crossref", source_id="10.1088/1742-6596/1162/1/012002", title="CMS ECAL",
+        authors=(Person("Mudholkar", "Tanmay"), Person("", literal="CMS Collaboration")),
+    )  # fmt: skip
+    written = parse_authors("Mudholkar, Tanmay and on behalf of the CMS Collaboration")
+    assert check_authors(written, cms).missing == ()
 
 
 def test_a_solar_symbol_is_the_word_sun() -> None:

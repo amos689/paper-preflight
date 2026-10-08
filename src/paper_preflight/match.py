@@ -753,8 +753,9 @@ def _left_out_person(person: Person) -> bool:
 
 
 def _same_group(a: Person, b: Person) -> bool:
-    """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team"."""
-    ours = _name_words(a.display) - {"and", "the"}
+    """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team";
+    an entry credits "on behalf of the CMS Collaboration" (J. Phys. Conf. Ser. 1162, 012002)."""
+    ours = _name_words(a.display) - {"and", "the", "on", "behalf", "of", "for"}
     return bool(ours) and _group(b) and ours <= _name_words(b.display)
 
 
@@ -857,8 +858,10 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         leads = [people[0]]
         # an organisation leading the record ("OpenAI" before Josh Achiam, arXiv 2303.08774) is
         # no first author to compare with when the entry leaves it out or names it later
-        # ("Kevin Lu and Thinking Machines Lab", as the lab asks; Crossref has the lab first)
-        if _organisation(people[0]):
+        # ("Kevin Lu and Thinking Machines Lab", as the lab asks; Crossref has the lab first),
+        # nor is a collaboration Crossref files as a person ("The ALICE" "Collaboration" before
+        # K. Aamodt, JINST 3 S08002)
+        if _organisation(people[0]) or _group(people[0]):
             leads += people[1:2]
         first = any(same_person(first_person, lead) for lead in leads)
     else:
