@@ -100,3 +100,18 @@ def test_pmcids_are_checked_through_pubmed_central(tmp_path: Path) -> None:
     dead = [f for f in payload["findings"] if f["rule"] == "REF002"]
     assert [f["key"] for f in dead] == ["nopmc"]
     assert "PubMed Central has no record of it" in dead[0]["message"]["en"]
+
+
+@pytest.mark.anyio
+async def test_an_ncbi_key_is_sent_but_never_stored(tmp_path: Path, recorded_web: FakeWeb) -> None:
+    from paper_preflight.bib.parse import parse_bib_text
+    from paper_preflight.check import VerifyOptions, verify_entries
+
+    entries = parse_bib_text(BIB, Path("refs.bib")).entries
+    cache = tmp_path / "c.sqlite3"
+    options = VerifyOptions(cache_path=cache, environ={"NCBI_API_KEY": "fictional-ncbi-key"})
+    _, verdicts, _ = await verify_entries(entries, options)
+    assert any(f.rule_id == "REF004" for f in verdicts["wakefield"].findings)
+    asked = [r for r in recorded_web.requests if r.url.host == "eutils.ncbi.nlm.nih.gov"]
+    assert [r.url.params.get("api_key") for r in asked] == ["fictional-ncbi-key"]
+    assert b"fictional-ncbi-key" not in cache.read_bytes()  # not in a cache key, nor an answer

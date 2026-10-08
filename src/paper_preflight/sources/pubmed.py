@@ -3,8 +3,9 @@
 PubMed assigns PMIDs, so it is authoritative for them: a PMID it does not know does not exist
 (REF002), and its record anchors an entry the way a DOI's record does. Its publication types
 also mark retracted articles ("Retracted Publication", REF004). NCBI allows three requests per
-second without an API key; up to 200 IDs fit in one request, and ``tool``/``email`` identify
-the caller (they are not part of cache keys).
+second without an API key and ten with one (``NCBI_API_KEY``, sent as ``api_key``); up to 200
+IDs fit in one request, and ``tool``/``email`` identify the caller. None of the three is part of
+a cache key.
 """
 
 from __future__ import annotations
@@ -22,6 +23,8 @@ BATCH = 200
 TOOL = "paper-preflight"
 
 POLICY = SourcePolicy(name="pubmed", min_interval=0.4, max_concurrency=1)
+# with an API key: ten requests a second
+KEYED_POLICY = SourcePolicy(name="pubmed", min_interval=0.11, max_concurrency=1)
 
 _INITIALS = re.compile(r"^[A-Z]{1,4}$")
 _PLACE = re.compile(r"\s*\([^)]*\)$")  # "Lancet (London, England)"
@@ -79,7 +82,11 @@ def parse_summary(item: dict[str, Any]) -> SourceRecord:
 
 
 async def by_pmids(
-    client: SourceClient, pmids: Iterable[str], *, email: str | None = None
+    client: SourceClient,
+    pmids: Iterable[str],
+    *,
+    email: str | None = None,
+    api_key: str | None = None,
 ) -> dict[str, SourceRecord]:
     """Records keyed by PMID. A PMID PubMed has no summary for is cached as "no such PMID"."""
     unique = list(dict.fromkeys(p.strip() for p in pmids if p.strip().isdigit()))
@@ -95,6 +102,8 @@ async def by_pmids(
         params = {"db": "pubmed", "id": ",".join(chunk), "retmode": "json", "tool": TOOL}
         if email:
             params["email"] = email
+        if api_key:
+            params["api_key"] = api_key
         fetched = await client.get_json(ESUMMARY_URL, params=params, classify=classify)
         result = (fetched.data or {}).get("result") or {}
         return {
@@ -111,7 +120,11 @@ async def by_pmids(
 
 
 async def pmids_for_pmcids(
-    client: SourceClient, pmcids: Iterable[str], *, email: str | None = None
+    client: SourceClient,
+    pmcids: Iterable[str],
+    *,
+    email: str | None = None,
+    api_key: str | None = None,
 ) -> dict[str, str | None]:
     """The PMID of each PMCID ("PMC3531190"), from PubMed Central's summaries.
 
@@ -133,6 +146,8 @@ async def pmids_for_pmcids(
         }
         if email:
             params["email"] = email
+        if api_key:
+            params["api_key"] = api_key
         fetched = await client.get_json(ESUMMARY_URL, params=params, classify=classify)
         result = (fetched.data or {}).get("result") or {}
         return {

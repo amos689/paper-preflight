@@ -161,6 +161,7 @@ class Sources:
     pypi: SourceClient | None = None
     cran: SourceClient | None = None
     github_token: str | None = None
+    ncbi_key: str | None = None
     # web pages an entry links to: do they still open, has the Wayback Machine a copy? (C4)
     web: SourceClient | None = None
     wayback: SourceClient | None = None
@@ -206,7 +207,7 @@ class Sources:
             arxiv=client(arxiv.POLICY),
             dblp=client(dblp.POLICY),
             openalex=client(openalex.POLICY),
-            pubmed=client(pubmed.POLICY),
+            pubmed=client(pubmed.KEYED_POLICY if env.get("NCBI_API_KEY") else pubmed.POLICY),
             mailto=mailto,
             openalex_key=env.get("OPENALEX_API_KEY") or None,
             s2=optional(semanticscholar.POLICY) if s2_key else None,
@@ -216,6 +217,7 @@ class Sources:
             pypi=optional(software.PYPI_POLICY),
             cran=optional(software.CRAN_POLICY),
             github_token=env.get("GITHUB_TOKEN") or None,
+            ncbi_key=env.get("NCBI_API_KEY") or None,
             web=optional(web.LINK_POLICY),
             wayback=optional(web.WAYBACK_POLICY),
         )
@@ -471,7 +473,9 @@ async def _pubmed(evidence: dict[str, Evidence], sources: Sources) -> None:
         # PubMed Central knows the PMID of its articles; their PubMed records anchor the entry
         mapped = await _guard(
             [e for items in by_pmcid.values() for e in items],
-            lambda: pubmed.pmids_for_pmcids(sources.pubmed, list(by_pmcid), email=sources.mailto),
+            lambda: pubmed.pmids_for_pmcids(
+                sources.pubmed, list(by_pmcid), email=sources.mailto, api_key=sources.ncbi_key
+            ),
             owners_of=lambda pmcid: by_pmcid.get(pmcid, []),
         )
         for pmcid, items in by_pmcid.items() if mapped is not None else ():
@@ -487,7 +491,9 @@ async def _pubmed(evidence: dict[str, Evidence], sources: Sources) -> None:
         return
     records = await _guard(
         [e for items in by_pmid.values() for e in items],
-        lambda: pubmed.by_pmids(sources.pubmed, list(by_pmid), email=sources.mailto),
+        lambda: pubmed.by_pmids(
+            sources.pubmed, list(by_pmid), email=sources.mailto, api_key=sources.ncbi_key
+        ),
         owners_of=lambda pmid: by_pmid.get(pmid, []),
     )
     if records is None:

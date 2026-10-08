@@ -438,6 +438,7 @@ npx skills add amos689/paper-preflight
 | `OPENALEX_API_KEY` | 更多的 OpenAlex 额度，用于撤稿核查 |
 | `S2_API_KEY` | 用 Semantic Scholar 补查其他来源都找不到的文献 |
 | `GITHUB_TOKEN` | 引用代码仓库时使用 GitHub 更大的额度（每小时 5,000 次，而不是 60 次） |
+| `NCBI_API_KEY` | 查 PMID 和 PMCID 时使用 PubMed 更大的额度（每秒 10 次，而不是 3 次） |
 
 `paper-preflight doctor` 会显示哪些已经设置，以及每个数据源此刻能否连通。
 
