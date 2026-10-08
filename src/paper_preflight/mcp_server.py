@@ -27,6 +27,7 @@ from pydantic import Field
 
 from paper_preflight import __version__
 from paper_preflight.check import CheckResult, VerifyOptions, run_check
+from paper_preflight.config import Config, ConfigError, find_config, load_config
 from paper_preflight.fetch import identifier_query, lookup, title_query, to_dict
 from paper_preflight.findings import Severity
 from paper_preflight.fixes import edits, plan
@@ -56,6 +57,18 @@ Never write a BibTeX entry from memory: get it with preflight_bib_lookup.
 To see whether a cited work supports the sentence citing it, read preflight_cited_passages and
 judge conservatively: confirm only with a quoted passage, and never call a citation wrong.
 """
+
+
+def _settings(target: Path) -> Config:
+    """The project's settings, found from the checked path up (paper-preflight.toml or
+    pyproject.toml); a mistake in them is the agent's to report, as the CLI's is."""
+    found = find_config(target)
+    if found is None:
+        return Config()
+    try:
+        return load_config(found)
+    except ConfigError as error:
+        raise ToolError(str(error)) from error
 
 
 def _inside(root: Path, path: str) -> Path:
@@ -155,9 +168,13 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
             message = f"{_STAGE_MESSAGES.get(stage, stage)} {done}/{total}"
             asyncio.run_coroutine_threadsafe(ctx.report_progress(done, total, message), loop)
 
-        verify = VerifyOptions(offline=offline, cache_path=cache_path, progress=report)
+        settings = _settings(target)
+        verify = VerifyOptions(
+            offline=offline, cache_path=cache_path, progress=report,
+            disabled_sources=settings.disable_sources,
+        )  # fmt: skip
         try:
-            result = await asyncio.to_thread(run_check, target, verify=verify)
+            result = await asyncio.to_thread(run_check, target, verify=verify, config=settings)
         except ProjectError as error:
             raise ToolError(str(error)) from error
         findings = [f for f in result.findings if include_info or f.severity is not Severity.INFO]

@@ -177,6 +177,7 @@ class Sources:
         offline: bool = False,
         fresh_after: float | None = None,
         environ: dict[str, str] | None = None,
+        disabled: frozenset[str] = frozenset(),
     ) -> Sources:
         env = environ if environ is not None else dict(os.environ)
         s2_key = env.get("S2_API_KEY") or None
@@ -188,6 +189,9 @@ class Sources:
                 replace(policy), http, cache, offline=offline, fresh_after=fresh_after
             )
 
+        def optional(policy: SourcePolicy) -> SourceClient | None:
+            return None if policy.name in disabled else client(policy)
+
         return cls(
             doiorg=client(doiorg.POLICY),
             crossref=client(crossref.POLITE_POLICY if mailto else crossref.POLICY),
@@ -198,12 +202,12 @@ class Sources:
             pubmed=client(pubmed.POLICY),
             mailto=mailto,
             openalex_key=env.get("OPENALEX_API_KEY") or None,
-            s2=client(semanticscholar.POLICY) if s2_key else None,
+            s2=optional(semanticscholar.POLICY) if s2_key else None,
             s2_key=s2_key,
-            openlibrary=client(openlibrary.POLICY),
-            github=client(software.GITHUB_POLICY),
-            pypi=client(software.PYPI_POLICY),
-            cran=client(software.CRAN_POLICY),
+            openlibrary=optional(openlibrary.POLICY),
+            github=optional(software.GITHUB_POLICY),
+            pypi=optional(software.PYPI_POLICY),
+            cran=optional(software.CRAN_POLICY),
             github_token=env.get("GITHUB_TOKEN") or None,
         )
 

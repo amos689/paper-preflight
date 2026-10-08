@@ -331,6 +331,22 @@ paper-preflight bib fix path/to/paper --level unsafe
 免得过时的注释越积越多。参考文献类规则只在完整的联网核查之后才判断是否被用到，因为离线答复和来源故障
 都可能让这些规则没有运行。
 
+## 项目设置
+
+要对整个项目生效，可以在论文旁边（或它上方直到仓库根目录的某个文件夹里）放一个 `paper-preflight.toml`，
+或者写在 `pyproject.toml` 的 `[tool.paper-preflight]` 里：
+
+```toml
+ignore-rules = ["REF016"]                  # 不报这些规则
+ignore-keys = ["internal2024*"]            # 也不报这些条目的任何发现
+severity = { REF015 = "info" }             # 已正式发表的预印本只作为提示
+disable-sources = ["s2"]                   # 只能关闭可选来源
+fail-on = "warning"                        # 同 --fail-on；命令行参数优先
+```
+
+也可以用 `check --config <路径>` 指定文件。判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
+会直接报错，不会被悄悄忽略。JSON 报告在 `run.notes` 里写明用了哪个文件；MCP 服务也会读取它。
+
 ## 实验功能：为每处引用找到原文出处
 
 `support` 会到每篇被引文献里，找一段与引用句的说法相符的原文。它读取被引文献的文本：arXiv 源码、

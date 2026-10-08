@@ -11,6 +11,11 @@ All notable changes to this project are documented here. The format follows
 - **A JSON Schema for the JSON report** (`docs/schema/check-report.schema.json`,
   `schema_version` 0.1): fields may be added, none removed or changed in meaning without a new
   version. The tests check every report against it. Exit code 4 (internal error) is documented.
+- **Project settings** in `paper-preflight.toml` or `[tool.paper-preflight]` of `pyproject.toml`,
+  found from the checked path up to the repository's root (or given with `--config`): rules
+  and entries to ignore (glob patterns allowed), severities, optional sources to turn off, and
+  `fail-on`. The command line wins; mistakes in the file are errors (exit code 3). The MCP
+  server reads the same file.
 - **References too new to be indexed are searched for again.** A reference from this year or
   next that no source has yet is remembered in the local cache, and its title is searched for
   again on later runs, once a day, instead of being answered from cached searches for two
