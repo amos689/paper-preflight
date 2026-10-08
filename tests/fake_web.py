@@ -65,6 +65,16 @@ class FakeWeb:
         self.s2_papers: dict[str, dict[str, object]] = {}
         # Crossref title searches: a phrase in the query -> the items Crossref returns
         self.crossref_search: dict[str, list[dict[str, object]]] = {}
+        # Open Library's book search: a phrase in the title asked for -> its docs (CC0). The
+        # demo's Deep Learning, as Open Library has it (trimmed)
+        self.openlibrary: dict[str, list[dict[str, object]]] = {
+            "Deep Learning": [
+                {"key": "/works/OL17801809W", "title": "Deep Learning",
+                 "author_name": ["Ian Goodfellow", "Yoshua Bengio", "Aaron Courville"],
+                 "first_publish_year": 2016, "publish_year": [2016, 2017],
+                 "publisher": ["The MIT Press"]},
+            ]
+        }  # fmt: skip
 
     def fail(self, host_fragment: str, mode: str = "html") -> None:
         self.failing[host_fragment] = mode
@@ -100,6 +110,10 @@ class FakeWeb:
             return self._dblp(request)
         if host == "eutils.ncbi.nlm.nih.gov":
             return self._pubmed(request)
+        if host == "openlibrary.org" and request.url.path == "/search.json":
+            asked = request.url.params.get("title", "")
+            docs = next((d for phrase, d in self.openlibrary.items() if phrase in asked), [])
+            return httpx.Response(200, json={"numFound": len(docs), "docs": docs})
         if host == "api.semanticscholar.org" and request.url.path.endswith("/search/match"):
             paper = self.s2_papers.get(request.url.params.get("query", "").lower())
             if paper is None:
