@@ -1247,7 +1247,9 @@ _WEB_VENUES = re.compile(
 
 
 _REPORT_VENUE = re.compile(
-    r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b",
+    r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b"
+    # "Report to the Coastal Transportation Engineering Research and Education Center, ..."
+    r"|\breport\s+(?:to|for|prepared\s+for)\b",
     re.IGNORECASE,
 )
 

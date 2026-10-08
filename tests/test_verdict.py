@@ -840,6 +840,25 @@ def test_one_person_on_a_long_title_by_others(author: str, bound: bool) -> None:
     assert (result.record is not None) is bound
 
 
+@pytest.mark.parametrize(
+    ("journal", "reason"),
+    [
+        # a report cited as an article, its issuer named (heldout15: Hurricane Ivan's roads)
+        ("Report to the Coastal Transportation Engineering Center, University of South Alabama",
+         True),
+        ("Report", False),  # a bare "Report" names nothing a reader could look up
+    ],
+)  # fmt: skip
+def test_a_report_cited_as_an_article(journal: str, reason: bool) -> None:
+    venue = f"journal = {{{journal}}}"
+    text = NO_DOI.replace("@inproceedings", "@article")
+    entry = bib(text.replace("booktitle = {Proceedings of ACL}", venue))
+    result = assess(entry, search_result(entry), current_year=YEAR)
+    assert (Reason.GREY_LITERATURE in result.reasons) is reason
+    if reason:
+        assert "REF003" not in rules(result)
+
+
 CUT = "Robust Sparse Attention Revisited"
 
 
