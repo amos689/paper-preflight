@@ -242,6 +242,14 @@ RULES: dict[str, Rule] = {
              "中都没有它；该作品只找到预印本（{found}）。请核对它实际发表在哪里。"),
         ),
         _rule(
+            "REF021", "link-gone", I,
+            ("Linked page gone, with no archived copy", "链接的网页已失效且没有存档"),
+            ("'{key}' links to {url}, which no longer opens (HTTP 404 or 410), and the Wayback "
+             "Machine has no copy of it. Give a link that works, or a copy.",
+             "'{key}' 链接的 {url} 已打不开（HTTP 404 或 410），Wayback Machine 也没有它的存档。"
+             "请换成能打开的链接或存档副本。"),
+        ),
+        _rule(
             "REF090", "cannot-determine", I,
             ("Reference could not be verified", "无法核实该文献"),
             ("'{key}' could not be verified: {reasons_text}.",

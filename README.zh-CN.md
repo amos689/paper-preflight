@@ -344,7 +344,8 @@ disable-sources = ["s2"]                   # 只能关闭可选来源
 fail-on = "warning"                        # 同 --fail-on；命令行参数优先
 ```
 
-也可以用 `check --config <路径>` 指定文件。判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
+也可以用 `check --config <路径>` 指定文件。可选来源有 `s2`、`openlibrary`、`github`、`pypi`、`cran`、
+`web`（网页链接）和 `wayback`；判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
 会直接报错，不会被悄悄忽略。JSON 报告在 `run.notes` 里写明用了哪个文件；MCP 服务也会读取它。
 
 ## 实验功能：为每处引用找到原文出处

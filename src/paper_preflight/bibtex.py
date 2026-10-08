@@ -30,6 +30,7 @@ SOURCE_NAMES = {
     "crossref": "Crossref", "datacite": "DataCite", "doiorg": "doi.org", "arxiv": "arXiv",
     "dblp": "dblp", "openalex": "OpenAlex", "s2": "Semantic Scholar", "pubmed": "PubMed",
     "openlibrary": "Open Library", "github": "GitHub", "pypi": "PyPI", "cran": "CRAN",
+    "web": "web pages", "wayback": "Wayback Machine",
 }  # fmt: skip
 _STOPWORDS = {
     "a",

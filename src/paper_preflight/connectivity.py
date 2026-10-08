@@ -30,6 +30,7 @@ from paper_preflight.sources import (
     pubmed,
     semanticscholar,
     software,
+    web,
 )
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
 
@@ -90,6 +91,7 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
         ),
         (software.PYPI_POLICY, lambda c: software.pypi_package(c, "numpy"), ""),
         (software.CRAN_POLICY, lambda c: software.cran_package(c, "ggplot2"), ""),
+        (web.WAYBACK_POLICY, lambda c: web.archived(c, "https://arxiv.org/"), ""),
     ]
 
 

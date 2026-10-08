@@ -374,8 +374,9 @@ disable-sources = ["s2"]                   # optional sources only
 fail-on = "warning"                        # as --fail-on; the command line wins
 ```
 
-`check --config <path>` names the file instead. The registries that judge a reference cannot be
-turned off, and a mistake in the file (an unknown rule or setting) is an error, never silently
+`check --config <path>` names the file instead. The optional sources are `s2`, `openlibrary`,
+`github`, `pypi`, `cran`, `web` (links to web pages) and `wayback`; the registries that judge a
+reference cannot be turned off, and a mistake in the file (an unknown rule or setting) is an error, never silently
 ignored. The JSON report names the file in `run.notes`; the MCP server reads it too.
 
 ## Experimental: find the passage behind each citation
