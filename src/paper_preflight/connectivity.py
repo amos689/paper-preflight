@@ -29,6 +29,7 @@ from paper_preflight.sources import (
     openlibrary,
     pubmed,
     semanticscholar,
+    software,
 )
 from paper_preflight.sources.base import SourceClient, SourcePolicy, SourceUnavailable
 
@@ -52,6 +53,7 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
     mailto = env.get("PAPER_PREFLIGHT_EMAIL") or None
     openalex_key = env.get("OPENALEX_API_KEY") or None
     s2_key = env.get("S2_API_KEY") or None
+    github_token = env.get("GITHUB_TOKEN") or None
     s2_call: Call | None = None
     if s2_key:
         key = s2_key
@@ -81,6 +83,13 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
             lambda c: openlibrary.search_books(c, "Matrix Computations", "Golub", mailto=mailto),
             "books without a DOI",
         ),
+        (
+            software.GITHUB_POLICY,
+            lambda c: software.github_repo(c, "python/cpython", token=github_token),
+            "with token" if github_token else "without token (60 requests an hour)",
+        ),
+        (software.PYPI_POLICY, lambda c: software.pypi_package(c, "numpy"), ""),
+        (software.CRAN_POLICY, lambda c: software.cran_package(c, "ggplot2"), ""),
     ]
 
 

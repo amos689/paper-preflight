@@ -225,6 +225,14 @@ RULES: dict[str, Rule] = {
              "'{key}' 引用的 arXiv 预印本（{identifier}）已被撤回。"),
         ),
         _rule(
+            "REF019", "software-not-found", I,
+            ("Linked repository or package not found", "链接的代码仓库或软件包不存在"),
+            ("'{key}' links to {name} on {registry}, which {registry} does not have. Check the "
+             "link: the project may have been renamed, moved or made private.",
+             "'{key}' 链接到 {registry} 上的 {name}，但 {registry} 没有它。请检查链接："
+             "项目可能已改名、迁移或设为私有。"),
+        ),
+        _rule(
             "REF090", "cannot-determine", I,
             ("Reference could not be verified", "无法核实该文献"),
             ("'{key}' could not be verified: {reasons_text}.",

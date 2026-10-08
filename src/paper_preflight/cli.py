@@ -25,7 +25,9 @@ from paper_preflight import __version__
 from paper_preflight.findings import Severity
 
 # Credentials are read from the environment only and are never printed.
-CREDENTIAL_ENV_VARS = ("PAPER_PREFLIGHT_EMAIL", "OPENALEX_API_KEY", "S2_API_KEY", "NCBI_API_KEY")
+CREDENTIAL_ENV_VARS = (
+    "PAPER_PREFLIGHT_EMAIL", "OPENALEX_API_KEY", "S2_API_KEY", "NCBI_API_KEY", "GITHUB_TOKEN",
+)  # fmt: skip
 
 # Exit codes (docs/adr/0002-verdicts-and-abstention.md).
 EXIT_OK = 0
