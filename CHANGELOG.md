@@ -32,6 +32,19 @@ All notable changes to this project are documented here. The format follows
   On the development papers, 48 of 102 books that could not be judged are now verified (Pearl
   1988, Cormen 2022, Misner, Thorne and Wheeler 1973, ...), with no finding gained or lost. One
   request a second, cached; `doctor` checks that Open Library answers.
+- **Venues no catalogue has (REF020, a warning).** An entry that names a journal or a
+  conference for a work found as a preprint alone, with no published version, has that venue
+  looked up in OpenAlex's sources, dblp's streams and Crossref's containers. A venue none of them
+  has is reported ("Symposium on Regularization Techniques" for arXiv 2602.12132, HALLMARK's
+  invented venues). A venue cited the way a real one asks to be, with its edition, acronym or
+  year ("First Workshop on ... (LLMSEC)"), is not looked up: real workshops are in no catalogue
+  either. COLM, on OpenReview alone, is a known venue.
+- **Reworded titles of arXiv papers** ("Tuning" for "Optimization", "towards" for "for") are
+  reported when arXiv's own record shows every title the paper has had, also when DataCite's
+  record of its DOI is the one compared.
+- **An author dropped from the middle of a list** is named in the info about omitted authors
+  ("it leaves out Shaoqing Ren from the middle of the list"), apart from a list cut short. It
+  stays an info until a held-out week shows it never fires on a correct list.
 
 ### Fixed
 
