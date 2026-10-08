@@ -113,11 +113,11 @@ uv run python evals/replay.py new --against base      # verdicts moved, findings
 uv run python evals/replay.py new --against base --fill   # if the change asks something new
 ```
 
-There are fifteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are sixteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last eleven are each batch as it came out:
+candidate's (main 43a5544); the last twelve are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -136,6 +136,7 @@ candidate's (main 43a5544); the last eleven are each batch as it came out:
 | `heldout12` | 2026-09-23..29 | held out for 0.6.0 with #164 (list committed before it, #163) | 786 | 48 | 42 | 6 | 0 | 0.8 |
 | `heldout13` | 2026-09-30..10-06 | held out for 0.7.0 (#167; list committed before it, #165) | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
 | `heldout14` | 2026-06-24..30 (an earlier week) | held out for 0.8.0 (#170-#187; list committed after them, #188) | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
+| `heldout15` | 2026-06-17..23 (an earlier week) | held out for #191 (list committed before it, #188) | 1,093 | 136 | 96 | 39 | 1 | **3.6** |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -193,6 +194,20 @@ candidate's (main 43a5544); the last eleven are each batch as it came out:
   title, a 2013 e-book DOI on a 1988 book, an online-first record against the issue's year,
   a journal's series label the registry leaves out of a title, and two software releases
   cited with their owner and version.
+- **On `heldout15`**, a week before `dev`, run once with main 35dcdb0 (0.8.0 and #191): 96
+  real problems (45 published preprints, 29 identifiers written as links, wrong names in 10
+  entries, 5 misquoted titles, 4 DOIs or arXiv IDs of other works, 3 DOIs that do not exist, 2
+  wrong years) and **39 false positives, 3.6 per 100 references, over the gate of 1.5**. None
+  comes from #191. They are a bug of ours, 6 (DOIs ending in a parenthesis, as ASCE's
+  '...13:1(6)', were cut, then reported as not existing and as written wrongly); physics and
+  astronomy, 16 (collaboration papers cited by their first people, isotopes written '$^{13}$CO'
+  or 'CO-13', ADS entries citing the arXiv e-print compared with the journal version, names a
+  registry garbled, reordered or updated, a paper indexed under its Chinese title, a
+  conference's year); years, 4 (issue years Crossref gives as the online date); workshop
+  versions, venues' other names, software and datasets cited as their makers ask, reports,
+  an edition in a title, romanised names and a translated title, 13. 0.54 s per reference, 5%
+  cannot determine. Its false positives are studied for the next changes, which `heldout16`
+  measures.
 - **On `heldout14`**, a week before `dev`, run once with every change since 0.7.0 (main
   5e048db, #170-#187): 132 real problems (93 published preprints, 17 identifiers written as
   links, wrong authors or given names in 10 entries, often all of a list's given names invented,
