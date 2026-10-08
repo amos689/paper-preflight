@@ -42,6 +42,7 @@ answers right now.
 | Call it from Python | [Python API](python-api.md) |
 | Read the JSON report from a script | [JSON Schema](schema/check-report.schema.json) |
 | Know what is asked of which database, and how politely | [Sources](sources.md) |
+| Know what stays compatible between versions | [Compatibility](stability.md) |
 
 ## How it decides
 
