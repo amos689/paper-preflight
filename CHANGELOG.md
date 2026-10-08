@@ -20,6 +20,39 @@ All notable changes to this project are documented here. The format follows
   - A `@misc` with no venue and no link, as a plain-text reference whose venue was not read, is
     searched in dblp too (GPQA's title with invented co-authors).
   - dblp's title search reads "Q &A" as "Q&A".
+- **Books a record dates otherwise are asked of Open Library.** A book whose only record by
+  title and first author gives another year (APA PsycTests' record of the MacArthur-Bates CDI,
+  dated by the test, 2006; its manual a 2007 book) is looked up in Open Library too: 12 classic
+  books on the development papers that could not be determined are now confirmed (Gibson 1979,
+  Breiman et al. 1984, Lehmann and Romano 2005, ...).
+
+### Fixed
+
+- **False positives found on heldout15** (an earlier week never used before; 39 false
+  positives, 3.6 per 100 references, over the 1.5 gate): 27 of them gone on a replay, one
+  turned into another (13 left, 1.2 per 100 on that now-studied week), one more on heldout14;
+  no real problem lost on 320 papers; HALLMARK `dev_public` and GPTZero unchanged.
+  - A DOI ending in a parenthesis it opened keeps it (ASCE's `10.1061/(ASCE)...13:1(6)`).
+  - An arXiv number in the `pages` field, as NASA ADS exports it (`pages = {arXiv:2412.13807}`).
+  - Isotopes written either way round ("^171Yb" and "Yb171"), chapter numbers ("Chapter 4 -
+    ...") and editions (", Third Edition") in titles.
+  - Years a registry records badly: an issue dated between the article's online and print
+    dates, two years apart at most; the year a publisher wrote into the DOI with the month or
+    issue run on (`10.6339/jds.202007_18(3).0003`). A conference's name alone still does not
+    excuse a year its proceedings disagree with.
+  - AAAI by its old name, the National Conference on Artificial Intelligence.
+  - Authors: collaborations Crossref files as people, "on behalf of" a collaboration, names a
+    registry put the other way round (Chinese names with the given name as the family name),
+    and letters a registry lost (replacement characters, or a dropped accented letter).
+  - A workshop paper whose venue the record names otherwise: dblp's "COLING Workshops" for a
+    workshop's own proceedings, or a workshop held at a meeting the entry names ("EurIPS 2025
+    Workshop: ...") whose paper later appeared elsewhere. A workshop named by nothing else is
+    still reported: invented venues look like that.
+  - Software, models and datasets on DataCite, cited as their makers ask rather than by a
+    release's title, are unclear rather than another work.
+  - Reports cited as articles that name their issuer ("Report to the ...").
+  - The authors of a preprint against a journal article the entry cites with volume and pages
+    are an info: the published version may list others.
 
 ## [0.8.0] - 2026-10-09
 
