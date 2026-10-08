@@ -5036,3 +5036,577 @@ note = "The entry lists Jun S. Liu twice (author = {Liu, Jun S and Liu, Jun S});
 [finding."2608.04481v1:Merz-2026:REF012"]
 verdict = "correct"
 note = "The entry writes \"heterrogeneous\"; DataCite and arXiv have \"heterogeneous\"."
+
+# heldout14 (2026-06-24..30), run once on 2026-10-09 with main 5e048db (#187)
+
+[finding."2608.26131v1:Bavaresco2024:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (2) 2025 (conf/acl/BavarescoBBEFGG25); the entry cites the preprint."
+
+[finding."2608.26131v1:Chang2023ChatEval:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2024 (conf/iclr/ChanCSYXZF024); the entry cites the preprint."
+
+[finding."2608.26131v1:zheng2023judgingllmasajudgemtbenchchatbot:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2023 (conf/nips/ZhengC00WZL0LXZ23); the entry cites the preprint."
+
+[finding."2608.26131v1:mu-tal:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL 2020 (conf/acl/CuiWLZZ20); the entry cites the preprint."
+
+[finding."2608.26131v1:Dinan2018WoW:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR (Poster) 2019 (conf/iclr/DinanRSFAW19); the entry cites the preprint."
+
+[finding."2608.26131v1:botchat:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NAACL-HLT (Findings) 2024 (conf/naacl/DuanWWLFZLC24); the entry cites the preprint."
+
+[finding."2608.26131v1:math:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS Datasets and Benchmarks 2021 (conf/nips/HendrycksBKABTS21); the entry cites the preprint."
+
+[finding."2608.26131v1:mt-eval:REF011"]
+verdict = "correct"
+note = "arXiv 2401.16745 lists Xingshan Zeng, Yuxin Jiang, Yufei Wang, Liangyou Li and Lifeng Shang; the entry gives five of them other given names."
+
+[finding."2608.26131v1:mt-eval:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP 2024 (conf/emnlp/KwanZJWLS00W24); the entry cites the preprint."
+
+[finding."2608.26131v1:daily-dialogue:REF011"]
+verdict = "correct"
+note = "arXiv 1710.03957 lists Yanran Li, Hui Su, Xiaoyu Shen, Wenjie Li, Ziqiang Cao and Shuzi Niu; every given name in the entry is another."
+
+[finding."2608.26131v1:daily-dialogue:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at IJCNLP(1) 2017 (conf/ijcnlp/LiSSLCN17); the entry cites the preprint."
+
+[finding."2608.26131v1:Lowe2015Ubuntu:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at SIGDIAL Conference 2015 (conf/sigdial/LowePSP15); the entry cites the preprint."
+
+[finding."2608.26131v1:Mirzadeh2024:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2025 (conf/iclr/MirzadehASTBF25); the entry cites the preprint."
+
+[finding."2608.26131v1:Rahmani2025Biases:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CIKM 2025 (conf/cikm/RahmaniRYC025); the entry cites the preprint."
+
+[finding."2608.26131v1:deepsek:REF011"]
+verdict = "correct"
+note = "The author list ends 'and others..': BibTeX's token is 'others', so 'others..' prints as an author's name."
+
+[finding."2608.26131v1:kimik2:REF011"]
+verdict = "false_positive"
+note = "author = 'Kimi Team: Tongtong Bai and 324 others' shortens the list on purpose; '324 others' is read as a person."
+
+[finding."2608.26131v1:bert:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP/IJCNLP (1) 2019 (conf/emnlp/ReimersG19); the entry cites the preprint."
+
+[finding."2608.26131v1:musr:REF011"]
+verdict = "correct"
+note = "arXiv 2310.16049 has Zayne Sprague, Kaj Bostrom and Swarat Chaudhuri; the entry has Zachary, Kristian and Sanjoy."
+
+[finding."2608.26131v1:musr:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2024 (conf/iclr/SpragueYBCD24); the entry cites the preprint."
+
+[finding."2608.26131v1:bbh:REF011"]
+verdict = "correct"
+note = "arXiv 2206.04615 has Aarohi Srivastava, Abhishek Rao, Abu Awal Md Shoeb, Abubakar Abid and Gloria Wang; the entry gives them other given names."
+
+[finding."2608.26131v1:bbh:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Trans. Mach. Learn. Res. 2023 (journals/tmlr/SrivastavaRRSAF23); the entry cites the preprint."
+
+[finding."2608.26131v1:Wang2024LoCMo:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2024 (conf/acl/MaharanaLTBBF24); the entry cites the preprint."
+
+[finding."2608.26131v1:Wang2024MMLUPro:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2024 (conf/nips/WangMZNCGRAHJLK24); the entry cites the preprint."
+
+[finding."2608.26131v1:Xu2022LongTimenose:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (Findings) 2022 (conf/acl/XuGWNW0W22); the entry cites the preprint."
+
+[finding."2608.26131v1:Yin2024Quality:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at SLT 2024 (conf/slt/ElishaMBB24); the entry cites the preprint."
+
+[finding."2608.26131v1:zhang_bert:REF011"]
+verdict = "correct"
+note = "BERTScore's second author is Varsha Kishore (arXiv 1904.09675), not Vikas."
+
+[finding."2608.26131v1:zhang_bert:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2020 (conf/iclr/ZhangKWWA20); the entry cites the preprint."
+
+[finding."2608.26131v1:Zhang2018PersonaChat:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2018 (conf/acl/KielaWZDUS18); the entry cites the preprint."
+
+[finding."2608.26131v1:Zheng2024MTBench101:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2024 (conf/acl/BaiLBHLZLSG0O24); the entry cites the preprint."
+
+[finding."2608.26131v1:Zhang2023Comprehensive:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at AAAI 2024 (conf/aaai/ZhangDCZL24); the entry cites the preprint."
+
+[finding."2608.26131v1:Dubois2023AlpacaFarmAS:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2023 (conf/nips/DuboisLTZGBGLH23); the entry cites the preprint."
+
+[finding."2606.25331v1:sahoo2024simple:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2024 (conf/nips/SahooASGMCRK24); the entry cites the preprint."
+
+[finding."2606.25331v1:shi2024simplified:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2024 (conf/nips/ShiHWDT24); the entry cites the preprint."
+
+[finding."2606.25331v1:ou2024your:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2025 (conf/iclr/OuNXZSLL25); the entry cites the preprint."
+
+[finding."2606.25331v1:zellers2019hellaswag:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2019 (conf/acl/ZellersHBFC19); the entry cites the preprint."
+
+[finding."2606.25331v1:devlin2018bert:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NAACL-HLT (1) 2019 (conf/naacl/DevlinCLT19); the entry cites the preprint."
+
+[finding."2606.25331v1:zhao2023survey:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Frontiers Comput. Sci. 2026 (journals/fcsc/ZhaoZLTDHZMZLWDYCCJRLTL26); the entry cites the preprint."
+
+[finding."2606.25331v1:nie2024scaling:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2025 (conf/iclr/NieZDPLZLL25); the entry cites the preprint."
+
+[finding."2606.25331v1:hendrycks2020measuring:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2021 (conf/iclr/HendrycksBBZMSS21); the entry cites the preprint."
+
+[finding."2606.25331v1:suzgun2022challenging:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (Findings) 2023 (conf/acl/SuzgunSSGTCCLCZ23); the entry cites the preprint."
+
+[finding."2606.25331v1:hendrycks2021measuring:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS Datasets and Benchmarks 2021 (conf/nips/HendrycksBKABTS21); the entry cites the preprint."
+
+[finding."2606.25331v1:ma2025dkvcache:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/MaYFW25); the entry cites the preprint."
+
+[finding."2606.25331v1:nguyentri2025attention:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/Nguyen-TriRS26); the entry cites the preprint."
+
+[finding."2606.25331v1:wang2024mmlupro:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2024 (conf/nips/WangMZNCGRAHJLK24); the entry cites the preprint."
+
+[finding."2606.25331v1:gema2024done:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NAACL (Long Papers) 2025 (conf/naacl/GemaLHDMSHZDMBMHKKM25); the entry cites the preprint."
+
+[finding."2606.25331v1:nie2026large:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-1689 is 2025."
+
+[finding."2606.25331v1:zhu2025llada:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2026 (conf/acl/ZhuWNZWZLWL26); the entry cites the preprint."
+
+[finding."2606.25331v1:zhao2025d1:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/ZhaoGZG25); the entry cites the preprint."
+
+[finding."2606.25331v1:prabhudesai2025diffusion:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/PrabhudesaiWZFP25); the entry cites the preprint."
+
+[finding."2606.25331v1:yang2025mmada:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/YangTLZSTW25); the entry cites the preprint."
+
+[finding."2606.25331v1:ou2025principled:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/OuHXXXEWL26); the entry cites the preprint."
+
+[finding."2608.20375v1:openai2026gpt5:REF010"]
+verdict = "false_positive"
+note = "The GPT-5 system card is cited as by OpenAI, as OpenAI asks; arXiv 2601.03267 lists the people who wrote it."
+
+[finding."2608.20375v1:li2026eagle:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-4562 is 2025."
+
+[finding."2608.20375v1:DBLP:journals/tacl/WangSLXYDWZ25:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains LaTeX escapes); 10.1162/tacl_a_00735 resolves."
+
+[finding."2608.20375v1:DBLP:journals/corr/abs-2510-26577:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/HongTH26); the entry cites the preprint."
+
+[finding."2608.20375v1:ning2026cas:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-2182 is 2025."
+
+[finding."2608.20375v1:oliaro2024suffixdecoding:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 (2025) cited as 2026; Crossref 10.52202/085713-4211 is 2025."
+
+[finding."2608.20375v1:DBLP:journals/corr/abs-2503-21380:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2026 (conf/acl/SunMCZW26); the entry cites the preprint."
+
+[finding."2606.25265v1:akhound2024iterated:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICML 2024 (conf/icml/Akhound-SadeghR24); the entry cites the preprint."
+
+[finding."2606.25265v1:Fan22:REF011"]
+verdict = "correct"
+note = "Variational Wasserstein Gradient Flow (ICML 2022) is by Fan, Qinsheng Zhang, Taghvaei and Chen; the entry has Shu Zhang."
+
+[finding."2606.25265v1:Tong24:REF011"]
+verdict = "correct"
+note = "arXiv 2302.00482 lists Jarrid Rector-Brooks, not Lazar Atanackovic, whom the entry has instead."
+
+[finding."2606.25274v2:ansari2024chronos:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Trans. Mach. Learn. Res. 2024 (journals/tmlr/AnsariSTZMSSRPK24); the entry cites the preprint."
+
+[finding."2606.25274v2:zaffran2022adaptive:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICML 2022 (conf/icml/ZaffranFGJD22); the entry cites the preprint."
+
+[finding."2606.25274v2:silver2016alphago:REF011"]
+verdict = "correct"
+note = "The entry writes 'Panneershel'; the Nature paper's author is Veda Panneershelvam."
+
+[finding."2606.25274v2:elmachtoub2020spo:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Manag. Sci. 2022 (journals/mansci/ElmachtoubG22); the entry cites the preprint."
+
+[finding."2606.25245v2:teed2024deep:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 (2023) cited as 2024; Crossref 10.52202/075280-1696 is 2023."
+
+[finding."2606.25245v2:lin2025depth:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/LinCLCLZPGZSFK26); the entry cites the preprint."
+
+[finding."2606.25245v2:lucas1981iterative:REF014"]
+verdict = "correct"
+note = "Lucas and Kanade's image registration paper is in IJCAI 1981 (dblp conf/ijcai/LucasK81), not AAAI."
+
+[finding."2606.25245v2:zhang2025ufm:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/ZhangKLJCQKJHRS25); the entry cites the preprint."
+
+[finding."2606.25255v2:simeoni2025dinov3:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Trans. Mach. Learn. Res. 2026 (journals/tmlr/SimeoniVSBOJKSYRMHWWDMS26); the entry cites the preprint."
+
+[finding."2606.25273v1:zhou2023anomalyclip:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2024 (conf/iclr/ZhouP0H024); the entry cites the preprint."
+
+[finding."2606.25273v1:bergmann2021mvtec:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at VISIGRAPP (5: VISAPP) 2022 (conf/visapp/BergmannJSS22); the entry cites the preprint."
+
+[finding."2606.25273v1:gao2025adaptclip:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at AAAI 2026 (conf/aaai/GaoZYCZWLLWW26); the entry cites the preprint."
+
+[finding."2606.25273v1:li2025muscV2:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at IEEE Trans. Pattern Anal. Mach. Intell. 2026 (journals/pami/LiXZ26); the entry cites the preprint."
+
+[finding."2606.25273v1:deng2026gsclip:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CVPR 2026 (conf/cvpr/DengLW26); the entry cites the preprint."
+
+[finding."2607.02542v1:jiang2025galaxeaopenworlddatasetg0:REF010"]
+verdict = "correct"
+note = "The author field reads 'iang et al.': the first author's name has lost its J, and 'et al.' is not BibTeX's 'and others'."
+
+[finding."2607.02542v1:huang2022innermonologueembodiedreasoning:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CoRL 2023 (conf/corl/HuangXXCLFZTMCS22); the entry cites the preprint."
+
+[finding."2607.02542v1:intelligence2025pi05visionlanguageactionmodelopenworld:REF011"]
+verdict = "false_positive"
+note = "The author field is 'Black et al.' (Kevin Black is the first person after Physical Intelligence on arXiv 2504.16054); 'et al.' is read as part of the name."
+
+[finding."2607.02542v1:kim2024openvlaopensourcevisionlanguageactionmodel:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CoRL 2024 (conf/corl/KimPKXB0RFSVKBT24); the entry cites the preprint."
+
+[finding."2607.02542v1:zheng2025xvlasoftpromptedtransformerscalable:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/ZhengLWLKFZZCZW26); the entry cites the preprint."
+
+[finding."2607.02542v1:kim2026cosmospolicyfinetuningvideo:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/KimGLLGLLSLFG26); the entry cites the preprint."
+
+[finding."2607.02542v1:du2023learninguniversalpoliciestextguided:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2023 (conf/nips/DuY0DN0SA23); the entry cites the preprint."
+
+[finding."2607.02542v1:hu2025videopredictionpolicygeneralist:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICML 2025 (conf/icml/HuGWCWZSL025); the entry cites the preprint."
+
+[finding."2607.02542v1:khazatsky2025droidlargescaleinthewildrobot:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Robotics: Science and Systems 2024 (conf/rss/KhazatskyP0BDKN24); the entry cites the preprint."
+
+[finding."2607.02542v1:walke2024bridgedatav2datasetrobot:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CoRL 2023 (conf/corl/WalkeBZVZHHMKDL23); the entry cites the preprint."
+
+[finding."2607.02542v1:wang2023holoassistegocentrichumaninteraction:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICCV 2023 (conf/iccv/WangKRPCABFTFJP23); the entry cites the preprint."
+
+[finding."2607.02542v1:grauman2022ego4dworld3000hours:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CVPR 2022 (conf/cvpr/GraumanWBCFGH0L22); the entry cites the preprint."
+
+[finding."2607.02542v1:hoque2026egodexlearningdexterousmanipulation:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2026 (conf/iclr/HoqueHYSZ26); the entry cites the preprint."
+
+[finding."2607.02542v1:liu2024hoi4d4degocentricdataset:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at CVPR 2022 (conf/cvpr/LiuLJLWSLFWY22); the entry cites the preprint."
+
+[finding."2607.02542v1:goyal2017somethingsomethingvideodatabase:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICCV 2017 (conf/iccv/GoyalKMMWKHFYMH17); the entry cites the preprint."
+
+[finding."2607.22643v1:lin2022retrieval:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP 2022 (conf/emnlp/LinB22); the entry cites the preprint."
+
+[finding."2607.22643v1:yan2024echosight:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP (Findings) 2024 (conf/emnlp/YanX24); the entry cites the preprint."
+
+[finding."2607.22643v1:yu2024visrag:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2025 (conf/iclr/YuTXCRYLWHL025); the entry cites the preprint."
+
+[finding."2607.22643v1:tian2025core:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2025 (conf/acl/TianLZWHN25); the entry cites the preprint."
+
+[finding."2607.22643v1:wu2025mmsearch:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ACL (1) 2026 (conf/acl/WuDLLYLML26); the entry cites the preprint."
+
+[finding."2607.22643v1:patil2023gorillalargelanguagemodel:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2024 (conf/nips/PatilZ0G24); the entry cites the preprint."
+
+[finding."2607.22643v1:zheng2024gpt4visiongeneralistwebagent:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICML 2024 (conf/icml/ZhengGK0024); the entry cites the preprint."
+
+[finding."2607.22643v1:press2023measuringnarrowingcompositionalitygap:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP (Findings) 2023 (conf/emnlp/PressZMSSL23); the entry cites the preprint."
+
+[finding."2607.22643v1:chen2023can:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP 2023 (conf/emnlp/ChenHLSCRC23); the entry cites the preprint."
+
+[finding."2607.22643v1:li2024llava:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Trans. Mach. Learn. Res. 2025 (journals/tmlr/0080ZGZ00ZZL0L25); the entry cites the preprint."
+
+[finding."2607.22643v1:chen2023pretrainedvisionlanguagemodels:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at EMNLP 2023 (conf/emnlp/ChenHLSCRC23); the entry cites the preprint."
+
+[finding."2607.22643v1:wu2025towards:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/WUSZSHH25); the entry cites the preprint."
+
+[finding."2607.22643v1:hong2025knowledge:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/HongGYFWWDXY25); the entry cites the preprint."
+
+[finding."2607.22643v1:xien2025sensenova:REF011"]
+verdict = "false_positive"
+note = "arXiv 2512.24330 lists Chengjun Xie tenth, as the entry does; dblp's CoRR record, the only one found by title, leaves him out."
+
+[finding."2606.25269v1:chen2022sampling:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2023 (conf/iclr/ChenC0LSZ23); the entry cites the preprint."
+
+[finding."2606.25269v1:elisseeff2005stability:REF011"]
+verdict = "correct"
+note = "JMLR 6 (2005) lists Elisseeff, Evgeniou and Pontil; Leslie Pack Kaelbling was the action editor, not an author."
+
+[finding."2606.25269v1:song2020denoising:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2021 (conf/iclr/SongME21); the entry cites the preprint."
+
+[finding."2606.25269v1:song2020score:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2021 (conf/iclr/0011SKKEP21); the entry cites the preprint."
+
+[finding."2606.25601v3:series2017minimum:REF003"]
+verdict = "false_positive"
+note = "ITU-R Report M.2410-0 (2017), a real report no queried source indexes; cited as an @article with journal 'Report'."
+
+[finding."2606.25601v3:holtzman2019curious:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR 2020 (conf/iclr/HoltzmanBDFC20); the entry cites the preprint."
+
+[finding."2606.25601v3:simeone2025conformal:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at IEEE Commun. Mag. 2026 (journals/cm/SimeonePZ26); the entry cites the preprint."
+
+[finding."2606.25601v3:alemi2016deep:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICLR (Poster) 2017 (conf/iclr/AlemiFD017); the entry cites the preprint."
+
+[finding."2606.25601v3:zecchin2024adaptive:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at ICML 2025 (conf/icml/Zecchin0S25); the entry cites the preprint."
+
+[finding."2606.25601v3:park2025adaptive:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at NeurIPS 2025 (conf/nips/ParkZS25); the entry cites the preprint."
+
+[finding."2606.28418v1:dmitriew2011:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1111/j.1469-185x.2010.00136.x resolves."
+
+[finding."2606.28418v1:feldman1983:REF012"]
+verdict = "false_positive"
+note = "The article's title is 'The 3/4 mass exponent ...'; Crossref's record has lost the '3/4'."
+
+[finding."2606.28418v1:froese2014:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1111/jai.12299 resolves."
+
+[finding."2606.28418v1:glazier2005:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1017/s1464793105006834 resolves."
+
+[finding."2606.28418v1:halbersleben1922:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.3382/ps.0010143 resolves."
+
+[finding."2606.28418v1:heusner1982:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1016/0034-5687(82)90046-9 resolves."
+
+[finding."2606.28418v1:kearney2021:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1111/brv.12668 resolves."
+
+[finding."2606.28418v1:kooijman2010:REF011"]
+verdict = "false_positive"
+note = "Bas Kooijman is Sebastiaan Adriaan Louis Maria Kooijman, the same person."
+
+[finding."2606.28418v1:morais2018:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1111/faf.12297 resolves."
+
+[finding."2606.28418v1:morey2001:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1890/0012-9658(2001)082[0510:eoldop]2.0.co;2 resolves."
+
+[finding."2606.28418v1:putter1920:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1007/bf01755094 resolves."
+
+[finding."2606.28418v1:rubner1883:REF012"]
+verdict = "false_positive"
+note = "'Ueber' is the 1883 spelling of 'Über'; the entry writes the umlaut."
+
+[finding."2606.28418v1:stiefel2022:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (is not in canonical form); 10.32942/osf.io/k72at resolves."
+
+[finding."2606.27168v1:schartau2003simultaneous:REF012"]
+verdict = "correct"
+note = "The published title is '... in the North Atlantic: Part I ...'; the entry adds 'Ocean'."
+
+[finding."2606.27168v1:cossarini2026improving:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.2139/ssrn.6081665 resolves."
+
+[finding."2606.27168v1:neccton2025:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.5281/zenodo.10057818 resolves."
+
+[finding."2606.27168v1:fabm:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.5281/zenodo.3817997 resolves."
+
+[finding."2606.27168v1:ersem:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.5281/zenodo.3817997 resolves."
+
+[finding."2606.27168v1:SHARPLES2006733:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1016/j.csr.2006.01.011 resolves."
+
+[finding."2606.27168v1:capuzzo2018a:REF017"]
+verdict = "correct"
+note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.1111/gcb.13916 resolves."
+
+[finding."2606.25260v1:BrownMyrvoldUffink2009:REF002"]
+verdict = "correct"
+note = "10.1016/j.shpsb.2009.02.003 does not exist; the article is 10.1016/j.shpsb.2009.03.003."
+
+[finding."2606.25260v1:Wallace2011:REF001"]
+verdict = "correct"
+note = "arXiv 1108.5520 is a paper on the 2011 Singapore election; Wallace's 'The Logic of the Past Hypothesis' is not on arXiv under that number."
+
+[finding."2606.25261v1:qc6:REF003"]
+verdict = "unclear"
+note = "Not in Crossref or OpenAlex, nor found by a web search; Discovery's Indian Journal of Science may hold it unindexed."
+
+[finding."2606.25261v1:FRET:REF012"]
+verdict = "false_positive"
+note = "Crossref's title starts 'Chapter 1'; that is the chapter's number, not its title."
+
+[finding."2606.25261v1:Absorption3:REF012"]
+verdict = "false_positive"
+note = "'Foerster' is arXiv's transliteration of 'Förster'."
+
+[finding."2606.25261v1:barnes1990absorption:REF012"]
+verdict = "correct"
+note = "The IQEC'90 paper is '... Er3+ doped fibres at 1.5 um' (Southampton eprint 77490); the entry has 'fiber'."
+
+[finding."2606.25257v1:mohsenimofidi2025context:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at MSR 2026 (conf/msr/MohsenimofidiGT26); the entry cites the preprint."
+
+[finding."2606.25257v1:Gao2024The:REF013"]
+verdict = "correct"
+note = "TOSEM 34, 10.1145/3712005: every date Crossref has is 2025; 2024 is the preprint's year."
+
+[finding."2606.25257v1:Borg2025Echoes:REF015"]
+verdict = "correct"
+note = "The preprint the entry cites appeared at Empir. Softw. Eng. 2026 (journals/ese/BorgHHCSGKF26); the entry cites the preprint."
