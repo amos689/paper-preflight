@@ -328,6 +328,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #174 | C6、C7、C5：只找到预印本、又没有正式版本的作品，条目写的期刊或会议在 OpenAlex、dblp、Crossref 的目录里都查不到时报 REF020（警告）；带届次、缩写、年份或 Proceedings 的场所不查（真实的研讨会也不在目录里），COLM 加入已知会议。arXiv 自己的记录知道论文全部版本的标题时，即使比对的是 DataCite 的记录也报换词（REF012）。作者中间被删的人在提示里点名，仍为提示。HALLMARK dev：编造会议 71.8%→94.9%、近似标题 86.5%→94.2%，真实条目误报不变；十四批回放：第一版新增 18 个 REF020 全是误报（13 个 COLM、5 个真实研讨会），收窄后只新增 1 个真问题（标题错字 heterrogeneous）|
 | #175 | D1（提前做）：JSON 报告的 JSON Schema（`docs/schema/check-report.schema.json`，`schema_version` 0.1），测试用它校验在线、离线、不核查三种报告；README 写明字段只增不删、退出码 4（内部错误）。校验当即发现 schema 草稿里 `build_data` 的类型写错（实际是文件名或 null）。`schema_version` 到 1.0 时再改为 1.0 |
 | #176 | D2（提前做）：项目设置文件 `paper-preflight.toml` 或 `pyproject.toml` 的 `[tool.paper-preflight]`，从被检查的路径向上找到仓库根，也可用 `--config` 指定：忽略规则、忽略条目（可用通配符）、调整严重级别、关闭可选来源（核心来源不能关）、`fail-on`；命令行优先；写错（未知规则、设置项、来源）一律报错，退出码 3；MCP 服务同样读取 |
+| #177 | D3（提前做）：Python API `paper_preflight.check_paper(path)`，返回简单、不可变的数据类（Report、Reference、MatchedRecord、Finding），选项与命令行一致（是否联网、缓存、项目设置、语言），`report.to_dict()` 即 JSON 报告；包的 `__init__` 延迟导入，命令行启动不受影响。函数名不用 `check`：它会被同名的内部模块 `paper_preflight.check` 遮住。文档 docs/python-api.md |
 | #178 | C4：网页链接。其他来源都没找到、链接到未收录网站的条目，用 HEAD 请求检查链接（说页面不在时再用不读正文的 GET 确认，Kaggle 这类对 HEAD 回 404、对 GET 回 200 的网站因此不误报），返回 404/410 且 Wayback Machine 从未存档时报 REF021（提示）；401/403/429/5xx/超时一律不下结论；不访问本机和内网地址。十四批回放：280 篇论文里 5 处，警告和错误无增无减 |
 
 ## 下一步
