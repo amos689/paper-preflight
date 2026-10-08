@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- About twice as fast on a cold cache: 0.43 s per reference instead of 0.89 on a 75-reference
+  paper. With a contact address (`PAPER_PREFLIGHT_EMAIL`), Crossref's polite pool is used at
+  the limit its answers announce (three requests a second, three at a time), and every source
+  slows down at once if an answer announces a stricter limit. Semantic Scholar is asked about
+  an entry as soon as dblp and Crossref have both answered for it, while the others are still
+  being searched. The results are the same.
+- Releases publish to the MCP Registry from the release workflow (GitHub OIDC), after PyPI;
+  `scripts/bump_version.py` sets every version pin and opens the CHANGELOG section.
+
 ### Added
 
 - A whole reference written in an entry's note, with no title or author fields

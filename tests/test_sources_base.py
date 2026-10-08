@@ -1,3 +1,4 @@
+import asyncio
 import time
 from collections.abc import AsyncIterator
 
@@ -6,7 +7,8 @@ import pytest
 import respx
 
 from paper_preflight.cache import Cache, EntryKind
-from paper_preflight.sources import base
+from paper_preflight.resolve import Sources
+from paper_preflight.sources import base, crossref
 from paper_preflight.sources.base import (
     PartialUnavailable,
     SourceClient,
@@ -54,6 +56,36 @@ async def test_json_is_cached_and_credentials_do_not_matter(http: httpx.AsyncCli
     assert route.call_count == 1
     assert client.stats.requests == 1
     assert client.stats.cache_hits == 1
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_an_announced_rate_limit_slows_the_client_down(http: httpx.AsyncClient) -> None:
+    # Crossref's answers carry their pool's limit; a stricter one is followed at once
+    limits = {"x-rate-limit-limit": "2", "x-rate-limit-interval": "1s"}
+    respx.get(URL).mock(return_value=httpx.Response(200, json={}, headers=limits))
+    client = SourceClient(SourcePolicy(name="crossref", min_interval=0.34), http, Cache(None))
+    await client.get_json(URL)
+    assert client.policy.min_interval == 0.5
+    # a looser one changes nothing, and neither does nonsense
+    for headers in ({"x-rate-limit-limit": "50", "x-rate-limit-interval": "1s"},
+                    {"x-rate-limit-limit": "0", "x-rate-limit-interval": "1s"},
+                    {"x-rate-limit-limit": "many", "x-rate-limit-interval": "1s"}):  # fmt: skip
+        respx.get(URL).mock(return_value=httpx.Response(200, json={}, headers=headers))
+        await client.get_json(URL, params={"q": str(headers)})
+        assert client.policy.min_interval == 0.5
+
+
+def test_crossref_polite_pool_with_a_contact_address() -> None:
+    async def build(environ: dict[str, str]) -> Sources:
+        async with httpx.AsyncClient() as client:
+            return Sources.create(client, Cache(None), environ=environ)
+
+    polite = asyncio.run(build({"PAPER_PREFLIGHT_EMAIL": "someone@example.org"})).crossref.policy
+    public = asyncio.run(build({})).crossref.policy
+    assert (polite.min_interval, polite.max_concurrency) == (0.34, 3)
+    assert (public.min_interval, public.max_concurrency) == (1.0, 1)
+    assert crossref.POLICY.min_interval == 1.0  # the module's policy is never changed
 
 
 @pytest.mark.anyio

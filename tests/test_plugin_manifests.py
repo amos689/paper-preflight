@@ -96,6 +96,8 @@ def test_registry_metadata_matches_the_release() -> None:
     assert package["identifier"] == "paper-preflight"
     assert package["runtimeArguments"][0]["value"] == f"paper-preflight[mcp]=={__version__}"
     assert package["packageArguments"] == [{"type": "positional", "value": "mcp"}]
+    space = (ROOT / "space" / "requirements.txt").read_text(encoding="utf-8")
+    assert f"paper-preflight[pdf]=={__version__}" in space.split()
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     assert f"<!-- mcp-name: {server['name']} -->" in readme
     assert load(ROOT / "glama.json")["maintainers"] == ["amos689"]
