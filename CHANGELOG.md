@@ -69,8 +69,15 @@ All notable changes to this project are documented here. The format follows
   and DOI are written from the record, a venue that only says "arXiv preprint" is removed, and
   the eprint is kept. Only when the record says what kind of publication it is. Fields added by
   `bib fix` now line up with the entry's own.
+- **A page for every rule** (`docs/rules/`, in English and Chinese): what it checks, when it
+  can be wrong, and what to do, including how to silence it. `explain`, the MCP server's
+  `preflight_explain` and the help of SARIF reports (shown by GitHub code scanning) say the
+  same, from one source.
 
 ### Fixed
+
+- **SARIF reports linked to rule pages that did not exist** (`docs/rules/REF003.md`); they exist
+  now.
 
 The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3
 and heldout12:

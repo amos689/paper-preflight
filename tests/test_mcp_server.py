@@ -118,6 +118,8 @@ async def test_explain(workspace: Path) -> None:
     assert data["rule"] == "REF003"
     assert data["severity"] == "error"
     assert data["summary"]["zh"] == "所有来源均未找到该文献"
+    assert set(data["guide"]) == {"checks", "wrong", "action"}
+    assert data["docs"].endswith("/docs/rules/REF003.md")
 
 
 @pytest.mark.anyio

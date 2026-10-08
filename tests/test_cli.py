@@ -76,6 +76,11 @@ def test_explain_a_rule_in_both_languages() -> None:
     assert "所有来源均未找到该文献" in zh.output
     assert "{sources}" in zh.output
     assert "_zh}" not in zh.output  # internal placeholder names stay internal
+    # what it checks, when it can be wrong and what to do: docs/rules/REF003.md's text
+    assert "When it can be wrong" in en.output
+    assert "every source answered" in en.output
+    assert "什么时候可能误报" in zh.output
+    assert "docs/rules/REF003.md" in en.output
 
 
 def test_explain_lists_every_rule_and_rejects_unknown_ones() -> None:
