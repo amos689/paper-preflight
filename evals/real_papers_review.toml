@@ -5028,3 +5028,7 @@ note = "ADS titles the letter '... images: application to Q 0957+561 A, B', Cros
 [finding."2609.38762v1:aposurvey2025:REF012"]
 verdict = "correct"
 note = "The ACL Findings 2025 paper the entry cites (DOI given) is titled 'Heuristic-based Search Algorithm in Automatic Instruction-focused Prompt Optimization: A Survey'; the entry has the arXiv preprint's title."
+
+[finding."2607.07008v1:liu2001monte:REF011"]
+verdict = "correct"
+note = "The entry lists Jun S. Liu twice (author = {Liu, Jun S and Liu, Jun S}); the book has one author."

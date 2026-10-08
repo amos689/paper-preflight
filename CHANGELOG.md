@@ -6,6 +6,29 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3
+and heldout12:
+
+- **An article's issue year.** Crossref dates many articles only by when they went online, a
+  year before or after the issue authors cite (J. Amer. Math. Soc. 30(1), January 2017: online
+  March 2016; Commun. Comput. Phys. 32(5), the 2022 volume: online January 2023). When an
+  article is a year off, its full Crossref record is asked for once: the issue's own date there
+  counts too.
+- **Books digitised later.** A publisher's backfile record of a book, deposited years after the
+  book's date, may carry a later printing's date and author order (De Gruyter's 2009 for
+  Bhatia's 2007 Positive Definite Matrices; the AMS's Wiener before Paley): an earlier year and
+  the same authors in another order are no longer reported, and such a record is chosen only
+  when no other fits. A record made with the book is still believed (Gravity is 2014, not 2012).
+  Thirteen classic books of the development papers are now verified (Kuhn 1962, Minsky and
+  Papert 1969, Hampel 1986, ...).
+- **Registries' notation in titles:** IEEE's `<tex-math>` tags, the solar mass written "M sub
+  sun" or "M(solar)", Princeton's series numbers ("(PMS-30)").
+- **A paper's code is not its published version:** DataCite's and dblp's records of software
+  and data (a Zenodo deposit of the paper's code) are no longer offered as where a preprint was
+  published (REF015).
+
 ## [0.7.0] - 2026-10-08
 
 Manuscripts beyond LaTeX: Word, Markdown, Quarto, R Markdown and Typst, and bibliographies in

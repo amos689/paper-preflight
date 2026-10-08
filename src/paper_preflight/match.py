@@ -866,6 +866,10 @@ def is_preprint(record: SourceRecord) -> bool:
 _PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inproceedings"})
 # Resources that keep changing after they are registered (DataCite resource types)
 _LIVING_TYPES = frozenset({"dataset", "service", "database", "collection"})
+# a year check's note when the record may be a later edition of the book the entry cites
+LATER_EDITION = "a later edition"
+# a whole book, in Crossref's, OpenAlex's and DataCite's words
+_BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-book", "book-set"})
 
 
 # a workshop, also as a conference's acronym with a W ("NeurIPSW on Deep Generative Models")
@@ -903,6 +907,12 @@ def check_year(
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
         # cites its paper 18(167) as 2018
         return FieldCheck("match")
+    if record.work_type in _BOOK_RECORD_TYPES and record.reissue and year < min(years):
+        # a publisher's backfile record of a book may carry a later printing's date, the book
+        # itself older (Bhatia's Positive Definite Matrices, Princeton 2007: De Gruyter's record,
+        # 2009, its DOI registered in 2014). A record made with the book is believed: Poisson
+        # and Will's Gravity is 2014, not 2012.
+        return FieldCheck("variant", None, f"{LATER_EDITION}, recorded year(s) {sorted(years)}")
     if record.work_type in _LIVING_TYPES and max(years) < year <= date.today().year:
         # a database or service is cited by the year it was used, as its maintainers ask (USGS
         # NWIS: DataCite's 1994 is when the service started)
@@ -1279,7 +1289,15 @@ def best_candidate(
     ]
     if not matches:
         return None
-    matches.sort(key=lambda m: (m.title.score or 0.0, m.authors.overlap), reverse=True)
+    # a later edition of a book only when no record of the book the entry dates fits as well
+    matches.sort(
+        key=lambda m: (
+            m.title.score or 0.0,
+            not m.year.note.startswith(LATER_EDITION),
+            m.authors.overlap,
+        ),
+        reverse=True,
+    )
     best = matches[0]
     distinct = {m.record.title.lower() for m in matches if (m.title.score or 0) >= TITLE_SAME}
     if len(distinct) > 1 and (best.title.score or 0) < 1.0:

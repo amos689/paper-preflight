@@ -44,7 +44,8 @@ _TAG_RE = re.compile(r"<[^<>]+>")
 # registries, ADS's <ASTROBJ> in exported BibTeX.
 MARKUP_TAG_RE = re.compile(
     r"</?(?:title|i|b|em|strong|sub|sup|scp|sc|italic|bold|tt|u|inline-formula|named-content|"
-    r"astrobj|(?:mml|jats):[\w-]+)(?:\s[^<>]*)?/?>",
+    # IEEE's TeX in titles: '<tex-math notation="LaTeX">ℓ^1 </tex-math>' (10.1109/tit.2018.2874447)
+    r"astrobj|tex-math|(?:mml|jats):[\w-]+)(?:\s[^<>]*)?/?>",
     re.IGNORECASE,
 )
 # A whole LaTeX document around one formula, as some Crossref titles carry it (10.1086/308445:
@@ -192,6 +193,9 @@ class SourceRecord:
     publisher: str | None = None
     url: str | None = None
     venue_aliases: tuple[str, ...] = ()  # other names of the venue: abbreviations, book series
+    # a book whose DOI was registered years after its date: a publisher's backfile, whose dates
+    # and author order may be a later printing's (De Gruyter's 2009 for Bhatia's 2007 book)
+    reissue: bool = False
     issns: frozenset[str] = frozenset()
 
     @property

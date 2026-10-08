@@ -25,6 +25,7 @@ from paper_preflight.bib.parse import BibEntry
 from paper_preflight.bibtex import SOURCE_NAMES, escape, format_authors, protect_title
 from paper_preflight.findings import Finding, Location, Severity
 from paper_preflight.match import (
+    LATER_EDITION,
     NAMED_VENUE_FIELDS,
     TITLE_VARIANT,
     VENUE_FIELDS,
@@ -258,10 +259,12 @@ def _relation(m: Match) -> str:
     return "conflict"
 
 
-def _rank(m: Match) -> tuple[int, int, float, float, int]:
+def _rank(m: Match) -> tuple[int, int, int, float, float, int]:
     mismatches = sum(c.status == "mismatch" for c in (m.title, m.authors, m.year, m.venue))
     return (
         mismatches,
+        # a later edition of a book only when no record of the book the entry dates is found
+        int(m.year.note.startswith(LATER_EDITION)),
         int(is_preprint(m.record)),
         -(m.title.score or 0.0),
         -m.authors.overlap,
@@ -627,7 +630,9 @@ def _field_findings(
         if names:
             en, zh = ", ".join(names), "、".join(names)
             details.append((f"not on the record: {en}", f"记录中没有：{zh}"))
-        if not authors.first_author_match and record.authors:
+        if not authors.first_author_match and record.authors and not (record.reissue and not names):
+            # a backfile record of a book may list its authors in another order (the AMS has
+            # Wiener before Paley, the title page Paley before Wiener)
             first = record.authors[0].display
             details.append((f"the first author is {first}", f"第一作者应为 {first}"))
         suffixed = [pair for pair in renamed if _SUFFIX_AS_GIVEN.match(pair[0])]
@@ -662,14 +667,16 @@ def _field_findings(
                     "arXiv 未应答，DataCite 只有最新版本",
                 )
             )
-        out.append(
-            make_finding(
-                "REF011", _location(entry, author_field), key=key, field=author_field,
-                severity=Severity.INFO if short_record else None,
-                source=source, missing=names, suggestion=format_authors(record),
-                detail="; ".join(d[0] for d in details), detail_zh="；".join(d[1] for d in details),
-            )
-        )  # fmt: skip
+        if details:  # nothing left when only a backfile's author order differs
+            out.append(
+                make_finding(
+                    "REF011", _location(entry, author_field), key=key, field=author_field,
+                    severity=Severity.INFO if short_record else None,
+                    source=source, missing=names, suggestion=format_authors(record),
+                    detail="; ".join(d[0] for d in details),
+                    detail_zh="；".join(d[1] for d in details),
+                )
+            )  # fmt: skip
     elif authors.status == "variant" and authors.note == "some authors omitted":
         listed, total = len(info.authors.people), len(record.authors)
         out.append(
@@ -813,6 +820,8 @@ def _published_version(
     elif bound is not None:
         versions.sort(key=lambda version: _version_distance(bound, version))
     for version in versions:
+        if _RECORD_KINDS.get((version.work_type or "").lower()) == "software":
+            continue  # a paper's code or data on Zenodo is no published version of the paper
         m = evaluate(evidence.info, version, preprint_pair=True)
         if m.title.status == "mismatch" or m.authors.status in {"mismatch", "unknown"}:
             continue

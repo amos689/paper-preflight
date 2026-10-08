@@ -1559,3 +1559,80 @@ source = "real_papers:2609.18160v1"
 key = "2022MNRAS.509..272C"
 expect = []
 note = "was REF011: arXiv names Jenny J. Kim where MNRAS (Crossref) has the entry's Jaeyeon Kim; a name is reported only when no record of the work has it."
+
+[[case]]
+name = "fp-sam2017-ams-online-a-year-early"
+source = "real_papers:2609.38916v1"
+key = "sam2017grobner"
+expect = []
+note = "was REF013: J. Amer. Math. Soc. 30(1) is the January 2017 issue; Crossref has only the online date, March 2016."
+
+[[case]]
+name = "fp-sam2016-ams-online-before-volume"
+source = "real_papers:2609.38916v1"
+key = "sam2016gl"
+expect = []
+note = "was REF013: Trans. Amer. Math. Soc. 368 is the 2016 volume; Crossref has only the online date, June 2015."
+
+[[case]]
+name = "fp-meng2022-online-after-volume"
+source = "real_papers:2609.39020v1"
+key = "meng2022new"
+expect = []
+note = "was REF013: Commun. Comput. Phys. 32(5) is the 2022 volume; Crossref has only the online date, January 2023."
+
+[[case]]
+name = "fp-bhatia2007-book-online-edition"
+source = "real_papers:2609.38678v1"
+key = "BHATIA"
+expect = []
+note = "was REF013: Positive Definite Matrices is Princeton 2007; Crossref's record is De Gruyter's online edition, 2009-2010."
+
+[[case]]
+name = "fp-klusowski2018-ieee-tex-math"
+source = "real_papers:2609.39020v1"
+key = "klusowski2018approximation"
+expect = []
+note = "was REF012: IEEE's title keeps '<tex-math notation=\"LaTeX\">' tags around the norms."
+
+[[case]]
+name = "fp-yorke1993-solar-mass-notation"
+source = "real_papers:2609.38937v1"
+key = "1993ApJ...411..274Y"
+expect = []
+note = "was REF012: ADS's '1 M sub sun' against Crossref's '1 M(solar)'."
+
+[[case]]
+name = "fp-hicham2026-zenodo-code-not-a-publication"
+source = "real_papers:2609.38744v1"
+key = "hicham2026tabular"
+expect = []
+note = "was REF015: the paper's code on Zenodo (DataCite type Software) was offered as its published version."
+
+[[case]]
+name = "real-poissonwill2012-book-made-in-2014"
+source = "real_papers:2607.26713v1"
+key = "PoissonWill2012"
+expect = ["REF013"]
+note = "Gravity is Cambridge 2014; its record was made with the book, so the entry's 2012 is still reported."
+
+[[case]]
+name = "real-liu2001-author-listed-twice"
+source = "real_papers:2607.07008v1"
+key = "liu2001monte"
+expect = ["REF011"]
+note = "the entry lists Jun S. Liu twice; Springer's backfile record of the book has him once."
+
+[[case]]
+name = "fp-paley-wiener-backfile-author-order"
+source = "real_papers:2608.11518v1"
+key = "PW-33"
+expect = []
+note = "would be REF011: the AMS's backfile record lists Wiener before Paley, the title page Paley first."
+
+[[case]]
+name = "fp-stein1970-series-number-in-title"
+source = "real_papers:2607.00320v1"
+key = "stein1970singular"
+expect = []
+note = "would be REF012: Princeton's record adds the series number '(PMS-30)' to the title."
