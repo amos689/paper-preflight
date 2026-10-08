@@ -4672,3 +4672,359 @@ note = "Zenodo's release is napari-accelerated-pixel-and-object-classification; 
 [finding."2609.27177v1:grewal2023efficient:REF015"]
 verdict = "correct"
 note = "arXiv 2305.13409 appeared in Quantum (2025), DOI 10.22331/q-2025-11-06-1907 (dblp, same title and authors)."
+
+[finding."2609.38718v1:wu2025axbench:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025)."
+
+[finding."2609.38718v1:wang2025improving:REF015"]
+verdict = "correct"
+note = "The preprint appeared in EMNLP (Findings) (2025), DOI 10.18653/v1/2025.findings-emnlp.39."
+
+[finding."2609.38718v1:he2025saif:REF015"]
+verdict = "correct"
+note = "SAIF is in the ECML PKDD 2026 proceedings, 10.1007/978-3-032-37676-3_11 (Crossref: 7 September 2026); the year in the finding is dblp's, 2027."
+
+[finding."2609.38718v1:bereska2024mechanistic:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2024)."
+
+[finding."2609.38718v1:xiong2024everything:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025)."
+
+[finding."2609.38718v1:zhao2026odesteer:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2026)."
+
+[finding."2609.38718v1:vu2026angular:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-4056 is 2025."
+
+[finding."2609.38718v1:hu2022lora:REF011"]
+verdict = "correct"
+note = "LoRA's seventh author is Lu Wang (dblp, arXiv 2106.09685), not Liang Wang."
+
+[finding."2609.38718v1:hendrycks2020measuring:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2021)."
+
+[finding."2609.38718v1:GU2026101253:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38718v1:wu2026improved:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-5364 is 2025."
+
+[finding."2609.38792v1:wang2026outcome:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.1924."
+
+[finding."2609.38792v1:wang2025minority:REF012"]
+verdict = "correct"
+note = "Every version of arXiv 2506.01939 says 'Effective Reinforcement Learning for LLM Reasoning'; the entry abbreviates it to 'RL'."
+
+[finding."2609.38792v1:yu2025dapo:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025)."
+
+[finding."2609.38792v1:whitehouse2025j1:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2026)."
+
+[finding."2609.38792v1:wang2025helpsteer3:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025)."
+
+[finding."2609.38792v1:liu2025openrubrics:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ACL (1) (2026), DOI 10.18653/v1/2026.acl-long.791."
+
+[finding."2609.38792v1:hong2025thinkrm:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025)."
+
+[finding."2609.38792v1:li2024arenahard:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025)."
+
+[finding."2609.38792v1:liu2025tisdpo:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025)."
+
+[finding."2609.38795v2:cai2024medusa:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024)."
+
+[finding."2609.38795v2:li2024eagle:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024)."
+
+[finding."2609.38795v2:liu2023online:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024)."
+
+[finding."2609.38795v2:stern2018blockwise:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2018)."
+
+[finding."2609.38795v2:zhou2023distillspec:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2024)."
+
+[finding."2609.38795v2:jain2024livecodebench:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025)."
+
+[finding."2609.38744v1:qu2025tabicl:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2025)."
+
+[finding."2609.38744v1:hicham2026tabular:REF015"]
+verdict = "false_positive"
+note = "10.5281/zenodo.19605631 is the paper's code on Zenodo (DataCite type Software), not a published version of arXiv 2604.16123."
+
+[finding."2609.38744v1:erickson2026tabarena:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-0519 is 2025."
+
+[finding."2609.38744v1:muller2021transformers:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2022)."
+
+[finding."2609.38764v1:ri2022pretraining:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ACL (1) (2022), DOI 10.18653/v1/2022.acl-long.504."
+
+[finding."2609.38764v1:goodale2025meta:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ACL (1) (2025), DOI 10.18653/v1/2025.acl-long.860."
+
+[finding."2609.38764v1:zhang2024intelligence:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025)."
+
+[finding."2609.38764v1:allen2026physics:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-1410 is 2025."
+
+[finding."2609.38764v1:teney2026can:REF014"]
+verdict = "correct"
+note = "dblp has the paper at ICLR 2026 (conf/iclr/TeneyJSL26), not ICML."
+
+[finding."2609.38764v1:michaelov2026language:REF013"]
+verdict = "correct"
+note = "NeurIPS 38 is the 2025 conference; Crossref 10.52202/085713-3426 is 2025."
+
+[finding."2609.38764v1:belrose2024neural:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024)."
+
+[finding."2609.38683v1:zhang2025gendop:REF014"]
+verdict = "correct"
+note = "GenDoP is ICCV 2025 (10.1109/iccv51701.2025.01694), not CVPR."
+
+[finding."2609.38683v1:liu2025shotbench:REF011"]
+verdict = "unclear"
+note = "arXiv 2506.21356 lists Yangguang Li among 14 authors; Crossref's NeurIPS 2025 record has 13 without him. The entry has the preprint's list."
+
+[finding."2609.38683v1:li2024director3d:REF014"]
+verdict = "correct"
+note = "Director3D is NeurIPS 2024 (10.52202/079017-2391), not ECCV."
+
+[finding."2609.38683v1:liu2024mardini:REF015"]
+verdict = "correct"
+note = "The preprint appeared in Trans. Mach. Learn. Res. (2025)."
+
+[finding."2609.38683v1:zhou2025magi:REF011"]
+verdict = "unclear"
+note = "arXiv 2501.12389 lists Lionel M. Ni and Heung-Yeung Shum; IEEE's CVPR 2025 record (10.1109/cvpr52734.2025.00691) ends with Xiangyu Zhang. The entry has the preprint's list."
+
+[finding."2609.38689v1:Isenberg:2017:VMC:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38689v1:Ware:2004:IVP:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38689v1:panowan:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025)."
+
+[finding."2609.38689v1:cubecomposer:REF012"]
+verdict = "correct"
+note = "The entry's title has a broken '360 $\\{$$\\backslash$deg$\\}$' where arXiv 2603.04291 has '360°'."
+
+[finding."2609.38689v1:stereoworld:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2026)."
+
+[finding."2609.38689v1:stereoworldmodel:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2026)."
+
+[finding."2609.38689v1:ddpo:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2024)."
+
+[finding."2609.38689v1:draft:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2024)."
+
+[finding."2609.38689v1:flow:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2023)."
+
+[finding."2609.38689v1:rectified_flow:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2023)."
+
+[finding."2609.38689v1:liu2025videoreward:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2025)."
+
+[finding."2609.38689v1:stereocrafter:REF011"]
+verdict = "correct"
+note = "arXiv 2409.07447 is by Sijie Zhao, Wenbo Hu, Xiaodong Cun, Yong Zhang, Xiaoyu Li, ...; the entry's Wenbo Wang, Hao Li, Xianyun Gu, Yuxin Zhang and Xiaohu Qie are not on it."
+
+[finding."2609.38689v1:dap:REF015"]
+verdict = "correct"
+note = "The preprint appeared in CVPR (2026)."
+
+[finding."2609.38689v1:jin2024pyramidal:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2025)."
+
+[finding."2609.38689v1:liu2026omniroam:REF015"]
+verdict = "correct"
+note = "The preprint appeared in SIGGRAPH (Conference Paper Track) (2026), DOI 10.1145/3799902.3811180."
+
+[finding."2609.38684v1:mavromatis2025gnnrag:REF012"]
+verdict = "correct"
+note = "The ACL Findings 2025 paper the entry cites (DOI given) is titled '... for Efficient Large Language Model Reasoning on Knowledge Graphs'; the entry has the arXiv preprint's shorter title."
+
+[finding."2610.00353v1:chen2025agentcourt:REF014"]
+verdict = "correct"
+note = "AgentCourt is in Findings of ACL 2025 (10.18653/v1/2025.findings-acl.304), not COLING."
+
+[finding."2609.38916v1:sam2017grobner:REF013"]
+verdict = "false_positive"
+note = "J. Amer. Math. Soc. 30(1) is the January 2017 issue; Crossref has only the online date, 17 March 2016. The volume year is a legitimate year to cite."
+
+[finding."2609.38916v1:sam2016gl:REF013"]
+verdict = "false_positive"
+note = "Trans. Amer. Math. Soc. 368(2) is in the 2016 volume; Crossref has only the online date, 17 June 2015. The volume year is a legitimate year to cite."
+
+[finding."2609.38916v1:CHURCH2013250:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38916v1:levie2024graphon:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 (2023) cited as 2024; Crossref 10.52202/075280-2815 is 2023."
+
+[finding."2609.38916v1:boker2024fine:REF013"]
+verdict = "correct"
+note = "NeurIPS 36 (2023) cited as 2024; Crossref 10.52202/075280-2022 is 2023."
+
+[finding."2609.38916v1:khalife2024uniform:REF013"]
+verdict = "correct"
+note = "The entry's own booktitle, the Thirteenth ICLR, is 2025 (dblp conf/iclr/KhalifeT25)."
+
+[finding."2609.38916v1:rosenbluth2023some:REF015"]
+verdict = "correct"
+note = "The preprint appeared in IJCAI (2023), DOI 10.24963/ijcai.2023/464."
+
+[finding."2609.38916v1:li2020fourier:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2021)."
+
+[finding."2609.38916v1:bolton_zanna:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38916v1:ronneberger2015unetconvolutionalnetworksbiomedical:REF015"]
+verdict = "correct"
+note = "The preprint appeared in MICCAI (3) (2015), DOI 10.1007/978-3-319-24574-4_28."
+
+[finding."2609.38916v1:deng2021vectorneuronsgeneralframework:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICCV (2021), DOI 10.1109/iccv48922.2021.01198."
+
+[finding."2609.38916v1:takamoto2024pdebenchextensivebenchmarkscientific:REF015"]
+verdict = "correct"
+note = "The preprint appeared in NeurIPS (2022)."
+
+[finding."2609.39020v1:klusowski2018approximation:REF012"]
+verdict = "false_positive"
+note = "The same title: Crossref writes the norms in TeX markup ('<tex-math>ℓ^1</tex-math>'), the entry as $l^1$ and $l^0$."
+
+[finding."2609.39020v1:meng2022new:REF013"]
+verdict = "false_positive"
+note = "Commun. Comput. Phys. 32(5) is in the 2022 volume; Crossref has only the online date, 24 January 2023. The volume year is a legitimate year to cite."
+
+[finding."2610.08843v1:First_unet:REF015"]
+verdict = "correct"
+note = "The preprint appeared in MICCAI (3) (2015), DOI 10.1007/978-3-319-24574-4_28."
+
+[finding."2610.08843v1:nguyen2019feasibility:REF011"]
+verdict = "correct"
+note = "Scientific Reports 9:1076 is by Nguyen, Long, Jia, Lu, Gu, Iqbal and Jiang (Crossref); the entry's Sher, Lin and Liu are not on it."
+
+[finding."2610.02247v1:blackiston2021:REF003"]
+verdict = "correct"
+note = "No work of this title in Crossref, dblp or Semantic Scholar, nor in a Crossref search by its title, authors and journal."
+
+[finding."2610.02247v1:kriegman2021kinematic:REF003"]
+verdict = "correct"
+note = "The PNAS 2021 paper by Kriegman, Blackiston, Levin and Bongard is 'Kinematic self-replication in reconfigurable organisms', e2112672118; the entry's title and page are not it."
+
+[finding."2610.02247v1:pcgrad:REF011"]
+verdict = "correct"
+note = "PCGrad's third author is Abhishek Gupta (dblp, arXiv 2001.06782), not Abhinav Gupta."
+
+[finding."2610.02247v1:rocamonde2023vision:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICLR (2024)."
+
+[finding."2610.02247v1:wang2024rl:REF015"]
+verdict = "correct"
+note = "The preprint appeared in ICML (2024)."
+
+[finding."2610.02247v1:may2012optimistic:REF011"]
+verdict = "correct"
+note = "JMLR 13 (2012) is by May, Korda, Lee and Leslie (dblp); Nicolò Cesa-Bianchi is not an author."
+
+[finding."2609.38678v1:BHATIA:REF013"]
+verdict = "false_positive"
+note = "Positive Definite Matrices is Princeton University Press 2007; Crossref's record (10.1515/9781400827787) has the De Gruyter online edition's dates, 2009 and 2010."
+
+[finding."2609.38937v1:1998MNRAS.294..718S:REF002"]
+verdict = "correct"
+note = "The doi field runs two DOIs together ('...01284.x10.1111/...')."
+
+[finding."2609.38937v1:1993ApJ...411..274Y:REF012"]
+verdict = "false_positive"
+note = "The same title: 'I. 1 M sub sun' is ADS's rendering of the solar-mass symbol, Crossref's is 'I - 1 M(solar)'."
+
+[finding."2609.38937v1:MACNEICE2000330:REF017"]
+verdict = "correct"
+note = "The doi field holds a URL."
+
+[finding."2609.38937v1:2025MNRAS.tmp.1946V:REF012"]
+verdict = "correct"
+note = "The MNRAS article (10.1093/mnras/staf2059) has no '(TS)' and '(GHC)' in its title; the entry has arXiv 2408.10406's title."
+
+[finding."2609.38937v1:2014prpl.conf..195D:REF017"]
+verdict = "correct"
+note = "The doi field has LaTeX escapes ('azu\\_uapress')."
+
+[finding."2609.39040v1:1985ApJ...289L...1F:REF012"]
+verdict = "unclear"
+note = "ADS titles the letter '... images: application to Q 0957+561 A, B', Crossref '... images Application of Q0957 + 561A,B'; the registries disagree on 'to' and 'of'."
+
+[finding."2609.38762v1:aposurvey2025:REF012"]
+verdict = "correct"
+note = "The ACL Findings 2025 paper the entry cites (DOI given) is titled 'Heuristic-based Search Algorithm in Automatic Instruction-focused Prompt Optimization: A Survey'; the entry has the arXiv preprint's title."
