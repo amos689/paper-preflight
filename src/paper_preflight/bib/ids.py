@@ -106,6 +106,8 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         doi = normalize_doi(text)
         if doi is None:
             return
+        # the RFC Editor writes "10.17487/RFC0791"; Crossref files it as 10.17487/rfc791
+        doi = _RFC_PADDING.sub("", doi)
         add(Identifier("doi", doi, field, raw=text))
         arxiv_doi = _ARXIV_DOI_RE.match(doi)
         if arxiv_doi:
@@ -149,6 +151,14 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         if arxiv:
             add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=value))
 
+    if not any(i.scheme == "doi" for i in found):
+        rfc = _rfc_number(entry)
+        if rfc is not None:
+            # every RFC has a DOI from the RFC Editor: RFC 791 is 10.17487/RFC0791, which
+            # Crossref files as 10.17487/rfc791
+            number, field, raw = rfc
+            add(Identifier("doi", f"10.17487/rfc{number}", field, raw=raw))
+
     pmid = entry.text("pmid")
     if pmid and pmid.strip().isdigit():
         add(Identifier("pmid", pmid.strip(), "pmid", raw=pmid))
@@ -169,6 +179,33 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         if issn:
             add(Identifier("issn", issn, "issn", raw=issn_text))
     return found
+
+
+_RFC_PADDING = re.compile(r"(?<=^10\.17487/rfc)0+(?=\d)")
+# "RFC 2616", "RFC2616", "Request for Comments 2616"; rfc-editor.org/rfc/rfc2616,
+# ietf.org/rfc/rfc2616.txt, datatracker.ietf.org/doc/html/rfc2616
+_RFC_TEXT = re.compile(r"\b(?:RFC|Request\s+for\s+Comments)[\s:#-]*(\d{1,5})\b", re.I)
+_RFC_URL = re.compile(r"(?:rfc-editor\.org|ietf\.org)/\S*?\brfc(\d{1,5})\b", re.I)
+
+
+def _rfc_number(entry: BibEntry) -> tuple[int, str, str] | None:
+    """An RFC's number, the field that gives it and the text as written."""
+    kind = " ".join(entry.text(f) or "" for f in ("type", "series", "institution", "publisher"))
+    number = (entry.text("number") or "").strip()
+    if number.isdigit() and re.search(r"\b(?:RFC|Request for Comments)\b", kind, re.I):
+        return int(number), "number", number
+    for field in ("howpublished", "series", "number", "note", "journal", "booktitle"):
+        text = entry.text(field) or ""
+        if field in {"note", "journal", "booktitle"} and len(text) > 40:
+            continue  # a note that mentions an RFC is not one that names the entry as it
+        match = _RFC_TEXT.search(text)
+        if match:
+            return int(match.group(1)), field, match.group(0)
+    url = entry.text("url") or ""
+    match = _RFC_URL.search(url)
+    if match:
+        return int(match.group(1)), "url", url
+    return None
 
 
 def first(identifiers: Iterable[Identifier], scheme: str) -> Identifier | None:
