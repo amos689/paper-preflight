@@ -32,7 +32,7 @@ EXPECTED: dict[str, tuple[Verdict, set[str]]] = {
     "hendrycks2016gelu": (Verdict.VERIFIED, set()),
     "lindqvist2024quantum": (Verdict.NOT_FOUND, {"REF003"}),
     "wakefield1998ileal": (Verdict.VERIFIED, {"REF004", "REF005"}),
-    "goodfellow2016deep": (Verdict.CANNOT_DETERMINE, {"REF090"}),
+    "goodfellow2016deep": (Verdict.VERIFIED, set()),  # by Open Library
     "zhou2016ml": (Verdict.CANNOT_DETERMINE, {"REF090"}),
     "tacl2019example": (Verdict.VERIFIED, set()),
 }
@@ -114,7 +114,7 @@ async def test_flags_and_reasons(demo: dict[str, Assessment]) -> None:
     assert "retracted" in demo["wakefield1998ileal"].flags
     retraction = next(f for f in demo["wakefield1998ileal"].findings if f.rule_id == "REF004")
     assert retraction.severity is Severity.ERROR
-    assert demo["goodfellow2016deep"].reasons == (Reason.GREY_LITERATURE,)
+    assert demo["goodfellow2016deep"].reasons == ()  # verified by Open Library
     assert Reason.NON_LATIN_UNSUPPORTED in demo["zhou2016ml"].reasons
 
 

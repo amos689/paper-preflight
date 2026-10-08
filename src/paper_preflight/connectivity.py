@@ -26,6 +26,7 @@ from paper_preflight.sources import (
     dblp,
     doiorg,
     openalex,
+    openlibrary,
     pubmed,
     semanticscholar,
 )
@@ -75,6 +76,11 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
         ),
         (pubmed.POLICY, lambda c: pubmed.by_pmids(c, [KNOWN_PMID], email=mailto), ""),
         (semanticscholar.POLICY, s2_call, "" if s2_key else "S2_API_KEY not set"),
+        (
+            openlibrary.POLICY,
+            lambda c: openlibrary.search_books(c, "Matrix Computations", "Golub", mailto=mailto),
+            "books without a DOI",
+        ),
     ]
 
 

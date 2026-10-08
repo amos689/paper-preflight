@@ -43,6 +43,7 @@ from paper_preflight.sources import (
     dblp,
     doiorg,
     openalex,
+    openlibrary,
     pubmed,
     semanticscholar,
 )
@@ -140,6 +141,7 @@ class Sources:
     mailto: str | None = None
     openalex_key: str | None = None
     s2: SourceClient | None = None  # only with an API key (docs/spikes/S5)
+    openlibrary: SourceClient | None = None  # books nothing else knows
     s2_key: str | None = None
     # told (stage, done, total) as the slow stages advance: "title", then "rescue"
     progress: Callable[[str, int, int], None] | None = None
@@ -183,12 +185,14 @@ class Sources:
             openalex_key=env.get("OPENALEX_API_KEY") or None,
             s2=client(semanticscholar.POLICY) if s2_key else None,
             s2_key=s2_key,
+            openlibrary=client(openlibrary.POLICY),
         )
 
     def all_clients(self) -> list[SourceClient]:
         clients = [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex,
                    self.pubmed]  # fmt: skip
-        return clients + ([self.s2] if self.s2 is not None else [])
+        optional = [c for c in (self.s2, self.openlibrary) if c is not None]
+        return clients + optional
 
 
 def looks_cs(info: EntryInfo) -> bool:
@@ -385,6 +389,10 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 5b. Journal articles cited without a title, by journal, volume and page.
     untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
     await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
+
+    # 8. Books no registry knows (no DOI), from Open Library.
+    books = [i for i in evidence.values() if _unfound_book(i)]
+    await asyncio.gather(*(_search_books(item, sources) for item in books))
 
     # 7. The issue's date for Crossref articles a year off the entry's year.
     await _issue_years(list(evidence.values()), sources)
@@ -786,6 +794,62 @@ async def _search_coordinates(item: Evidence, sources: Sources) -> None:
     if found and len({title_key(r.title) for r in found}) == 1:
         item.anchored.extend(found)
         item.by_coordinates = True
+
+
+BOOK_ENTRY_TYPES = frozenset({"book", "mvbook"})
+
+
+def _unfound_book(item: Evidence) -> bool:
+    """A book no record found fits by title and first author (Semantic Scholar may have one
+    with other people's names: Bishop's Pattern Recognition and Machine Learning by "Neal")."""
+    from paper_preflight.match import evaluate
+
+    info = item.info
+    if info.entry_type not in BOOK_ENTRY_TYPES or not info.title or info.year is None:
+        return False
+    if item.anchored:
+        return False
+    return not any(
+        m.title.status in {"match", "variant"} and m.authors.first_author_match
+        for m in (evaluate(info, record) for record in item.candidates)
+    )
+
+
+async def _search_books(item: Evidence, sources: Sources) -> None:
+    """Open Library's records of a book, kept only when its title, an author and one of its
+    editions' years all fit the entry: a reader-made record confirms a book, never accuses."""
+    client = sources.openlibrary
+    if client is None:
+        return
+    from paper_preflight.match import evaluate
+
+    info = item.info
+    people = info.authors.people
+    author = people[0].family if people and not people[0].literal else None
+    isbn = next((i.value for i in item.identifiers if i.scheme == "isbn"), None)
+    records: list[SourceRecord] = []
+    try:
+        if isbn:
+            records = await openlibrary.search_books(
+                client, info.title, author, isbn=isbn, mailto=sources.mailto
+            )
+        if not records:
+            records = await openlibrary.search_books(
+                client, info.title, author, mailto=sources.mailto
+            )
+    except SourceUnavailable as error:
+        item.optional_unavailable.setdefault(error.source, error.reason.value)
+        return
+    for record in records:
+        m = evaluate(info, record)
+        if (
+            m.title.status in {"match", "variant"}
+            and m.authors.status in {"match", "variant"}
+            and m.authors.first_author_match
+            and m.year.status == "match"
+        ):
+            item.candidates.append(record)
+            return
 
 
 async def _search_s2(item: Evidence, client: SourceClient, api_key: str) -> None:

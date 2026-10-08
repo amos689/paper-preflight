@@ -31,8 +31,8 @@ No LLM guessing, no false accusations.**
 
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
 and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
-arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key) about every cited
-work:
+arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key; Open Library for
+books without a DOI) about every cited work:
 
 - Does it exist?
 - Does it match what you wrote?

@@ -43,7 +43,8 @@ def test_demo_paper(recorded_web: FakeWeb, tmp_path: Path) -> None:
     assert "hendrycks2016gelu" in checked
     assert result.skipped["lindqvist2024quantum"] == "not verified (not_found)"
     assert result.skipped["devlin2019bert"] == "not verified (identifier_conflict)"
-    assert result.skipped["goodfellow2016deep"] == "not verified (cannot_determine)"
+    # verified by Open Library, a book has no text to look in
+    assert result.skipped["goodfellow2016deep"] == "no identifier to find its text by"
     assert not checked & set(result.skipped)
     # a verifier that is never sure confirms no passage, and accuses nobody; "Adam \cite{x}" and
     # "GELU activations \cite{y}" are confirmed by the titles of the works they cite

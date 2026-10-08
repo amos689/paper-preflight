@@ -16,6 +16,14 @@ All notable changes to this project are documented here. The format follows
 - **RFCs are verified by their number.** An RFC cited as `type={RFC}, number={8446}`, as
   "RFC 791" or by its rfc-editor.org or IETF link is checked as its DOI, which the RFC
   Editor registers with Crossref (10.17487/rfc791).
+- **Books without a DOI are confirmed by Open Library.** Goodfellow, Bengio and Courville's Deep
+  Learning (MIT Press, 2016) and Golub and Van Loan's Matrix Computations have no DOI, so no
+  registry knew them. A book nothing else found is now looked up in Open Library, by its ISBN
+  or its title and first author, and verified when the title, an author and the year of one of
+  its editions all fit; a record that does not fit is set aside, never held against the entry.
+  On the development papers, 48 of 102 books that could not be judged are now verified (Pearl
+  1988, Cormen 2022, Misner, Thorne and Wheeler 1973, ...), with no finding gained or lost. One
+  request a second, cached; `doctor` checks that Open Library answers.
 
 ### Fixed
 

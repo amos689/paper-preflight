@@ -135,10 +135,11 @@ REASON_TEXT: dict[Reason, tuple[str, str]] = {
 
 SOURCE_PRIORITY = {
     "crossref": 0, "pubmed": 1, "datacite": 1, "doiorg": 2, "dblp": 3, "openalex": 4, "arxiv": 5,
+    "openlibrary": 6,
 }  # fmt: skip
 # Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
 # entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
-AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2"})
+AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2", "openlibrary"})
 
 
 def source_name(source: str) -> str:

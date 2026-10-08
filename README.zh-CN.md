@@ -29,7 +29,7 @@
 
 大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
 读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
-了 key 的话还有 Semantic Scholar）：
+了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library）：
 
 - 它真的存在吗？
 - 和你写的一致吗？

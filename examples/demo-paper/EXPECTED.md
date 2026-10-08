@@ -21,7 +21,7 @@ since then arXiv IDs fall back to DataCite (`10.48550/arXiv.<id>`) when that hap
 | `he2015residual` | arXiv preprint published at CVPR 2016 | REF015 warning | online | ✅ |
 | `lindqvist2024quantum` | fabricated, fictional authors | REF003 error | online | ✅ |
 | `wakefield1998ileal` | retracted (2010) | REF004 error | online | ✅ |
-| `goodfellow2016deep` | book without identifiers | REF090 info (`GREY_LITERATURE`) | online | ✅ |
+| `goodfellow2016deep` | book without identifiers | verified by Open Library, no finding | online | ✅ |
 | `zhou2016ml` | Chinese book without identifiers | REF090 info (`NON_LATIN_UNSUPPORTED`) | online | ✅ |
 | `vaswani2017attention` | correct; no Crossref DOI exists, fake 10.65215 copies do | verified, no finding | online | ✅ |
 | `he2016deep` | correct | verified, no finding | online | ✅ |

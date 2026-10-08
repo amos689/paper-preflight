@@ -37,9 +37,9 @@ def test_demo_paper_text_report() -> None:
     assert result.exit_code == EXIT_FINDINGS
     for rule in ("CIT001", "REF001", "REF003", "REF004", "REF013", "REF015"):
         assert rule in result.output
-    assert "References: 6 verified" in result.output
+    assert "References: 7 verified" in result.output
     zh = check(str(DEMO), "--lang", "zh")
-    assert "参考文献核查：已核实 6" in zh.output
+    assert "参考文献核查：已核实 7" in zh.output
 
 
 def test_demo_paper_json_references(tmp_path: Path) -> None:
@@ -50,8 +50,8 @@ def test_demo_paper_json_references(tmp_path: Path) -> None:
     assert payload["verification"] == {
         "mode": "online",
         "verdicts": {
-            "verified": 6, "metadata_mismatch": 1, "identifier_conflict": 1, "not_found": 1,
-            "cannot_determine": 2,
+            "verified": 7, "metadata_mismatch": 1, "identifier_conflict": 1, "not_found": 1,
+            "cannot_determine": 1,
         },
         "unverified_offline": 0,
     }  # fmt: skip
@@ -64,7 +64,7 @@ def test_demo_paper_json_references(tmp_path: Path) -> None:
     assert set(refs) == CITED  # only references that appear in the PDF are verified
     assert refs["devlin2019bert"]["verdict"] == "identifier_conflict"
     assert refs["vaswani2017attention"]["matched"]["id"] == "conf/nips/VaswaniSPUJGKP17"
-    assert refs["goodfellow2016deep"]["reasons"] == ["GREY_LITERATURE"]
+    assert refs["goodfellow2016deep"]["matched"]["source"] == "openlibrary"
     assert refs["he2015residual"]["flags"] == ["preprint_published"]
     reported = {f["id"] for f in payload["findings"]}
     assert refs["devlin2019bert"]["findings"]
@@ -224,7 +224,7 @@ def test_refresh_asks_the_sources_again(tmp_path: Path, recorded_web: FakeWeb) -
     asked_again = len(recorded_web.requests) - first - cached
     assert cached == 0  # a second run answers from the cache...
     assert asked_again == first  # ...a --refresh run asks exactly what the first run asked
-    assert refreshed["verification"]["verdicts"]["verified"] == 6
+    assert refreshed["verification"]["verdicts"]["verified"] == 7
 
 
 def test_refresh_contradicts_offline() -> None:
