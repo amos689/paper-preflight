@@ -26,7 +26,9 @@ from paper_preflight.findings import Finding, Severity
 from paper_preflight.rules import RULES
 
 CONFIG_FILE = "paper-preflight.toml"
-OPTIONAL_SOURCES = frozenset({"s2", "openlibrary", "github", "pypi", "cran", "web", "wayback"})
+OPTIONAL_SOURCES = frozenset(
+    {"s2", "openlibrary", "github", "pypi", "cran", "huggingface", "openml", "web", "wayback"}
+)
 FAIL_ON = ("error", "warning", "never")
 _KEYS = frozenset({"ignore-rules", "ignore-keys", "severity", "disable-sources", "fail-on"})
 

@@ -32,7 +32,8 @@ No LLM guessing, no false accusations.**
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
 and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
 arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key; Open Library for
-books without a DOI; GitHub, PyPI and CRAN for software) about every cited work:
+books without a DOI; GitHub, PyPI, CRAN, Hugging Face and OpenML for software, models and
+datasets) about every cited work:
 
 - Does it exist?
 - Does it match what you wrote?
@@ -99,7 +100,7 @@ books without identifiers are reported as "cannot determine" instead of "not fou
 | REF016 | The registry has a DOI the entry lacks (offered as a safe fix) |
 | REF017 | An identifier is written so that links break (`10.1162/tacl\_a\_00276`, `…v1`) |
 | REF018 | A cited arXiv preprint was withdrawn by its authors |
-| REF019 · REF021 | A linked repository or package does not exist; a linked web page is gone, with no archived copy |
+| REF019 · REF021 | A linked repository, package or dataset does not exist; a linked web page is gone, with no archived copy |
 | REF020 | A preprint is cited with a venue no catalogue of journals and conferences has |
 | CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
 | REF090 | Cannot determine, always with the reason (source unavailable, grey literature, …) |
@@ -382,9 +383,9 @@ fail-on = "warning"                        # as --fail-on; the command line wins
 ```
 
 `check --config <path>` names the file instead. The optional sources are `s2`, `openlibrary`,
-`github`, `pypi`, `cran`, `web` (links to web pages) and `wayback`; the registries that judge a
-reference cannot be turned off, and a mistake in the file (an unknown rule or setting) is an error, never silently
-ignored. The JSON report names the file in `run.notes`; the MCP server reads it too.
+`github`, `pypi`, `cran`, `huggingface`, `openml`, `web` (links to web pages) and `wayback`;
+the registries that judge a reference cannot be turned off, and a mistake in the file (an
+unknown rule or setting) is an error, never silently ignored. The JSON report names the file in `run.notes`; the MCP server reads it too.
 
 ## Experimental: find the passage behind each citation
 

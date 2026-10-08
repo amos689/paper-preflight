@@ -374,10 +374,13 @@ GUIDES: dict[str, Guide] = {
          "改引取代它的版本或作品；被撤回预印本的早期版本仍可阅读，但作者已不再认可其内容。"),
     ),
     "REF019": _guide(
-        ("The entry links to a GitHub repository, a PyPI package or a CRAN package, and that "
-         "registry answers it does not exist. Asked only when nothing else found the reference.",
-         "条目链接到 GitHub 仓库、PyPI 或 CRAN 软件包，而对应平台答复它不存在。"
-         "只在其他来源都找不到该文献时才查询。"),
+        ("The entry links to a GitHub repository, a PyPI or CRAN package or an OpenML dataset, "
+         "and that registry answers it does not exist. Asked only when nothing else found the "
+         "reference. Hugging Face is never reported: it answers the same for a repository that "
+         "does not exist and for a private one.",
+         "条目链接到 GitHub 仓库、PyPI 或 CRAN 软件包或 OpenML 数据集，而对应平台答复它不存在。"
+         "只在其他来源都找不到该文献时才查询。Hugging Face 从不报此规则：仓库不存在和设为私有时，"
+         "它的答复相同。"),
         ("A repository made private or deleted after a move. A refused or rate-limited request "
          "is never read as \"not found\".",
          "仓库被设为私有，或迁移后被删除。被拒绝或受限流的请求不会被当作“不存在”。"),

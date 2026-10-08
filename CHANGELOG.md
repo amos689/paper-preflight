@@ -83,6 +83,15 @@ All notable changes to this project are documented here. The format follows
 - **`NCBI_API_KEY` is used.** `doctor` listed it, but PubMed was always asked without it; with
   a key, PMIDs and PMCIDs are looked up at ten requests a second instead of three. The key is
   sent as NCBI asks, in the query, and kept out of the cache.
+- **Models and datasets are confirmed by Hugging Face and OpenML.** A reference that links to
+  a model or dataset on the Hugging Face Hub (huggingface.co/meta-llama/Llama-3.2-1B,
+  huggingface.co/datasets/HuggingFaceTB/stack-edu) or to an OpenML dataset (openml.org/d/41169)
+  and that nothing else found is verified when the repository or dataset exists and its name is
+  the reference's title, as for software. A dataset OpenML does not have is REF019; the Hub
+  answers alike for a repository that does not exist and a private one, so it is never
+  reported. On the development papers, 29 references are now verified (23 on the Hub, 6 on
+  OpenML), with no finding gained or lost; references that could not be determined fall from
+  4.2% to 4.0%.
 
 ### Fixed
 

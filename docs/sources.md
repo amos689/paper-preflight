@@ -20,10 +20,11 @@ limit, caches every answer, and treats a rate limit, a bot challenge, a timeout 
 | [Semantic Scholar](https://www.semanticscholar.org/) | A rescue title search for references nobody else found | Only with `S2_API_KEY`; its answers are never exported, and its years and types are not trusted |
 | [Open Library](https://openlibrary.org/) | Books without a DOI that nothing else found | A record confirms a book only when title, an author and an edition's year all fit |
 | [GitHub](https://github.com/), [PyPI](https://pypi.org/), [CRAN](https://cran.r-project.org/) (via [R-hub's crandb](https://crandb.r-pkg.org/)) | Repositories and packages an entry links to, when nothing else found it | Authors and years are never compared: software is cited by version, and owners are accounts |
+| [Hugging Face](https://huggingface.co/), [OpenML](https://www.openml.org/) | Models and datasets an entry links to, when nothing else found it | As for software. The Hub answers 401 for a repository that does not exist and for a private one alike, so it is never reported missing |
 | The linked web page, and the [Wayback Machine](https://web.archive.org/) | Whether a page nothing else found still opens, and whether it was archived | Only the status is read (a HEAD request, confirmed by a GET whose body is never read); no request goes to private or local addresses |
 
-Semantic Scholar, Open Library, GitHub, PyPI, CRAN, the web check and the Wayback Machine are
-optional: `disable-sources` in [the settings](configuration.md#project-settings) turns them
+Semantic Scholar, Open Library, GitHub, PyPI, CRAN, Hugging Face, OpenML, the web check and the
+Wayback Machine are optional: `disable-sources` in [the settings](configuration.md#project-settings) turns them
 off. The others judge the references and cannot be turned off.
 
 ## What is never done

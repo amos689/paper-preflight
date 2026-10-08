@@ -1,4 +1,4 @@
-"""References to software, confirmed by GitHub, PyPI or CRAN (C2)."""
+"""Software and data, confirmed by GitHub, PyPI, CRAN, Hugging Face or OpenML (C2)."""
 
 from pathlib import Path
 
@@ -41,6 +41,17 @@ def test_links_to_repositories_and_packages() -> None:
         ("pypi", "qecsim"),
         ("cran", "ggplot2"),
         ("cran", "lme4"),
+    ]
+    hub = (
+        "https://huggingface.co/meta-llama/Llama-3.2-1B, huggingface.co/datasets/HuggingFaceTB/"
+        "stack-edu, https://huggingface.co/papers/2401.00001, huggingface.co/blog/smollm3, "
+        "https://www.openml.org/d/41169, https://www.openml.org/search?type=data&sort=runs&id=42"
+    )
+    assert software_links(hub) == [
+        ("huggingface", "models/meta-llama/Llama-3.2-1B"),
+        ("huggingface", "datasets/HuggingFaceTB/stack-edu"),
+        ("openml", "41169"),
+        ("openml", "42"),
     ]
 
 
@@ -85,3 +96,42 @@ async def test_software_is_confirmed_by_its_registry(
     (missing,) = [f for f in gone.findings if f.rule_id == "REF019"]
     assert missing.severity.value == "info"
     assert "someone/gone-tool" in missing.message.en
+
+
+HUB_BIB = r"""
+@misc{llama32, title={Llama-3.2-1B}, year={2024},
+  url={https://huggingface.co/meta-llama/Llama-3.2-1B}}
+@misc{stackedu, title={Stack-Edu}, year={2025},
+  howpublished={\url{https://huggingface.co/datasets/HuggingFaceTB/stack-edu}}}
+@misc{private, title={A Model Kept Private}, year={2025},
+  url={https://huggingface.co/fictional-lab/private-model}}
+@misc{helena, title={Helena Dataset}, year={2018}, url={https://www.openml.org/d/41169}}
+@misc{nodata, title={A Dataset Never Uploaded}, year={2020},
+  url={https://www.openml.org/d/99999999}}
+"""
+
+
+@pytest.mark.anyio
+async def test_models_and_datasets_are_confirmed_by_their_hub(
+    recorded_web: FakeWeb, tmp_path: Path, fast: None
+) -> None:
+    # SYNTHETIC, in the shape of the Hugging Face Hub's and OpenML's APIs
+    recorded_web.huggingface["models/meta-llama/Llama-3.2-1B"] = {
+        "id": "meta-llama/Llama-3.2-1B", "createdAt": "2024-09-18T15:03:14.000Z",
+    }  # fmt: skip
+    recorded_web.huggingface["datasets/HuggingFaceTB/stack-edu"] = {"id": "HuggingFaceTB/stack-edu"}
+    recorded_web.openml["41169"] = {"id": "41169", "name": "helena"}
+    entries = parse_bib_text(HUB_BIB, Path("refs.bib")).entries
+    options = VerifyOptions(cache_path=tmp_path / "c.sqlite3", current_year=2026, environ={})
+    _, verdicts, _ = await verify_entries(entries, options)
+    for key, source, kind in [("llama32", "huggingface", "software"),
+                              ("stackedu", "huggingface", "dataset"),
+                              ("helena", "openml", "dataset")]:  # fmt: skip
+        assert verdicts[key].verdict is Verdict.VERIFIED, key
+        record = verdicts[key].record
+        assert record is not None
+        assert (record.source, record.work_type) == (source, kind)
+    # the Hub's 401 is a private repository as well as none: never "does not exist"
+    assert [f.rule_id for f in verdicts["private"].findings] == ["REF090"]
+    # OpenML's "Unknown dataset" is: worth a look
+    assert sorted(f.rule_id for f in verdicts["nodata"].findings) == ["REF019", "REF090"]

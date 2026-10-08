@@ -338,6 +338,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #184 | `NCBI_API_KEY` 真正用上：`doctor` 一直列出它，但 PubMed 从未带着它查询；有 key 时 PMID、PMCID 按每秒 10 次查询（原为 3 次）。key 按 NCBI 的要求放在查询参数里，不进入缓存键，测试确认缓存文件里没有它；`doctor` 显示是否带 key。README 中英文凭据表补上这一行 |
 | #185 | `explain --lang zh` 的严重度和修复级别也显示中文（原先仍是 warning、unsafe 等英文），规则列表同样 |
 | #186 | C5 收窄（为升级成警告做准备）：开发集 280 篇里“漏掉列表中间的某某”提示共 46 条，其中 19 条点名的并不是人：登记机构把单位当成作者（Qassim University、Ural Federal University、Sandia National Laboratories、Austrian Research Institute……）、占位名（Paper Authors、(Primary Paper Contributors)）、合作组（DESI Collaboration、SciPy 1.0 Contributors、The Cancer Genome Atlas Research Network）、单名，以及上百人的合作组长列表（200/1140、485/486）。现在这些不再点名，超过 30 人的列表也不点名；仍是提示，升级与否看 heldout14 |
+| #187 | 覆盖（1.0 目标“无法确定 ≤4%”）：链接到 Hugging Face 模型或数据集、OpenML 数据集、其他来源都没找到的条目，像软件一样核实：仓库或数据集存在、名字就是条目标题即判为核实。OpenML 答复“Unknown dataset”时报 REF019；Hugging Face 对不存在和私有仓库都答 401，所以从不报。可选来源 `huggingface`、`openml`，`doctor` 探测二者。十四批回放（补查）：29 条由无法确定变为核实（Hub 23 条：FLUX.1-dev、Qwen3.5-9B、DAPO-Math-17K、Nemotron-CC-v2……；OpenML 6 条），逐条核对无误，报警无增无减；280 篇的“无法确定”由 4.24% 降到 4.02%。灰色文献弃权由阶段 C 前的 502 条降到 380 条，其中 245 条是网页（按 C4 设计不判真伪），网页以外由 188 条降到 135 条 |
 
 ## 下一步
 

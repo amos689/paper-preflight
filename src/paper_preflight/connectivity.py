@@ -96,6 +96,12 @@ def _calls(env: Mapping[str, str]) -> list[tuple[SourcePolicy, Call | None, str]
         ),
         (software.PYPI_POLICY, lambda c: software.pypi_package(c, "numpy"), ""),
         (software.CRAN_POLICY, lambda c: software.cran_package(c, "ggplot2"), ""),
+        (
+            software.HF_POLICY,
+            lambda c: software.hf_repo(c, "models/openai-community/gpt2"),
+            "models and datasets",
+        ),
+        (software.OPENML_POLICY, lambda c: software.openml_dataset(c, "61"), "datasets"),
         (web.WAYBACK_POLICY, lambda c: web.archived(c, "https://arxiv.org/"), ""),
     ]
 
