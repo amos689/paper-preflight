@@ -113,11 +113,11 @@ uv run python evals/replay.py new --against base      # verdicts moved, findings
 uv run python evals/replay.py new --against base --fill   # if the change asks something new
 ```
 
-There are twelve reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are thirteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last eight are each batch as it came out:
+candidate's (main 43a5544); the last nine are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -132,7 +132,8 @@ candidate's (main 43a5544); the last eight are each batch as it came out:
 | `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147); studied for 0.5.2 | 780 | 101 | 81 | 19 | 1 | 2.4 |
 | `heldout9` | 2026-09-02..08 | held out for 0.5.2 (#152-#154; list committed before them, #149); studied for #157 | 975 | 48 | 31 | 13 | 4 | 1.3 |
 | `heldout10` | 2026-09-09..15 | held out for #157 (list committed before it, #155); studied for #160 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
-| `heldout11` | 2026-09-16..22 | held out for 0.6.0 (#160-#161; list committed before them, #158) | 868 | 89 | 76 | 13 | 0 | 1.5 |
+| `heldout11` | 2026-09-16..22 | held out for 0.6.0 (#160-#161; list committed before them, #158); studied for #164 | 868 | 89 | 76 | 13 | 0 | 1.5 |
+| `heldout12` | 2026-09-23..29 | held out for 0.6.0 with #164 (list committed before it, #163) | 786 | 48 | 42 | 6 | 0 | 0.8 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -183,8 +184,16 @@ candidate's (main 43a5544); the last eight are each batch as it came out:
   journal, an EJDE conference volume) 2, a chapter compared with its reprint 1, a renamed
   journal 1 and an arXiv author list compared instead of the journal's 1.
 
-A thirteenth batch, `heldout12` (2026-09-23..29), was collected on 2026-10-08 and its list
-committed before any change made for heldout11's false positives.
+- **On `heldout12`**, run once with 0.6.0 including #164: 42 real problems (24 published
+  preprints, 6 identifiers written as URLs or with LaTeX escapes, wrong authors or given
+  names in 7 entries, one a chimera of two papers, a DOI that does not exist, two misquoted
+  titles) and 6 false positives, 0.8 per 100 references. They are a typo in arXiv's own
+  title, a 2013 e-book DOI on a 1988 book, an online-first record against the issue's year,
+  a journal's series label the registry leaves out of a title, and two software releases
+  cited with their owner and version.
+
+A fourteenth batch, `heldout13` (2026-09-30..10-06), was collected on 2026-10-08 and its list
+committed before any change made for heldout12's false positives.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
