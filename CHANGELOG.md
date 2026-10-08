@@ -64,6 +64,11 @@ All notable changes to this project are documented here. The format follows
 - **An author dropped from the middle of a list** is named in the info about omitted authors
   ("it leaves out Shaoqing Ren from the middle of the list"), apart from a list cut short. It
   stays an info until a held-out week shows it never fires on a correct list.
+- **`bib fix --level unsafe` cites a preprint as its published version** (REF015): the entry
+  type becomes the publication's (`@misc` to `@inproceedings`), its venue, year, volume, pages
+  and DOI are written from the record, a venue that only says "arXiv preprint" is removed, and
+  the eprint is kept. Only when the record says what kind of publication it is. Fields added by
+  `bib fix` now line up with the entry's own.
 
 ### Fixed
 

@@ -850,8 +850,36 @@ def _published_version(
             found_venue=version.venue or "a venue", found_year=version.year or "n.d.",
             published_id=version.source_id, doi=doi or "",
             doi_note=f", DOI {doi}" if doi else "", doi_note_zh=f"，DOI {doi}" if doi else "",
+            published_fields=_published_fields(version),
         )  # fmt: skip
     return None
+
+
+# a published version's kind of entry, in Crossref's and dblp's words
+_PUBLISHED_TYPES = {
+    "journal-article": "article", "article": "article",
+    "proceedings-article": "inproceedings", "inproceedings": "inproceedings",
+    "book-chapter": "incollection", "incollection": "incollection",
+}  # fmt: skip
+
+
+def _published_fields(version: SourceRecord) -> list[list[str]]:
+    """What citing the published version takes, for `bib fix`: [field, value] pairs, the entry
+    type as "@type". Empty when the record does not say what kind of publication it is."""
+    entry_type = _PUBLISHED_TYPES.get((version.work_type or "").lower())
+    if entry_type is None or not version.venue:
+        return []
+    venue_field = "journal" if entry_type == "article" else "booktitle"
+    fields = [["@type", entry_type], [venue_field, version.venue]]
+    if version.year:
+        fields.append(["year", str(version.year)])
+    if version.volume and entry_type == "article":
+        fields.append(["volume", version.volume])
+    if version.pages:
+        fields.append(["pages", version.pages.replace("--", "-").replace("-", "--")])
+    if version.doi:
+        fields.append(["doi", version.doi])
+    return fields
 
 
 def _cited_version(info: EntryInfo, evidence: Evidence, preprint: Match) -> Match:

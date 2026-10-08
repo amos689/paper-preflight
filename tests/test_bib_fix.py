@@ -44,6 +44,24 @@ def test_unsafe_level_rewrites_from_the_record(paper: Path) -> None:
     assert "-  doi       = {10.1109/CVPR.2016.90}," in result.stdout  # BERT's DOI is ResNet's
 
 
+def test_a_preprint_is_cited_as_its_published_version(paper: Path) -> None:
+    # ResNet's arXiv preprint is CVPR 2016 (REF015): the entry becomes the paper, eprint kept
+    result = fix(str(paper), "--level", "unsafe", "--keys", "he2015residual")
+    out = result.stdout
+    assert "-@misc{he2015residual," in out
+    assert "+@inproceedings{he2015residual," in out
+    assert "+  booktitle     = {CVPR}," in out  # lined up with the entry's own fields
+    assert "+  year          = {2016}," in out
+    assert "+  doi           = {10.1109/cvpr.2016.90}," in out
+    assert "-  eprint" not in out
+    assert fix(str(paper), "--keys", "he2015residual").stdout == ""  # not at the safe level
+    applied = fix(str(paper), "--level", "unsafe", "--keys", "he2015residual", "--apply")
+    assert applied.exit_code == EXIT_OK
+    again = runner.invoke(app, ["check", str(paper), "-f", "json", "--fail-on", "never"])
+    findings = json.loads(again.stdout)["findings"]
+    assert not any(f["key"] == "he2015residual" and f["rule"] == "REF015" for f in findings)
+
+
 def test_apply_and_check_again(paper: Path) -> None:
     applied = fix(str(paper), "--level", "unsafe", "--apply")
     assert applied.exit_code == EXIT_OK
@@ -67,6 +85,17 @@ def test_keys_and_json(paper: Path) -> None:
     assert only["level"] == "unsafe"
 
 
+def test_explain_says_what_bib_fix_does() -> None:
+    from paper_preflight.fixes import SAFE_RULES, UNSAFE_RULES
+    from paper_preflight.rules import RULES
+
+    for rule_id in SAFE_RULES | UNSAFE_RULES:
+        level = "safe" if rule_id in SAFE_RULES else "unsafe"
+        fix_level = RULES[rule_id].fix
+        assert fix_level is not None, rule_id
+        assert fix_level.value == level, rule_id
+
+
 def test_a_missing_doi_is_added(tmp_path: Path) -> None:
     bib = tmp_path / "refs.bib"
     bib.write_text(
@@ -80,7 +109,7 @@ def test_a_missing_doi_is_added(tmp_path: Path) -> None:
     result = fix(str(bib), "--apply")
     assert result.exit_code == EXIT_OK
     text = bib.read_text(encoding="utf-8")
-    assert "  year      = {2016},\n  doi = {10.1109/cvpr.2016.90},\n}" in text
+    assert "  year      = {2016},\n  doi       = {10.1109/cvpr.2016.90},\n}" in text  # lined up
     (entry,) = parse_bib_text(text, bib).entries
     assert entry.text("doi") == "10.1109/cvpr.2016.90"
 

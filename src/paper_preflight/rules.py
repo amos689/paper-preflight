@@ -216,7 +216,7 @@ RULES: dict[str, Rule] = {
              "({found_year}){doi_note}. Cite the published version and keep the eprint field.",
              "'{key}' 引用的预印本已正式发表于 {found_venue}（{found_year}）{doi_note_zh}。"
              "建议改引正式版本，并保留 eprint 字段。"),
-            FixLevel.SUGGESTION,
+            FixLevel.UNSAFE,
         ),
         _rule(
             "REF018", "arxiv-withdrawn", W,

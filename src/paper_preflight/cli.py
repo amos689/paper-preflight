@@ -616,7 +616,8 @@ def bib_fix(
         typer.Option(
             "--level",
             help="'safe' (identifier formatting, missing DOIs) or 'unsafe' (also authors, "
-            "title, year, venue and wrong identifiers, from the record).",
+            "title, year, venue, wrong identifiers and a preprint's published version, from "
+            "the record).",
         ),
     ] = "safe",
     keys: Annotated[
