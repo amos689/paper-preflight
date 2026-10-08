@@ -288,11 +288,14 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | PR | 内容 |
 |---|---|
 | #157 | heldout9 的 13 个误报修掉 11 个：复姓只引第一部分（dblp 的 Sabela Ramos Garea，两部分都要 ≥4 个字母）；"Laboratory/Laboratories/Institute" 结尾算群体署名；"Paul Ralph et al." 写成一个名字时算截断；Crossref 检索结果连同其单独存放的副标题比较（Field Methods 的 "How Many Interviews Are Enough?"），只靠副标题找到的记录不挡 S2 兜底（MIT Press 2010 年重印的 Marr《Vision》）；workshop 论文与晚一年的 arXiv 版本；9 月及以后印刷的书算下一年（Cover & Thomas 第 2 版、GPML）；dblp 的 "HECKTOR@MICCAI"；法律评论、"Open Review"、journal 字段里的网址。不修：MNRAS 11 月印刷算下一年（11 月印刷也常是当年的期，改了会坏既有测试）、报告写成 @article。十批回放：去掉 11 个误报和 1 个"不确定"，另有 10 本书由"无法确定"变为核实，无新增报警 |
+| #158 | 第十一批 heldout10（#157 的保留集，只跑一次）：1067 条、98 个报警、83 个真问题、14 个误报、1 个不确定，每百条 1.3（门槛 1.5，通过）。误报：ACM 的 10.5555 网址 2、KDD 写成 "&" 2、把预印本库（IACR ePrint、ECCC）当正式发表 2、登记库标题乱码与斜体标记 2、记录作者不全（dblp 的 MUC-7、arXiv 宕机时 DataCite 只有最新版）2、Russ Salakhutdinov 1、书的上线日期（Nielsen & Chuang）1、ePrint 版与会议版的年份 1、标题里的字面花括号 1。另：一篇论文（2609.10121v2）把整条引用写在 @misc 的 note 里，46 条全部弃权。冻结第十二批 heldout11（2026-09-16..22）的名单 |
 
 ## 下一步
 
 - [x] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报，heldout9 每百条 1.3。中文 MVP 暂缓（用户决定）
-- [ ] 0.5.3：#157 之后跑一次 heldout10（2026-09-09..15，名单已冻结），过 1.5 的门槛后发布（需用户确认、MCP Registry 设备授权）
+- [x] heldout10 跑一次：每百条 1.3，过门槛（#158）
+- [ ] 0.5.3 发布：#157（需用户确认、MCP Registry 设备授权）
+- [ ] heldout10 的误报类型（ACM 10.5555 网址、"&"、预印本库、登记库乱码、arXiv 宕机时的作者比较……），用 heldout11 验证；note 里整条引用的 @misc 按纯文本解析
 - [ ] 11 月：.docx 输入
 - [ ] 需要用户操作：awesome-claude-code（10-17 起）、awesome-scientific-writing（11-03 起）；11/03–11/12 曝光窗口发帖；每次发布时 MCP Registry 设备授权
 
