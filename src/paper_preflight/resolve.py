@@ -248,6 +248,15 @@ class Sources:
         return clients + optional
 
 
+def _bare_misc(item: Evidence) -> bool:
+    """A @misc with nothing but its title, authors and year: often a paper cited without its
+    venue (GPQA as a reference list printed it), never a web page or software, which link
+    somewhere. A plain-text reference whose venue was not read is one too."""
+    info = item.info
+    linked = bool(item.links or item.software_links)
+    return info.entry_type == "misc" and not info.venue and not linked
+
+
 def looks_cs(info: EntryInfo) -> bool:
     """Entries dblp is likely to index: conference papers and arXiv/CS venues."""
     from paper_preflight.match import canonical_venue
@@ -405,7 +414,11 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # A wrong or dead identifier does not mean the work does not exist, so entries whose
     # identifiers led nowhere are searched by title as well.
     unanchored = [item for item in evidence.values() if not item.anchored and item.info.title]
-    in_dblp = [i for i in unanchored if looks_cs(i.info) or i.info.entry_type not in GREY_TYPES]
+    in_dblp = [
+        i
+        for i in unanchored
+        if looks_cs(i.info) or i.info.entry_type not in GREY_TYPES or _bare_misc(i)
+    ]
     searched = rescued = 0
     lost: list[Evidence] = []
     dblp_answered = asyncio.Event()

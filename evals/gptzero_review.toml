@@ -8,9 +8,6 @@
 verdict = "miss"
 reason = "Short title (3 words): not searched as a 'not found' candidate."
 
-[neurips2025.14]
-verdict = "miss"
-reason = "The first words of a real ICLR 2025 title ('Semantically Diverse Language Generation for Uncertainty Estimation in Language Models', Aichberger et al.) with invented co-authors: a title cut short is not called not found."
 
 [neurips2025.23]
 verdict = "miss"
@@ -40,9 +37,6 @@ reason = "No venue, as for a blog post: grey literature is not judged."
 verdict = "miss"
 reason = "A real survey title with invented authors; several surveys share the title: abstained as ambiguous."
 
-[iclr2026.5]
-verdict = "miss"
-reason = "GPQA's real title with garbled, partly invented authors; only Semantic Scholar answers for it, and its authors are never held against an entry."
 
 [iclr2026.6]
 verdict = "miss"
@@ -52,9 +46,6 @@ reason = "A workshop (DEEM 2020) that no queried source indexes."
 verdict = "miss"
 reason = "Garbled author ('Ishita et al. Bardhan.'): too little to search."
 
-[iclr2026.24]
-verdict = "miss"
-reason = "A real title (Colas et al., NeurIPS 2020) with another author and journal: abstained as ambiguous."
 
 [iclr2026.36]
 verdict = "miss"

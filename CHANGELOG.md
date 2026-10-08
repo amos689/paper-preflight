@@ -6,6 +6,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **More invented authors caught on real titles.** GPTZero's hallucinated references flagged:
+  139 of 151 to 142, none verified; on 300 development papers and HALLMARK `dev_public`, no
+  finding gained or lost.
+  - One named person citing a title of eight words or more that names one work by other
+    people: the work with wrong authors (REF010), as already for two or more people. Not for
+    books, whose reviews and later editions take their title.
+  - A title cut short, by the right first author, when only the preprint is indexed and the
+    entry cites it as published within two years: the preprint with a cut title (REF012) and
+    other co-authors (REF011).
+  - A `@misc` with no venue and no link, as a plain-text reference whose venue was not read, is
+    searched in dblp too (GPQA's title with invented co-authors).
+  - dblp's title search reads "Q &A" as "Q&A".
+
 ## [0.8.0] - 2026-10-09
 
 Books, software, models, datasets, RFCs and web links checked against their own registries;
