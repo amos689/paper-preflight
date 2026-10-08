@@ -8,6 +8,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- **A Python API:** `paper_preflight.check_paper(path)` runs the checks the CLI runs and
+  returns plain, frozen dataclasses (`Report`, `Reference`, `MatchedRecord`, `Finding`), with the
+  same options (online or not, the cache, the project's settings, the language) and the JSON
+  report a call away (`report.to_dict()`). See docs/python-api.md.
 - **A JSON Schema for the JSON report** (`docs/schema/check-report.schema.json`,
   `schema_version` 0.1): fields may be added, none removed or changed in meaning without a new
   version. The tests check every report against it. Exit code 4 (internal error) is documented.

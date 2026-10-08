@@ -378,6 +378,18 @@ paper-preflight support path/to/paper --download-model --all
 - **哪些内容会离开你的电脑**：引用句只在本地打分。发出去的只有被引文献的标识符，用来获取它们的文本；
   拿到的文本保存在本地缓存里。
 
+## 在 Python 里调用
+
+```python
+import paper_preflight
+
+report = paper_preflight.check_paper("paper/")
+for ref in report.references:
+    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
+```
+
+返回的是简单、不可变的数据类，详见 [docs/python-api.md](docs/python-api.md)（英文）。
+
 ## 在编码助手里使用
 
 **Claude Code**：安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考

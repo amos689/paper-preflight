@@ -413,6 +413,18 @@ citations with their quotes, and `arxiv:<id>` works as a target, as it does for 
 - **What leaves your machine:** the claims are scored locally. Only the cited works'
   identifiers go out, to fetch their text, which is then kept in the local cache.
 
+## Use it from Python
+
+```python
+import paper_preflight
+
+report = paper_preflight.check_paper("paper/")
+for ref in report.references:
+    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
+```
+
+The results are plain, frozen dataclasses; see [docs/python-api.md](docs/python-api.md).
+
 ## Use it from your coding agent
 
 **Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
