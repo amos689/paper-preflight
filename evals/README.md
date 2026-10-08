@@ -101,11 +101,11 @@ uv run python evals/real_papers.py run --batch heldout3       # check them again
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
 ```
 
-There are ten reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are eleven reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last six are each batch as it came out:
+candidate's (main 43a5544); the last seven are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -118,7 +118,8 @@ candidate's (main 43a5544); the last six are each batch as it came out:
 | `heldout6` | 2026-08-12..18 | held out for 0.4.0; studied for 0.5.0 (#139-#141) | 753 | 86 | 77 | 9 | 0 | 1.2 |
 | `heldout7` | 2026-08-19..25 | held out for 0.5.0 (list committed before any change, #138); studied for 0.5.1 | 962 | 53 | 41 | 10 | 2 | 1.0 |
 | `heldout8` | 2026-08-26..09-01 | held out for #148 (list committed before it, #147); studied for 0.5.2 | 780 | 101 | 81 | 19 | 1 | 2.4 |
-| `heldout9` | 2026-09-02..08 | held out for 0.5.2 (#152-#154; list committed before them, #149) | 975 | 48 | 31 | 13 | 4 | 1.3 |
+| `heldout9` | 2026-09-02..08 | held out for 0.5.2 (#152-#154; list committed before them, #149); studied for #157 | 975 | 48 | 31 | 13 | 4 | 1.3 |
+| `heldout10` | 2026-09-09..15 | held out for #157 (list committed before it, #155) | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
@@ -146,8 +147,20 @@ candidate's (main 43a5544); the last six are each batch as it came out:
   dblp names it 1, years (a workshop version, a book's online date, an MNRAS volume) 3,
   'et al.' inside a name 1 and a subtitle after a question mark 1.
 
-An eleventh batch, `heldout10` (2026-09-09..15), was collected on 2026-10-08 and its list
-committed before any change made for heldout9's false positives.
+- **On `heldout10`**, run once after #157 fixed eleven of heldout9's thirteen false positives:
+  83 real problems (51 published preprints, 15 identifiers written as URLs or not DOIs, 8
+  wrong authors or given names, 7 of them in one paper, 3 years, 3 titles no source has, two
+  of them at journal coordinates that belong to other papers, 2 misquoted titles and two DOIs
+  run together) and 14 false positives, 1.3 per 100 references. They are ACM Digital Library
+  URLs with ACM's unregistered 10.5555 numbers 2, KDD written with an ampersand 2, preprint
+  servers named as the published version (IACR ePrint, ECCC) 2, registry title artefacts
+  (mojibake, italic markup as text) 2, short author lists in a record (dblp's MUC-7 appendix,
+  DataCite's latest arXiv version while arXiv was down) 2, a short given name (Russ
+  Salakhutdinov) 1, a book's online date (Nielsen & Chuang) 1, an ePrint copy's year against
+  its conference paper 1 and literal braces in a title 1.
+
+A twelfth batch, `heldout11` (2026-09-16..22), was collected on 2026-10-08 and its list
+committed before any change made for heldout10's false positives.
 
 - **On `dev`**, paper-preflight 0.1.0 raised 113 flags: 65 real problems, 42 false positives (4.5
   per 100 references). The fixes removed false positives without losing a real problem.
