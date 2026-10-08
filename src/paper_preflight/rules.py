@@ -231,6 +231,8 @@ RULES: dict[str, Rule] = {
              "link: the project may have been renamed, moved or made private.",
              "'{key}' 链接到 {registry} 上的 {name}，但 {registry} 没有它。请检查链接："
              "项目可能已改名、迁移或设为私有。"),
+        ),
+        _rule(
             "REF020", "venue-unknown", W,
             ("Venue not found in any catalogue", "发表场所查无此处"),
             ("'{key}' names {venue} as its venue, which no catalogue of journals and conferences "
