@@ -48,6 +48,11 @@ def test_escaped_doi_field() -> None:
 def test_arxiv_from_eprint_journal_url_and_datacite_doi() -> None:
     assert ids("@misc{a, eprint={1706.03762v5}, archivePrefix={arXiv}}") == ["arxiv:1706.03762v5"]
     assert ids("@article{a, journal={arXiv preprint arXiv:1810.04805}}") == ["arxiv:1810.04805"]
+    # ADS's e-prints: the number where the pages go
+    assert ids("@article{a, journal={arXiv e-prints}, pages={arXiv:2412.13807}}") == [
+        "arxiv:2412.13807"
+    ]
+    assert ids("@article{a, journal={ApJ}, pages={2412--2413}}") == []
     assert ids("@misc{a, url={https://arxiv.org/abs/2106.09685v2}}") == ["arxiv:2106.09685v2"]
     assert ids("@misc{a, doi={10.48550/arXiv.1706.03762}}") == [
         "doi:10.48550/arxiv.1706.03762",

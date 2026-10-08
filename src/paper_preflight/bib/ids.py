@@ -164,6 +164,13 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         arxiv = _arxiv_in(value, require_context=True)
         if arxiv:
             add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=value))
+    # ADS writes an e-print's number where the pages go: journal = {arXiv e-prints},
+    # pages = {arXiv:2412.13807} (heldout15: compared with the later A&A article instead)
+    pages = entry.text("pages")
+    if pages and not any(i.scheme == "arxiv" for i in found):
+        arxiv = _arxiv_in(pages, require_context=True)
+        if arxiv:
+            add(Identifier("arxiv", arxiv[0], "pages", arxiv[1], raw=pages))
 
     if not any(i.scheme == "doi" for i in found):
         rfc = _rfc_number(entry)
