@@ -325,6 +325,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #171 | C8、C3：太新的条目（今年或明年、还没有任何来源收录）记在本地缓存里，之后每次运行每天重查一次标题检索，`check --recheck` 立即重查；评测脚本关掉这一机制（`remember_too_new=False`），回放照旧只用缓存。RFC 按编号核实：`type={RFC}, number=…`、"RFC 791"、rfc-editor.org/IETF 链接都换成 RFC Editor 在 Crossref 注册的 DOI（10.17487/rfc791，Crossref 不补零）|
 | #172 | C1：没有 DOI 的图书用 Open Library 核实（每秒 1 次、缓存；有联系邮箱时写进 User-Agent）。只问其他来源都没找到的图书条目，按 ISBN 或书名＋第一作者检索，书名、作者和某一版次的年份都对得上才采用，对不上的记录放一边、从不拿来指错。十四批回放：原先无法判断的 102 本书中 48 本变为核实（Pearl 1988、Cormen 2022、Misner–Thorne–Wheeler 1973……），报警无增无减；演示论文的 Deep Learning 由无法确定变为核实；`doctor` 检查 Open Library 是否应答 |
 | #173 | C2：引用软件时，用 GitHub 仓库、PyPI、CRAN（经 R-hub 的 crandb）核实：只问链接到仓库或软件包、其他来源都没找到的条目；仓库或软件包存在，且它的名字或描述就是条目标题时判为核实，不比作者和年份（软件按版本引用，所有者是账号）；链接的仓库或软件包不存在时报新规则 REF019（提示）。GitHub 无令牌每小时 60 次，有 `GITHUB_TOKEN` 时 5,000 次。十四批回放：47 条软件引用由无法确定变为核实（smolagents、TRL、Alpaca、aider……），报警无增无减，没有出现 REF019 |
+| #174 | C6、C7、C5：只找到预印本、又没有正式版本的作品，条目写的期刊或会议在 OpenAlex、dblp、Crossref 的目录里都查不到时报 REF020（警告）；带届次、缩写、年份或 Proceedings 的场所不查（真实的研讨会也不在目录里），COLM 加入已知会议。arXiv 自己的记录知道论文全部版本的标题时，即使比对的是 DataCite 的记录也报换词（REF012）。作者中间被删的人在提示里点名，仍为提示。HALLMARK dev：编造会议 71.8%→94.9%、近似标题 86.5%→94.2%，真实条目误报不变；十四批回放：第一版新增 18 个 REF020 全是误报（13 个 COLM、5 个真实研讨会），收窄后只新增 1 个真问题（标题错字 heterrogeneous）|
 
 ## 下一步
 

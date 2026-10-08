@@ -682,6 +682,9 @@ class AuthorCheck(FieldCheck):
     missing: tuple[str, ...] = field(default=())  # entry authors not found in the record
     # surnames that pair up with another person's given name: (entry's name, record's name)
     renamed: tuple[tuple[str, str], ...] = field(default=())
+    # the record's people the entry leaves out before another it lists: not a list cut short
+    # but a name dropped from the middle (HALLMARK's partial author lists)
+    left_out: tuple[str, ...] = field(default=())
 
 
 _INITIALS_ONLY = re.compile(r"^(?:[A-Z]\.?){1,3}$")
@@ -827,11 +830,13 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     else:
         first = any(same_person(first_person, other) for other in people)
     missing_names = tuple(missing)
+    last = max(taken, default=-1)
+    left_out = tuple(people[i].display for i in range(last) if i not in taken)
 
     def result(status: Status, note: str = "", *, disjoint: bool = False) -> AuthorCheck:
         return AuthorCheck(
             status, overlap, note, overlap=overlap, first_author_match=first,
-            disjoint=disjoint, missing=missing_names, renamed=tuple(renamed),
+            disjoint=disjoint, missing=missing_names, renamed=tuple(renamed), left_out=left_out,
         )  # fmt: skip
 
     if matched == 0:
@@ -957,6 +962,8 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
     ("uai", ("uai", "uncertainty in artificial intelligence")),
     ("colt", ("colt", "conference on learning theory", "computational learning theory")),
     ("corl", ("corl", "conference on robot learning")),
+    # on OpenReview only, in no catalogue of journals and conferences
+    ("colm", ("colm", "conference on language modeling")),
     ("www", ("www", "web conference", "world wide web")),
     ("wsdm", ("wsdm", "web search and data mining")),
     ("cikm", ("cikm", "information and knowledge management")),

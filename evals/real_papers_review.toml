@@ -5032,3 +5032,7 @@ note = "The ACL Findings 2025 paper the entry cites (DOI given) is titled 'Heuri
 [finding."2607.07008v1:liu2001monte:REF011"]
 verdict = "correct"
 note = "The entry lists Jun S. Liu twice (author = {Liu, Jun S and Liu, Jun S}); the book has one author."
+
+[finding."2608.04481v1:Merz-2026:REF012"]
+verdict = "correct"
+note = "The entry writes \"heterrogeneous\"; DataCite and arXiv have \"heterogeneous\"."

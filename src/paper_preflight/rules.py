@@ -233,6 +233,15 @@ RULES: dict[str, Rule] = {
              "项目可能已改名、迁移或设为私有。"),
         ),
         _rule(
+            "REF020", "venue-unknown", W,
+            ("Venue not found in any catalogue", "发表场所查无此处"),
+            ("'{key}' names {venue} as its venue, which no catalogue of journals and conferences "
+             "has (OpenAlex, dblp, Crossref); the work itself was found as a preprint ({found}). "
+             "Check where it was published.",
+             "'{key}' 写的发表场所是 {venue}，但期刊与会议目录（OpenAlex、dblp、Crossref）"
+             "中都没有它；该作品只找到预印本（{found}）。请核对它实际发表在哪里。"),
+        ),
+        _rule(
             "REF090", "cannot-determine", I,
             ("Reference could not be verified", "无法核实该文献"),
             ("'{key}' could not be verified: {reasons_text}.",

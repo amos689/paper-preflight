@@ -41,7 +41,7 @@ TIERS = {
 # The development plan's two scoring modes. REF015 (published preprint), REF004/005 (retraction
 # notices) and REF017 (identifier formatting) are advice about real works, not hallucinations.
 FABRICATION_RULES = frozenset({"REF001", "REF002", "REF003", "REF010"})
-ANY_ISSUE_RULES = FABRICATION_RULES | {"REF011", "REF012", "REF013", "REF014"}
+ANY_ISSUE_RULES = FABRICATION_RULES | {"REF011", "REF012", "REF013", "REF014", "REF020"}
 MODES: dict[str, frozenset[str]] = {
     "fabrication": FABRICATION_RULES,
     "any_issue": ANY_ISSUE_RULES,
