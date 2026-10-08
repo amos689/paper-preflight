@@ -98,7 +98,19 @@ lookup can confirm.
 ```bash
 uv run python evals/real_papers.py collect --batch heldout3   # pick and download the papers
 uv run python evals/real_papers.py run --batch heldout3       # check them against live sources
+uv run python evals/review_list.py heldout3 --out list.md     # the findings still to judge
 uv run python evals/real_papers.py report --batch heldout3    # combine with the manual review
+```
+
+**How a change is checked.** A batch's list is committed before the changes it is to measure,
+and the batch is run once with them; its false positives then become development data. Before
+a change is merged, every development batch is replayed with it and compared with a replay of
+the code before it: no warning or error may appear that is not a real problem.
+
+```bash
+uv run python evals/replay.py base                    # the code before the change
+uv run python evals/replay.py new --against base      # verdicts moved, findings lost or gained
+uv run python evals/replay.py new --against base --fill   # if the change asks something new
 ```
 
 There are eleven reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
