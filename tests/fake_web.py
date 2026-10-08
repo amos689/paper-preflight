@@ -65,6 +65,10 @@ class FakeWeb:
         self.s2_papers: dict[str, dict[str, object]] = {}
         # Crossref title searches: a phrase in the query -> the items Crossref returns
         self.crossref_search: dict[str, list[dict[str, object]]] = {}
+        # GitHub repositories ("owner/repo" -> the API's JSON) and PyPI packages (name -> JSON);
+        # unknown ones are 404s
+        self.github: dict[str, dict[str, object]] = {}
+        self.pypi: dict[str, dict[str, object]] = {}
         # Open Library's book search: a phrase in the title asked for -> its docs (CC0). The
         # demo's Deep Learning, as Open Library has it (trimmed)
         self.openlibrary: dict[str, list[dict[str, object]]] = {
@@ -110,6 +114,12 @@ class FakeWeb:
             return self._dblp(request)
         if host == "eutils.ncbi.nlm.nih.gov":
             return self._pubmed(request)
+        if host == "api.github.com" and request.url.path.startswith("/repos/"):
+            repo = self.github.get(request.url.path.removeprefix("/repos/"))
+            return httpx.Response(200, json=repo) if repo else httpx.Response(404, json={})
+        if host == "pypi.org" and request.url.path.startswith("/pypi/"):
+            package = self.pypi.get(request.url.path.split("/")[2])
+            return httpx.Response(200, json=package) if package else httpx.Response(404, json={})
         if host == "openlibrary.org" and request.url.path == "/search.json":
             asked = request.url.params.get("title", "")
             docs = next((d for phrase, d in self.openlibrary.items() if phrase in asked), [])

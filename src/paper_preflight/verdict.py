@@ -139,7 +139,9 @@ SOURCE_PRIORITY = {
 }  # fmt: skip
 # Semantic Scholar's author lists mix initials, orders and duplicates (spike S5; a HALLMARK VALID
 # entry with Vietnamese names came back reordered), so they confirm a work but never accuse.
-AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2", "openlibrary"})
+AUTHORS_NOT_CHECKED_AGAINST = frozenset({"s2", "openlibrary", "github", "pypi", "cran"})
+# the registries of the repositories and packages entries link to (REF019)
+_REGISTRIES = {"github": "GitHub", "pypi": "PyPI", "cran": "CRAN"}
 
 
 def source_name(source: str) -> str:
@@ -975,6 +977,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
 
     flags: set[str] = set()
     reasons: list[Reason] = []
+    software_record: SourceRecord | None = None
     if bound is not None:
         same_work = title_key(bound.record.title)
         published_known = any(
@@ -1029,6 +1032,11 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
             reasons.append(Reason.INSUFFICIENT_METADATA)
     elif has_conflict:
         verdict = Verdict.IDENTIFIER_CONFLICT
+    elif evidence.software and not anchored:
+        # the repository or package the entry links to exists and is the one it names: software
+        # is cited by its version, and its owner is an account, so nothing else is compared
+        verdict = Verdict.VERIFIED
+        software_record = evidence.software[0]
     else:
         reasons = _abstention_reasons(evidence, dead, corrupted, current_year)
         if not reasons:
@@ -1045,6 +1053,16 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         else:
             verdict = Verdict.CANNOT_DETERMINE
 
+    if bound is None and not evidence.software:
+        for kind, name in evidence.missing_software:
+            # a link to a repository or package that does not exist: worth a look, no more
+            # (renamed, made private, or a typo in the link)
+            findings.append(
+                make_finding(
+                    "REF019", _location(entry, "url"), key=entry.key, field="url",
+                    registry=_REGISTRIES[kind], name=name,
+                )
+            )  # fmt: skip
     if verdict is Verdict.CANNOT_DETERMINE:
         findings.append(
             make_finding(
@@ -1060,7 +1078,7 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
         verdict=verdict,
         reasons=tuple(reasons),
         flags=frozenset(flags),
-        record=bound.record if bound else None,
+        record=bound.record if bound else software_record,
         findings=kept,
         suppressed=frozenset(f.rule_id for f in findings if entry.suppressed(f.rule_id)),
     )

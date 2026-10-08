@@ -46,6 +46,7 @@ from paper_preflight.sources import (
     openlibrary,
     pubmed,
     semanticscholar,
+    software,
 )
 from paper_preflight.sources.base import (
     RECHECK_BEFORE,
@@ -120,6 +121,11 @@ class Evidence:
     # reference is checked, only what that source alone knows is not (see RUN002)
     substituted: dict[str, str] = field(default_factory=dict)
     arxiv_missing: list[str] = field(default_factory=list)  # arXiv IDs that do not exist
+    # repositories and packages the entry links to ("github", "owner/repo"), the records
+    # that confirm one, and those that do not exist (C2)
+    software_links: list[tuple[str, str]] = field(default_factory=list)
+    software: list[SourceRecord] = field(default_factory=list)
+    missing_software: list[tuple[str, str]] = field(default_factory=list)
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
     pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
     # anchored by journal, volume and page: an untitled entry (see _search_coordinates)
@@ -142,6 +148,11 @@ class Sources:
     openalex_key: str | None = None
     s2: SourceClient | None = None  # only with an API key (docs/spikes/S5)
     openlibrary: SourceClient | None = None  # books nothing else knows
+    # repositories and packages an entry links to (C2)
+    github: SourceClient | None = None
+    pypi: SourceClient | None = None
+    cran: SourceClient | None = None
+    github_token: str | None = None
     s2_key: str | None = None
     # told (stage, done, total) as the slow stages advance: "title", then "rescue"
     progress: Callable[[str, int, int], None] | None = None
@@ -186,12 +197,20 @@ class Sources:
             s2=client(semanticscholar.POLICY) if s2_key else None,
             s2_key=s2_key,
             openlibrary=client(openlibrary.POLICY),
+            github=client(software.GITHUB_POLICY),
+            pypi=client(software.PYPI_POLICY),
+            cran=client(software.CRAN_POLICY),
+            github_token=env.get("GITHUB_TOKEN") or None,
         )
 
     def all_clients(self) -> list[SourceClient]:
         clients = [self.doiorg, self.crossref, self.datacite, self.arxiv, self.dblp, self.openalex,
                    self.pubmed]  # fmt: skip
-        optional = [c for c in (self.s2, self.openlibrary) if c is not None]
+        optional = [
+            c
+            for c in (self.s2, self.openlibrary, self.github, self.pypi, self.cran)
+            if c is not None
+        ]
         return clients + optional
 
 
@@ -233,8 +252,11 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
         if entry.key in evidence:
             continue  # BibTeX uses the first definition of a duplicate key (CIT002 reports it)
         evidence[entry.key] = Evidence(
-            key=entry.key, info=EntryInfo.from_entry(entry), identifiers=extract_identifiers(entry)
-        )
+            key=entry.key, info=EntryInfo.from_entry(entry), identifiers=extract_identifiers(entry),
+            software_links=software.software_links(
+                " ".join(entry.text(name) or "" for name in SOFTWARE_FIELDS)
+            ),
+        )  # fmt: skip
 
     # 1. DOIs: registration agency for all, then batched lookups per agency.
     by_doi: dict[str, list[Evidence]] = {}
@@ -389,6 +411,10 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 5b. Journal articles cited without a title, by journal, volume and page.
     untitled = [i for i in evidence.values() if not i.anchored and _untitled_article(i.info)]
     await asyncio.gather(*(_search_coordinates(item, sources) for item in untitled))
+
+    # 9. Software an entry links to: a GitHub repository, a PyPI or CRAN package.
+    linked = [i for i in evidence.values() if _unfound_software(i)]
+    await asyncio.gather(*(_search_software(item, sources) for item in linked))
 
     # 8. Books no registry knows (no DOI), from Open Library.
     books = [i for i in evidence.values() if _unfound_book(i)]
@@ -794,6 +820,68 @@ async def _search_coordinates(item: Evidence, sources: Sources) -> None:
     if found and len({title_key(r.title) for r in found}) == 1:
         item.anchored.extend(found)
         item.by_coordinates = True
+
+
+# where an entry links to its software
+SOFTWARE_FIELDS = ("url", "howpublished", "note", "journal", "publisher", "eprint")
+
+
+def _unfound_software(item: Evidence) -> bool:
+    """An entry that links to a repository or a package, which no record fits by title."""
+    from paper_preflight.match import evaluate
+
+    if not item.software_links or not item.info.title or item.anchored:
+        return False
+    return not any(
+        evaluate(item.info, record).title.status in {"match", "variant"}
+        for record in item.candidates
+    )
+
+
+def _names_the_software(title: str, record: SourceRecord) -> bool:
+    """The entry's title is the repository's or package's name ("LangMem: Long-Term Memory for
+    LLM Agents" for langchain-ai/langmem, "NVIDIA Ising-Decoding" for NVIDIA/Ising-Decoding) or
+    its description ("Sampling profiler for Python programs" for benfred/py-spy)."""
+    from paper_preflight.match import title_score
+
+    name = record.alt_titles[0] if record.alt_titles else record.title
+    name_words = title_key(re.sub(r"[-_.]", " ", name)).split()
+    words = title_key(title).split()
+    head = title_key(re.split(r"\s*[:\u2013\u2014]\s*|\s+-\s+", title, maxsplit=1)[0])
+    if "".join(name_words) == head.replace(" ", ""):
+        return True
+    joined = "".join(name_words)
+    if len(joined) >= 3 and (
+        joined in words
+        or any(words[i : i + len(name_words)] == name_words for i in range(len(words)))
+    ):
+        return True
+    return bool(record.title) and record.title != name and title_score(title, record.title) >= 0.9
+
+
+async def _search_software(item: Evidence, sources: Sources) -> None:
+    """The repositories and packages an entry links to: the first that exists and names the
+    entry confirms it (Evidence.software); those that do not exist are kept to report
+    (Evidence.missing_software). Optional sources: a failure never blocks a verdict."""
+    for kind, name in item.software_links[:3]:
+        client = getattr(sources, kind)
+        if client is None:
+            continue
+        try:
+            if kind == "github":
+                record = await software.github_repo(client, name, token=sources.github_token)
+            elif kind == "pypi":
+                record = await software.pypi_package(client, name)
+            else:
+                record = await software.cran_package(client, name)
+        except SourceUnavailable as error:
+            item.optional_unavailable.setdefault(error.source, error.reason.value)
+            continue
+        if record is None:
+            item.missing_software.append((kind, name))
+        elif _names_the_software(item.info.title, record):
+            item.software.append(record)
+            return
 
 
 BOOK_ENTRY_TYPES = frozenset({"book", "mvbook"})

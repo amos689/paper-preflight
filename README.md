@@ -32,7 +32,7 @@ No LLM guessing, no false accusations.**
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
 and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
 arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key; Open Library for
-books without a DOI) about every cited work:
+books without a DOI; GitHub, PyPI and CRAN for software) about every cited work:
 
 - Does it exist?
 - Does it match what you wrote?
@@ -432,6 +432,7 @@ and more complete; their values are never printed or logged.
 | `PAPER_PREFLIGHT_EMAIL` | Crossref's polite pool: faster, more reliable lookups |
 | `OPENALEX_API_KEY` | A larger OpenAlex budget for retraction checks |
 | `S2_API_KEY` | Semantic Scholar as a rescue source for references nobody else found |
+| `GITHUB_TOKEN` | GitHub's larger budget (5,000 requests an hour, not 60) for references to repositories |
 
 `paper-preflight doctor` shows which are set and whether each source answers right now.
 
