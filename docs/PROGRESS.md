@@ -333,6 +333,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #179 | D4：`bib fix --level unsafe` 修 REF015，把已正式发表的预印本改引正式版本：条目类型改为正式版本的类型（`@misc` 改 `@inproceedings`），按记录写入发表场所、年份、卷（期刊）、页码和 DOI，只写着 arXiv preprint 的 journal/booktitle/howpublished 删掉，保留 eprint；记录没说是哪种出版物（期刊文章、会议论文、书的章节）时不修。新增的字段与条目原有字段的等号对齐。演示论文的 ResNet 预印本应用修复后再查，不再报 REF015 |
 | #180 | D6：性能收尾。冷缓存实测（heldout13 的 4 篇论文，每篇各用空缓存，含阶段 C 新增的 Open Library、GitHub、场所目录、网页链接查询）：209 条 93 秒，每条 0.44 秒，达到 ≤0.6 秒的目标（最慢一篇 0.62 秒）。GitHub Action 的缓存改为每次运行都保存：先取同一参考文献表（.bib 或 .bbl）最近的缓存，没有就取任意最近的缓存；原先参考文献表不变时永远复用第一次的缓存，之后过期的答案和当时太新的条目每次运行都要重查 |
 | #181 | D5（第一部分）：每条规则一页说明（`docs/rules/`，中英文）：检查什么、什么时候可能误报、怎么处理、怎样消除；内容写在 `guides.py`，`explain`、MCP 的 `preflight_explain`、SARIF 报告的帮助文本（GitHub 代码扫描里显示）与这些页面同源，`scripts/rule_docs.py` 生成页面，测试保证页面与源同步、每条规则都有中英文说明。顺带修好：SARIF 报告里每条规则的帮助链接原先指向不存在的 `docs/rules/<规则>.md`。README 的规则表补上 REF018–REF021 |
+| #182 | 修回归：0.7.0（#167）为“同一本书的两章可共用书的 DOI”加的豁免太宽，只要两个条目都有 booktitle、标题不同就不报 CIT004，演示论文里 BERT 条目借用 ResNet 的 DOI 因此不再报出（EXPECTED.md 写着应报，但没有测试守住）。改为两个条目的 booktitle 必须相同才算同一本书的章节。新增测试：演示论文 EXPECTED.md 的每条离线行都必须成立。十四批回放：CIT004 无增无减 |
 
 ## 下一步
 

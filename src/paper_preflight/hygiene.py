@@ -197,9 +197,12 @@ def _near_duplicates(entries: list[BibEntry]) -> list[Finding]:
 
 def _chapters(entry: BibEntry, other: BibEntry) -> bool:
     """Two chapters of one book, each with the book's DOI ("In: Golub, K. (eds.), Information
-    and Knowledge Organisation in Digital Humanities ... doi:10.4324/9781003131816")."""
+    and Knowledge Organisation in Digital Humanities ... doi:10.4324/9781003131816"). Not two
+    papers in different proceedings: one of them has the other's DOI (the demo's BERT entry,
+    with ResNet's)."""
     titles = {title_key(e.text("title") or "") for e in (entry, other)}
-    return bool(entry.text("booktitle") and other.text("booktitle")) and len(titles) == 2
+    books = {title_key(e.text("booktitle") or "") for e in (entry, other)}
+    return len(titles) == 2 and len(books) == 1 and "" not in books
 
 
 def _apply_suppressions(
