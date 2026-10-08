@@ -16,12 +16,13 @@ from paper_preflight import __version__
 from paper_preflight.bib.bbl import parse_bbl_file
 from paper_preflight.bib.csl import parse_csl_json_file
 from paper_preflight.bib.docx import parse_docx_file
+from paper_preflight.bib.normalize import title_key
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
 from paper_preflight.bib.pdftext import parse_pdf_file
 from paper_preflight.bib.plaintext import parse_plaintext_file
 from paper_preflight.bib.ris import parse_ris_file
 from paper_preflight.bib.yamlbib import parse_yaml_bibliography
-from paper_preflight.cache import Cache
+from paper_preflight.cache import DAY, Cache, EntryKind
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
 from paper_preflight.hygiene import (
     HygieneInput,
@@ -45,6 +46,12 @@ class VerifyOptions:
 
     offline: bool = False  # answer from the cache only; never touch the network
     refresh: bool = False  # ask every source again instead of answering from the cache
+    # ask again now about references found too new to be indexed on earlier runs (otherwise
+    # they are asked again once a day)
+    recheck: bool = False
+    # remember references found too new and search for them again later; the evaluations turn
+    # it off, so that a replay answers from its cache as before
+    remember_too_new: bool = True
     cache_path: Path | None = None  # None = an in-memory cache for this run only
     environ: Mapping[str, str] | None = None  # credentials; defaults to os.environ
     current_year: int | None = None
@@ -274,6 +281,7 @@ async def verify_entries(
     Also returns what each source did: requests, cache hits, negatives, unavailability.
     """
     cache = Cache(options.cache_path)
+    year = options.current_year or datetime.now().year
     try:
         # doi.org answers content negotiation with a redirect to the registration agency
         async with httpx.AsyncClient(transport=make_transport(), follow_redirects=True) as http:
@@ -283,12 +291,64 @@ async def verify_entries(
                 fresh_after=time.time() if options.refresh else None,
             )  # fmt: skip
             sources.progress = options.progress
+            remember = options.remember_too_new and not options.offline
+            marks = _too_new_marks(entries, cache) if remember else {}
+            if remember:
+                # asked again once a day, or now with --recheck
+                before = time.time() - (0 if options.recheck else DAY)
+                sources.recheck = dict.fromkeys(marks, before)
             evidence = await resolve(entries, sources)
             stats = {client.name: client.stats for client in sources.all_clients()}
+        assessments = assess_all(entries, evidence, current_year=year)
+        if remember:
+            _mark_too_new(entries, assessments, marks, cache)
     finally:
         cache.close()
-    year = options.current_year or datetime.now().year
-    return evidence, assess_all(entries, evidence, current_year=year), stats
+    return evidence, assessments, stats
+
+
+# A reference found too new to be indexed is remembered for two months (cache "preflight",
+# private to this machine), and its title is searched for again on later runs instead of being
+# answered from the cache: indexes catch up within days or weeks (C8 in the sixth-round plan).
+TOO_NEW_SOURCE = "preflight"
+TOO_NEW_TTL = 60 * DAY
+
+
+def _too_new_key(entry: BibEntry) -> str | None:
+    title = entry.text("title")
+    return f"too-new:{title_key(title)}" if title else None
+
+
+def _too_new_marks(entries: list[BibEntry], cache: Cache) -> dict[str, float]:
+    """The references found too new on an earlier run, each with when that was first seen."""
+    marks: dict[str, float] = {}
+    for entry in entries:
+        key = _too_new_key(entry)
+        item = cache.get(TOO_NEW_SOURCE, key) if key else None
+        if item is not None:
+            marks[entry.key] = float((item.payload or {}).get("first", item.stored_at))
+    return marks
+
+
+def _mark_too_new(
+    entries: list[BibEntry],
+    assessments: dict[str, Assessment],
+    marks: dict[str, float],
+    cache: Cache,
+) -> None:
+    for entry in entries:
+        key = _too_new_key(entry)
+        assessment = assessments.get(entry.key)
+        if key is None or assessment is None:
+            continue
+        if Reason.TOO_NEW in assessment.reasons:
+            first = marks.get(entry.key, time.time())
+            cache.put(
+                TOO_NEW_SOURCE, key, {"first": first}, EntryKind.META, ttl=TOO_NEW_TTL,
+                exportable=False,
+            )  # fmt: skip
+        elif entry.key in marks and assessment.verdict is not Verdict.CANNOT_DETERMINE:
+            cache.delete(TOO_NEW_SOURCE, key)  # found, or no longer too new to judge
 
 
 def _verify_into(result: CheckResult, entries: list[BibEntry], options: VerifyOptions) -> None:

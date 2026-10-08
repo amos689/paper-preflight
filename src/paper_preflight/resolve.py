@@ -47,6 +47,7 @@ from paper_preflight.sources import (
     semanticscholar,
 )
 from paper_preflight.sources.base import (
+    RECHECK_BEFORE,
     PartialUnavailable,
     SourceClient,
     SourcePolicy,
@@ -142,6 +143,9 @@ class Sources:
     s2_key: str | None = None
     # told (stage, done, total) as the slow stages advance: "title", then "rescue"
     progress: Callable[[str, int, int], None] | None = None
+    # references found too new to be indexed on an earlier run: their title searches ignore
+    # answers stored before this time (entry key -> time)
+    recheck: dict[str, float] = field(default_factory=dict)
 
     def report(self, stage: str, done: int, total: int) -> None:
         if self.progress is not None:
@@ -347,6 +351,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     s2, s2_key = sources.s2, sources.s2_key
 
     async def search_dblp() -> None:
+        # dblp's searches are batched across entries: asked again when any of them is rechecked
+        before = [sources.recheck[i.key] for i in in_dblp if i.key in sources.recheck]
+        RECHECK_BEFORE.set(max(before) if before else None)
         try:
             await _search_dblp(in_dblp, sources)
         finally:
@@ -354,6 +361,7 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
 
     async def title_search(item: Evidence) -> None:
         nonlocal searched, rescued
+        RECHECK_BEFORE.set(sources.recheck.get(item.key))  # this task's requests only
         await _search_crossref(item, sources)
         searched += 1
         sources.report("title", searched, len(unanchored))

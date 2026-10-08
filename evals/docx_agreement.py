@@ -167,7 +167,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=0, help="papers to use (0 = all)")
     args = parser.parse_args()
     every_answer_counts()
-    options = VerifyOptions(cache_path=CACHE, offline=not args.fill)
+    options = VerifyOptions(cache_path=CACHE, offline=not args.fill, remember_too_new=False)
     name = "real_papers.toml" if args.batch == "dev" else f"real_papers_{args.batch}.toml"
     papers = [p["id"] for p in tomllib.loads((ROOT / name).read_text(encoding="utf-8"))["paper"]]
     papers = papers[: args.limit] if args.limit else papers

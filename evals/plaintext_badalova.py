@@ -155,7 +155,7 @@ def main() -> None:
     ]
 
     if check:
-        options = VerifyOptions(cache_path=CACHE)
+        options = VerifyOptions(cache_path=CACHE, remember_too_new=False)
         from_text = flags(run_check(LIST, verify=options))
         from_bib = flags(run_check(BIB, verify=options))
         same = sum(

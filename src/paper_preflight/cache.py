@@ -153,6 +153,14 @@ class Cache:
             )
             self._db.commit()
 
+    def delete(self, source: str, key: str) -> None:
+        with self._lock:
+            self._db.execute(
+                "DELETE FROM entries WHERE source = ? AND key = ? AND schema = ?",
+                (source, key, CACHE_SCHEMA),
+            )
+            self._db.commit()
+
     def invalidate(self, source: str | None = None, kind: EntryKind | None = None) -> int:
         clauses, args = [], []
         if source is not None:

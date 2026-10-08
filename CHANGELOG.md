@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **References too new to be indexed are searched for again.** A reference from this year or
+  next that no source has yet is remembered in the local cache, and its title is searched for
+  again on later runs, once a day, instead of being answered from cached searches for two
+  weeks; `check --recheck` searches again at once. Indexes catch up within days: 6 to 18
+  references a week of real papers were too new.
+- **RFCs are verified by their number.** An RFC cited as `type={RFC}, number={8446}`, as
+  "RFC 791" or by its rfc-editor.org or IETF link is checked as its DOI, which the RFC
+  Editor registers with Crossref (10.17487/rfc791).
+
 ### Fixed
 
 The false positives of heldout13 (0.7 per 100 references), 7 of 7, and one each from heldout3

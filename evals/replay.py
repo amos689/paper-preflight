@@ -81,7 +81,9 @@ def main() -> None:
             name = f"{pid.replace('/', '_')}.json"
             result = run_check(
                 DATA / pid.replace("/", "_"),
-                verify=VerifyOptions(cache_path=CACHE, offline=not args.fill),
+                verify=VerifyOptions(
+                    cache_path=CACHE, offline=not args.fill, remember_too_new=False
+                ),
             )
             new = to_json_dict(result)
             (args.out / name).write_text(json.dumps(new, ensure_ascii=False), encoding="utf-8")

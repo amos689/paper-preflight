@@ -222,7 +222,7 @@ def run(batch: str) -> None:
     for paper in papers:
         folder = DATA / paper["id"].replace("/", "_")
         started = time.monotonic()
-        result = run_check(folder, verify=VerifyOptions(cache_path=CACHE))
+        result = run_check(folder, verify=VerifyOptions(cache_path=CACHE, remember_too_new=False))
         seconds = time.monotonic() - started
         payload = to_json_dict(result)
         payload["eval"] = {

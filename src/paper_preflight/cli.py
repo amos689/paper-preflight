@@ -227,6 +227,14 @@ def check(
         bool,
         typer.Option("--refresh", help="Ask every source again instead of using cached answers."),
     ] = False,
+    recheck: Annotated[
+        bool,
+        typer.Option(
+            "--recheck",
+            help="Search again now for references found too new to be indexed on earlier runs "
+            "(they are searched again once a day without it).",
+        ),
+    ] = False,
 ) -> None:
     """Check a LaTeX project (or a reference list) and report problems with its references."""
     from paper_preflight.check import VerifyOptions, run_check
@@ -258,8 +266,8 @@ def check(
             status.update(progress_text(message, language, stage, done, total, seconds))
 
     verify = VerifyOptions(
-        offline=offline, refresh=refresh, cache_path=Path(cache_dir()) / "cache.sqlite3",
-        progress=report,
+        offline=offline, refresh=refresh, recheck=recheck,
+        cache_path=Path(cache_dir()) / "cache.sqlite3", progress=report,
     )  # fmt: skip
     try:
         with status:

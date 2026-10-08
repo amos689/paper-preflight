@@ -63,6 +63,25 @@ def test_doi_in_url_field() -> None:
     ]
 
 
+def test_an_rfc_number_stands_for_its_doi() -> None:
+    # the RFC Editor registers every RFC: RFC 791 is 10.17487/RFC0791, Crossref's rfc791
+    assert ids("@techreport{a, type={RFC}, number={2104}, institution={IETF}}") == [
+        "doi:10.17487/rfc2104"
+    ]
+    assert ids("@misc{a, howpublished={RFC 791}}") == ["doi:10.17487/rfc791"]
+    assert ids("@misc{a, doi={10.17487/RFC0791}}") == ["doi:10.17487/rfc791"]
+    assert ids("@misc{a, series={Request for Comments}, number={9110}}") == ["doi:10.17487/rfc9110"]
+    assert ids("@misc{a, url={https://www.rfc-editor.org/rfc/rfc8446}}") == ["doi:10.17487/rfc8446"]
+    assert ids("@misc{a, url={https://datatracker.ietf.org/doc/html/rfc7540}}") == [
+        "doi:10.17487/rfc7540"
+    ]
+    # a DOI given wins; a long note that mentions an RFC names no entry
+    assert ids("@misc{a, number={2104}, type={RFC}, doi={10.17487/RFC2104}}") == [
+        "doi:10.17487/rfc2104"
+    ]
+    assert ids("@misc{a, note={Our server follows RFC 2616 for caching headers}}") == []
+
+
 def test_acm_digital_library_numbers_in_a_link_are_not_dois() -> None:
     # QLoRA's ACM DL page (2609.09569v1): 10.5555 is registered with no agency, the page works
     assert ids("@misc{a, url={https://dl.acm.org/doi/10.5555/3666122.3666563}}") == []
