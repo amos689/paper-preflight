@@ -31,6 +31,10 @@ def ids(bib: str) -> list[str]:
             "<https://doi.org/10.1109/CVPR.2016.90>",
             "10.1109/cvpr.2016.90",
         ),  # a lone bracket ends it
+        # ASCE's DOIs end in the parenthesis they open (heldout15: they lost it, then were
+        # reported as not existing); one that closes the sentence around a DOI still goes
+        ("10.1061/(ASCE)1084-0702(2008)13:1(6)", "10.1061/(asce)1084-0702(2008)13:1(6)"),
+        ("(see 10.1000/xyz).", "10.1000/xyz"),
     ],
 )
 def test_normalize_doi(raw: str, expected: str | None) -> None:
