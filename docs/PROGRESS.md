@@ -327,6 +327,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #173 | C2：引用软件时，用 GitHub 仓库、PyPI、CRAN（经 R-hub 的 crandb）核实：只问链接到仓库或软件包、其他来源都没找到的条目；仓库或软件包存在，且它的名字或描述就是条目标题时判为核实，不比作者和年份（软件按版本引用，所有者是账号）；链接的仓库或软件包不存在时报新规则 REF019（提示）。GitHub 无令牌每小时 60 次，有 `GITHUB_TOKEN` 时 5,000 次。十四批回放：47 条软件引用由无法确定变为核实（smolagents、TRL、Alpaca、aider……），报警无增无减，没有出现 REF019 |
 | #174 | C6、C7、C5：只找到预印本、又没有正式版本的作品，条目写的期刊或会议在 OpenAlex、dblp、Crossref 的目录里都查不到时报 REF020（警告）；带届次、缩写、年份或 Proceedings 的场所不查（真实的研讨会也不在目录里），COLM 加入已知会议。arXiv 自己的记录知道论文全部版本的标题时，即使比对的是 DataCite 的记录也报换词（REF012）。作者中间被删的人在提示里点名，仍为提示。HALLMARK dev：编造会议 71.8%→94.9%、近似标题 86.5%→94.2%，真实条目误报不变；十四批回放：第一版新增 18 个 REF020 全是误报（13 个 COLM、5 个真实研讨会），收窄后只新增 1 个真问题（标题错字 heterrogeneous）|
 | #175 | D1（提前做）：JSON 报告的 JSON Schema（`docs/schema/check-report.schema.json`，`schema_version` 0.1），测试用它校验在线、离线、不核查三种报告；README 写明字段只增不删、退出码 4（内部错误）。校验当即发现 schema 草稿里 `build_data` 的类型写错（实际是文件名或 null）。`schema_version` 到 1.0 时再改为 1.0 |
+| #176 | D2（提前做）：项目设置文件 `paper-preflight.toml` 或 `pyproject.toml` 的 `[tool.paper-preflight]`，从被检查的路径向上找到仓库根，也可用 `--config` 指定：忽略规则、忽略条目（可用通配符）、调整严重级别、关闭可选来源（核心来源不能关）、`fail-on`；命令行优先；写错（未知规则、设置项、来源）一律报错，退出码 3；MCP 服务同样读取 |
 
 ## 下一步
 

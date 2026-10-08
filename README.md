@@ -360,6 +360,24 @@ The verdict stays in the JSON report; only the finding is dropped. A suppression
 nothing is reported as CFG001 (info), so stale comments do not pile up. Reference rules are only
 judged after a complete online run, since offline answers and outages may leave them unrun.
 
+## Project settings
+
+For a whole project, put the settings in `paper-preflight.toml` next to the paper (or in a
+folder above it, up to the repository's root), or in `[tool.paper-preflight]` of
+`pyproject.toml`:
+
+```toml
+ignore-rules = ["REF016"]                  # never report these rules
+ignore-keys = ["internal2024*"]            # nor anything about these entries
+severity = { REF015 = "info" }             # report published preprints as infos
+disable-sources = ["s2"]                   # optional sources only
+fail-on = "warning"                        # as --fail-on; the command line wins
+```
+
+`check --config <path>` names the file instead. The registries that judge a reference cannot be
+turned off, and a mistake in the file (an unknown rule or setting) is an error, never silently
+ignored. The JSON report names the file in `run.notes`; the MCP server reads it too.
+
 ## Experimental: find the passage behind each citation
 
 `support` looks in each cited work for a passage that says what the citing sentence claims. It

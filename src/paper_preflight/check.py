@@ -23,6 +23,7 @@ from paper_preflight.bib.plaintext import parse_plaintext_file
 from paper_preflight.bib.ris import parse_ris_file
 from paper_preflight.bib.yamlbib import parse_yaml_bibliography
 from paper_preflight.cache import DAY, Cache, EntryKind
+from paper_preflight.config import Config
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
 from paper_preflight.hygiene import (
     HygieneInput,
@@ -52,6 +53,8 @@ class VerifyOptions:
     # remember references found too new and search for them again later; the evaluations turn
     # it off, so that a replay answers from its cache as before
     remember_too_new: bool = True
+    # optional sources a project's settings turn off (config.OPTIONAL_SOURCES)
+    disabled_sources: frozenset[str] = frozenset()
     cache_path: Path | None = None  # None = an in-memory cache for this run only
     environ: Mapping[str, str] | None = None  # credentials; defaults to os.environ
     current_year: int | None = None
@@ -121,8 +124,10 @@ def run_check(
     extra_bib: list[Path] | None = None,
     cite_commands: list[str] | None = None,
     verify: VerifyOptions | None = None,
+    config: Config | None = None,
 ) -> CheckResult:
-    """Run the checks. Without ``verify`` only the offline citation-hygiene rules run."""
+    """Run the checks. Without ``verify`` only the offline citation-hygiene rules run.
+    ``config``: a project's settings (rules and entries to ignore, severities)."""
     started = time.time()
     extra = [p.resolve() for p in (extra_bib or [])]
     target = target.resolve()
@@ -213,6 +218,9 @@ def run_check(
     if verify is not None:
         _verify_into(result, to_verify, verify)
     result.findings.extend(_unused_suppressions(result, used))
+    if config is not None and config.path is not None:
+        result.findings = config.apply(result.findings)
+        result.notes.append(f"settings: {config.path}")
     result.findings = sort_findings(result.findings)
     result.finished_at = time.time()
     return result
@@ -289,6 +297,7 @@ async def verify_entries(
             sources = Sources.create(
                 http, cache, offline=options.offline, environ=environ,
                 fresh_after=time.time() if options.refresh else None,
+                disabled=options.disabled_sources,
             )  # fmt: skip
             sources.progress = options.progress
             remember = options.remember_too_new and not options.offline

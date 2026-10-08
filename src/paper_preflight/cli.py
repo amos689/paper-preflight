@@ -22,6 +22,7 @@ from rich.console import Console
 from rich.status import Status
 
 from paper_preflight import __version__
+from paper_preflight.config import Config
 from paper_preflight.findings import Severity
 
 # Credentials are read from the environment only and are never printed.
@@ -199,8 +200,12 @@ def check(
         Path | None, typer.Option("--output", "-o", help="Write the report to a file.")
     ] = None,
     fail_on: Annotated[
-        FailOn, typer.Option("--fail-on", help="Lowest severity that makes the exit code 1.")
-    ] = FailOn.ERROR,
+        FailOn | None,
+        typer.Option(
+            "--fail-on",
+            help="Lowest severity that makes the exit code 1 [default: error, or the settings'].",
+        ),
+    ] = None,
     lang: Annotated[Lang, typer.Option("--lang", help="Message language.")] = Lang.AUTO,
     max_findings: Annotated[
         int | None, typer.Option("--max-findings", help="Limit findings in JSON output.")
@@ -237,6 +242,15 @@ def check(
             "(they are searched again once a day without it).",
         ),
     ] = False,
+    config_file: Annotated[
+        Path | None,
+        typer.Option(
+            "--config",
+            metavar="<path>",
+            help="Settings file (paper-preflight.toml or pyproject.toml); found next to the "
+            "paper or above it when not given.",
+        ),
+    ] = None,
 ) -> None:
     """Check a LaTeX project (or a reference list) and report problems with its references."""
     from paper_preflight.check import VerifyOptions, run_check
@@ -267,15 +281,18 @@ def check(
             seconds = time.monotonic() - began
             status.update(progress_text(message, language, stage, done, total, seconds))
 
+    settings = _settings(path, config_file)
     verify = VerifyOptions(
         offline=offline, refresh=refresh, recheck=recheck,
         cache_path=Path(cache_dir()) / "cache.sqlite3", progress=report,
+        disabled_sources=settings.disable_sources,
     )  # fmt: skip
     try:
         with status:
             result = run_check(
-                path, main=main_file, extra_bib=bib, cite_commands=cite_command, verify=verify
-            )
+                path, main=main_file, extra_bib=bib, cite_commands=cite_command, verify=verify,
+                config=settings,
+            )  # fmt: skip
     except ProjectError as exc:
         typer.echo(f"paper-preflight: {exc}", err=True)
         raise typer.Exit(EXIT_USAGE) from exc
@@ -303,11 +320,26 @@ def check(
         else:
             render_text(result, Console(highlight=False), language, not hide_info, details)
 
-    threshold = None if fail_on is FailOn.NEVER else Severity(fail_on.value)
+    level = fail_on or FailOn(settings.fail_on or FailOn.ERROR.value)
+    threshold = None if level is FailOn.NEVER else Severity(level.value)
     if result.has_blocking(threshold):
         raise typer.Exit(EXIT_FINDINGS)
     if not result.complete:
         raise typer.Exit(EXIT_INCOMPLETE)
+
+
+def _settings(path: Path, given: Path | None) -> Config:
+    """The project's settings: the file given, else the one found from the checked path up."""
+    from paper_preflight.config import ConfigError, find_config, load_config
+
+    found = given if given is not None else find_config(path if path.exists() else Path.cwd())
+    if found is None:
+        return Config()
+    try:
+        return load_config(found)
+    except ConfigError as exc:
+        typer.echo(f"paper-preflight: {exc}", err=True)
+        raise typer.Exit(EXIT_USAGE) from exc
 
 
 @app.command()
