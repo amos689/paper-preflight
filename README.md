@@ -340,8 +340,9 @@ paper-preflight bib fix path/to/paper --level unsafe
 
 - `--level safe` (the default) only fixes what cannot change which work is cited: identifiers
   written so that links break, and DOIs the registry has but the entry lacks.
-- `--level unsafe` also rewrites authors, title, year and venue from the record, and removes
-  identifiers that point to another work. Review the diff first.
+- `--level unsafe` also rewrites authors, title, year and venue from the record, removes
+  identifiers that point to another work, and cites a preprint as its published version (the
+  entry type, venue, year, volume, pages and DOI; the eprint is kept). Review the diff first.
 - Only the affected fields change; comments, formatting, line endings and encoding are kept.
   A reference nobody could find is never "fixed": only you can say what was meant.
 

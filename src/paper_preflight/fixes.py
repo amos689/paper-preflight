@@ -5,8 +5,10 @@ Two levels:
 * ``safe`` — edits that cannot change which work is cited: identifiers written so that links
   break (REF017) and a DOI the registry has but the entry lacks (REF016).
 * ``unsafe`` — also edits that rewrite what the entry says, taken from the record it is bound
-  to: authors (REF010/REF011), title (REF012), year (REF013), venue (REF014), and removing an
-  identifier that points to another work (REF001). Review them before applying.
+  to: authors (REF010/REF011), title (REF012), year (REF013), venue (REF014), removing an
+  identifier that points to another work (REF001), and citing a preprint's published version
+  (REF015: its entry type, venue, year, volume, pages and DOI; the eprint field is kept).
+  Review them before applying.
 
 Edits touch only the fields concerned; every other byte of the file, including line endings
 and encoding, is kept. Nothing is written unless asked (the CLI's ``--apply``).
@@ -27,10 +29,12 @@ from paper_preflight.findings import Finding
 from paper_preflight.textio import TextFile, read_text
 
 Level = Literal["safe", "unsafe"]
-Action = Literal["replace", "add", "remove"]
+Action = Literal["replace", "add", "remove", "retype"]
 
 SAFE_RULES = frozenset({"REF016", "REF017"})
-UNSAFE_RULES = frozenset({"REF001", "REF010", "REF011", "REF012", "REF013", "REF014"})
+UNSAFE_RULES = frozenset({"REF001", "REF010", "REF011", "REF012", "REF013", "REF014", "REF015"})
+# a venue that only says the work is a preprint, replaced when citing the published version
+_PREPRINT_VENUE = re.compile(r"arxiv|corr\b|preprint", re.I)
 
 
 @dataclass(frozen=True)
@@ -68,7 +72,13 @@ def plan(
         if keys is not None and finding.key not in keys:
             continue
         target = entries.get(finding.key)
-        if target is None or (finding.key, finding.field) in fixes:
+        if target is None:
+            continue
+        if finding.rule_id == "REF015":
+            for published in _published_fixes(finding, target):
+                fixes.setdefault((finding.key, published.field), published)
+            continue
+        if (finding.key, finding.field) in fixes:
             continue
         fix = _fix_for(finding, target)
         if fix is not None:
@@ -99,6 +109,34 @@ def _fix_for(finding: Finding, entry: BibEntry) -> Fix | None:
     )
 
 
+def _published_fixes(finding: Finding, entry: BibEntry) -> list[Fix]:
+    """Citing the published version: its entry type and fields, the preprint's venue gone."""
+    pairs = finding.data.get("published_fields") or []
+    if not pairs:
+        return []
+    fixes: list[Fix] = []
+
+    def fix(field: str, action: Action, old: str | None, new: str | None) -> None:
+        fixes.append(Fix(entry.file, entry.key, "REF015", field, action, old, new, "unsafe"))
+
+    wanted = dict(pairs)
+    entry_type = wanted.pop("@type")
+    if entry_type != entry.entry_type:
+        fix("@type", "retype", entry.entry_type, entry_type)
+    venue_field = "journal" if entry_type == "article" else "booktitle"
+    for name in ("journal", "booktitle", "howpublished"):
+        current = entry.fields.get(name)
+        if name != venue_field and current is not None and _PREPRINT_VENUE.search(current.value):
+            fix(name, "remove", current.raw, None)  # "journal = {arXiv preprint ...}"
+    for name, value in wanted.items():
+        current = entry.fields.get(name)
+        if current is None:
+            fix(name, "add", None, value)
+        elif current.value.strip() != value.strip():
+            fix(name, "replace", current.raw, value)
+    return fixes
+
+
 def _entry_span(text: str, entry: BibEntry) -> tuple[int, int]:
     line_start = 0
     for _ in range(entry.line - 1):
@@ -117,6 +155,11 @@ def _after_name(value: str) -> Callable[[re.Match[str]], str]:
 def _edit_entry(raw: str, fixes: list[Fix], newline: str) -> str:
     for fix in fixes:
         name = re.escape(fix.field)
+        if fix.action == "retype":
+            raw, count = re.subn(r"^@\s*\w+", f"@{fix.new}", raw, count=1)
+            if count != 1:
+                raise ValueError(f"the entry type of '{fix.key}' could not be located")
+            continue
         if fix.action == "replace" and fix.old is not None:
             pattern = re.compile(rf"(?i)(\b{name}\s*=\s*){re.escape(fix.old)}")
             replacement = "{" + str(fix.new) + "}"
@@ -130,14 +173,17 @@ def _edit_entry(raw: str, fixes: list[Fix], newline: str) -> str:
             if count != 1:
                 raise ValueError(f"field '{fix.field}' of '{fix.key}' could not be located")
         elif fix.action == "add":
-            indent_match = re.search(r"\n([ \t]+)[A-Za-z]+\s*=", raw)
+            indent_match = re.search(r"\n([ \t]+)([A-Za-z]+)([ \t]*)=", raw)
             indent = indent_match.group(1) if indent_match else "  "
+            # line the "=" up with the entry's own fields ("title         = {...}")
+            width = len(indent_match.group(2) + indent_match.group(3)) if indent_match else 0
+            name = fix.field.ljust(width) if width > len(fix.field) else f"{fix.field} "
             body = raw.rstrip()
             if not body.endswith("}"):
                 raise ValueError(f"entry '{fix.key}' does not end with a closing brace")
             inner = body[:-1].rstrip()
             separator = "" if inner.endswith(",") else ","
-            line = f"{indent}{fix.field} = {{{fix.new}}},"
+            line = f"{indent}{name}= {{{fix.new}}},"
             raw = f"{inner}{separator}{newline}{line}{newline}}}" + raw[len(body) :]
     return raw
 

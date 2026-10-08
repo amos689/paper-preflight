@@ -295,7 +295,8 @@ def create_server(root: Path, cache_path: Path | None = None) -> FastMCP:
 
         `level="safe"` only fixes identifiers written so that links break and adds DOIs the
         registry has; `level="unsafe"` also rewrites authors, title, year and venue from the
-        record and removes identifiers that point to another work. Show unsafe diffs to the user
+        record, removes identifiers that point to another work and cites a preprint as its
+        published version (keeping the eprint). Show unsafe diffs to the user
         before applying them. References nobody could find are never "fixed".
 
         Use it after `preflight_check` has reported errors or warnings in the bibliography.

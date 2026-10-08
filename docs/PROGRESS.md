@@ -329,6 +329,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #175 | D1（提前做）：JSON 报告的 JSON Schema（`docs/schema/check-report.schema.json`，`schema_version` 0.1），测试用它校验在线、离线、不核查三种报告；README 写明字段只增不删、退出码 4（内部错误）。校验当即发现 schema 草稿里 `build_data` 的类型写错（实际是文件名或 null）。`schema_version` 到 1.0 时再改为 1.0 |
 | #176 | D2（提前做）：项目设置文件 `paper-preflight.toml` 或 `pyproject.toml` 的 `[tool.paper-preflight]`，从被检查的路径向上找到仓库根，也可用 `--config` 指定：忽略规则、忽略条目（可用通配符）、调整严重级别、关闭可选来源（核心来源不能关）、`fail-on`；命令行优先；写错（未知规则、设置项、来源）一律报错，退出码 3；MCP 服务同样读取 |
 | #178 | C4：网页链接。其他来源都没找到、链接到未收录网站的条目，用 HEAD 请求检查链接（说页面不在时再用不读正文的 GET 确认，Kaggle 这类对 HEAD 回 404、对 GET 回 200 的网站因此不误报），返回 404/410 且 Wayback Machine 从未存档时报 REF021（提示）；401/403/429/5xx/超时一律不下结论；不访问本机和内网地址。十四批回放：280 篇论文里 5 处，警告和错误无增无减 |
+| #179 | D4：`bib fix --level unsafe` 修 REF015，把已正式发表的预印本改引正式版本：条目类型改为正式版本的类型（`@misc` 改 `@inproceedings`），按记录写入发表场所、年份、卷（期刊）、页码和 DOI，只写着 arXiv preprint 的 journal/booktitle/howpublished 删掉，保留 eprint；记录没说是哪种出版物（期刊文章、会议论文、书的章节）时不修。新增的字段与条目原有字段的等号对齐。演示论文的 ResNet 预印本应用修复后再查，不再报 REF015 |
 
 ## 下一步
 
