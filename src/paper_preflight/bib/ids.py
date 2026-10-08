@@ -45,13 +45,27 @@ class Identifier:
         return f"{self.scheme}:{self.value}{self.version or ''}"
 
 
+_CLOSING = {")": "(", "]": "[", "}": "{"}
+
+
+def _trim(doi: str) -> str:
+    """The DOI without punctuation that ends the sentence around it: "(see 10.1/x)." loses ")."
+    but ASCE's "10.1061/(ASCE)1084-0702(2008)13:1(6)" keeps the parenthesis it opened."""
+    while doi and doi[-1] in _TRAILING_PUNCTUATION:
+        last = doi[-1]
+        if last in _CLOSING and doi.count(_CLOSING[last]) >= doi.count(last):
+            break
+        doi = doi[:-1]
+    return doi
+
+
 def normalize_doi(value: str) -> str | None:
     """Return a normalised DOI or None if ``value`` contains no DOI."""
     candidate = _DOI_PREFIX_RE.sub("", value.strip())
     match = _DOI_RE.search(candidate)
     if not match:
         return None
-    doi = match.group(1).rstrip(_TRAILING_PUNCTUATION).lower()
+    doi = _trim(match.group(1)).lower()
     # arXiv DOIs are registered without a version: doi.org answers 404 for "...2602.12139v1"
     # (seen in HALLMARK's VALID entries), so the version suffix is not part of the DOI.
     if _ARXIV_DOI_RE.match(doi):
@@ -150,6 +164,13 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         arxiv = _arxiv_in(value, require_context=True)
         if arxiv:
             add(Identifier("arxiv", arxiv[0], field, arxiv[1], raw=value))
+    # ADS writes an e-print's number where the pages go: journal = {arXiv e-prints},
+    # pages = {arXiv:2412.13807} (heldout15: compared with the later A&A article instead)
+    pages = entry.text("pages")
+    if pages and not any(i.scheme == "arxiv" for i in found):
+        arxiv = _arxiv_in(pages, require_context=True)
+        if arxiv:
+            add(Identifier("arxiv", arxiv[0], "pages", arxiv[1], raw=pages))
 
     if not any(i.scheme == "doi" for i in found):
         rfc = _rfc_number(entry)

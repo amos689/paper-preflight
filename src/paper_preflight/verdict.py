@@ -34,10 +34,13 @@ from paper_preflight.match import (
     Match,
     best_candidate,
     canonical_venue,
+    canonical_venues,
     check_authors,
     evaluate,
     has_cjk,
     is_preprint,
+    names_workshop,
+    names_year,
     related_words,
     subtitle_variant,
     surname_key,
@@ -261,7 +264,16 @@ def _relation(m: Match) -> str:
         return "unclear"
     if m.authors.status == "unknown" and (m.title.score or 0.0) >= 0.6:
         return "unclear"  # no authors to tell, and the titles are not far apart
+    if m.record.work_type in _RELEASED_TYPES:
+        # software and models are cited as their makers ask, not by a release's title:
+        # lm-evaluation-harness as Gao et al., "A framework for few-shot language model
+        # evaluation" (Zenodo 10.5281/zenodo.5371628), moondream2 by the account that holds it
+        return "unclear"
     return "conflict"
+
+
+# DataCite's resource types of things released rather than written
+_RELEASED_TYPES = frozenset({"software", "model", "dataset", "workflow"})
 
 
 def _rank(m: Match) -> tuple[int, int, int, float, float, int]:
@@ -582,6 +594,21 @@ def _renamed_everywhere(
     return tuple(pair for pair in renamed if pair[0] not in named_right)
 
 
+def _workshop_version(info: EntryInfo, record: SourceRecord) -> bool:
+    """A workshop paper, its workshop named otherwise by the record (dblp files LoResLM 2025
+    under "COLING Workshops") or held at a meeting the venue names: a paper at "EurIPS 2025
+    Workshop: AI for Tabular Data" may be cited after its ICLR version appeared (heldout15).
+    A workshop named by nothing else ("Workshop on Memory-Augmented Neural Networks") excuses
+    nothing: invented venues look like that."""
+    if not names_workshop(info.venue):
+        return False
+    return (
+        names_workshop(record.venue)
+        or bool(canonical_venues(info.venue))
+        or (info.year is not None and names_year(info.venue, info.year))
+    )
+
+
 def _field_findings(
     entry: BibEntry,
     info: EntryInfo,
@@ -708,11 +735,15 @@ def _field_findings(
                     "arXiv 未应答，DataCite 只有最新版本",
                 )
             )
+        # A preprint compared with an entry that cites the journal's volume and pages: author
+        # lists change on publication too (bioRxiv's Tabula Sapiens lists the consortium and
+        # Quake; Science 376, eabl4896 the people the entry names). As for titles above.
+        cited_published = is_preprint(record) and bool(info.volume and info.first_page)
         if details:  # nothing left when only a backfile's author order differs
             out.append(
                 make_finding(
                     "REF011", _location(entry, author_field), key=key, field=author_field,
-                    severity=Severity.INFO if short_record else None,
+                    severity=Severity.INFO if short_record or cited_published else None,
                     source=source, missing=names, suggestion=format_authors(record),
                     detail="; ".join(d[0] for d in details),
                     detail_zh="；".join(d[1] for d in details),
@@ -743,7 +774,11 @@ def _field_findings(
                 year=info.year, found_years=years, suggestion=str(record.year or ""),
             )
         )  # fmt: skip
-    if m.venue.status == "mismatch" and not is_preprint(record):
+    if (
+        m.venue.status == "mismatch"
+        and not is_preprint(record)
+        and not _workshop_version(info, record)
+    ):
         venue_field = next((f for f in VENUE_FIELDS if f in entry.fields), None)
         out.append(
             make_finding(
@@ -1235,7 +1270,9 @@ _WEB_VENUES = re.compile(
 
 
 _REPORT_VENUE = re.compile(
-    r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b",
+    r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b"
+    # "Report to the Coastal Transportation Engineering Research and Education Center, ..."
+    r"|\breport\s+(?:to|for|prepared\s+for)\b",
     re.IGNORECASE,
 )
 

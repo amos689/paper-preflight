@@ -464,6 +464,25 @@ def test_a_named_venue_cites_the_published_version(
     assert rules(assess(entry, item, current_year=YEAR)) == rules_expected
 
 
+@pytest.mark.parametrize(
+    ("venue", "recorded", "reported"),
+    [
+        # a workshop the record names its own way (dblp: "COLING Workshops"; heldout15)
+        ("Proceedings of the First Workshop on Low-Resource Languages", "COLING Workshops", False),
+        # a workshop held at a meeting the venue names, its paper later at another
+        ("EurIPS 2023 Workshop: AI for Tabular Data", "ICLR", False),
+        ("ICML Workshop on Structured Probabilistic Inference", "ICLR", False),
+        # a workshop named by nothing else is how HALLMARK's invented venues look
+        ("Workshop on Memory-Augmented Neural Networks", "ICLR", True),
+        ("Annual Workshop on AI Safety and Alignment", "ICLR", True),
+    ],
+)
+def test_a_workshop_version_of_a_paper(venue: str, recorded: str, reported: bool) -> None:
+    entry = bib(CS_ENTRY.replace("Proceedings of ACL", venue))
+    item = evidence_for(entry, anchored=[record(venue=recorded)])
+    assert ("REF014" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
 def test_invented_title_on_a_real_doi_is_reported() -> None:
     # HALLMARK "chimeric title": the DOI and the authors are real, the title is invented
     entry = bib(CS_ENTRY)
@@ -838,6 +857,37 @@ def test_one_person_on_a_long_title_by_others(author: str, bound: bool) -> None:
     result = assess(entry, search_result(entry, others), current_year=YEAR)
     assert ("REF010" in rules(result)) is bound
     assert (result.record is not None) is bound
+
+
+@pytest.mark.parametrize(
+    ("journal", "reason"),
+    [
+        # a report cited as an article, its issuer named (heldout15: Hurricane Ivan's roads)
+        ("Report to the Coastal Transportation Engineering Center, University of South Alabama",
+         True),
+        ("Report", False),  # a bare "Report" names nothing a reader could look up
+    ],
+)  # fmt: skip
+def test_a_report_cited_as_an_article(journal: str, reason: bool) -> None:
+    venue = f"journal = {{{journal}}}"
+    text = NO_DOI.replace("@inproceedings", "@article")
+    entry = bib(text.replace("booktitle = {Proceedings of ACL}", venue))
+    result = assess(entry, search_result(entry), current_year=YEAR)
+    assert (Reason.GREY_LITERATURE in result.reasons) is reason
+    if reason:
+        assert "REF003" not in rules(result)
+
+
+def test_a_preprints_authors_against_a_cited_journal_article() -> None:
+    # Tabula Sapiens: bioRxiv lists the consortium and Quake, Science 376, eabl4896 the people
+    # the entry names; only the preprint was found
+    venue = "journal = {Science}, volume = {376}, pages = {eabl4896}"
+    text = NO_DOI.replace("@inproceedings", "@article")
+    entry = bib(text.replace("booktitle = {Proceedings of ACL}", venue))
+    preprint = record(authors=(ANN,), work_type="posted-content", source="crossref")
+    result = assess(entry, search_result(entry, preprint), current_year=YEAR)
+    (authors,) = [f for f in result.findings if f.rule_id == "REF011"]
+    assert authors.severity is Severity.INFO
 
 
 CUT = "Robust Sparse Attention Revisited"

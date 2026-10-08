@@ -31,6 +31,10 @@ def ids(bib: str) -> list[str]:
             "<https://doi.org/10.1109/CVPR.2016.90>",
             "10.1109/cvpr.2016.90",
         ),  # a lone bracket ends it
+        # ASCE's DOIs end in the parenthesis they open (heldout15: they lost it, then were
+        # reported as not existing); one that closes the sentence around a DOI still goes
+        ("10.1061/(ASCE)1084-0702(2008)13:1(6)", "10.1061/(asce)1084-0702(2008)13:1(6)"),
+        ("(see 10.1000/xyz).", "10.1000/xyz"),
     ],
 )
 def test_normalize_doi(raw: str, expected: str | None) -> None:
@@ -44,6 +48,11 @@ def test_escaped_doi_field() -> None:
 def test_arxiv_from_eprint_journal_url_and_datacite_doi() -> None:
     assert ids("@misc{a, eprint={1706.03762v5}, archivePrefix={arXiv}}") == ["arxiv:1706.03762v5"]
     assert ids("@article{a, journal={arXiv preprint arXiv:1810.04805}}") == ["arxiv:1810.04805"]
+    # ADS's e-prints: the number where the pages go
+    assert ids("@article{a, journal={arXiv e-prints}, pages={arXiv:2412.13807}}") == [
+        "arxiv:2412.13807"
+    ]
+    assert ids("@article{a, journal={ApJ}, pages={2412--2413}}") == []
     assert ids("@misc{a, url={https://arxiv.org/abs/2106.09685v2}}") == ["arxiv:2106.09685v2"]
     assert ids("@misc{a, doi={10.48550/arXiv.1706.03762}}") == [
         "doi:10.48550/arxiv.1706.03762",

@@ -1046,8 +1046,10 @@ BOOK_ENTRY_TYPES = frozenset({"book", "mvbook"})
 
 
 def _unfound_book(item: Evidence) -> bool:
-    """A book no record found fits by title and first author (Semantic Scholar may have one
-    with other people's names: Bishop's Pattern Recognition and Machine Learning by "Neal")."""
+    """A book no record found fits by title, first author and year (Semantic Scholar may have
+    one with other people's names: Bishop's Pattern Recognition and Machine Learning by "Neal";
+    APA PsycTests one of a test's manual dated by the test: the MacArthur-Bates CDI, 2006, its
+    second edition's manual a 2007 book)."""
     from paper_preflight.match import evaluate
 
     info = item.info
@@ -1056,7 +1058,9 @@ def _unfound_book(item: Evidence) -> bool:
     if item.anchored:
         return False
     return not any(
-        m.title.status in {"match", "variant"} and m.authors.first_author_match
+        m.title.status in {"match", "variant"}
+        and m.authors.first_author_match
+        and m.year.status != "mismatch"
         for m in (evaluate(info, record) for record in item.candidates)
     )
 

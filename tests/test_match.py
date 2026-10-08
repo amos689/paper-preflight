@@ -179,6 +179,11 @@ def test_earlier_version_title_is_a_variant() -> None:
         # a symbol the registry dropped after a one-letter quantity (ApJ 573, 81)
         ("Ionizing fluxes from 0.05 to 2 Z$_{solar}$", "Ionizing fluxes from 0.05 to 2 Z", ()),
         ("A solar model of fluxes", "A model of fluxes", (("solar", ""),)),
+        # a mass number before or after its element (ApJ 232, L89; PRL 122, 223203)
+        ("The distribution of ^13CO emission", "The distribution of CO-13 emission", ()),
+        ("Spin Squeezing in ^171Yb", "Spin Squeezing in Yb171", ()),
+        ("Results for 2023 and 2024", "Results for 2024 and 2023",
+         (("", "2024 and"), ("and 2024", ""))),
     ],
 )  # fmt: skip
 def test_changed_words(ours: str, theirs: str, changes: tuple[tuple[str, str], ...]) -> None:
@@ -298,6 +303,32 @@ def test_a_meetings_year_named_by_its_venue() -> None:
     assert check_year(2002, record, venue="Proceedings of SAT-2002").status == "mismatch"
     article = replace(record, work_type="journal-article")
     assert check_year(2003, article, venue="Journal of SAT 2003").status == "mismatch"
+
+
+def test_years_a_registry_records_badly() -> None:
+    # Int. J. Epidemiol. 49(6), December 2020: Crossref has the online date and the print one
+    ije = SourceRecord(
+        source="crossref", source_id="10.1093/ije/dyz223", title="Ensemble modelling",
+        year=2019, years=frozenset({2019, 2021}), work_type="journal-article",
+        identifiers={"doi": "10.1093/ije/dyz223"},
+    )  # fmt: skip
+    assert check_year(2020, ije).status == "match"
+    assert check_year(2018, ije).status == "mismatch"
+    # the July 2020 issue, by its DOI; Crossref dates it 2021 only
+    jds = replace(ije, source_id="x", identifiers={"doi": "10.6339/jds.202007_18(3).0003"},
+                  year=2021, years=frozenset({2021}))  # fmt: skip
+    assert check_year(2020, jds).status == "match"
+    assert check_year(2019, jds).status == "mismatch"  # the DOI's year only one year off
+    # a year standing alone in a DOI is often the year it was registered (Phil. Trans. A 383,
+    # 2025: 10.1098/rsta.2024.0241)
+    rsta = replace(jds, identifiers={"doi": "10.1098/rsta.2024.0241"}, year=2025,
+                   years=frozenset({2025}))  # fmt: skip
+    assert check_year(2024, rsta).status == "mismatch"
+    # a conference's name alone does not excuse a year a book of its proceedings disagrees with
+    chapter = replace(ije, source_id="y", identifiers={}, year=1982, years=frozenset({1982}),
+                      work_type="book-chapter")  # fmt: skip
+    venue = "International Conference on Fifth Generation Computer Systems"
+    assert check_year(1981, chapter, venue=venue).status == "mismatch"
 
 
 def test_a_jmlr_volume_runs_into_the_next_year() -> None:
@@ -702,6 +733,55 @@ def test_an_organisation_leading_the_record_is_not_the_first_author() -> None:
         authors=(Person.from_display("Cursor Research"), Person.from_display("Aaron Chan")),
     )  # fmt: skip
     assert check_authors(parse_authors("Aaron Chan"), cursor).first_author_match
+    # Crossref files a collaboration as a person: given "The ALICE", family "Collaboration"
+    alice = SourceRecord(
+        source="crossref", source_id="10.1088/1748-0221/3/08/s08002", title="The ALICE",
+        authors=(Person("Collaboration", "The ALICE"), Person("Aamodt", "K"),
+                 Person("Quintana", "A Abrahantes")),
+    )  # fmt: skip
+    assert check_authors(parse_authors("K. Aamodt and others"), alice).first_author_match
+    # "on behalf of the CMS Collaboration" credits the collaboration (J. Phys. Conf. Ser.)
+    cms = SourceRecord(
+        source="crossref", source_id="10.1088/1742-6596/1162/1/012002", title="CMS ECAL",
+        authors=(Person("Mudholkar", "Tanmay"), Person("", literal="CMS Collaboration")),
+    )  # fmt: skip
+    written = parse_authors("Mudholkar, Tanmay and on behalf of the CMS Collaboration")
+    assert check_authors(written, cms).missing == ()
+
+
+def test_letters_a_registry_lost_in_a_name() -> None:
+    # Crossref's Astropy 2013: "G" + two marks + "nther", one per byte of the lost "ü"
+    astropy = SourceRecord(
+        source="crossref", source_id="10.1051/0004-6361/201322068", title="Astropy",
+        authors=(Person("Robitaille", "T. P."), Person("G��nther", "Hans M."),
+                 Person("Lim", "P. L.")),
+    )  # fmt: skip
+    written = parse_authors('Robitaille, T. P. and G{\\"u}nther, H. M. and Lim, P. L.')
+    assert check_authors(written, astropy).missing == ()
+    # ApJ 596, L191: Ivezić as "Ivezi", the "ć" dropped without a mark
+    newberg = SourceRecord(
+        source="crossref", source_id="10.1086/379316", title="Sagittarius",
+        authors=(Person("Newberg", "Heidi Jo"), Person("Ivezi", "eljko"), Person("Rix", "H.")),
+    )  # fmt: skip
+    written = parse_authors("Newberg, Heidi Jo and {Ivezi{\\'c}}, {\\v{Z}}eljko and Rix, H.")
+    assert check_authors(written, newberg).missing == ()
+    # a name that is only longer in ASCII is another name
+    other = parse_authors("Newberg, Heidi Jo and Ivezich, Z. and Rix, H.")
+    assert check_authors(other, newberg).missing == ("Z. Ivezich",)
+
+
+def test_names_a_registry_put_the_other_way_round() -> None:
+    # Crossref's record of Chin. Astron. Astrophys. 45, 559: given "LI", family "Zhen-qiang"
+    record = SourceRecord(
+        source="crossref", source_id="10.1016/j.chinastron.2021.11.008", title="Delingha",
+        authors=(Person("Zhen-qiang", "LI"), Person("Xu-guo", "ZHANG"), Person("Ji-bin", "LI")),
+    )  # fmt: skip
+    written = parse_authors("{Li}, Zhenqiang and {Zhang}, Xuguo and {Li}, Jibin")
+    check = check_authors(written, record)
+    assert check.status in {"match", "variant"}
+    assert not check.disjoint
+    # other people stay other people
+    assert check_authors(parse_authors("Wu, Dan and Ito, Ken"), record).disjoint
 
 
 def test_a_solar_symbol_is_the_word_sun() -> None:
@@ -926,6 +1006,26 @@ def test_a_registry_label_after_the_title() -> None:
         " Metagalactic Problems"
     )
     assert check_title(title, record).changed == ()
+
+
+@pytest.mark.parametrize(
+    ("entry", "recorded", "status"),
+    [
+        # Crossref's title carries the edition (Little and Rubin 2019, 10.1002/9781119482260)
+        ("Statistical analysis with missing data",
+         "Statistical Analysis with Missing Data, Third Edition", "match"),
+        # ScienceDirect exports a chapter's number; Crossref may keep it in the title
+        ("Chapter 4 - Interaction between Atomic Ensembles and Optical Resonators",
+         "Interaction between Atomic Ensembles and Optical Resonators", "match"),
+        ("Förster resonance energy transfer, what is it",
+         "Chapter 1 Förster resonance energy transfer, what is it", "match"),
+        ("A Different Book on Missing Data",
+         "Statistical Analysis with Missing Data, Third Edition", "mismatch"),
+    ],
+)  # fmt: skip
+def test_a_chapters_number_and_a_books_edition(entry: str, recorded: str, status: str) -> None:
+    record = SourceRecord(source="crossref", source_id="x", title=recorded)
+    assert check_title(entry, record).status == status
 
 
 def test_a_chapter_in_springers_inbook_export() -> None:

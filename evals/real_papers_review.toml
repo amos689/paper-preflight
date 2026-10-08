@@ -6113,6 +6113,10 @@ note = "The doi field is not a bare DOI (contains a URL or 'doi:' prefix); 10.10
 verdict = "false_positive"
 note = "The same people; Crossref's record has the Chinese names in the other order ('Zhen-qiang' as the family name)."
 
+[finding."2606.18637v1:ZHENQIANG2021559:REF011"]
+verdict = "false_positive"
+note = "After the name-order fix: five of the entry's eight authors are on Crossref's record of eleven. The entry is ScienceDirect's own export (url, keywords, abstract), so its author list comes from the publisher; Crossref's deposit for the translated article lists others. Nothing the author can correct."
+
 [finding."2606.18637v1:2018AcASn..59....3S:REF003"]
 verdict = "false_positive"
 note = "A real paper in Acta Astronomica Sinica 59, 3 (2018), which the indexes hold under its Chinese title."

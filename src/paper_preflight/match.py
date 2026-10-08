@@ -224,6 +224,12 @@ _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 # A registry's section label after the title ("... Future Directions [Review Article]", IEEE),
 # the plates section ADS lists apart, in Semantic Scholar's title (". Plates."), or a journal's
 # note that discussions follow ("... of MCMC (with Discussion)", Bayesian Analysis on Crossref)
+_CHAPTER_NUMBER = re.compile(r"^\s*chapter\s+\d+\s*[-–—:.]?\s+", re.I)
+_EDITION = re.compile(
+    r",?\s*\(?(?:\d+(?:st|nd|rd|th)|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)"
+    r"\s+edition\)?\s*$",
+    re.I,
+)
 _SECTION_LABEL = re.compile(
     r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$|\s*\(with (discussions?|comments)[^()]*\)\s*$",
     re.I,
@@ -249,6 +255,19 @@ def _same_word(a: str, b: str) -> bool:
     return _american(_ROMAN.get(a, a)) == _american(_ROMAN.get(b, b))
 
 
+def _isotope(mine: str, recorded: str) -> bool:
+    """A mass number written before or after its element: the same characters, a digit among
+    them, in a word or two on each side."""
+    a, b = mine.replace(" ", ""), recorded.replace(" ", "")
+    return (
+        a != b
+        and any(c.isdigit() for c in a)
+        and sorted(a) == sorted(b)
+        and len(mine.split()) <= 2
+        and len(recorded.split()) <= 2
+    )
+
+
 def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
     """Where two titles differ word for word: (entry's words, record's words) per place.
 
@@ -267,6 +286,8 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
         if op == "equal":
             continue
         mine, recorded = " ".join(ours[i1:i2]), " ".join(theirs[j1:j2])
+        if _isotope(mine, recorded):
+            continue  # "$^{13}$CO" and the registry's "CO-13", "$^{171}$Yb" and "Yb171"
         if mine.replace(" ", "") == recorded.replace(" ", "") or (
             i2 - i1 == j2 - j1
             and all(_same_word(a, b) for a, b in zip(ours[i1:i2], theirs[j1:j2], strict=True))
@@ -352,8 +373,15 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
+    # a chapter's number before its title, as ScienceDirect exports it ("Chapter 4 - ...") and
+    # Crossref sometimes records it ("Chapter 1 Förster resonance ..."); an edition after a
+    # book's ("Statistical Analysis with Missing Data, Third Edition")
+    entry_title = _CHAPTER_NUMBER.sub("", entry_title) or entry_title
     labelled = _SECTION_LABEL.sub("", record.title)
     titles = [(record.title, "")] + ([(labelled, "")] if labelled != record.title else [])
+    for bare in (_CHAPTER_NUMBER.sub("", record.title), _EDITION.sub("", record.title)):
+        if bare and bare != record.title:
+            titles.append((bare, ""))
     for candidate, note in titles + [(t, EARLIER_VERSION) for t in record.alt_titles]:
         score = title_score(entry_title, candidate)
         if score > best:
@@ -738,8 +766,9 @@ def _left_out_person(person: Person) -> bool:
 
 
 def _same_group(a: Person, b: Person) -> bool:
-    """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team"."""
-    ours = _name_words(a.display) - {"and", "the"}
+    """One group under a longer name: ESO's DataCite records end with "And The MAGPI Team";
+    an entry credits "on behalf of the CMS Collaboration" (J. Phys. Conf. Ser. 1162, 012002)."""
+    ours = _name_words(a.display) - {"and", "the", "on", "behalf", "of", "for"}
     return bool(ours) and _group(b) and ours <= _name_words(b.display)
 
 
@@ -781,13 +810,38 @@ def _lost_letters(person: Person, written: tuple[Person, ...]) -> Person:
     "nle", Crossref) as the entry writes it, when exactly one of the entry's names fits it
     letter for letter."""
     if _LOST not in person.family:
-        return person
-    pattern = ".{1,2}".join(map(re.escape, person.family.split(_LOST)))
+        # or dropped without a trace: Crossref's "Ivezi" for Ivezić (ApJ 596, L191), the
+        # entry's name the recorded one and a letter or two outside ASCII
+        fits = [
+            p for p in written
+            if p.family.lower().startswith(person.family.lower())
+            and 0 < len(p.family) - len(person.family) <= 2
+            and not p.family[len(person.family):].isascii()
+            and len(person.family) >= 4
+        ]  # fmt: skip
+        return replace(person, family=fits[0].family) if len(fits) == 1 else person
+    # one letter may have become two marks, one per byte ("G" + 2 marks + "nther", Günther)
+    pattern = ".{1,2}".join(map(re.escape, re.split(f"{_LOST}+", person.family)))
     fits = [p for p in written if re.fullmatch(pattern, p.family, re.IGNORECASE)]
     return replace(person, family=fits[0].family) if len(fits) == 1 else person
 
 
 def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
+    check = _check_authors(authors, record)
+    if check.disjoint and len(record.authors) >= 2:
+        # a registry that put Chinese names the other way round: given "LI", family
+        # "Zhen-qiang" (Chinese Astronomy and Astrophysics 45, 559, in Crossref)
+        swapped = tuple(
+            Person(family=p.given, given=p.family) if p.given and not p.literal else p
+            for p in record.authors
+        )
+        other = _check_authors(authors, replace(record, authors=swapped))
+        if other.status in {"match", "variant"}:
+            return other
+    return check
+
+
+def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
     recorded = [_lost_letters(p, authors.people) for p in record.authors]
     people = [_as_meant(p, written) for p in recorded if surname_key(p)]
@@ -842,8 +896,10 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         leads = [people[0]]
         # an organisation leading the record ("OpenAI" before Josh Achiam, arXiv 2303.08774) is
         # no first author to compare with when the entry leaves it out or names it later
-        # ("Kevin Lu and Thinking Machines Lab", as the lab asks; Crossref has the lab first)
-        if _organisation(people[0]):
+        # ("Kevin Lu and Thinking Machines Lab", as the lab asks; Crossref has the lab first),
+        # nor is a collaboration Crossref files as a person ("The ALICE" "Collaboration" before
+        # K. Aamodt, JINST 3 S08002)
+        if _organisation(people[0]) or _group(people[0]):
             leads += people[1:2]
         first = any(same_person(first_person, lead) for lead in leads)
     else:
@@ -906,7 +962,24 @@ _BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-b
 _WORKSHOP = re.compile(r"\bworkshops?\b|\b(?:neurips|nips|icml|iclr|cvpr|iccv|eccv)w\b", re.I)
 
 
-def _names_year(venue: str | None, year: int) -> bool:
+def names_workshop(venue: str | None) -> bool:
+    """The venue is a workshop ("Proceedings of the First Workshop on ...", "EurIPS 2025
+    Workshop: AI for Tabular Data")."""
+    return bool(_WORKSHOP.search(venue or ""))
+
+
+# a year a publisher wrote into a DOI's suffix with the month or issue run on: ".202007_",
+# ".2022096". Not a year standing alone (".2024.0241", ".2016.1158716"), often the year the DOI
+# was registered rather than the issue's.
+_DOI_YEAR = re.compile(r"\.((?:19|20)\d\d)\d{2,3}(?=[._(]|$)")
+
+
+def _doi_year(doi: str | None) -> int | None:
+    match = _DOI_YEAR.search(doi.split("/", 1)[-1]) if doi else None
+    return int(match.group(1)) if match else None
+
+
+def names_year(venue: str | None, year: int) -> bool:
     """The venue names the year: "Proceedings of SAT-2003", "ICML 2019", "NeurIPS'19"."""
     if not venue:
         return False
@@ -929,9 +1002,20 @@ def check_year(
     if (
         year + 1 in years
         and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
-        and _names_year(venue, year)
+        and names_year(venue, year)
     ):
         # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
+        return FieldCheck("match")
+    if min(years) < year < max(years) <= min(years) + 2:
+        # between two of the article's own dates: an issue dated between its appearance online
+        # and in print (Int. J. Epidemiol. 49(6), December 2020: online 2019, print 2021). Not
+        # between a print date and a backfile's years later (SIAM J. Control Optim. 42(4),
+        # 2003, online in 2006: 2004 is wrong)
+        return FieldCheck("match")
+    if abs(year - min(years)) == 1 and year == _doi_year(record.doi):
+        # the year the publisher wrote into the DOI, where Crossref has only another date
+        # (J. Data Sci. 10.6339/jds.202007_18(3).0003, the July 2020 issue, dated 2021;
+        # 10.3934/mbe.2022096, volume 19, 2022, dated 2021)
         return FieldCheck("match")
     if year - 1 in years and record.source_id.startswith("journals/jmlr/"):
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
@@ -975,7 +1059,7 @@ _VENUES: list[tuple[str, tuple[str, ...]]] = [
     ("cvpr", ("cvpr", "computer vision and pattern recognition")),
     ("iccv", ("iccv", "international conference on computer vision")),
     ("eccv", ("eccv", "european conference on computer vision")),
-    ("aaai", ("aaai",)),
+    ("aaai", ("aaai", "national conference on artificial intelligence")),
     ("ijcai", ("ijcai", "international joint conference on artificial intelligence")),
     ("kdd", ("kdd", "knowledge discovery and data mining")),
     ("sigir", ("sigir",)),
