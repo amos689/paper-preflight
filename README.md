@@ -50,7 +50,7 @@ purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.4.0 · main.tex · 12 entries, 12 cited keys
+paper-preflight 0.8.0 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -60,7 +60,7 @@ error   REF003 refs.bib:66
     'lindqvist2024quantum' was not found in Crossref, dblp and Semantic Scholar, and every source responded. Check that the work exists and that its title is correct.
 error   REF004 refs.bib:73
     'wakefield1998ileal' has been retracted (reported by Crossref, OpenAlex). Cite it only if the text discusses the retraction.
-error   CIT002 refs.bib:127
+error   CIT002 refs.bib:128
     Entry key 'kingma2015adam' is already defined at line 47; BibTeX ignores this one.
 warning REF015 refs.bib:31
     'he2015residual' cites a preprint that has been published in CVPR (2016), DOI 10.1109/cvpr.2016.90. Cite the published version and keep the eprint field.
@@ -68,24 +68,23 @@ warning CIT004 refs.bib:37
     Entries 'devlin2019bert' and 'he2016deep' look like the same work (same DOI).
 warning REF013 refs.bib:51
     'kingma2015adam' gives the year 2016, but dblp records 2014, 2015.
-warning REF017 refs.bib:111
+warning REF017 refs.bib:112
     The doi of 'tacl2019example' contains LaTeX escapes: '10.1162/tacl\_a\_00276'. Write it as: 10.1162/tacl_a_00276
 info    REF005 refs.bib:73
     'wakefield1998ileal' has a published correction (reported by Crossref).
-info    REF090 refs.bib:86
-    'goodfellow2016deep' could not be verified: grey literature without an identifier (book, report, software, web page).
-info    REF090 refs.bib:94
+info    REF090 refs.bib:95
     'zhou2016ml' could not be verified: non-Latin titles are not supported yet; grey literature without an identifier (book, report, software, web page).
-info    CIT003 refs.bib:115
+info    CIT003 refs.bib:116
     Entry 'lecun1998gradient' is never cited.
 
-References: 6 verified · 1 metadata mismatch · 1 identifier conflict · 1 not found · 2 cannot determine
-5 error(s) · 4 warning(s) · 4 info
+References: 7 verified · 1 metadata mismatch · 1 identifier conflict · 1 not found · 1 cannot determine
+5 error(s) · 4 warning(s) · 3 info
 ```
 
 Each finding is backed by a record (or by every source answering "no"). The correct NeurIPS
-paper is verified through dblp even though Crossref only holds fake copies of it, and the two
-books without identifiers are reported as "cannot determine" instead of "not found".
+paper is verified through dblp even though Crossref only holds fake copies of it, the book
+without an identifier is confirmed by Open Library, and the Chinese one, whose script is not
+supported yet, is reported as "cannot determine" instead of "not found".
 
 ## What it catches
 
@@ -144,14 +143,21 @@ error reviewed by hand:
 | 2026-09-16..22 | 0.6.0 candidate | 868 | 89 | 76 | 13 | 0 | 1.5 |
 | 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
 | 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
+| 2026-06-24..30, an earlier week | 0.8.0 | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
 
-- **The latest week: about one false alarm every three papers** (51 references on average),
-  against 79 real problems: 47 cited preprints since published, 8 wrong years, 7 identifiers
-  written as links or with LaTeX escapes, wrong authors or given names in 5 entries, 4 wrong
-  venues, 5 misquoted titles and two references that match no work at all. The false alarms
-  are three articles a registry dates only by their online appearance, a book against its
-  online edition, two symbols a registry writes its own way, and a paper's code offered as its
-  published version.
+- **0.8.0: one false alarm every two papers** (56 references on average), against 132 real
+  problems: 93 cited preprints since published, 17 identifiers written as links, wrong authors
+  or given names in 10 entries (in four, most given names are invented), 6 wrong years, 2
+  misquoted titles, a wrong venue, a DOI that does not exist and an arXiv ID of another paper.
+  Six false alarms are registries' own writing ('Ueber' for 'Über', a title that lost its
+  '3/4'), three are author fields written by hand ('and 324 others'), one an ITU-R report no
+  source indexes. This week was sampled from before the first one, never used until then, so
+  that 0.8.0 need not wait for next week's papers; checked months after it was written, it may
+  read a little better than a fresh week, which follows as a control.
+- **0.7.0: about one false alarm every three papers**, against 79 real problems. The false
+  alarms are three articles a registry dates only by their online appearance, a book against
+  its online edition, two symbols a registry writes its own way, and a paper's code offered as
+  its published version; all are fixed in 0.8.0.
 - **The two weeks before (0.6.0): 1.5, then 0.8.** 8 of the first week's 13 false alarms were
   registries' own errors (a short author list, misspelt names, an HTML entity, a typo, a wrong
   year); 5 are fixed in 0.6.0.
@@ -197,25 +203,27 @@ BibTeX entries.
 
 | Split | Mode | Precision | Recall | False-positive rate | Coverage |
 |---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 98.4% | 90.3% | 1.9% | 97.7% |
+| `test_public`: 831 entries, never used during development | Any issue | 98.5% | 93.5% | 1.9% | 97.7% |
 | | Fabrication | 99.0% | 50.2% | 0.6% | 97.7% |
-| `dev_public`: 1,119 entries, used during development | Any issue | 97.6% | 91.7% | 2.1% | 98.9% |
+| `dev_public`: 1,119 entries, used during development | Any issue | 97.7% | 94.3% | 2.1% | 98.9% |
 | | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.7.0 on 2026-10-08. *Fabrication* counts a
+HALLMARK v1.2.3, every entry of both public splits, run with 0.8.0 on 2026-10-09. *Fabrication* counts a
 wrong identifier, a work not found and no author in common; *any issue* also counts wrong
 authors, title, year or venue.
 
-- **The held-out split confirms the development numbers:** a little higher precision and one
-  and a half points less recall on entries no rule was ever tuned on.
+- **The held-out split confirms the development numbers:** a little higher precision and less
+  than a point less recall on entries no rule was ever tuned on. 0.8.0 catches 97% of invented
+  venues (78% in 0.7.0) and 85% of near-miss titles (70%).
 - **Every flag on a `dev_public` entry labelled VALID was checked by hand.** The 11 that remain are not
   correct citations: DOIs that belong to other papers, author lists naming people who did not
   write the paper, a shifted year and a truncated title.
 - **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
   with a reason one lookup confirms, is in
   [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
-- **What is still missed:** invented venues on papers known only as preprints (an arXiv record
-  cannot contradict a venue) and author lists that merely leave people out. See
+- **What is still missed:** author lists that merely leave people out (named in an info until
+  held-out weeks show the check never fires on a correct list) and invented entries that borrow
+  a title several real works share. See
   [`evals/results/`](evals/results/) for every hallucination type.
 
 Precision comes first: a reference is called fabricated only on positive evidence, and an
@@ -524,10 +532,12 @@ or "complete" references from memory, or name and shame authors.
   works cited in English no longer called "not found" (v0.5.2); fewer false alarms on double
   surnames, subtitles, workshop papers and books (v0.5.3); twice as fast, and references written
   whole in a note read as plain text (v0.6); Word, Markdown, Quarto, R Markdown and Typst
-  manuscripts, and CSL-JSON, RIS and YAML bibliographies (v0.7)
-- Next: books, software and standards checked against their own registries, and fewer misses on
-  shortened author lists, invented venues and near-miss titles (v0.8); then a stable 1.0
-- Being tried: references in Chinese script, measured before anything ships
+  manuscripts, and CSL-JSON, RIS and YAML bibliographies (v0.7); books, software, models,
+  datasets, RFCs and web links checked against their own registries, invented venues and
+  near-miss titles caught, project settings, a Python API and a page for every rule (v0.8)
+- Next: a stable 1.0, once three held-out weeks average at most one false alarm per 100
+  references
+- After 1.0: references in Chinese script, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
 [changelog](CHANGELOG.md).

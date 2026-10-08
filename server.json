@@ -7,19 +7,19 @@
     "url": "https://github.com/amos689/paper-preflight",
     "source": "github"
   },
-  "version": "0.7.0",
+  "version": "0.8.0",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "paper-preflight",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "runtimeHint": "uvx",
       "runtimeArguments": [
         {
           "type": "named",
           "name": "--with",
-          "value": "paper-preflight[mcp]==0.7.0"
+          "value": "paper-preflight[mcp]==0.8.0"
         }
       ],
       "transport": {

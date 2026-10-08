@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-09
+
+Books, software, models, datasets, RFCs and web links checked against their own registries;
+invented venues and near-miss titles caught; project settings, a Python API, a JSON Schema and
+a page for every rule. On a held-out week of real papers, run once: 0.9 false positives per 100
+references (1,127 references; an earlier week, never used before, so that the release need not
+wait for next week's papers). HALLMARK `test_public`, any issue: recall 90.3% to 93.5% at a
+1.9% false-positive rate. GPTZero's hallucinated references are unchanged (139 of 151 flagged,
+none verified).
+
 ### Added
 
 - **A Python API:** `paper_preflight.check_paper(path)` runs the checks the CLI runs and
@@ -855,7 +865,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/amos689/paper-preflight/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/amos689/paper-preflight/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/amos689/paper-preflight/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/amos689/paper-preflight/compare/v0.5.2...v0.5.3

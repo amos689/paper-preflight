@@ -11,7 +11,7 @@
 | Mode | Precision | Recall | F1 | False-positive rate | Coverage |
 |---|---|---|---|---|---|
 | fabrication | 98.2% | 53.7% | 69.5% | 1.0% | 98.9% |
-| any_issue | 97.6% | 91.7% | 94.6% | 2.1% | 98.9% |
+| any_issue | 97.7% | 94.3% | 96.0% | 2.1% | 98.9% |
 
 ## Summary without the 11 disputed labels
 
@@ -20,7 +20,7 @@ The same run, leaving out 11 entries labelled VALID that are not correct citatio
 | Mode | Precision | Recall | F1 | False-positive rate | Coverage |
 |---|---|---|---|---|---|
 | fabrication | 100.0% | 53.7% | 69.9% | 0.0% | 98.9% |
-| any_issue | 100.0% | 91.7% | 95.7% | 0.0% | 98.9% |
+| any_issue | 100.0% | 94.3% | 97.1% | 0.0% | 98.9% |
 
 ## fabrication: outcomes by hallucination type
 
@@ -53,7 +53,7 @@ For VALID entries a flag is a false positive; for the others, clean is a miss.
 | VALID | – | 513 | 2.1% | 97.9% | 0.0% |
 | fabricated_doi | 1 | 38 | 100.0% | 0.0% | 0.0% |
 | future_date | 1 | 30 | 100.0% | 0.0% | 0.0% |
-| nonexistent_venue | 1 | 39 | 71.8% | 28.2% | 0.0% |
+| nonexistent_venue | 1 | 39 | 94.9% | 5.1% | 0.0% |
 | placeholder_authors | 1 | 41 | 100.0% | 0.0% | 0.0% |
 | chimeric_title | 2 | 47 | 97.9% | 0.0% | 2.1% |
 | hybrid_fabrication | 2 | 26 | 96.2% | 0.0% | 3.8% |
@@ -63,5 +63,5 @@ For VALID entries a flag is a false positive; for the others, clean is a miss.
 | swapped_authors | 2 | 67 | 97.0% | 1.5% | 1.5% |
 | wrong_venue | 2 | 47 | 76.6% | 23.4% | 0.0% |
 | arxiv_version_mismatch (stress) | 3 | 49 | 89.8% | 10.2% | 0.0% |
-| near_miss_title | 3 | 52 | 86.5% | 13.5% | 0.0% |
+| near_miss_title | 3 | 52 | 94.2% | 5.8% | 0.0% |
 | plausible_fabrication | 3 | 78 | 89.7% | 0.0% | 10.3% |
