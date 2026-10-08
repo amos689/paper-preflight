@@ -968,10 +968,10 @@ def names_workshop(venue: str | None) -> bool:
     return bool(_WORKSHOP.search(venue or ""))
 
 
-# a venue that is a meeting, held in its own year whatever year its proceedings appear
-_HELD_MEETING = re.compile(r"\b(?:conference|symposium|workshop|congress|meeting)\b", re.I)
-# a year a publisher wrote into a DOI's suffix: ".202007_", ".2022096"
-_DOI_YEAR = re.compile(r"\.((?:19|20)\d\d)(?:\d{2,3})?(?=[._(]|$)")
+# a year a publisher wrote into a DOI's suffix with the month or issue run on: ".202007_",
+# ".2022096". Not a year standing alone (".2024.0241", ".2016.1158716"), often the year the DOI
+# was registered rather than the issue's.
+_DOI_YEAR = re.compile(r"\.((?:19|20)\d\d)\d{2,3}(?=[._(]|$)")
 
 
 def _doi_year(doi: str | None) -> int | None:
@@ -1002,11 +1002,9 @@ def check_year(
     if (
         year + 1 in years
         and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
-        and (_names_year(venue, year) or _HELD_MEETING.search(venue or ""))
+        and _names_year(venue, year)
     ):
-        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004) or
-        # implies (the International Conference on Fifth Generation Computer Systems, 1981,
-        # whose proceedings are a 1982 book)
+        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
         return FieldCheck("match")
     if min(years) < year < max(years) <= min(years) + 2:
         # between two of the article's own dates: an issue dated between its appearance online

@@ -319,12 +319,16 @@ def test_years_a_registry_records_badly() -> None:
                   year=2021, years=frozenset({2021}))  # fmt: skip
     assert check_year(2020, jds).status == "match"
     assert check_year(2019, jds).status == "mismatch"  # the DOI's year only one year off
-    # a conference's year, its proceedings a book the year after (FGCS 1981)
+    # a year standing alone in a DOI is often the year it was registered (Phil. Trans. A 383,
+    # 2025: 10.1098/rsta.2024.0241)
+    rsta = replace(jds, identifiers={"doi": "10.1098/rsta.2024.0241"}, year=2025,
+                   years=frozenset({2025}))  # fmt: skip
+    assert check_year(2024, rsta).status == "mismatch"
+    # a conference's name alone does not excuse a year a book of its proceedings disagrees with
     chapter = replace(ije, source_id="y", identifiers={}, year=1982, years=frozenset({1982}),
                       work_type="book-chapter")  # fmt: skip
     venue = "International Conference on Fifth Generation Computer Systems"
-    assert check_year(1981, chapter, venue=venue).status == "match"
-    assert check_year(1981, chapter, venue="Fifth Generation Computer Systems").status == "mismatch"
+    assert check_year(1981, chapter, venue=venue).status == "mismatch"
 
 
 def test_a_jmlr_volume_runs_into_the_next_year() -> None:
