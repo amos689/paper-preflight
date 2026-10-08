@@ -249,6 +249,19 @@ def _same_word(a: str, b: str) -> bool:
     return _american(_ROMAN.get(a, a)) == _american(_ROMAN.get(b, b))
 
 
+def _isotope(mine: str, recorded: str) -> bool:
+    """A mass number written before or after its element: the same characters, a digit among
+    them, in a word or two on each side."""
+    a, b = mine.replace(" ", ""), recorded.replace(" ", "")
+    return (
+        a != b
+        and any(c.isdigit() for c in a)
+        and sorted(a) == sorted(b)
+        and len(mine.split()) <= 2
+        and len(recorded.split()) <= 2
+    )
+
+
 def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str], ...]:
     """Where two titles differ word for word: (entry's words, record's words) per place.
 
@@ -267,6 +280,8 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
         if op == "equal":
             continue
         mine, recorded = " ".join(ours[i1:i2]), " ".join(theirs[j1:j2])
+        if _isotope(mine, recorded):
+            continue  # "$^{13}$CO" and the registry's "CO-13", "$^{171}$Yb" and "Yb171"
         if mine.replace(" ", "") == recorded.replace(" ", "") or (
             i2 - i1 == j2 - j1
             and all(_same_word(a, b) for a, b in zip(ours[i1:i2], theirs[j1:j2], strict=True))

@@ -179,6 +179,11 @@ def test_earlier_version_title_is_a_variant() -> None:
         # a symbol the registry dropped after a one-letter quantity (ApJ 573, 81)
         ("Ionizing fluxes from 0.05 to 2 Z$_{solar}$", "Ionizing fluxes from 0.05 to 2 Z", ()),
         ("A solar model of fluxes", "A model of fluxes", (("solar", ""),)),
+        # a mass number before or after its element (ApJ 232, L89; PRL 122, 223203)
+        ("The distribution of ^13CO emission", "The distribution of CO-13 emission", ()),
+        ("Spin Squeezing in ^171Yb", "Spin Squeezing in Yb171", ()),
+        ("Results for 2023 and 2024", "Results for 2024 and 2023",
+         (("", "2024 and"), ("and 2024", ""))),
     ],
 )  # fmt: skip
 def test_changed_words(ours: str, theirs: str, changes: tuple[tuple[str, str], ...]) -> None:
