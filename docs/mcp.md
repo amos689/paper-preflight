@@ -3,8 +3,7 @@
 `paper-preflight mcp` runs a [Model Context Protocol](https://modelcontextprotocol.io) server on
 stdio, so coding agents can check a paper's references themselves. It needs the `mcp` extra.
 
-Until the first PyPI release, install it from GitHub. Afterwards, `paper-preflight[mcp]` alone
-will do.
+With [uv](https://docs.astral.sh/uv/), nothing needs installing:
 
 ```bash
 uvx --from "paper-preflight[mcp]" paper-preflight mcp

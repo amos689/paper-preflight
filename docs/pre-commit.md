@@ -6,7 +6,7 @@ project's `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/amos689/paper-preflight
-    rev: main  # pin a release tag once one is published
+    rev: v0.7.0  # a release tag; `pre-commit autoupdate` moves it to the latest
     hooks:
       - id: paper-preflight-offline
 ```

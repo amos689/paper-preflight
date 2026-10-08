@@ -73,13 +73,20 @@ All notable changes to this project are documented here. The format follows
   can be wrong, and what to do, including how to silence it. `explain`, the MCP server's
   `preflight_explain` and the help of SARIF reports (shown by GitHub code scanning) say the
   same, from one source.
+- **A user guide** (`docs/README.md`): installing, the inputs, configuration (settings,
+  silencing, options, exit codes, environment variables, the cache), where false alarms come
+  from and what to do about them (in English and Chinese), and the sources, with a guide to
+  adding one. The tests check that every link between the pages leads somewhere.
+- **A compatibility policy** (`docs/stability.md`): from 1.0, rule IDs, exit codes, the JSON
+  schema, the command line, the settings, the Python API and the MCP tools change incompatibly
+  only in a major version; verdicts, wording and severities may improve in any release.
 
 ### Fixed
+
 - **Two entries sharing a DOI are reported again** (CIT004) when they are papers in different
   proceedings: 0.7.0 took them for two chapters of one book, which may share the book's DOI,
   and the demo paper's BERT entry, with ResNet's DOI, went unreported. Chapters must now name
   the same book. A test now holds every offline row of the demo's EXPECTED.md.
-
 - **SARIF reports linked to rule pages that did not exist** (`docs/rules/REF003.md`); they exist
   now.
 
