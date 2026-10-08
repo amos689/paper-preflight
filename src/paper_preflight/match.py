@@ -78,6 +78,23 @@ def first_page(pages: str | None) -> str | None:
     return head or None
 
 
+# a number in an issuer's series of reports: "JWST-STScI-008296", "CUCS-006-96", "MSR-TR-2005-02";
+# not an arXiv identifier ("2401.01234", "hep-th/9901001")
+_REPORT_NUMBER = re.compile(r"[A-Za-z]{2,}[A-Za-z0-9]*(?:-[A-Za-z0-9]+)*-\d{2,}[A-Za-z0-9-]*")
+
+
+def _issuer(entry: BibEntry) -> str | None:
+    """Who issued a report: its institution, or a number in the issuer's own series."""
+    institution = (entry.text("institution") or "").strip()
+    if institution:
+        return institution
+    for name in ("number", "reportnumber", "eprint"):
+        value = (entry.text(name) or "").strip()
+        if _REPORT_NUMBER.fullmatch(value):
+            return value
+    return None
+
+
 @dataclass(frozen=True)
 class EntryInfo:
     """The parts of a BibTeX entry that matching needs, extracted once."""
@@ -95,6 +112,9 @@ class EntryInfo:
     first_page: str | None = None  # see :func:`first_page`
     # a Chinese-language work cited in English ("... (in Chinese)"; see paper_preflight.chinese)
     translated: bool = False
+    # who issued a report, by its institution or a number in its issuer's series
+    # ("JWST-STScI-008296", "CUCS-006-96")
+    issuer: str | None = None
 
     @classmethod
     def from_entry(cls, entry: BibEntry) -> EntryInfo:
@@ -135,6 +155,7 @@ class EntryInfo:
             volume=(entry.text("volume") or written.get("volume") or "").strip() or None,
             first_page=first_page(entry.text("pages") or entry.text("eid") or written.get("pages")),
             translated=is_translated,
+            issuer=_issuer(entry),
         )
 
 

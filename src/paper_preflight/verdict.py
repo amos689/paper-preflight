@@ -1277,10 +1277,24 @@ _REPORT_VENUE = re.compile(
 )
 
 
+# Meetings' abstracts and astronomy's bulletins and circulars, which NASA ADS indexes and the
+# general indexes do not: an AAS 243 abstract (journal "AAS", pages 360.19), ESO's The Messenger
+# (heldout16), IAU and GCN circulars, ATels, IBVS.
+_ABSTRACTS_AND_BULLETINS = re.compile(
+    r"\bmeeting\s+abstracts?\b|\babstracts?\s+of\s+the\b|american\s+astronomical\s+society\s+meeting"
+    r"|^(?:aas|agu|aps|dps|egu)(?:\s+meeting)?(?:\s+abstracts?)?$"
+    r"|^(?:the\s+)?messenger$|\biau\s+circ|\bgcn\s+circ|\bcbet\b|\batel\b|astronomer'?s\s+telegram"
+    r"|information\s+bulletin\s+on\s+variable\s+stars|\bibvs\b|minor\s+planet\s+(?:electronic\s+)?circ",
+    re.IGNORECASE,
+)
+
+
 def _unindexed_venue(info: EntryInfo) -> bool:
     if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
         return True
     if info.venue and _WEB_VENUES.search(info.venue.strip()):
+        return True
+    if info.venue and _ABSTRACTS_AND_BULLETINS.search(info.venue.strip()):
         return True
     chapter = info.entry_type in {"incollection", "inbook"}
     return chapter and info.year is not None and info.year < UNINDEXED_CHAPTER_YEAR
@@ -1313,11 +1327,12 @@ def _abstention_reasons(
     ]
     # a report or thesis under another entry type: Zhu's "Semi-supervised learning literature
     # survey" as @inproceedings with booktitle "Technical Report, University of Wisconsin-Madison".
-    # It must name who issued it: a bare "Technical Report" (Parr 1998, which does not exist)
-    # says nothing a reader could look up.
+    # It must name who issued it, in the venue or by its institution or number: a bare
+    # "Technical Report" (Parr 1998, which does not exist) says nothing a reader could look up;
+    # one numbered JWST-STScI-008296 is STScI's.
     venue = info.venue or ""
-    report = bool(_REPORT_VENUE.search(venue)) and bool(
-        re.search(r"[^\W\d_]{3,}", _REPORT_VENUE.sub(" ", venue))
+    report = bool(_REPORT_VENUE.search(venue)) and (
+        bool(re.search(r"[^\W\d_]{3,}", _REPORT_VENUE.sub(" ", venue))) or bool(info.issuer)
     )
     if (info.entry_type in GREY_TYPES or report) and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)

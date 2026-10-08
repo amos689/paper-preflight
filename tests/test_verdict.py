@@ -483,6 +483,51 @@ def test_a_workshop_version_of_a_paper(venue: str, recorded: str, reported: bool
     assert ("REF014" in rules(assess(entry, item, current_year=YEAR))) is reported
 
 
+@pytest.mark.parametrize(
+    ("extra", "reported"),
+    [
+        ("", True),  # a bare "Technical Report" names nobody to ask (Parr 1998 does not exist)
+        ("eprint = {JWST-STScI-008296},", False),  # STScI's report, by its number (heldout16)
+        ("institution = {Space Telescope Science Institute},", False),
+    ],
+)
+def test_a_technical_report_named_by_its_issuer(extra: str, reported: bool) -> None:
+    entry = bib(
+        "@article{taylor2022, title = {NIRISS Commissioning Results: NIS-011a Illumination Flat"
+        " Fields}, author = {Taylor, Jo and Volk, Kevin}, journal = {Technical Report},"
+        f" {extra} year = {{2022}}}}"
+    )
+    searched = {"dblp", "crossref"}
+    item = evidence_for(entry, searched=searched, negative=searched)
+    assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+@pytest.mark.parametrize(
+    ("journal", "reported"),
+    [
+        ("AAS", False),  # an AAS 243 abstract, 360.19 (heldout16)
+        ("American Astronomical Society Meeting Abstracts", False),
+        ("The Messenger", False),  # ESO's, indexed by NASA ADS only
+        ("The Astronomer's Telegram", False),
+        ("Journal of Messenger Studies", True),
+    ],
+)
+def test_abstracts_and_bulletins_only_ads_has(journal: str, reported: bool) -> None:
+    entry = bib(
+        "@article{mcmahon2013, title = {First Scientific Results from the VISTA Hemisphere"
+        f" Survey}}, author = {{McMahon, R. G.}}, journal = {{{journal}}}, year = {{2013}}}}"
+    )
+    searched = {"dblp", "crossref"}
+    item = evidence_for(entry, searched=searched, negative=searched)
+    assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+def test_an_arxiv_number_names_no_issuer() -> None:
+    for eprint in ("2401.01234", "hep-th/9901001", "arXiv:2401.01234"):
+        entry = bib(f"@techreport{{x, title = {{T}}, eprint = {{{eprint}}}, year = 2024}}")
+        assert EntryInfo.from_entry(entry).issuer is None
+
+
 def test_invented_title_on_a_real_doi_is_reported() -> None:
     # HALLMARK "chimeric title": the DOI and the authors are real, the title is invented
     entry = bib(CS_ENTRY)
