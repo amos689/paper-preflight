@@ -464,6 +464,25 @@ def test_a_named_venue_cites_the_published_version(
     assert rules(assess(entry, item, current_year=YEAR)) == rules_expected
 
 
+@pytest.mark.parametrize(
+    ("venue", "recorded", "reported"),
+    [
+        # a workshop the record names its own way (dblp: "COLING Workshops"; heldout15)
+        ("Proceedings of the First Workshop on Low-Resource Languages", "COLING Workshops", False),
+        # a workshop held at a meeting the venue names, its paper later at another
+        ("EurIPS 2023 Workshop: AI for Tabular Data", "ICLR", False),
+        ("ICML Workshop on Structured Probabilistic Inference", "ICLR", False),
+        # a workshop named by nothing else is how HALLMARK's invented venues look
+        ("Workshop on Memory-Augmented Neural Networks", "ICLR", True),
+        ("Annual Workshop on AI Safety and Alignment", "ICLR", True),
+    ],
+)
+def test_a_workshop_version_of_a_paper(venue: str, recorded: str, reported: bool) -> None:
+    entry = bib(CS_ENTRY.replace("Proceedings of ACL", venue))
+    item = evidence_for(entry, anchored=[record(venue=recorded)])
+    assert ("REF014" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
 def test_invented_title_on_a_real_doi_is_reported() -> None:
     # HALLMARK "chimeric title": the DOI and the authors are real, the title is invented
     entry = bib(CS_ENTRY)

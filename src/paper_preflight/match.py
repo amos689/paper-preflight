@@ -979,7 +979,7 @@ def _doi_year(doi: str | None) -> int | None:
     return int(match.group(1)) if match else None
 
 
-def _names_year(venue: str | None, year: int) -> bool:
+def names_year(venue: str | None, year: int) -> bool:
     """The venue names the year: "Proceedings of SAT-2003", "ICML 2019", "NeurIPS'19"."""
     if not venue:
         return False
@@ -1002,7 +1002,7 @@ def check_year(
     if (
         year + 1 in years
         and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
-        and _names_year(venue, year)
+        and names_year(venue, year)
     ):
         # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
         return FieldCheck("match")

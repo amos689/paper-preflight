@@ -34,11 +34,13 @@ from paper_preflight.match import (
     Match,
     best_candidate,
     canonical_venue,
+    canonical_venues,
     check_authors,
     evaluate,
     has_cjk,
     is_preprint,
     names_workshop,
+    names_year,
     related_words,
     subtitle_variant,
     surname_key,
@@ -592,6 +594,21 @@ def _renamed_everywhere(
     return tuple(pair for pair in renamed if pair[0] not in named_right)
 
 
+def _workshop_version(info: EntryInfo, record: SourceRecord) -> bool:
+    """A workshop paper, its workshop named otherwise by the record (dblp files LoResLM 2025
+    under "COLING Workshops") or held at a meeting the venue names: a paper at "EurIPS 2025
+    Workshop: AI for Tabular Data" may be cited after its ICLR version appeared (heldout15).
+    A workshop named by nothing else ("Workshop on Memory-Augmented Neural Networks") excuses
+    nothing: invented venues look like that."""
+    if not names_workshop(info.venue):
+        return False
+    return (
+        names_workshop(record.venue)
+        or bool(canonical_venues(info.venue))
+        or (info.year is not None and names_year(info.venue, info.year))
+    )
+
+
 def _field_findings(
     entry: BibEntry,
     info: EntryInfo,
@@ -757,9 +774,11 @@ def _field_findings(
                 year=info.year, found_years=years, suggestion=str(record.year or ""),
             )
         )  # fmt: skip
-    # nor a workshop's own name: dblp files LoResLM 2025 under "COLING Workshops", and a
-    # workshop paper may be cited after its conference version appeared (heldout15)
-    if m.venue.status == "mismatch" and not is_preprint(record) and not names_workshop(info.venue):
+    if (
+        m.venue.status == "mismatch"
+        and not is_preprint(record)
+        and not _workshop_version(info, record)
+    ):
         venue_field = next((f for f in VENUE_FIELDS if f in entry.fields), None)
         out.append(
             make_finding(
