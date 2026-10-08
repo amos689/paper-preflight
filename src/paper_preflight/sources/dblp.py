@@ -38,6 +38,10 @@ def _escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
 
 
+# an ampersand spaced on one side only, between letters ("Q &A", "Q& A")
+_TIGHT_AMPERSAND = re.compile(r"(?<=\w) &(?=\w)|(?<=\w)& (?=\w)")
+
+
 def prefix_range(title: str, length: int = 40) -> tuple[str, str]:
     """A folded prefix of the title and its successor, for a range filter on dblp:title.
 
@@ -47,7 +51,8 @@ def prefix_range(title: str, length: int = 40) -> tuple[str, str]:
     HALLMARK VALID entry reported as not found). The prefix therefore ends in an ASCII letter
     below "z", and the upper bound is that letter's successor.
     """
-    low = fold(collapse(title))[:length]
+    # "Q &A" as a PDF prints "Q&A" (GPQA's title): dblp keeps the ampersand between letters
+    low = fold(collapse(_TIGHT_AMPERSAND.sub("&", title)))[:length]
     while low and not ("a" <= low[-1] <= "y"):
         low = low[:-1]
     if not low:

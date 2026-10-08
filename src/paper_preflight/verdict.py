@@ -349,7 +349,9 @@ def _bind_candidate(
     # A title of eight words or more names one work even a few years off: "To Trust Or Not To
     # Trust A Classifier" (NeurIPS 2018, Jiang, Kim, Guan, Gupta) cited as ICLR 2021 by five
     # other people (Badalova & Mayr) is that paper with wrong authors, venue and year.
-    # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap.
+    # Needs two named people in the entry, so that "OpenAI" or "et al." never reads as a swap,
+    # or one person with a given name citing a title long enough to name one work in any year
+    # ("Guy Dove" for Colas et al.'s twelve-word NeurIPS 2020 title, a GPTZero hallucination).
     # A shorter title ("Explanations for Monotonic Classifiers") names one work only together
     # with the same recognised venue in the same year.
     named = sum(1 for person in info.authors.people if not person.literal)
@@ -371,7 +373,32 @@ def _bind_candidate(
     ]
     if len({_work_key(m.record.title) for m in longer}) == 1:
         return min(longer, key=_rank)
-    if words < MIN_VENUE_TITLE_WORDS or named < 2:
+    # The same, by the right first author with other co-authors, when the only record is the
+    # preprint and the entry cites it as published within two years: a title cut short with
+    # invented co-authors (GPTZero, NeurIPS 2025: Aichberger et al.'s ICLR 2025 title cut to
+    # four words, with "Lily Chen" and "John Smith"). REF011 and REF012 name what differs.
+    preprint_cut = [
+        m
+        for m in [evaluate(info, r) for r in extending or [] if r not in candidates]
+        if words >= MIN_VENUE_TITLE_WORDS
+        and m.authors.first_author_match
+        and m.suspicious is None
+        and is_preprint(m.record)
+        and (m.year.status == "match" or _published_later(info.year, m.record))
+        and title_key(m.record.title).startswith(f"{key} ")
+    ]
+    if not candidates and len({_work_key(m.record.title) for m in preprint_cut}) == 1:
+        return min(preprint_cut, key=_rank)
+    # Not for a book: reviews take its title (Angeline on Koza's "Genetic Programming",
+    # Biosystems 1994, a record without its pages), and so do later editions by others.
+    one_person = (
+        named == 1
+        and words >= MIN_TITLE_ANY_YEAR_WORDS
+        and all(p.given and not p.literal for p in info.authors.people)
+        and not info.authors.truncated
+        and info.entry_type not in {"book", "mvbook", "inbook", "booklet"}
+    )
+    if words < MIN_VENUE_TITLE_WORDS or (named < 2 and not one_person):
         return None
     same_title = [
         m

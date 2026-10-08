@@ -182,6 +182,13 @@ def test_dblp_prefix_range() -> None:
         ("Learning to Quiz", "learning to qui", "learning to quj"),  # nor can "z"
         ("Étude des réseaux", "etude des reseaux", "etude des reseauy"),  # accents are folded
         ("2024", "", "￿"),
+        # GPQA's "Q&A" as a PDF prints it; spaced on both sides it stays as written
+        (
+            "GPQA: A Graduate-Level Google-Proof Q &A Benchmark",
+            "gpqa: a graduate-level google-proof q&a",
+            "gpqa: a graduate-level google-proof q&b",
+        ),
+        ("Research & Development", "research & development", "research & developmenu"),
     ],
 )
 def test_dblp_prefix_range_ends_in_a_letter(title: str, low: str, high: str) -> None:

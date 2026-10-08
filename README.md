@@ -119,12 +119,12 @@ submissions, each confirmed by its staff. Pasted as plain text, as the papers pr
 
 | References | Flagged | Cannot determine | Verified |
 |---|---|---|---|
-| 151 | **139 (92%)** | 12 | **0** |
+| 151 | **142 (94%)** | 9 | **0** |
 
-- **None of them is verified.** The 12 left undecided are web pages and blog posts, a workshop
-  no source indexes, real titles given with invented authors where the sources cannot tell
-  which work is meant, a real title cut short, and two references too garbled to search. Each
-  is listed with its reason in [`evals/results/gptzero.md`](evals/results/gptzero.md).
+- **None of them is verified.** The 9 left undecided are web pages and blog posts, a workshop
+  no source indexes, real titles given with invented authors where several works share the
+  title, and two references too garbled to search. Each is listed with its reason in
+  [`evals/results/gptzero.md`](evals/results/gptzero.md).
 - GPTZero's own tool found these, so they are the hallucinations a search can find; recall on
   every kind of hallucination is lower (see HALLMARK below).
 

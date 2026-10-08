@@ -813,6 +813,65 @@ def test_title_only_binding_stays_narrow(change: tuple[str, str], why: str) -> N
     assert "REF010" not in rules(result), why
 
 
+LONG_TITLE = "Robust Sparse Attention for Long Document Summarization in Low Resource Languages"
+
+
+@pytest.mark.parametrize(
+    ("author", "bound"),
+    [
+        ("Kumar, Ravi", True),  # one person, and a title long enough to name one work
+        ("{OpenAI}", False),  # an organisation is no swap
+        ("Kumar, Ravi and others", False),  # a list cut short may hide the right people
+        ("Kumar", False),  # a surname alone is too little
+        ("Kumar, Ravi @book", False),  # a book: reviews and later editions take its title
+    ],
+)
+def test_one_person_on_a_long_title_by_others(author: str, bound: bool) -> None:
+    # GPTZero (ICLR 2026): Colas et al.'s twelve-word NeurIPS 2020 title cited as Guy Dove's
+    people = "Smith, Ann and Jones, Bob and Lee, Carol"
+    text = NO_DOI.replace(TITLE, LONG_TITLE)
+    if author.endswith(" @book"):
+        author = author.removesuffix(" @book")
+        text = text.replace("@inproceedings", "@book")
+    entry = bib(text.replace(people, author))
+    others = record(title=LONG_TITLE, authors=OTHERS, source="dblp")
+    result = assess(entry, search_result(entry, others), current_year=YEAR)
+    assert ("REF010" in rules(result)) is bound
+    assert (result.record is not None) is bound
+
+
+CUT = "Robust Sparse Attention Revisited"
+
+
+@pytest.mark.parametrize(
+    ("source", "first", "bound"),
+    [
+        ("arxiv", "Smith, Ann", True),  # the preprint, by the right first author
+        ("arxiv", "Kumar, Ravi", False),  # another first author: perhaps another work
+        ("dblp", "Smith, Ann", False),  # a published record without the entry's people: no
+    ],
+)
+def test_a_cut_title_with_invented_coauthors(source: str, first: str, bound: bool) -> None:
+    # GPTZero (NeurIPS 2025): an ICLR 2025 title cut to four words, the first author right
+    # and the co-authors invented, where only the preprint is indexed
+    people = f"{first} and Chen, Lily and Smith, John"
+    entry = bib(
+        NO_DOI.replace(TITLE, CUT)
+        .replace("Smith, Ann and Jones, Bob and Lee, Carol", people)
+        .replace("2023", "2024")
+    )
+    preprint = record(
+        title=f"{CUT} for Long Document Summarization",
+        source=source,
+        venue="arXiv" if source == "arxiv" else "ACL",
+        work_type="preprint" if source == "arxiv" else None,
+    )
+    result = assess(entry, evidence_for(entry, extending=[preprint]), current_year=YEAR)
+    assert (result.record is not None) is bound
+    if bound:
+        assert {"REF011", "REF012"} <= rules(result)
+
+
 OTHERS = (Person("Wu", "Dan"), Person("Ito", "Ken"))
 
 
