@@ -4,7 +4,8 @@
 Web pages are never judged true or false. A link that is gone (HTTP 404 or 410) and that the
 Wayback Machine never archived is worth a look, no more (REF021, an info). Anything else a page
 answers (401, 403, 429, a server error, a timeout) tells nothing: many sites turn tools away.
-Only HEAD requests are sent, and never to the user's own machine or network.
+Only the status is read: a HEAD request, confirmed by a GET whose body is never read when it
+says the page is gone. No request goes to the user's own machine or network.
 """
 
 from __future__ import annotations

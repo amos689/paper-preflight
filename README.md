@@ -22,7 +22,7 @@ No LLM guessing, no false accusations.**
 [![English and Simplified Chinese](docs/assets/badges/languages.en.svg)](README.zh-CN.md)
 
 **English** · [简体中文](README.zh-CN.md) · [Quick start](#quick-start) ·
-[Releases](https://github.com/amos689/paper-preflight/releases) ·
+[User guide](docs/README.md) · [Releases](https://github.com/amos689/paper-preflight/releases) ·
 [Feedback](https://github.com/amos689/paper-preflight/issues/new/choose)
 
 </div>
@@ -41,8 +41,8 @@ books without a DOI; GitHub, PyPI and CRAN for software) about every cited work:
 
 When it cannot tell, it says so instead of guessing.
 
-> **Status: v0.4, an early release.** False positives are the bugs we most want to hear
-> about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
+> **Status: 0.x releases, on the way to a stable 1.0.** False positives are the bugs we most
+> want to hear about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
 purpose. A real run, against the live sources:
@@ -364,6 +364,8 @@ A comment directly above an entry silences rules for that entry, with an optiona
 The verdict stays in the JSON report; only the finding is dropped. A suppression that silenced
 nothing is reported as CFG001 (info), so stale comments do not pile up. Reference rules are only
 judged after a complete online run, since offline answers and outages may leave them unrun.
+
+A finding you believe is wrong: [where false alarms come from, and what to do](docs/false-positives.md).
 
 ## Project settings
 

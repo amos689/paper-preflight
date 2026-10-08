@@ -20,7 +20,7 @@
 [![英文和简体中文](docs/assets/badges/languages.zh-CN.svg)](README.md)
 
 [English](README.md) · **简体中文** · [快速上手](#快速上手) ·
-[版本发布](https://github.com/amos689/paper-preflight/releases) ·
+[使用手册（英文）](docs/README.md) · [版本发布](https://github.com/amos689/paper-preflight/releases) ·
 [反馈问题](https://github.com/amos689/paper-preflight/issues/new/choose)
 
 </div>
@@ -38,7 +38,7 @@
 
 判断不了的时候，它会直说"无法确定"，而不是去猜。
 
-> **状态：v0.4，早期版本。** 最希望收到的是误报反馈：请
+> **状态：0.x 版本，正在走向稳定的 1.0。** 最希望收到的是误报反馈：请
 > [提交 issue](https://github.com/amos689/paper-preflight/issues)。
 
 仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
@@ -335,6 +335,8 @@ paper-preflight bib fix path/to/paper --level unsafe
 判定结果仍保留在 JSON 报告里，只是不再报出这条发现。没有屏蔽掉任何发现的注释会以 CFG001（提示）报出，
 免得过时的注释越积越多。参考文献类规则只在完整的联网核查之后才判断是否被用到，因为离线答复和来源故障
 都可能让这些规则没有运行。
+
+认为某条发现有误？请看[误报的原因与处理](docs/false-positives.md#中文)。
 
 ## 项目设置
 

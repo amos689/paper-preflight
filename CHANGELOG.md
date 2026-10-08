@@ -73,6 +73,10 @@ All notable changes to this project are documented here. The format follows
   can be wrong, and what to do, including how to silence it. `explain`, the MCP server's
   `preflight_explain` and the help of SARIF reports (shown by GitHub code scanning) say the
   same, from one source.
+- **A user guide** (`docs/README.md`): installing, the inputs, configuration (settings,
+  silencing, options, exit codes, environment variables, the cache), where false alarms come
+  from and what to do about them (in English and Chinese), and the sources, with a guide to
+  adding one. The tests check that every link between the pages leads somewhere.
 
 ### Fixed
 - **Two entries sharing a DOI are reported again** (CIT004) when they are papers in different
