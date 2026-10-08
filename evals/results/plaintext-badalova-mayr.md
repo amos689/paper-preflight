@@ -1,6 +1,6 @@
 # Plain-text references: Badalova & Mayr (2026)
 
-- **Tool:** paper-preflight 0.5.3
+- **Tool:** paper-preflight 0.6.0
 - **Data:** the 104 references of Badalova & Mayr's dataset as formatted strings (APA, biblatex, natbib author-year; Zenodo 10.5281/zenodo.21457492, CC BY 4.0), read by `check references.txt`, against the hand transcription `evals/badalova_mayr.bib`
 - **Run:** 2026-10-08 (`evals/plaintext_badalova.py`)
 

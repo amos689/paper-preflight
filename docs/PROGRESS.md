@@ -309,6 +309,12 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 | #165 | 第十三批 heldout12（0.6.0 含 #164 的保留集，只跑一次）：786 条、48 个报警、42 个真问题、6 个误报、0 个不确定，**每百条 0.8（门槛 1.5、目标 1.0 均通过）**；实跑每条 0.47 秒。误报：arXiv 自身标题错字、1988 年的书配 2013 年电子版 DOI、在线优先记录（卷 0）对正式期年份、登记处标题省掉期刊栏目名、两个软件引用带所有者与版本号。冻结第十四批 heldout13（2026-09-30..10-06）|
 | #166 | 0.6.0 发布：#160–#162、#164；README 加 heldout11（0.6.0 候选，1.5）与 heldout12（0.6.0，0.8）两行、路线图；HALLMARK、GPTZero 用 0.6.0 重跑（不变）；首次由 release.yml 的 GitHub OIDC 发布到 MCP Registry |
 
+### 阶段 B：0.7.0（输入扩展）
+
+| PR | 内容 |
+|---|---|
+| #167 | B1–B4：Word（.docx）稿件、Markdown/Quarto/R Markdown/Pandoc 与 Typst 项目、CSL-JSON/RIS/YAML（Hayagriva、CSL YAML）文献库。Word 先读文献管理器的域代码（Zotero、Mendeley 的 CSL-JSON，EndNote 的 XML，含 base64 的 EN.CITE.DATA），再读 Word 自带的源管理器，最后读"References/参考文献"标题之后手打的列表（遇表格、图注、下一节停止），只用标准库。Quarto 书按 `_quarto.yml` 列出的章节（含分部、子目录和 include），bookdown 书按 `rmd_files`。合成一致性（开发批 20 篇、924 条，citeproc-py 渲染）：域代码判定一致 99.6%，APA 94.0%、IEEE 96.9%、NLM 96.0%（门槛 98% 与 90%）。真实稿件：Zenodo 的 12 份 .docx、3 篇 JOSS 论文（paper.md）、mlr3book（Quarto 书）、TMwR（bookdown 书）、egwalker 论文（Typst＋Hayagriva），引用键与 grep 逐一核对一致；真实导出的 3 份 RIS、4 份 CSL-JSON、1 份 Hayagriva 全部读出。跨格式测试：同样三条文献写成 .bib、CSL-JSON、CSL YAML、RIS、Hayagriva、Word 域代码，读出的标题、作者、年份、出处、类型、标识符完全一致。真实样例发现并修好：Quarto 书只读了首章、Typst 包导入 `@preview/...` 被当成引用、出版社页面网址里 DOI 后带路径被当成另一个 DOI（REF002 错误）、登记处人名乱码（"DuÅ¡ica"）、同一本书的不同章节共用书的 DOI 被报重复（CIT004）、APA 的 "Hassen, A. et al."、"Dada, O. (L.)"、地名冒号前有空格。纯文本：NLM 的分部标题（"Dust. IV. The ..."）、年份取卷号前的（不取 arXiv 编号或页码）、协作组作者、"ten"/"ter" 词缀、A–Z 以外的大写字母与首字母。十三批回放：判定与报警逐条不变；HALLMARK 两个划分逐条不变，GPTZero 不变，PDF 判定一致 756/820（92%，原 749/814），Badalova & Mayr 纯文本标题 104/104 |
+
 ## 下一步
 
 - [x] 0.5.2：修 heldout8 的误报类型＋中文实验 X1 的英译中文文献误报，heldout9 每百条 1.3。中文 MVP 暂缓（用户决定）
