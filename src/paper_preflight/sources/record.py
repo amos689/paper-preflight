@@ -124,7 +124,10 @@ class Person:
         """A registry's given and family name. A generational suffix in the family name
         ("Davidson Jr.", Crossref) and a name repeated in its original script are dropped.
         """
-        given, family = (html.unescape(collapse(part or "")) for part in (given, family))
+        # "DuÅ¡ica VidoviÄ‡": UTF-8 read as Windows-1252 (10.3389/fgene.2014.00342)
+        given, family = (
+            _unmojibake(html.unescape(collapse(part or ""))) for part in (given, family)
+        )
         given, family = _romanised(given), _romanised(family)
         given, family = given.translate(_MISENCODED), family.translate(_MISENCODED)
         given = _HONORIFIC.sub("", given)  # Crossref's "Prof." for Wenhong Tian
@@ -138,7 +141,7 @@ class Person:
     @classmethod
     def from_display(cls, name: str) -> Person:
         """Split "Given Family" or "Family, Given" display names (dblp, arXiv, OpenAlex raw)."""
-        name = _HOMONYM_SUFFIX_RE.sub("", collapse(name))
+        name = _HOMONYM_SUFFIX_RE.sub("", _unmojibake(collapse(name)))
         if not name:
             return cls(family="")
         if "," in name:

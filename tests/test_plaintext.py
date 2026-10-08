@@ -244,6 +244,106 @@ def test_a_word_broken_at_a_line_end_is_joined() -> None:
          {"title": "Topological torsion: a new molecular descriptor for SAR applications. "
                    "Comparison with other descriptors",
           "journal": "Journal of Chemical Information and Computer Sciences"}),
+        # MDPI and ACS: names separated by semicolons
+        ("Paravina, R.D.; Pérez, M.M.; Ghinea, R. Acceptability and perceptibility "
+         "thresholds in dentistry. J. Esthet. Restor. Dent. 2019, 31, 103-112.",
+         {"author": "Paravina, R.D. and Pérez, M.M. and Ghinea, R.",
+          "title": "Acceptability and perceptibility thresholds in dentistry", "year": "2019"}),
+        # GOST: dotted initials after the family name, "//" before the container
+        ("Pham N. T., Vo T. H., Nguyen M. H. The impact of digital transformation on economic "
+         "growth: A global evidence // Journal of Finance - Marketing Research. 2025. Vol. 16. "
+         "No. 2. P. 1-12.",
+         {"author": "Pham, N. T. and Vo, T. H. and Nguyen, M. H.",
+          "title": "The impact of digital transformation on economic growth: A global evidence",
+          "journal": "Journal of Finance - Marketing Research", "year": "2025"}),
+        ("Boyd S., Vandenberghe L. Convex optimization. Cambridge: Cambridge University Press, "
+         "2004. 716 p.",
+         {"author": "Boyd, S. and Vandenberghe, L.", "title": "Convex optimization"}),
+        # Vancouver with a particle first
+        ("de Smalen LM, Boersch A, Handschin C. Impaired age-associated mitochondrial "
+         "translation is mitigated by exercise. Proc Natl Acad Sci U S A. 2023;120(36):e2302.",
+         {"author": "de Smalen, L. M. and Boersch, A. and Handschin, C.",
+          "title": "Impaired age-associated mitochondrial translation is mitigated by exercise"}),
+        # NLM with a title in capitals, which reads like a name; a family name starting with Ż
+        ("Zhang B, Sennrich R. Root Mean Square Layer Normalization. In: Advances in Neural "
+         "Information Processing Systems. 2019.",
+         {"author": "Zhang, B. and Sennrich, R.", "title": "Root Mean Square Layer Normalization",
+          "booktitle": "Advances in Neural Information Processing Systems"}),
+        ("Goyeneche D, Życzkowski K. Genuinely multipartite entangled states and orthogonal "
+         "arrays. Physical review A. 2014;90(2):022316.",
+         {"author": "Goyeneche, D. and Życzkowski, K.",
+          "title": "Genuinely multipartite entangled states and orthogonal arrays"}),
+        # APA's description of a preprint after its title; a venue that starts lower-case
+        ("Takase, S., Kiyono, S., Kobayashi, S., & Suzuki, J. (2025). Spike No More: Stabilizing "
+         "the Pre-training of Large Language Models (arXiv:2312.16903).",
+         {"title": "Spike No More: Stabilizing the Pre-training of Large Language Models",
+          "eprint": "2312.16903"}),
+        ("Brixi G, Durrant MG, Ku J. Genome modeling and design across all domains of life with "
+         "Evo 2. bioRxiv. 2025.",
+         {"title": "Genome modeling and design across all domains of life with Evo 2"}),
+        # NLM: a title in numbered parts; the year before the volume, not in the arXiv number
+        ("Planck Collaboration, Ade PAR, Aghanim N, et al. Planck early results. XVII. Origin "
+         "of the submillimetre excess dust emission in the Magellanic Clouds. Astron Astrophys. "
+         "2011;536:arXiv:1101.2046.",
+         {"author": "Planck Collaboration and Ade, P. A. R. and Aghanim, N. and others",
+          "title": "Planck early results. XVII. Origin of the submillimetre excess dust emission "
+                   "in the Magellanic Clouds",
+          "year": "2011"}),
+        ("Friel ED, Jacobson HR. Abundances of Red Giants in Old Open Clusters. V. Be 31, Be 32, "
+         "and NGC 1193. Astron J. 2010;139:1942-67.",
+         {"title": "Abundances of Red Giants in Old Open Clusters. V. Be 31, Be 32, and NGC 1193",
+          "year": "2010"}),
+        ("Stalevski M, Tristram KRW, Asmus D. Dissecting the active galactic nucleus in Circinus "
+         "- II. A thin dusty disc and a polar outflow on parsec scales. Mon Not R Astron Soc. "
+         "2019;484(3):3334-55.",
+         {"title": "Dissecting the active galactic nucleus in Circinus - II. A thin dusty disc "
+                   "and a polar outflow on parsec scales"}),
+        ("Woosley SE. World War II. J Hist. 2018;3:1-9.",
+         {"title": "World War II", "journal": "J Hist"}),
+        # a title that opens with "The", or in capitals, is no list of names; "ten", "Å"
+        ("Tody D. The IRAF Data Reduction and Analysis System. In: Instrumentation in astronomy "
+         "VI. 1986. p. 733.",
+         {"author": "Tody, D.", "title": "The IRAF Data Reduction and Analysis System"}),
+        ("Kishimoto M, ten Brummelaar T, Nordlund Å. OCCASO. IV. Radial velocities. "
+         "Astrophys J. 2022;940(1):28.",
+         {"author": "Kishimoto, M. and ten Brummelaar, T. and Nordlund, Å.",
+          "title": "OCCASO. IV. Radial velocities"}),
+        # APA as written in Word manuscripts (Zenodo 23064837): "et al." after the last initials,
+        # a name in brackets, a place written with a space before its colon
+        ("Rüland, A.L., Andersen, L.H., Hassen, A. et al. (2025). Science Diplomacy: A "
+         "Global Research Field? Scientometrics, 130, 4697-4722.",
+         {"author": "Rüland, A.L. and Andersen, L.H. and Hassen, A. and others",
+          "journal": "Scientometrics"}),
+        ("Owusu-Kwarteng, A., Jack, S., Forson, C., Dada, O. (L.). (2025). In Pursuit of the "
+         "Third Mission. Technovation, 141, 103188, 1-13.",
+         {"author": "Owusu-Kwarteng, A. and Jack, S. and Forson, C. and Dada, O."}),
+        ("Ball, C.E., Graban, T.S., & Sidler, M. (2021). The Boutique is Open: Data for Writing "
+         "Studies. In: Licastro, A., & Miller, B. (eds.), Composition and Big Data. Pittsburgh, "
+         "PA : University of Pittsburgh Press, pp. 196-211.",
+         {"booktitle": "Composition and Big Data"}),
+        # what APA adds in brackets after a title goes; what a magazine registers stays
+        ("da Silva, A. P., & Mendes, P. P. (2006). Utilização da artêmia nacional [Brazilian "
+         "artemia as feed for post-larvae]. Acta Scientiarum, 28(3), 345-351.",
+         {"title": "Utilização da artêmia nacional"}),
+        ("Smith, J. (2020). Shrimp growth data [Data set]. Zenodo.",
+         {"title": "Shrimp growth data"}),
+        ("AOAC International. (2023). Official methods of analysis of AOAC International (22nd "
+         "ed.). AOAC International.",
+         {"title": "Official methods of analysis of AOAC International"}),
+        ("Grewal, M. S., & Andrews, A. P. (2010). Applications of Kalman filtering in aerospace "
+         "1960 to the present [Historical Perspectives]. IEEE Control Systems Magazine, 30(3), "
+         "69-78.",
+         {"title": "Applications of Kalman filtering in aerospace 1960 to the present "
+                   "[Historical Perspectives]"}),
+        # GOST with a title of two sentences; an initial outside A-Z in MDPI's names
+        ("Pohle J., Voelsen D. Centrality and power. The struggle over the global digital order "
+         "// Policy & Internet. 2022. Vol. 14. P. 13-27.",
+         {"title": "Centrality and power. The struggle over the global digital order",
+          "journal": "Policy & Internet"}),
+        ("Tuncer, S.; Demirci, M.; Uysal, Ö. The effect of a modeling resin. J. Esthet. "
+         "Restor. Dent. 2013, 25, 404-419.",
+         {"author": "Tuncer, S. and Demirci, M. and Uysal, Ö.",
+          "title": "The effect of a modeling resin"}),
         # no venue, the year in brackets
         ("Ning, J., Li, X. & Ke, G. Closed-loop Auto Research for Molecular Property "
          "Prediction (2026).",

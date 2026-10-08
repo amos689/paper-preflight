@@ -300,6 +300,15 @@ def test_plain_title(raw: str, plain: str) -> None:
     assert plain_title(raw) == plain
 
 
+def test_names_read_with_the_wrong_encoding_are_repaired() -> None:
+    # Crossref's record of 10.3389/fgene.2014.00342: UTF-8 read as Windows-1252
+    person = Person.from_parts("DuÅ¡ica", "VidoviÄ‡")
+    assert (person.given, person.family) == ("Dušica", "Vidović")
+    assert Person.from_display("Stephan C SchÃ¼rer").family == "Schürer"
+    person = Person.from_parts("Ângela", "Sônia")  # correctly encoded: unchanged
+    assert (person.given, person.family) == ("Ângela", "Sônia")
+
+
 def test_crossref_titles_lose_their_markup() -> None:
     item = {
         "DOI": "10.1/x",

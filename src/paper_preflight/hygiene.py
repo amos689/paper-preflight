@@ -156,7 +156,7 @@ def _missing_required(entry: BibEntry) -> list[str]:
 
 def _near_duplicates(entries: list[BibEntry]) -> list[Finding]:
     findings: list[Finding] = []
-    seen: dict[tuple[str, str], BibEntry] = {}
+    seen: dict[tuple[str, str], list[BibEntry]] = {}
     reasons_zh = {"DOI": "DOI", "arXiv ID": "arXiv 编号", "title and year": "标题与年份"}
     for entry in sorted(entries, key=lambda e: (e.file.as_posix(), e.line)):
         signatures: list[tuple[str, str]] = []
@@ -170,8 +170,15 @@ def _near_duplicates(entries: list[BibEntry]) -> list[Finding]:
         if title and year and word_count(title) >= 4:
             signatures.append(("title and year", f"{title_key(title)}|{year}"))
         for signature in signatures:
-            other = seen.get(signature)
-            if other is not None and other.key != entry.key:
+            other = next(
+                (
+                    o
+                    for o in seen.get(signature, [])
+                    if o.key != entry.key and not (signature[0] == "DOI" and _chapters(entry, o))
+                ),
+                None,
+            )
+            if other is not None:
                 findings.append(
                     make_finding(
                         "CIT004",
@@ -184,8 +191,15 @@ def _near_duplicates(entries: list[BibEntry]) -> list[Finding]:
                     )
                 )
                 break
-            seen.setdefault(signature, entry)
+            seen.setdefault(signature, []).append(entry)
     return findings
+
+
+def _chapters(entry: BibEntry, other: BibEntry) -> bool:
+    """Two chapters of one book, each with the book's DOI ("In: Golub, K. (eds.), Information
+    and Knowledge Organisation in Digital Humanities ... doi:10.4324/9781003131816")."""
+    titles = {title_key(e.text("title") or "") for e in (entry, other)}
+    return bool(entry.text("booktitle") and other.text("booktitle")) and len(titles) == 2
 
 
 def _apply_suppressions(

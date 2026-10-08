@@ -1103,7 +1103,9 @@ def _under_review(info: EntryInfo) -> bool:
 # {Transformer Circuits Thread}"); no queried source indexes them
 _WEB_VENUES = re.compile(
     r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b|"
-    r"\bblack ?hat\b|\bdef ?con\b|\blaw review\b|\bl\.\s?rev\.|^open review$",
+    r"\bblack ?hat\b|\bdef ?con\b|\blaw review\b|\bl\.\s?rev\.|^open review$|"
+    # government gazettes: "Federal Register, 83, 40823 (Document 2018-17709)"
+    r"^federal register$|^congressional record$|^official journal of the european union$",
     re.IGNORECASE,
 )
 

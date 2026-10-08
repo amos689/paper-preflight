@@ -138,7 +138,12 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
             # ACM's own 10.5555 numbers are registered with no agency: a Digital Library link
             # carrying one (dl.acm.org/doi/10.5555/3666122.3666563) is a working page, not a
             # DOI to look up. A doi field holding one is still checked.
-            if not (doi and doi.startswith(ACM_UNREGISTERED)):
+            unregistered = bool(doi and doi.startswith(ACM_UNREGISTERED))
+            # a publisher's page for the doi field's DOI, with more path after it
+            # (academic.oup.com/bib/article/doi/10.1093/bib/bbw110/2562646/A-review-of...)
+            known = normalize_doi(doi_field) if doi_field else None
+            page = bool(doi and known and doi.startswith(known + "/"))
+            if not unregistered and not page:
                 add_doi(value, field)
         arxiv = _arxiv_in(value, require_context=True)
         if arxiv:

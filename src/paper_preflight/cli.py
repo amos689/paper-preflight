@@ -178,9 +178,10 @@ def check(
     path: Annotated[
         Path,
         typer.Argument(
-            help="Project directory, main .tex file, a .bib file, a compiled .bbl, a "
-            "plain-text reference list (.txt, or - to read it from stdin), a PDF (needs "
-            "the pdf extra), or arxiv:<id> to download an arXiv paper's source and check it."
+            help="A LaTeX project directory or main .tex file; a Markdown, Quarto, R Markdown "
+            "or Typst manuscript (.md, .qmd, .Rmd, .typ); a Word manuscript (.docx); a reference "
+            "list (.bib, .bbl, CSL-JSON .json, .ris, YAML .yml, plain text .txt or - for stdin, "
+            "a PDF with the pdf extra); or arxiv:<id> to download an arXiv paper's source."
         ),
     ] = Path("."),
     main_file: Annotated[

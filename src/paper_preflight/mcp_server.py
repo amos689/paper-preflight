@@ -35,8 +35,9 @@ from paper_preflight.tex.project import ProjectError
 
 # Parameter descriptions shared by several tools.
 PATH = Field(
-    description="A LaTeX project folder, a .tex file or a .bib file, relative to the workspace "
-    "root (default: the root itself)."
+    description="A LaTeX project folder or .tex file, a Markdown, Quarto or Typst manuscript "
+    "(.md, .qmd, .typ), a Word manuscript (.docx), or a reference list (.bib, .bbl, .json, .ris, "
+    ".yml, .txt, .pdf), relative to the workspace root (default: the root itself)."
 )
 OFFLINE = Field(
     description="true: answer only from the local cache and never touch the network (references "

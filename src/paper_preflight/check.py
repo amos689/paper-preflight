@@ -14,9 +14,13 @@ import httpx
 
 from paper_preflight import __version__
 from paper_preflight.bib.bbl import parse_bbl_file
+from paper_preflight.bib.csl import parse_csl_json_file
+from paper_preflight.bib.docx import parse_docx_file
 from paper_preflight.bib.parse import BibEntry, BibFile, parse_bib_file
 from paper_preflight.bib.pdftext import parse_pdf_file
 from paper_preflight.bib.plaintext import parse_plaintext_file
+from paper_preflight.bib.ris import parse_ris_file
+from paper_preflight.bib.yamlbib import parse_yaml_bibliography
 from paper_preflight.cache import Cache
 from paper_preflight.findings import Finding, Location, Severity, sort_findings
 from paper_preflight.hygiene import (
@@ -30,6 +34,7 @@ from paper_preflight.rules import make_finding
 from paper_preflight.sources.base import SourceStats
 from paper_preflight.tex.auxdata import find_build_data
 from paper_preflight.tex.cites import command_table
+from paper_preflight.tex.documents import find_document, is_document, load_document_project
 from paper_preflight.tex.project import TexProject, load_project
 from paper_preflight.verdict import Assessment, Reason, Verdict, assess_all, run_findings
 
@@ -87,12 +92,18 @@ class CheckResult:
         return any(f.severity.rank >= fail_on.rank for f in self.findings)
 
 
-# a reference list given on its own: BibTeX, a compiled bibliography, plain text or a PDF
+# a reference list given on its own: BibTeX, a compiled bibliography, plain text, a PDF, a
+# Word manuscript, CSL-JSON, RIS, or YAML (Typst's Hayagriva, Pandoc's CSL YAML)
 _READERS: dict[str, Callable[[Path], BibFile]] = {
     ".bib": parse_bib_file,
     ".bbl": parse_bbl_file,
     ".txt": parse_plaintext_file,
     ".pdf": parse_pdf_file,
+    ".docx": parse_docx_file,
+    ".json": parse_csl_json_file,
+    ".ris": parse_ris_file,
+    ".yml": parse_yaml_bibliography,
+    ".yaml": parse_yaml_bibliography,
 }
 
 
@@ -125,16 +136,23 @@ def run_check(
         )
         to_verify = first_definitions(bib_files)
     else:
-        project: TexProject = load_project(
-            target,
-            main=main.resolve() if main else None,
-            commands=command_table(cite_commands or []),
+        # a Markdown (Pandoc, Quarto, R Markdown) or Typst manuscript, else a LaTeX project
+        document = main.resolve() if main and is_document(main) else find_document(target)
+        project: TexProject = (
+            load_document_project(document)
+            if document is not None
+            else load_project(
+                target,
+                main=main.resolve() if main else None,
+                commands=command_table(cite_commands or []),
+            )
         )
         build = find_build_data(project.main, project.files)
         cited = set(build.cited_keys) if build else project.cited_keys()
         nocite_all = project.nocite_all or bool(build and build.nocite_all)
         bib_paths = bib_paths_for(project, extra)
-        bib_files = [parse_bib_file(p) for p in bib_paths]
+        # Pandoc also reads CSL-JSON and RIS bibliographies
+        bib_files = [_READERS.get(p.suffix.lower(), parse_bib_file)(p) for p in bib_paths]
         compiled = None if bib_files else _compiled_bibliography(project.main)
         if compiled is not None:
             bib_files = [parse_bbl_file(compiled)]

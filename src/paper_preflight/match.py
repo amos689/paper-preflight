@@ -497,6 +497,21 @@ def _double_surname(a: Person, b: Person) -> bool:
     )
 
 
+def _first_surname(a: Person, b: Person) -> bool:
+    """``a`` gives both surnames of a Spanish or Portuguese name, ``b`` only the first, with the
+    same initial: the entry's "Schatan Pérez, C." is Crossref's "Claudia Schatan"."""
+    family_a = re.findall(r"\w+", fold(a.family))
+    family_b = fold(b.family).replace(" ", "")
+    initial_a, initial_b = fold(a.given)[:1], fold(b.given)[:1]
+    return (
+        len(family_a) == 2
+        and len(family_b) >= 4
+        and family_a[0] == family_b
+        and bool(initial_a)
+        and initial_a == initial_b
+    )
+
+
 def _same_letters(a: Person, b: Person) -> bool:
     """The same names and initials in any order: "Rouse D. M." (Vancouver style, which BibTeX
     reads as given "Rouse D.", family "M.") is David M. Rouse; "Mallikarjun B. R." is the same
@@ -525,6 +540,8 @@ def same_person(a: Person, b: Person) -> bool:
     if _same_letters(a, b):
         return True
     if _in_other_order(a, b) or _double_surname(a, b) or _double_surname(b, a):
+        return True
+    if _first_surname(a, b) or _first_surname(b, a):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree.
