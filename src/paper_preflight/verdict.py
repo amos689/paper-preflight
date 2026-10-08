@@ -38,6 +38,7 @@ from paper_preflight.match import (
     evaluate,
     has_cjk,
     is_preprint,
+    names_workshop,
     related_words,
     subtitle_variant,
     surname_key,
@@ -261,7 +262,16 @@ def _relation(m: Match) -> str:
         return "unclear"
     if m.authors.status == "unknown" and (m.title.score or 0.0) >= 0.6:
         return "unclear"  # no authors to tell, and the titles are not far apart
+    if m.record.work_type in _RELEASED_TYPES:
+        # software and models are cited as their makers ask, not by a release's title:
+        # lm-evaluation-harness as Gao et al., "A framework for few-shot language model
+        # evaluation" (Zenodo 10.5281/zenodo.5371628), moondream2 by the account that holds it
+        return "unclear"
     return "conflict"
+
+
+# DataCite's resource types of things released rather than written
+_RELEASED_TYPES = frozenset({"software", "model", "dataset", "workflow"})
 
 
 def _rank(m: Match) -> tuple[int, int, int, float, float, int]:
@@ -743,7 +753,9 @@ def _field_findings(
                 year=info.year, found_years=years, suggestion=str(record.year or ""),
             )
         )  # fmt: skip
-    if m.venue.status == "mismatch" and not is_preprint(record):
+    # nor a workshop's own name: dblp files LoResLM 2025 under "COLING Workshops", and a
+    # workshop paper may be cited after its conference version appeared (heldout15)
+    if m.venue.status == "mismatch" and not is_preprint(record) and not names_workshop(info.venue):
         venue_field = next((f for f in VENUE_FIELDS if f in entry.fields), None)
         out.append(
             make_finding(

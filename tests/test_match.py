@@ -969,6 +969,26 @@ def test_a_registry_label_after_the_title() -> None:
     assert check_title(title, record).changed == ()
 
 
+@pytest.mark.parametrize(
+    ("entry", "recorded", "status"),
+    [
+        # Crossref's title carries the edition (Little and Rubin 2019, 10.1002/9781119482260)
+        ("Statistical analysis with missing data",
+         "Statistical Analysis with Missing Data, Third Edition", "match"),
+        # ScienceDirect exports a chapter's number; Crossref may keep it in the title
+        ("Chapter 4 - Interaction between Atomic Ensembles and Optical Resonators",
+         "Interaction between Atomic Ensembles and Optical Resonators", "match"),
+        ("Förster resonance energy transfer, what is it",
+         "Chapter 1 Förster resonance energy transfer, what is it", "match"),
+        ("A Different Book on Missing Data",
+         "Statistical Analysis with Missing Data, Third Edition", "mismatch"),
+    ],
+)  # fmt: skip
+def test_a_chapters_number_and_a_books_edition(entry: str, recorded: str, status: str) -> None:
+    record = SourceRecord(source="crossref", source_id="x", title=recorded)
+    assert check_title(entry, record).status == status
+
+
 def test_a_chapter_in_springers_inbook_export() -> None:
     entry = parse_bib_text(
         "@Inbook{b, author={Bartholomew, Michael and Lee, Joohyung},"

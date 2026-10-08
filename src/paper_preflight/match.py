@@ -224,6 +224,12 @@ _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 # A registry's section label after the title ("... Future Directions [Review Article]", IEEE),
 # the plates section ADS lists apart, in Semantic Scholar's title (". Plates."), or a journal's
 # note that discussions follow ("... of MCMC (with Discussion)", Bayesian Analysis on Crossref)
+_CHAPTER_NUMBER = re.compile(r"^\s*chapter\s+\d+\s*[-–—:.]?\s+", re.I)
+_EDITION = re.compile(
+    r",?\s*\(?(?:\d+(?:st|nd|rd|th)|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)"
+    r"\s+edition\)?\s*$",
+    re.I,
+)
 _SECTION_LABEL = re.compile(
     r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$|\s*\(with (discussions?|comments)[^()]*\)\s*$",
     re.I,
@@ -367,8 +373,15 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
     best = 0.0
     best_note = ""
     changed: tuple[tuple[str, str], ...] | None = None  # against the closest recorded title
+    # a chapter's number before its title, as ScienceDirect exports it ("Chapter 4 - ...") and
+    # Crossref sometimes records it ("Chapter 1 Förster resonance ..."); an edition after a
+    # book's ("Statistical Analysis with Missing Data, Third Edition")
+    entry_title = _CHAPTER_NUMBER.sub("", entry_title) or entry_title
     labelled = _SECTION_LABEL.sub("", record.title)
     titles = [(record.title, "")] + ([(labelled, "")] if labelled != record.title else [])
+    for bare in (_CHAPTER_NUMBER.sub("", record.title), _EDITION.sub("", record.title)):
+        if bare and bare != record.title:
+            titles.append((bare, ""))
     for candidate, note in titles + [(t, EARLIER_VERSION) for t in record.alt_titles]:
         score = title_score(entry_title, candidate)
         if score > best:
@@ -922,6 +935,14 @@ _BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-b
 
 # a workshop, also as a conference's acronym with a W ("NeurIPSW on Deep Generative Models")
 _WORKSHOP = re.compile(r"\bworkshops?\b|\b(?:neurips|nips|icml|iclr|cvpr|iccv|eccv)w\b", re.I)
+
+
+def names_workshop(venue: str | None) -> bool:
+    """The venue is a workshop ("Proceedings of the First Workshop on ...", "EurIPS 2025
+    Workshop: AI for Tabular Data")."""
+    return bool(_WORKSHOP.search(venue or ""))
+
+
 # a venue that is a meeting, held in its own year whatever year its proceedings appear
 _HELD_MEETING = re.compile(r"\b(?:conference|symposium|workshop|congress|meeting)\b", re.I)
 # a year a publisher wrote into a DOI's suffix: ".202007_", ".2022096"
