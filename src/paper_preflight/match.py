@@ -337,8 +337,12 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
             continue  # the registry kept a footnote mark on the last word
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
-        if i1 == j1 == 0 and not (mine and recorded) and (mine or recorded) in _ARTICLES:
-            continue  # an article one side starts with: Semantic Scholar's "Improved Method ..."
+        last = i2 == len(ours) or j2 == len(theirs)
+        if not (mine and recorded) and (mine or recorded) in _ARTICLES and not last:
+            # an article one side has: Semantic Scholar's "Improved Method ..." for "An Improved
+            # Method ...", ADS's "... of dense interstellar clouds" for Crossref's "of the dense
+            # ..." (ApJ 354, 504); not a last word ("Model A")
+            continue
         if _LOST_MARK in recorded and re.fullmatch(
             ".{1,2}".join(map(re.escape, recorded.split(_LOST_MARK))), mine
         ):
@@ -653,7 +657,7 @@ _NICKNAMES = {
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
         "yura/yuri gary/garrison danny/daniel freddy/frederic freddy/frederick russ/ruslan "
-        "freddie/frederick fred/frederic fred/frederick "
+        "freddie/frederick fred/frederic fred/frederick nati/nathan nat/nathan "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
         "staszek/stanislaw kasia/katarzyna gosia/malgorzata"
@@ -1039,6 +1043,8 @@ _PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inprocee
 _LIVING_TYPES = frozenset({"dataset", "service", "database", "collection"})
 # a year check's note when the record may be a later edition of the book the entry cites
 LATER_EDITION = "a later edition"
+# a book record this many years after the year an entry gives is a reissue's, not the book's
+REISSUE_GAP = 10
 # a whole book, in Crossref's, OpenAlex's and DataCite's words
 _BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-book", "book-set"})
 
@@ -1106,11 +1112,16 @@ def check_year(
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
         # cites its paper 18(167) as 2018
         return FieldCheck("match")
-    if record.work_type in _BOOK_RECORD_TYPES and record.reissue and year < min(years):
+    if (
+        record.work_type in _BOOK_RECORD_TYPES
+        and year < min(years)
+        and (record.reissue or min(years) - year >= REISSUE_GAP)
+    ):
         # a publisher's backfile record of a book may carry a later printing's date, the book
         # itself older (Bhatia's Positive Definite Matrices, Princeton 2007: De Gruyter's record,
-        # 2009, its DOI registered in 2014). A record made with the book is believed: Poisson
-        # and Will's Gravity is 2014, not 2012.
+        # 2009, its DOI registered in 2014); so does a reissue decades on (Crowder's Principles
+        # of Learning and Memory, 1976: Psychology Press's Classic Edition, 2014; dev2). A record
+        # made with the book is believed: Poisson and Will's Gravity is 2014, not 2012.
         return FieldCheck("variant", None, f"{LATER_EDITION}, recorded year(s) {sorted(years)}")
     if record.work_type in _LIVING_TYPES and max(years) < year <= date.today().year:
         # a database or service is cited by the year it was used, as its maintainers ask (USGS

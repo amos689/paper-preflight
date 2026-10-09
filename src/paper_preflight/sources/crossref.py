@@ -114,6 +114,17 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         and 0 < min(years) - created <= 2
     ):
         years.add(created)
+    elif (
+        item.get("type") == "journal-article"
+        and created
+        and years
+        and min(years) - created == 1
+        and _year(item, "published-online") == min(years)
+    ):
+        # or an online date deposited as the issue's: APA's 10.1037/xlm0001244, online in 2023
+        # (DOI created May 2023), "published online" April 2024 with its issue; ACM's TOSEM
+        # 10.1145/3771557, online October 2025, dated June 2026 (dev2)
+        years.add(created)
     # A December print date is often next year's first issue (MNRAS 500(4), cover date January
     # 2021, printed 10 December 2020); the issue's year is cited too. A book printed late in the
     # year carries next year's copyright date (Cover & Thomas, 2nd edition: printed September

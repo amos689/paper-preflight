@@ -333,6 +333,18 @@ def test_years_a_registry_records_badly() -> None:
     assert check_year(1981, chapter, venue=venue).status == "mismatch"
 
 
+def test_a_book_reissued_decades_on() -> None:
+    # Crowder's 1976 book cited with Psychology Press's 2014 Classic Edition DOI (dev2)
+    book = SourceRecord(
+        source="crossref", source_id="10.4324/9781315746944", title="Principles of Learning",
+        year=2014, years=frozenset({2014}), work_type="book",
+    )  # fmt: skip
+    assert check_year(1976, book).status == "variant"
+    assert check_year(2012, book).status == "mismatch"  # Gravity, 2014, is not 2012
+    article = replace(book, work_type="journal-article")
+    assert check_year(1976, article).status == "mismatch"
+
+
 def test_software_by_its_first_year_and_an_issue_to_come() -> None:
     this_year = date.today().year
     # RDKit cited as 2006; Zenodo's concept DOI resolves to the latest release
@@ -581,6 +593,7 @@ def test_only_venue_names_are_judged() -> None:
         ("Petrov, Iuliia", "Petrov, Yulia", False),
         ("{OpenAI}", "{OpenAI}", False),
         ("Ren, Freddy", "Ren, Frederic", False),  # Crossref's Frederic Ren
+        ("Srebro, Nati", "Srebro, Nathan", False),  # dblp has Nathan, papers Nati
         ("Chen, Ricky T. Q.", "Chen, Tian Qi", False),  # dblp's Tian Qi Chen
         # a name and one initial are a middle name's, not the other's initials
         ("Horowitz, Seth A.", "Horowitz, Aaron", True),
