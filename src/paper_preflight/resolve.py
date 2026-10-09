@@ -1049,9 +1049,11 @@ def _unfound_book(item: Evidence) -> bool:
     """A book no record found fits by title, first author and year (Semantic Scholar may have
     one with other people's names: Bishop's Pattern Recognition and Machine Learning by "Neal";
     APA PsycTests one of a test's manual dated by the test: the MacArthur-Bates CDI, 2006, its
-    second edition's manual a 2007 book). A later edition's or reissue's record fits no better:
-    Gibson's Ecological Approach (1979) has Psychology Press's 2014 record."""
-    from paper_preflight.match import LATER_EDITION, evaluate
+    second edition's manual a 2007 book). Nor does a reissue's record decades later: Gibson's
+    Ecological Approach (1979) has Psychology Press's 2014 record. A backfile record a few years
+    on stands (Springer's 2004 record of Liu's 2001 Monte Carlo Strategies, whose authors it
+    checks; Open Library's never accuse)."""
+    from paper_preflight.match import LATER_EDITION, REISSUE_GAP, evaluate
 
     info = item.info
     if info.entry_type not in BOOK_ENTRY_TYPES or not info.title or info.year is None:
@@ -1062,7 +1064,10 @@ def _unfound_book(item: Evidence) -> bool:
         m.title.status in {"match", "variant"}
         and m.authors.first_author_match
         and m.year.status != "mismatch"
-        and not m.year.note.startswith(LATER_EDITION)
+        and not (
+            m.year.note.startswith(LATER_EDITION)
+            and min(m.record.all_years or {info.year}) - info.year >= REISSUE_GAP
+        )
         for m in (evaluate(info, record) for record in item.candidates)
     )
 
