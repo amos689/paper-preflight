@@ -117,11 +117,11 @@ uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one r
 `why.py` shows a reference as written, every record found for it with how each field compares,
 and its findings in two replays: what most judgements and most fixes start from.
 
-There are sixteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are eighteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
-candidate's (main 43a5544); the last twelve are each batch as it came out:
+candidate's (main 43a5544); the others are each batch as it came out:
 
 | Batch | Papers first submitted | Role | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
 |---|---|---|---|---|---|---|---|---|
@@ -142,6 +142,13 @@ candidate's (main 43a5544); the last twelve are each batch as it came out:
 | `heldout14` | 2026-06-24..30 (an earlier week) | held out for 0.8.0 (#170-#187; list committed after them, #188) | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
 | `heldout15` | 2026-06-17..23 (an earlier week) | held out for #191 (list committed before it, #188); studied for #193 | 1,093 | 136 | 96 | 39 | 1 | **3.6** |
 | `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188); studied for #195 | 983 | 90 | 71 | 18 | 1 | **1.8** |
+| `dev2` | 2026-06-03..09 (an earlier week) | development batch, run with #195 and studied | 1,038 | 72 | 59 | 12 | 1 | 1.2 |
+| `dev3` | 2026-05-27..06-02 (an earlier week) | development batch, run with #195 and studied | 881 | 105 | 89 | 14 | 2 | 1.6 |
+
+`dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
+only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
+`heldout17`) is run; they are never held out. Among their real problems: one paper cites six
+Text-to-SQL papers that do not exist as written (invented titles under real systems' names).
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a

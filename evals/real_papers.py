@@ -82,6 +82,10 @@ BATCHES = {
     "heldout14": ("202606240000", "202606302359"),
     "heldout15": ("202606170000", "202606232359"),
     "heldout16": ("202606100000", "202606162359"),
+    # two earlier weeks, never sampled until 2026-10-09: development batches, studied before
+    # the next fresh week (heldout17, 2026-10-07..13) is run; never held out
+    "dev2": ("202606030000", "202606092359"),
+    "dev3": ("202605270000", "202606022359"),
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,
@@ -289,12 +293,15 @@ def report(batch: str) -> None:
         )
     refs = max(totals["refs"], 1)
     window = BATCHES[batch]
+    # "2026-06-03..09", or across a month "2026-05-27..06-02"
+    same_month = window[0][4:6] == window[1][4:6]
+    end = window[1][6:8] if same_month else f"{window[1][4:6]}-{window[1][6:8]}"
     lines = [
         f"# Real papers ({batch} batch)",
         "",
         f"- **Tool:** paper-preflight {__version__}, commit {', '.join(sorted(commits))}",
         f"- **Papers:** {len(papers)} arXiv papers first submitted {window[0][:4]}-"
-        f"{window[0][4:6]}-{window[0][6:8]}..{window[1][6:8]}, chosen mechanically "
+        f"{window[0][4:6]}-{window[0][6:8]}..{end}, chosen mechanically "
         f"(`evals/real_papers.py`, manifest `evals/{manifest(batch).name}`)",
         f"- **Run:** {datetime.now(UTC):%Y-%m-%d}, live sources (answers cached for the day, so "
         "a rerun with fixed code asks again only what changed; a cold run of 20 papers takes "
