@@ -566,6 +566,20 @@ def test_an_old_crossref_record_with_the_first_author_only(year: int, severity: 
     assert found == [severity]
 
 
+def test_a_preprint_servers_copy_against_its_published_title() -> None:
+    # Cryptology ePrint 2011/277; its ITCS 2012 version is "(Leveled) ..." (dev3)
+    entry = bib(
+        "@misc{bgv, title = {Fully Homomorphic Encryption without Bootstrapping},"
+        " author = {Smith, Ann and Jones, Bob and Lee, Carol},"
+        " howpublished = {Cryptology {ePrint} Archive, Paper 2011/277}, year = {2011}}"
+    )
+    itcs = record(title="(Leveled) Fully Homomorphic Encryption without Bootstrapping", year=2012,
+                  work_type="proceedings-article")  # fmt: skip
+    result = assess(entry, evidence_for(entry, candidates=[itcs], searched={"crossref"}),
+                    current_year=YEAR)  # fmt: skip
+    assert [f.severity.value for f in result.findings if f.rule_id == "REF012"] in ([], ["info"])
+
+
 def test_an_author_on_another_version_a_search_found() -> None:
     # dblp's CoRR record of LLaVA-OneVision lacks Peiyuan Zhang; its TMLR record has him
     entry = bib(CS_ENTRY)

@@ -645,6 +645,13 @@ def _field_findings(
     # astro-ph/9911078 its "... luminosity law"). Worth a look, not a warning.
     if is_preprint(record) and info.volume and info.first_page:
         title_hint = Severity.INFO
+    # Nor the published version against a copy on a preprint or report server the entry cites:
+    # Cryptology ePrint 2011/277 is "Fully Homomorphic Encryption without Bootstrapping", its
+    # ITCS 2012 version "(Leveled) ..." (dev3)
+    if not is_preprint(record) and _PREPRINT_COPY.search(
+        " ".join(entry.text(f) or "" for f in (*VENUE_FIELDS, "url"))
+    ):
+        title_hint = Severity.INFO
     if m.title.status == "mismatch":
         few = 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
         out.append(

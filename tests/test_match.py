@@ -333,6 +333,66 @@ def test_years_a_registry_records_badly() -> None:
     assert check_year(1981, chapter, venue=venue).status == "mismatch"
 
 
+def test_meetings_ssrn_revisions_and_small_words() -> None:
+    # SPIE's record names the meeting's year: ICMV 2023, volume dated 2024 (dev3)
+    spie = SourceRecord(
+        source="crossref", source_id="10.1117/12.3023414", title="StereoYolo+DeepSORT",
+        year=2024, years=frozenset({2024}), work_type="proceedings-article",
+        venue="Sixteenth International Conference on Machine Vision (ICMV 2023)",
+    )  # fmt: skip
+    assert check_year(2023, spie).status == "match"
+    assert check_year(2022, spie).status == "mismatch"
+    # IET's conference proceedings, deposited as journal articles; the entry names the meeting
+    iet = replace(spie, work_type="journal-article", venue="IET Conference Proceedings")
+    assert check_year(2023, iet, venue="ICCVIoT 2023").status == "match"
+    assert check_year(2023, iet).status == "mismatch"
+    # SSRN's DOI stands for every revision of a working paper
+    doi = "10.2139/ssrn.3062830"
+    ssrn = replace(spie, source_id=doi, identifiers={"doi": doi}, year=2017,
+                   years=frozenset({2017}), work_type="posted-content", venue=None)  # fmt: skip
+    assert check_year(2020, ssrn).status == "variant"
+
+
+def test_an_articles_number_in_the_records_title() -> None:
+    # Phil. Trans. A 209 (1909) in Crossref: "XVI. Functions of positive and negative type ..."
+    mercer = SourceRecord(
+        source="crossref", source_id="10.1098/rsta.1909.0016",
+        title="XVI. Functions of positive and negative type, and their connection with the theory",
+    )  # fmt: skip
+    entry = "Functions of Positive and Negative Type, and Their Connection with the Theory"
+    assert check_title(entry, mercer).changed == ()
+    # a small word other than an article counts, and so does a last article
+    assert changed_words("A revision of the taxonomy", "A revision the taxonomy") == (("of", ""),)
+    assert changed_words("Learning to see the", "Learning to see") == (("the", ""),)
+
+
+def test_a_comment_printed_with_the_work_under_its_doi() -> None:
+    # Speed's comment on Robinson, Statistical Science 6(1), 42-44, under Robinson's DOI (dev3)
+    robinson = SourceRecord(
+        source="crossref", source_id="10.1214/ss/1177011926",
+        title="That BLUP is a Good Thing: The Estimation of Random Effects",
+        authors=(Person("Robinson", "G. K."),), year=1991, years=frozenset({1991}),
+    )  # fmt: skip
+    entry = parse_bib_text(
+        "@article{speed1991, title={Comment on ``That BLUP is a Good Thing: The Estimation of"
+        " Random Effects'' by G. K. Robinson}, author={Speed, Terry}, year={1991}}",
+        Path("x.bib"),
+    ).entries[0]
+    m = evaluate(EntryInfo.from_entry(entry), robinson)
+    assert (m.title.status, m.authors.status) == ("variant", "unknown")
+
+
+def test_names_a_registry_garbled() -> None:
+    # Crossref: "res Ceballos" for Andres (CMES 122, 757); a name also in Bengali (ApJL 969, L18)
+    record = SourceRecord(
+        source="crossref", source_id="x", title="T",
+        authors=(Person("Ananna তনিমা", "Tonima Tasnim অন"),
+                 Person("Ceballos", "res")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("Ananna, Tonima Tasnim and Ceballos, Andres"), record)
+    assert (check.status, check.missing, check.renamed) == ("match", (), ())
+
+
 def test_a_book_reissued_decades_on() -> None:
     # Crowder's 1976 book cited with Psychology Press's 2014 Classic Edition DOI (dev2)
     book = SourceRecord(
@@ -1106,6 +1166,9 @@ def test_a_registry_label_after_the_title() -> None:
          "Interaction between Atomic Ensembles and Optical Resonators", "match"),
         ("Förster resonance energy transfer, what is it",
          "Chapter 1 Förster resonance energy transfer, what is it", "match"),
+        # Graphics Gems' section number, as ScienceDirect exports it (dev3)
+        ("VIII.5. - Contrast Limited Adaptive Histogram Equalization",
+         "Contrast Limited Adaptive Histogram Equalization", "match"),
         ("A Different Book on Missing Data",
          "Statistical Analysis with Missing Data, Third Edition", "mismatch"),
         # DataCite's title ends with the acronym its words spell (IRSA's SEIP, heldout16)
@@ -1344,3 +1407,10 @@ def test_ifmmode_keeps_the_text_branch() -> None:
 
     raw = "\\ifmmode \\check{S}\\else \\v{S}\\fi{}upi\\ifmmode \\acute{c}\\else \\'{c}\\fi{}"
     assert latex_to_text(raw) == "Šupić"
+
+
+def test_adss_character_macro() -> None:
+    from paper_preflight.bib.parse import latex_to_text
+
+    # ApJ 952, 142 as ADS exports it: "z$_{phot}$ \UTF{2243} 7.6"
+    assert latex_to_text("at z \\UTF{2243} 7.6") == "at z ≃ 7.6"
