@@ -60,6 +60,7 @@ MIN_VENUE_TITLE_WORDS = 4  # ... and one this long does too, at the same venue i
 MAX_REWORDED_WORDS = 2  # a title this many words off is the same work, given the same people
 MIN_REWORDED_SCORE = 0.85  # ... and this similar overall
 OLD_WORK_YEAR = 1990  # before this, the indexes cover too little to call a work not found
+OLD_DEPOSIT_YEAR = 2005  # before this, a Crossref record naming one author may have stopped short
 
 
 class Verdict(StrEnum):
@@ -644,6 +645,13 @@ def _field_findings(
     # astro-ph/9911078 its "... luminosity law"). Worth a look, not a warning.
     if is_preprint(record) and info.volume and info.first_page:
         title_hint = Severity.INFO
+    # Nor the published version against a copy on a preprint or report server the entry cites:
+    # Cryptology ePrint 2011/277 is "Fully Homomorphic Encryption without Bootstrapping", its
+    # ITCS 2012 version "(Leveled) ..." (dev3)
+    if not is_preprint(record) and _PREPRINT_COPY.search(
+        " ".join(entry.text(f) or "" for f in (*VENUE_FIELDS, "url"))
+    ):
+        title_hint = Severity.INFO
     if m.title.status == "mismatch":
         few = 0 < _changed_words(m.title.changed) <= MAX_REWORDED_WORDS
         out.append(
@@ -730,8 +738,20 @@ def _field_findings(
         # (Biometrika 85(2) 379 without Vohra, MNRAS 441, 2986 without Wadsley), and no other
         # source was asked. Or DataCite standing in for arXiv with the latest version's
         # authors only. Worth a look, not a warning.
+        # Or an old Crossref deposit naming the first author only ("P KROUPA" for New Astronomy
+        # 4, 495, 1999, by Kroupa, Petr and McCaughrean; dev2)
+        # (not when the entry lists someone twice: Springer's record of Liu 2001 has him once)
+        surnames = [surname_key(p) for p in info.authors.people]
+        first_only = (
+            record.source == "crossref"
+            and len(record.authors) == 1
+            and (record.year or OLD_DEPOSIT_YEAR) < OLD_DEPOSIT_YEAR
+            and len(set(surnames)) == len(surnames)
+        )
         short_record = (
-            (coordinates and len(record.authors) < len(info.authors.people)) or latest_version_only
+            (coordinates and len(record.authors) < len(info.authors.people))
+            or latest_version_only
+            or first_only
         ) and (authors.first_author_match and not renamed)
         if latest_version_only and short_record:
             details.append(
@@ -1312,12 +1332,24 @@ _ABSTRACTS_AND_BULLETINS = re.compile(
 )
 
 
+# Astronomy and Astrophysics (and its Supplement Series) as entries name it
+_AANDA = re.compile(
+    r"a\s*&\s*a(?:\s*s|\s*suppl\.?)?|astronomy\s+(?:and|&)\s+astrophysics"
+    r"(?:\s*,?\s*supplement(?:\s+series)?)?",
+    re.IGNORECASE,
+)
+AANDA_DOI_YEAR = 2000
+
+
 def _unindexed_venue(info: EntryInfo) -> bool:
     if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
         return True
     if info.venue and _WEB_VENUES.search(info.venue.strip()):
         return True
     if info.venue and _ABSTRACTS_AND_BULLETINS.search(info.venue.strip()):
+        return True
+    if info.venue and _AANDA.fullmatch(info.venue.strip()) and (info.year or 0) < AANDA_DOI_YEAR:
+        # A&A's volumes before 2000 have no DOIs; NASA ADS has them (A&A 278, 129, 1993; dev2)
         return True
     chapter = info.entry_type in {"incollection", "inbook"}
     return chapter and info.year is not None and info.year < UNINDEXED_CHAPTER_YEAR

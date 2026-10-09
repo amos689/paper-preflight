@@ -74,6 +74,23 @@ All notable changes to this project are documented here. The format follows
     October", 2017; ICLR 2018).
   - KDD as "ACM SIGKDD ... Knowledge discovery in data mining"; a title the record follows with
     the acronym its words spell ("Spitzer Enhanced Imaging Products (SEIP)").
+- **False positives found on two more earlier weeks** (`dev2` and `dev3`, development batches:
+  26 false positives in 1,919 references): 18 of them gone on a replay of 380 papers, 2 more on
+  earlier weeks; no real problem lost, 7 more references confirmed; HALLMARK `dev_public` and
+  GPTZero unchanged. The false-positive museum gains 57 cases, every one fixed since heldout15.
+  - Years: an article online a year before its issue, when the publisher deposited the issue's
+    date as the online one (APA, ACM's TOSEM: the DOI's creation tells); a meeting's year that
+    the record's venue names ("... (ICMV 2023)", its volume 2024), or the entry's when the
+    proceedings are deposited as journal articles (IET); a book cited by its year with a
+    reissue's DOI decades later; an SSRN paper cited by a revision's year.
+  - Venues: A&A's volumes before 2000, which have no DOIs (NASA ADS only).
+  - Authors: an old Crossref record naming the first author alone is an info, unless the entry
+    lists someone twice; names in Latin and another script; "And" a registry cut from
+    "Andres"; Nati for Nathan.
+  - Titles: an article ("the") one side has; a chapter's or article's number before the title
+    ("VIII.5. -", "XVI."); ADS's `\UTF{2243}` as the character it stands for; a comment on a
+    work, printed under the work's DOI; the published version's title against a copy on a
+    preprint server the entry cites (Cryptology ePrint) is an info.
 
 ## [0.8.0] - 2026-10-09
 

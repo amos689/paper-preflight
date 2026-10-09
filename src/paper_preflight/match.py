@@ -245,7 +245,9 @@ _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 # A registry's section label after the title ("... Future Directions [Review Article]", IEEE),
 # the plates section ADS lists apart, in Semantic Scholar's title (". Plates."), or a journal's
 # note that discussions follow ("... of MCMC (with Discussion)", Bayesian Analysis on Crossref)
-_CHAPTER_NUMBER = re.compile(r"^\s*chapter\s+\d+\s*[-–—:.]?\s+", re.I)
+# A chapter's or article's number before its title: "Chapter 4 - ...", Graphics Gems' "VIII.5. -
+# Contrast Limited ..." (ScienceDirect), Phil. Trans.'s "XVI. Functions of Positive ..." (Crossref)
+_CHAPTER_NUMBER = re.compile(r"^\s*(?:(?i:chapter)\s+\d+|[IVXLC]+\.(?:\d+\.?)?)\s*[-–—:.]?\s+")
 _EDITION = re.compile(
     r",?\s*\(?(?:\d+(?:st|nd|rd|th)|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)"
     r"\s+edition\)?\s*$",
@@ -337,8 +339,13 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
             continue  # the registry kept a footnote mark on the last word
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
-        if i1 == j1 == 0 and not (mine and recorded) and (mine or recorded) in _ARTICLES:
-            continue  # an article one side starts with: Semantic Scholar's "Improved Method ..."
+        last = i2 == len(ours) or j2 == len(theirs)
+        if not (mine and recorded) and (mine or recorded) in _ARTICLES and not last:
+            # an article one side has: Semantic Scholar's "Improved Method ..." for "An Improved
+            # Method ...", ADS's "... of dense interstellar clouds" for Crossref's "of the dense
+            # ..." (ApJ 354, 504); not a last word ("Model A"). Other small words count: an
+            # entry that drops "of" misquotes the title (Krathwohl 2002, in the museum)
+            continue
         if _LOST_MARK in recorded and re.fullmatch(
             ".{1,2}".join(map(re.escape, recorded.split(_LOST_MARK))), mine
         ):
@@ -653,7 +660,7 @@ _NICKNAMES = {
         "misha/mikhail misha/michael sasha/aleksandr dima/dmitry dima/dmitri kolya/nikolai "
         "volodya/vladimir pasha/pavel zhenya/evgeny zhenya/evgeniy lena/elena katya/ekaterina "
         "yura/yuri gary/garrison danny/daniel freddy/frederic freddy/frederick russ/ruslan "
-        "freddie/frederick fred/frederic fred/frederick "
+        "freddie/frederick fred/frederic fred/frederick nati/nathan nat/nathan "
         # Polish diminutives
         "tomek/tomasz kuba/jakub bartek/bartlomiej wojtek/wojciech jurek/jerzy "
         "staszek/stanislaw kasia/katarzyna gosia/malgorzata"
@@ -730,6 +737,9 @@ def given_names_differ(a: Person, b: Person) -> bool:
     first_a, first_b = words_a[0], words_b[0]
     if first_a.startswith(first_b) or first_b.startswith(first_a):
         return False
+    if "and" + first_a == first_b or "and" + first_b == first_a:
+        return False  # a registry that took "And" for a conjunction: Crossref's "res" for Andres
+
     if frozenset((first_a, first_b)) in _NICKNAMES:
         return False
     if _middle_nickname(words_a, first_b) or _middle_nickname(words_b, first_a):
@@ -879,6 +889,23 @@ def _pair_by_given_name(
     return {j: i for i, j in owner.items()}
 
 
+def _latin_part(person: Person) -> Person:
+    """A name a registry wrote in Latin and another script, as the Latin part: Crossref's
+    "Tonima Tasnim অনন্যা" "Ananna তনিমা তাসনিম" (ApJL 969, L18; dev3) is Tonima Tasnim Ananna."""
+    if person.literal or person.display.isascii():
+        return person
+
+    def latin(text: str) -> str:
+        words = text.split()
+        kept = [w for w in words if not re.search(r"[^\W\d_]", fold(w)) or fold(w).isascii()]
+        return " ".join(kept) if kept and len(kept) < len(words) else text
+
+    family = latin(person.family)
+    if not family or not fold(family).isascii():
+        return person
+    return Person(family=family, given=latin(person.given))
+
+
 def _lost_letters(person: Person, written: tuple[Person, ...]) -> Person:
     """A recorded name with a character the registry lost (Schönle as "P. Sch" + _LOST +
     "nle", Crossref) as the entry writes it, when exactly one of the entry's names fits it
@@ -917,7 +944,7 @@ def check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
 
 def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
     written = {surname_key(person) for person in authors.people}
-    recorded = [_lost_letters(p, authors.people) for p in record.authors]
+    recorded = [_lost_letters(_latin_part(p), authors.people) for p in record.authors]
     people = [_as_meant(p, written) for p in recorded if surname_key(p)]
     record_keys = [surname_key(person) for person in people]
     meant = [_as_meant(person, set(record_keys)) for person in authors.people]
@@ -1035,10 +1062,14 @@ def is_preprint(record: SourceRecord) -> bool:
 
 # Records of proceedings, whose volume may appear the year after the meeting
 _PROCEEDINGS_TYPES = frozenset({"proceedings-article", "book-chapter", "inproceedings"})
+# a record's venue that is a meeting's proceedings
+_HELD = re.compile(r"\b(?:conference|symposium|workshop|congress)\b", re.I)
 # Resources that keep changing after they are registered (DataCite resource types)
 _LIVING_TYPES = frozenset({"dataset", "service", "database", "collection"})
 # a year check's note when the record may be a later edition of the book the entry cites
 LATER_EDITION = "a later edition"
+# a book record this many years after the year an entry gives is a reissue's, not the book's
+REISSUE_GAP = 10
 # a whole book, in Crossref's, OpenAlex's and DataCite's words
 _BOOK_RECORD_TYPES = frozenset({"book", "monograph", "edited-book", "reference-book", "book-set"})
 
@@ -1086,10 +1117,16 @@ def check_year(
         return FieldCheck("match")
     if (
         year + 1 in years
-        and (record.work_type in _PROCEEDINGS_TYPES or "/conf/" in f"/{record.source_id}")
-        and names_year(venue, year)
+        and (
+            record.work_type in _PROCEEDINGS_TYPES
+            or "/conf/" in f"/{record.source_id}"
+            or _HELD.search(record.venue or "")
+        )
+        and (names_year(venue, year) or names_year(record.venue, year))
     ):
-        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004)
+        # the meeting's year, which the entry's venue names (SAT 2003, its LNCS volume 2004) or
+        # the record's (SPIE's "Sixteenth International Conference on Machine Vision (ICMV
+        # 2023)", volume 2024; IET's Conference Proceedings, deposited as journal articles; dev3)
         return FieldCheck("match")
     if min(years) < year < max(years) <= min(years) + 2:
         # between two of the article's own dates: an issue dated between its appearance online
@@ -1106,11 +1143,16 @@ def check_year(
         # a JMLR volume runs into the next year: dblp files volume 18 under 2017, and JMLR
         # cites its paper 18(167) as 2018
         return FieldCheck("match")
-    if record.work_type in _BOOK_RECORD_TYPES and record.reissue and year < min(years):
+    if (
+        record.work_type in _BOOK_RECORD_TYPES
+        and year < min(years)
+        and (record.reissue or min(years) - year >= REISSUE_GAP)
+    ):
         # a publisher's backfile record of a book may carry a later printing's date, the book
         # itself older (Bhatia's Positive Definite Matrices, Princeton 2007: De Gruyter's record,
-        # 2009, its DOI registered in 2014). A record made with the book is believed: Poisson
-        # and Will's Gravity is 2014, not 2012.
+        # 2009, its DOI registered in 2014); so does a reissue decades on (Crowder's Principles
+        # of Learning and Memory, 1976: Psychology Press's Classic Edition, 2014; dev2). A record
+        # made with the book is believed: Poisson and Will's Gravity is 2014, not 2012.
         return FieldCheck("variant", None, f"{LATER_EDITION}, recorded year(s) {sorted(years)}")
     if record.work_type in _LIVING_TYPES and max(years) < year <= date.today().year:
         # a database or service is cited by the year it was used, as its maintainers ask (USGS
@@ -1121,6 +1163,10 @@ def check_year(
         # stands for every version resolves to the latest release (RDKit, 2006: Zenodo's record
         # is the 2026_09_1 release; heldout16)
         return FieldCheck("variant", None, f"a later release, recorded year(s) {sorted(years)}")
+    if (record.doi or "").startswith("10.2139/ssrn.") and max(years) < year <= date.today().year:
+        # SSRN keeps one DOI for every revision and dates it by the first posting: "Available at
+        # SSRN 3062830", 2020, is a revision of the 2017 paper (dev3)
+        return FieldCheck("variant", None, f"a later revision, recorded year(s) {sorted(years)}")
     if year < min(years) and min(years) > date.today().year:
         # only a date still to come: the issue a paper accepted "to appear" is scheduled for
         # (Statistica Sinica, accepted 2025: Crossref has 2028; heldout16)
@@ -1447,6 +1493,16 @@ def _as_chinese_journal_record(record: SourceRecord) -> SourceRecord:
     )
 
 
+DISCUSSION_OF_RECORD = "a comment on the recorded work, under its DOI"
+# "Comment on ``That BLUP is a Good Thing ...'' by G. K. Robinson", "Discussion of ...",
+# "Rejoinder to ..."
+_DISCUSSION_OF = re.compile(
+    r"^\s*(?:comments?|discussion|rejoinder)\s+(?:on|of|to)\s+[\"'`‘“]*(?P<title>.+?)[\"'’”]*"
+    r"(?:,?\s+by\s+[^,]{2,60})?\s*$",
+    re.IGNORECASE,
+)
+
+
 def _maker_in_title(info: EntryInfo, record: SourceRecord) -> SourceRecord | None:
     """The record retitled without the organisation the entry credits alone, when its title
     starts with that name and is otherwise the entry's: None if it does not."""
@@ -1472,6 +1528,11 @@ def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldChec
     if info.translated:
         record = _as_chinese_journal_record(record)
     title = check_title(info.title, record)
+    discussed = _DISCUSSION_OF.match(info.title)
+    if discussed and title_key(discussed["title"]) == title_key(record.title):
+        # a comment on the work, printed with it under one DOI: Speed's comment on Robinson's
+        # "That BLUP is a Good Thing" (Statistical Science 6(1), 10.1214/ss/1177011926; dev3)
+        return FieldCheck("variant", 1.0, DISCUSSION_OF_RECORD), AuthorCheck("unknown")
     maker = _maker_in_title(info, record)
     if maker is not None:
         # the organisation the entry credits, named before the title: "OpenAI GPT-5 System

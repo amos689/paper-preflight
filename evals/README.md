@@ -142,8 +142,8 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout14` | 2026-06-24..30 (an earlier week) | held out for 0.8.0 (#170-#187; list committed after them, #188) | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
 | `heldout15` | 2026-06-17..23 (an earlier week) | held out for #191 (list committed before it, #188); studied for #193 | 1,093 | 136 | 96 | 39 | 1 | **3.6** |
 | `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188); studied for #195 | 983 | 90 | 71 | 18 | 1 | **1.8** |
-| `dev2` | 2026-06-03..09 (an earlier week) | development batch, run with #195 and studied | 1,038 | 72 | 59 | 12 | 1 | 1.2 |
-| `dev3` | 2026-05-27..06-02 (an earlier week) | development batch, run with #195 and studied | 881 | 105 | 89 | 14 | 2 | 1.6 |
+| `dev2` | 2026-06-03..09 (an earlier week) | development batch, run with #195; studied for #198 | 1,038 | 72 | 59 | 12 | 1 | 1.2 |
+| `dev3` | 2026-05-27..06-02 (an earlier week) | development batch, run with #195; studied for #198 | 881 | 105 | 89 | 14 | 2 | 1.6 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,

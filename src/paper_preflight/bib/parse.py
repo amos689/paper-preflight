@@ -189,6 +189,7 @@ def _decode_entity(match: re.Match[str]) -> str:
 
 
 _IFMMODE_RE = re.compile(r"\\ifmmode\s*(?P<math>.*?)\\else\s*(?P<text>.*?)\\fi(?:\{\})?", re.S)
+_UTF_RE = re.compile(r"\\UTF\{([0-9A-Fa-f]{4,6})\}")
 
 
 def latex_to_text(value: str) -> str:
@@ -198,6 +199,8 @@ def latex_to_text(value: str) -> str:
     value = MARKUP_TAG_RE.sub("", value)  # ADS: "<ASTROBJ>NGC 1068</ASTROBJ>"
     # APS: "\ifmmode \check{S}\else \v{S}\fi{}upi\ifmmode \acute{c}\else \'{c}\fi{}" is Šupić
     value = _IFMMODE_RE.sub(lambda m: m["text"], value)
+    # ADS: "z$_{phot}$ \UTF{2243} 7.6" is "≃" (AASTeX's macro for a character by its code point)
+    value = _UTF_RE.sub(lambda m: chr(int(m[1], 16)), value)
     try:
         text = _latex2text.latex_to_text(value, latex_context=_WALKER_CONTEXT)
     except Exception:  # pylatexenc can fail on malformed input; fall back

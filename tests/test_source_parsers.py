@@ -344,6 +344,26 @@ def early_access(**changes: Any) -> dict[str, Any]:
     [
         ({}, {2023, 2024}),  # early access: the DOI was created when the article went online
         ({"published-online": {"date-parts": [[2023, 11]]}}, {2023, 2024}),  # deposited online
+        # an online date deposited as the issue's (APA, ACM's TOSEM): the DOI's creation tells
+        (
+            {"DOI": "10.1037/xlm0001244", "published-online": {"date-parts": [[2024, 4]]}},
+            {2023, 2024},
+        ),
+        # an online date of its own, after the print date (Taylor & Francis's JASA, 2017): the
+        # DOI was created for an accepted manuscript, a year before
+        (
+            {"DOI": "10.1037/xlm0001244", "published-online": {"date-parts": [[2024, 4, 12]]}},
+            {2024},
+        ),
+        # not two years before an issue whose online date is deposited
+        (
+            {
+                "DOI": "10.1037/xlm0001244",
+                "published-online": {"date-parts": [[2024, 4]]},
+                "created": {"date-parts": [[2022, 6]]},
+            },
+            {2024},
+        ),
         ({"type": "proceedings-article"}, {2024}),
         # with a DOI that names no year (Proc. IEEE's "10.1109/5.726791"), only the deposit
         # date can tell: too early to be early access, or a later deposit

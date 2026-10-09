@@ -7234,3 +7234,13 @@ note = "The preprint the entry cites appeared at EMNLP (Findings) 2020 (conf/emn
 [finding."2605.27880v1:velivckovic2017graph:REF015"]
 verdict = "correct"
 note = "The preprint the entry cites appeared at ICLR (Poster) 2018 (conf/iclr/VelickovicCCRLB18); the entry cites the preprint."
+
+# dev3, two findings that came once arXiv answered (it was unavailable in the run)
+
+[finding."2605.27808v1:gptq:REF012"]
+verdict = "correct"
+note = "arXiv 2210.17323 (v1 and since) is 'GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers'; the entry has 'Compression'."
+
+[finding."2605.27808v1:piskala2025profasrbench:REF012"]
+verdict = "correct"
+note = "arXiv 2512.23686 (one version) is 'PROFASR-BENCH: A Benchmark for Context-Conditioned ASR in High-Stakes Professional Speech'; the entry's title is not it."

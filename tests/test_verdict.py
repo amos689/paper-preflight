@@ -535,6 +535,51 @@ def test_a_preprint_its_venue_says_it_is(journal: str, reported: bool) -> None:
     assert ("REF013" in rules(assess(entry, item, current_year=YEAR))) is reported
 
 
+@pytest.mark.parametrize(
+    ("journal", "year", "reported"),
+    [
+        ("A\\&A", 1993, False),  # Leinert et al., A&A 278, 129: ADS only (dev2)
+        ("Astronomy and Astrophysics Supplement Series", 1996, False),
+        ("A\\&A", 2005, True),  # A&A has DOIs since 2000
+        ("ApJ", 1993, True),
+    ],
+)
+def test_astronomy_and_astrophysics_before_its_dois(
+    journal: str, year: int, reported: bool
+) -> None:
+    entry = bib(
+        "@article{leinert93, title = {A systematic approach for young binaries in Taurus},"
+        f" author = {{Leinert, Ch and Zinnecker, H}}, journal = {{{journal}}}, year = {{{year}}}}}"
+    )
+    searched = {"dblp", "crossref"}
+    item = evidence_for(entry, searched=searched, negative=searched)
+    assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+@pytest.mark.parametrize(("year", "severity"), [(1999, "info"), (2015, "warning")])
+def test_an_old_crossref_record_with_the_first_author_only(year: int, severity: str) -> None:
+    # Crossref's record of New Astronomy 4, 495 (1999) lists "P KROUPA" alone (dev2)
+    entry = bib(CS_ENTRY.replace("2023", str(year)))
+    alone = record(authors=(ANN,), year=year)
+    result = assess(entry, evidence_for(entry, anchored=[alone]), current_year=YEAR)
+    found = [f.severity.value for f in result.findings if f.rule_id == "REF011"]
+    assert found == [severity]
+
+
+def test_a_preprint_servers_copy_against_its_published_title() -> None:
+    # Cryptology ePrint 2011/277; its ITCS 2012 version is "(Leveled) ..." (dev3)
+    entry = bib(
+        "@misc{bgv, title = {Fully Homomorphic Encryption without Bootstrapping},"
+        " author = {Smith, Ann and Jones, Bob and Lee, Carol},"
+        " howpublished = {Cryptology {ePrint} Archive, Paper 2011/277}, year = {2011}}"
+    )
+    itcs = record(title="(Leveled) Fully Homomorphic Encryption without Bootstrapping", year=2012,
+                  work_type="proceedings-article")  # fmt: skip
+    result = assess(entry, evidence_for(entry, candidates=[itcs], searched={"crossref"}),
+                    current_year=YEAR)  # fmt: skip
+    assert [f.severity.value for f in result.findings if f.rule_id == "REF012"] in ([], ["info"])
+
+
 def test_an_author_on_another_version_a_search_found() -> None:
     # dblp's CoRR record of LLaVA-OneVision lacks Peiyuan Zhang; its TMLR record has him
     entry = bib(CS_ENTRY)

@@ -1636,3 +1636,402 @@ source = "real_papers:2607.00320v1"
 key = "stein1970singular"
 expect = []
 note = "would be REF012: Princeton's record adds the series number '(PMS-30)' to the title."
+
+[[case]]
+name = "fp-braverman-2019"
+source = "real_papers:2606.18552v2"
+key = "Braverman_2019"
+expect = []
+note = "was REF012: The same isotope written two ways: '$^{171}$Yb' in the entry, 'Yb171' in Crossref."
+
+[[case]]
+name = "fp-tanjisuzuki2011201"
+source = "real_papers:2606.18552v2"
+key = "TANJISUZUKI2011201"
+expect = ["REF017"]
+note = "was REF012: The chapter is 'Interaction between Atomic Ensembles and Optical Resonators: Classical Description'; Crossref has no subtitle, and 'Chapter 4 -' is ScienceDirect's export."
+
+[[case]]
+name = "fp-vik-2024"
+source = "real_papers:2606.18554v1"
+key = "vik_2024"
+expect = []
+note = "was REF001: 10.57967/hf/3219 is moondream2 by vikhyatk on Hugging Face, the entry's model; the revision in its title and the user name made it look like another work."
+
+[[case]]
+name = "fp-dalal1988investigations"
+source = "real_papers:2606.18557v1"
+key = "dalal1988investigations"
+expect = []
+note = "was REF014: The 7th National Conference on Artificial Intelligence is AAAI-88."
+
+[[case]]
+name = "fp-alice2008"
+source = "real_papers:2606.18561v1"
+key = "ALICE2008"
+expect = []
+note = "was REF011: The ALICE paper cited by its first people and 'others'; Crossref's record leads with the collaboration."
+
+[[case]]
+name = "fp-atlas2008"
+source = "real_papers:2606.18561v1"
+key = "ATLAS2008"
+expect = []
+note = "was REF011: The ATLAS paper cited by its first people and 'others'; Crossref's record leads with the collaboration."
+
+[[case]]
+name = "fp-mudholkar-2019"
+source = "real_papers:2606.18561v1"
+key = "Mudholkar_2019"
+expect = []
+note = "was REF011: 'on behalf of the CMS Collaboration' credits the collaboration; it is no missing person."
+
+[[case]]
+name = "fp-douglass2006impact"
+source = "real_papers:2606.18567v1"
+key = "douglass2006impact"
+expect = []
+note = "was REF003: A real report for the Coastal Transportation Engineering Research and Education Center, University of South Alabama, cited as an article."
+
+[[case]]
+name = "fp-ellingwood-fragility-2004"
+source = "real_papers:2606.18567v1"
+key = "ellingwood_fragility_2004"
+expect = []
+note = "was REF002, REF017: The DOI ends in a parenthesis (ASCE's '...13:1(6)'); paper-preflight's reading cut it off, so doi.org was asked about a DOI that does not exist."
+
+[[case]]
+name = "fp-little2019missing"
+source = "real_papers:2606.18567v1"
+key = "little2019missing"
+expect = []
+note = "was REF012: Crossref's title carries the edition ('..., Third Edition'); the entry gives the book's title."
+
+[[case]]
+name = "fp-padgett2008bridge"
+source = "real_papers:2606.18567v1"
+key = "padgett2008bridge"
+expect = []
+note = "was REF002, REF017: The DOI ends in a parenthesis (ASCE's '...13:1(6)'); paper-preflight's reading cut it off, so doi.org was asked about a DOI that does not exist."
+
+[[case]]
+name = "fp-vandelindt2009performance"
+source = "real_papers:2606.18567v1"
+key = "vanDeLindt2009performance"
+expect = []
+note = "was REF002, REF017: The DOI ends in a parenthesis (ASCE's '...13:1(6)'); paper-preflight's reading cut it off, so doi.org was asked about a DOI that does not exist."
+
+[[case]]
+name = "fp-bannick2020ensemble"
+source = "real_papers:2606.18575v1"
+key = "bannick2020ensemble"
+expect = []
+note = "was REF013: Int. J. Epidemiol. 49(6) is the December 2020 issue; Crossref has the online date (2019) and 2021."
+
+[[case]]
+name = "fp-miyama2022phenomenological"
+source = "real_papers:2606.18575v1"
+key = "miyama2022phenomenological"
+expect = []
+note = "was REF013: Math. Biosci. Eng. 19 is the 2022 volume (the DOI says mbe.2022096); Crossref has the online date, 2021."
+
+[[case]]
+name = "fp-wang2020epidemiological"
+source = "real_papers:2606.18575v1"
+key = "wang2020epidemiological"
+expect = ["REF017"]
+note = "was REF013: J. Data Sci. 18(3) is the July 2020 issue (the DOI says 202007); Crossref dates the record 2021."
+
+[[case]]
+name = "fp-eval-harness"
+source = "real_papers:2606.18587v1"
+key = "eval-harness"
+expect = []
+note = "was REF001: Zenodo 10.5281/zenodo.5371628 is lm-evaluation-harness, which asks to be cited as Gao et al., 'A framework for few-shot language model evaluation'."
+
+[[case]]
+name = "fp-ranjan2025relational"
+source = "real_papers:2606.18621v2"
+key = "ranjan2025relational"
+expect = []
+note = "was REF014: The entry cites the EurIPS 2025 workshop version of a paper later at ICLR 2026; both are its venues."
+
+[[case]]
+name = "fp-1979apj-232l-89s"
+source = "real_papers:2606.18637v1"
+key = "1979ApJ...232L..89S"
+expect = []
+note = "was REF012: '$^{13}$CO' and Crossref's 'CO-13' are the same molecule."
+
+[[case]]
+name = "fp-newberg-2003aa"
+source = "real_papers:2606.18849v1"
+key = "Newberg:2003aa"
+expect = []
+note = "was REF011: Željko Ivezić is an author of the ApJL paper; Crossref's record does not have him as written."
+
+[[case]]
+name = "fp-tau-2024aa"
+source = "real_papers:2606.18849v1"
+key = "Tau:2024aa"
+expect = []
+note = "was REF012, REF013: The entry cites the arXiv e-print 2412.13807 ('haloes', 'in-situ'); it was compared with the later A&A article's title."
+
+[[case]]
+name = "fp-the2022tabula"
+source = "real_papers:2606.19396v1"
+key = "the2022tabula"
+expect = []
+note = "was REF011: The entry cites the Science 2022 paper by the Tabula Sapiens Consortium and its named people; it was compared with the bioRxiv preprint's record."
+
+[[case]]
+name = "fp-sindhujan2025llms"
+source = "real_papers:2608.21365v1"
+key = "sindhujan2025llms"
+expect = []
+note = "was REF014: The entry names the LoResLM 2025 workshop's own proceedings; dblp files it under COLING Workshops."
+
+[[case]]
+name = "fp-leskovec2005graphs"
+source = "real_papers:2606.11562v1"
+key = "leskovec2005graphs"
+expect = []
+note = "was REF014: 'The eleventh ACM SIGKDD international conference on Knowledge discovery in data mining' is KDD 2005, as dblp records."
+
+[[case]]
+name = "fp-openai2025gpt5"
+source = "real_papers:2606.11562v1"
+key = "openai2025gpt5"
+expect = []
+note = "was REF001: arXiv 2601.03267 is the GPT-5 System Card itself, titled 'OpenAI GPT-5 System Card' with named authors; the entry cites it by its short title and the organisation."
+
+[[case]]
+name = "fp-li2024llava"
+source = "real_papers:2606.11568v1"
+key = "li2024llava"
+expect = []
+note = "was REF011: Peiyuan Zhang is an author of LLaVA-OneVision (later arXiv versions, TMLR 2025); the dblp CoRR record it was compared with was made from a version without him."
+
+[[case]]
+name = "fp-team2025geminirobotics"
+source = "real_papers:2606.11568v1"
+key = "team2025geminirobotics"
+expect = []
+note = "was REF011: dblp's record of arXiv 2503.20020 lists only 'Gemini Robotics Team'; the entry lists the team and its people, as arXiv does."
+
+[[case]]
+name = "fp-tian2024drivevlm"
+source = "real_papers:2606.11568v1"
+key = "tian2024drivevlm"
+expect = []
+note = "was REF011: Zhiyong Zhao is a DriveVLM author (later arXiv versions, CoRL 2024); the dblp CoRR record it was compared with was made from a version without him."
+
+[[case]]
+name = "fp-xiao2025spatialtracker"
+source = "real_papers:2606.11568v1"
+key = "xiao2025spatialtracker"
+expect = []
+note = "was REF011: Iurii and Yuri Makarov are two transliterations of the same name."
+
+[[case]]
+name = "fp-arvanitidis2017latent"
+source = "real_papers:2606.11570v2"
+key = "arvanitidis2017latent"
+expect = ["REF014"]
+note = "was REF013: The entry cites the October 2017 arXiv preprint, whose year 2017 is right; it was compared with ICLR 2018 because the preprint was not recognised."
+
+[[case]]
+name = "fp-rdkit"
+source = "real_papers:2606.11574v1"
+key = "rdkit"
+expect = []
+note = "was REF013: RDKit is cited by the project's year as its makers ask; the Zenodo concept DOI in the note resolves to the latest release (2026)."
+
+[[case]]
+name = "fp-rao2025estimation"
+source = "real_papers:2606.11738v1"
+key = "rao2025estimation"
+expect = []
+note = "was REF013: Accepted by Statistica Sinica in 2025 and cited 'to appear'; Crossref has only the future issue's date, 2028."
+
+[[case]]
+name = "fp-civano2016"
+source = "real_papers:2606.12076v1"
+key = "Civano2016"
+expect = []
+note = "was REF011: The entry spells Benny Trakhtenbrot right; Crossref's and arXiv's records have 'Trakhenbrot'."
+
+[[case]]
+name = "fp-mcmahon2013"
+source = "real_papers:2606.12076v1"
+key = "McMahon2013"
+expect = []
+note = "was REF003: A real article: The Messenger 154, 35 (2013), indexed by ADS but not by Crossref, dblp or Semantic Scholar."
+
+[[case]]
+name = "fp-seip"
+source = "real_papers:2606.12076v1"
+key = "seip"
+expect = []
+note = "was REF012: The entry leaves out only the acronym in parentheses, '(SEIP)'."
+
+[[case]]
+name = "fp-observations-time-allocation-committee-roman-2025"
+source = "real_papers:2606.12249v2"
+key = "observations_time_allocation_committee_roman_2025"
+expect = []
+note = "was REF010: The entry names the committees by their acronyms (ROTAC, CCSDC); DataCite's record has them as 'Committee'."
+
+[[case]]
+name = "fp-pacifici-niriss-2022"
+source = "real_papers:2606.12249v2"
+key = "pacifici_niriss_2022"
+expect = []
+note = "was REF003: A JWST NIRISS commissioning report of STScI (JWST-STScI-008296); unindexed grey literature written as an @article with journal 'Technical Report'."
+
+[[case]]
+name = "fp-plesha-improvements-2024"
+source = "real_papers:2606.12249v2"
+key = "plesha_improvements_2024"
+expect = []
+note = "was REF003: An AAS 243 meeting abstract (360.19), indexed by ADS only."
+
+[[case]]
+name = "fp-ravindranath-niriss-2023"
+source = "real_papers:2606.12249v2"
+key = "ravindranath_niriss_2023"
+expect = []
+note = "was REF003: A JWST NIRISS commissioning report of STScI (JWST-STScI-008328); unindexed grey literature written as an @article with journal 'Technical Report'."
+
+[[case]]
+name = "fp-taylor-niriss-2022"
+source = "real_papers:2606.12249v2"
+key = "taylor_niriss_2022"
+expect = []
+note = "was REF003: A JWST NIRISS commissioning report of STScI (JWST-STScI-008297); unindexed grey literature written as an @article with journal 'Technical Report'."
+
+[[case]]
+name = "fp-federman1990"
+source = "real_papers:2606.04309v1"
+key = "Federman1990"
+expect = []
+note = "was REF012: Only the article 'the' differs ('of dense interstellar clouds', as ADS has it)."
+
+[[case]]
+name = "fp-weissl2025mimicry"
+source = "real_papers:2606.04310v1"
+key = "weissl2025mimicry"
+expect = []
+note = "was REF013: TOSEM published it online in 2025 (Crossref's DOI was created on 2025-10-10); the issue is 2026."
+
+[[case]]
+name = "fp-guo2025white"
+source = "real_papers:2606.04314v1"
+key = "guo2025white"
+expect = []
+note = "was REF013: TOSEM published it online in 2025 (Crossref's DOI was created on 2025-05-19); the issue is 2026."
+
+[[case]]
+name = "fp-crowder-principles-1976"
+source = "real_papers:2606.04340v1"
+key = "crowder_principles_1976"
+expect = []
+note = "was REF013: Crowder's 1976 book, cited with the DOI of Psychology Press's 2014 Classic Edition (10.4324/9781315746944)."
+
+[[case]]
+name = "fp-poliak-it-2023"
+source = "real_papers:2606.04340v1"
+key = "poliak_it_2023"
+expect = []
+note = "was REF013: Published online in 2023 (Crossref's DOI was created on 2023-05-22); the issue is April 2024. The entry cites the year it appeared."
+
+[[case]]
+name = "fp-neyshabur"
+source = "real_papers:2606.04429v1"
+key = "neyshabur"
+expect = []
+note = "was REF011: Nati is Nathan Srebro's short name, the one he publishes under."
+
+[[case]]
+name = "fp-kroupa99"
+source = "real_papers:2606.04509v1"
+key = "kroupa99"
+expect = []
+note = "was REF011: Crossref's record of New Astronomy 4, 495 lists only 'P KROUPA'; Petr and McCaughrean are its other authors."
+
+[[case]]
+name = "fp-leinert93"
+source = "real_papers:2606.04509v1"
+key = "leinert93"
+expect = []
+note = "was REF003: A real paper: A&A 278, 129 (1993); A&A's volumes before 2000 have no DOIs and are indexed by NASA ADS only."
+
+[[case]]
+name = "fp-cryptoeprint-2011-277"
+source = "real_papers:2605.27782v1"
+key = "cryptoeprint:2011/277"
+expect = []
+note = "was REF012: The entry cites Cryptology ePrint 2011/277, titled 'Fully Homomorphic Encryption without Bootstrapping'; '(Leveled)' is the ITCS 2012 version's."
+
+[[case]]
+name = "fp-akbarpour2020just"
+source = "real_papers:2605.27794v1"
+key = "akbarpour2020just"
+expect = []
+note = "was REF013: SSRN 3062830 was first posted in 2017 and revised since under the same DOI; the entry cites a later version's year."
+
+[[case]]
+name = "fp-pritha2024smart"
+source = "real_papers:2605.27884v1"
+key = "pritha2024smart"
+expect = []
+note = "was REF013: The conference the entry names (ICCVIoT 2024) was held in 2024; IET's proceedings, deposited as journal articles, are dated 2025."
+
+[[case]]
+name = "fp-ananna24"
+source = "real_papers:2605.27903v1"
+key = "ananna24"
+expect = []
+note = "was REF011: Crossref's record writes her name in Latin and Bengali script; the entry's Tonima Tasnim Ananna is right."
+
+[[case]]
+name = "fp-furtak23"
+source = "real_papers:2605.27903v1"
+key = "furtak23"
+expect = []
+note = "was REF012: ADS's UTF{2243} is the '≃' Crossref has; paper-preflight read it as the number 2243."
+
+[[case]]
+name = "fp-cmes-2020-08164"
+source = "real_papers:2605.27915v2"
+key = "cmes.2020.08164"
+expect = []
+note = "was REF011: Crossref's record has 'res Ceballos', 'And' cut from Andres as if a conjunction; the entry's Andres Ceballos is right."
+
+[[case]]
+name = "fp-speed1991comment"
+source = "real_papers:2605.27991v4"
+key = "speed1991comment"
+expect = []
+note = "was REF001: Statistical Science 6(1) gives Robinson's article and its discussion, Speed's comment on pp. 42-44 included, one DOI."
+
+[[case]]
+name = "fp-kolb-1993hw"
+source = "real_papers:2605.28005v2"
+key = "Kolb:1993hw"
+expect = []
+note = "was REF012: Only the article 'the' differs ('and formation of', as INSPIRE has it)."
+
+[[case]]
+name = "fp-claheoriginal"
+source = "real_papers:2605.30399v1"
+key = "CLAHEOriginal"
+expect = []
+note = "was REF012: 'VIII.5. -' is the chapter's number in Graphics Gems, as ScienceDirect exports it."
+
+[[case]]
+name = "fp-stereoyolo"
+source = "real_papers:2605.30399v1"
+key = "stereoYOLO"
+expect = []
+note = "was REF013: Presented at ICMV 2023, as SPIE's record of the proceedings names it; the volume is dated 2024."
