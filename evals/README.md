@@ -111,7 +111,11 @@ the code before it: no warning or error may appear that is not a real problem.
 uv run python evals/replay.py base                    # the code before the change
 uv run python evals/replay.py new --against base      # verdicts moved, findings lost or gained
 uv run python evals/replay.py new --against base --fill   # if the change asks something new
+uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one reference: why
 ```
+
+`why.py` shows a reference as written, every record found for it with how each field compares,
+and its findings in two replays: what most judgements and most fixes start from.
 
 There are sixteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
