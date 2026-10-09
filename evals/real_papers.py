@@ -82,6 +82,10 @@ BATCHES = {
     "heldout14": ("202606240000", "202606302359"),
     "heldout15": ("202606170000", "202606232359"),
     "heldout16": ("202606100000", "202606162359"),
+    # two earlier weeks, never sampled until 2026-10-09: development batches, studied before
+    # the next fresh week (heldout17, 2026-10-07..13) is run; never held out
+    "dev2": ("202606030000", "202606092359"),
+    "dev3": ("202605270000", "202606022359"),
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,
