@@ -137,7 +137,7 @@ candidate's (main 43a5544); the last twelve are each batch as it came out:
 | `heldout13` | 2026-09-30..10-06 | held out for 0.7.0 (#167; list committed before it, #165) | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
 | `heldout14` | 2026-06-24..30 (an earlier week) | held out for 0.8.0 (#170-#187; list committed after them, #188) | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
 | `heldout15` | 2026-06-17..23 (an earlier week) | held out for #191 (list committed before it, #188); studied for #193 | 1,093 | 136 | 96 | 39 | 1 | **3.6** |
-| `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188) | 983 | 90 | 71 | 18 | 1 | **1.8** |
+| `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188); studied for #195 | 983 | 90 | 71 | 18 | 1 | **1.8** |
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a

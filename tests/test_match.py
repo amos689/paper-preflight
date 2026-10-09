@@ -1,5 +1,6 @@
 import json
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,7 @@ from paper_preflight.bib.names import parse_authors, parse_name
 from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.match import (
     EntryInfo,
+    _without_acronym,
     best_candidate,
     canonical_venue,
     changed_words,
@@ -331,6 +333,23 @@ def test_years_a_registry_records_badly() -> None:
     assert check_year(1981, chapter, venue=venue).status == "mismatch"
 
 
+def test_software_by_its_first_year_and_an_issue_to_come() -> None:
+    this_year = date.today().year
+    # RDKit cited as 2006; Zenodo's concept DOI resolves to the latest release
+    release = SourceRecord(
+        source="datacite", source_id="10.5281/zenodo.591637", title="rdkit/rdkit: Release",
+        year=this_year, years=frozenset({this_year}), work_type="software",
+    )  # fmt: skip
+    assert check_year(2006, release).status == "variant"
+    assert check_year(2006, replace(release, work_type="journal-article")).status == "mismatch"
+    # accepted "to appear": Crossref has only the issue it is scheduled for
+    scheduled = replace(release, work_type="journal-article", year=this_year + 2,
+                        years=frozenset({this_year + 2}))  # fmt: skip
+    assert check_year(this_year - 1, scheduled).status == "variant"
+    past = replace(scheduled, year=this_year - 1, years=frozenset({this_year - 1}))
+    assert check_year(this_year - 3, past).status == "mismatch"
+
+
 def test_a_jmlr_volume_runs_into_the_next_year() -> None:
     # JMLR cites 18(167) as 2018; dblp files volume 18 under 2017 (journals/jmlr/ChowGJP17)
     record = SourceRecord(
@@ -372,6 +391,8 @@ def test_a_volume_the_record_leaves_out() -> None:
         ("Proceedings of the Thirty-Seventh Conference on Uncertainty in Artificial Intelligence",
          "uai"),
         ("International Conference on Artificial Intelligence and Statistics", "aistats"),
+        ("Proceedings of the eleventh ACM SIGKDD international conference on Knowledge discovery"
+         " in data mining", "kdd"),
         ("Proceedings of Thirty Fifth Conference on Learning Theory", "colt"),
         ("WWW '22: Proceedings of the ACM Web Conference 2022", "www"),
         ("ICASSP 2023 - IEEE International Conference on Acoustics, Speech and Signal Processing",
@@ -555,6 +576,9 @@ def test_only_venue_names_are_judged() -> None:
         ("Korbak, Tomek", "Korbak, Tomasz", False),  # a Polish diminutive
         ("Spiridonov, Aleksandar", "Spiridonov, Alexander", False),
         ("Levine, Sergey", "Levine, Sergei", False),
+        ("Makarov, Iurii", "Makarov, Yuri", False),  # arXiv and dblp romanise him otherwise
+        ("Ivanov, Dmitriy", "Ivanov, Dmitri", False),
+        ("Petrov, Iuliia", "Petrov, Yulia", False),
         ("{OpenAI}", "{OpenAI}", False),
         ("Ren, Freddy", "Ren, Frederic", False),  # Crossref's Frederic Ren
         ("Chen, Ricky T. Q.", "Chen, Tian Qi", False),  # dblp's Tian Qi Chen
@@ -782,6 +806,56 @@ def test_names_a_registry_put_the_other_way_round() -> None:
     assert not check.disjoint
     # other people stay other people
     assert check_authors(parse_authors("Wu, Dan and Ito, Ken"), record).disjoint
+
+
+def test_a_letter_a_registry_lost_in_a_long_surname() -> None:
+    # Crossref and arXiv have "Trakhenbrot" for B. Trakhtenbrot (ApJ 819, 62; heldout16)
+    record = SourceRecord(
+        source="crossref", source_id="10.3847/0004-637x/819/1/62", title="Chandra COSMOS",
+        authors=(Person("Civano", "F."), Person("Toft", "S."), Person("Trakhenbrot", "B.")),
+    )  # fmt: skip
+    written = parse_authors("{Civano}, F. and {Toft}, S. and {Trakhtenbrot}, B.")
+    assert check_authors(written, record).missing == ()
+    # not in a short surname, nor between other initials
+    short = replace(record, authors=(Person("Civano", "F."), Person("Tof", "S.")))
+    assert check_authors(parse_authors("{Civano}, F. and {Toft}, S."), short).missing
+    other = parse_authors("{Civano}, F. and {Toft}, S. and {Trakhtenbrot}, R.")
+    assert check_authors(other, record).missing == ("R. Trakhtenbrot",)
+
+
+def test_a_record_crediting_only_a_group() -> None:
+    # dblp's record of arXiv 2503.20020 lists only "Gemini Robotics Team" (heldout16)
+    record = SourceRecord(
+        source="dblp", source_id="journals/corr/abs-2503-20020", title="Gemini Robotics",
+        authors=(Person("Team", "Gemini Robotics"),),
+    )  # fmt: skip
+    written = parse_authors("Team, Gemini Robotics and Abeyruwan, Saminda and Ainslie, Joshua")
+    assert check_authors(written, record).status == "unknown"
+
+
+def test_a_group_by_its_acronym() -> None:
+    # arXiv 2505.10574, credited to "{ROTAC} and {CCSDC}" (heldout16)
+    record = SourceRecord(
+        source="datacite", source_id="10.48550/arxiv.2505.10574", title="Roman Observations",
+        authors=(Person("Committee", "Roman Observations Time Allocation"),
+                 Person("Committees", "Core Community Survey Definition")),
+    )  # fmt: skip
+    check = check_authors(parse_authors("{ROTAC} and {CCSDC}"), record)
+    assert (check.status, check.first_author_match) == ("match", True)
+    assert check_authors(parse_authors("{NASA} and {ESA}"), record).disjoint
+
+
+def test_the_organisation_an_entry_credits_named_in_the_records_title() -> None:
+    # arXiv 2601.03267, "OpenAI GPT-5 System Card", lists 486 people (heldout16)
+    record = SourceRecord(
+        source="arxiv", source_id="2601.03267", title="OpenAI GPT-5 System Card",
+        authors=(Person("Singh", "Aaditya"), Person("Fry", "Adam")), year=2025,
+    )  # fmt: skip
+    entry = parse_bib_text(
+        "@article{gpt5, title={{GPT-5} System Card}, author={{OpenAI}}, year={2025}}", Path("x.bib")
+    ).entries[0]
+    m = evaluate(EntryInfo.from_entry(entry), record)
+    assert (m.title.status, m.authors.status) == ("match", "unknown")
 
 
 def test_a_solar_symbol_is_the_word_sun() -> None:
@@ -1021,11 +1095,21 @@ def test_a_registry_label_after_the_title() -> None:
          "Chapter 1 Förster resonance energy transfer, what is it", "match"),
         ("A Different Book on Missing Data",
          "Statistical Analysis with Missing Data, Third Edition", "mismatch"),
+        # DataCite's title ends with the acronym its words spell (IRSA's SEIP, heldout16)
+        ("Spitzer Enhanced Imaging Products", "Spitzer Enhanced Imaging Products (SEIP)", "match"),
     ],
 )  # fmt: skip
 def test_a_chapters_number_and_a_books_edition(entry: str, recorded: str, status: str) -> None:
     record = SourceRecord(source="crossref", source_id="x", title=recorded)
     assert check_title(entry, record).status == status
+
+
+def test_an_acronym_its_words_do_not_spell_stays() -> None:
+    assert _without_acronym("Spitzer Enhanced Imaging Products (SEIP)") == (
+        "Spitzer Enhanced Imaging Products"
+    )
+    assert _without_acronym("Deep Nets for Vision (Abstract)").endswith("(Abstract)")
+    assert _without_acronym("Spitzer Enhanced Imaging Products (SPEC)").endswith("(SPEC)")
 
 
 def test_a_chapter_in_springers_inbook_export() -> None:

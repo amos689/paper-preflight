@@ -483,6 +483,79 @@ def test_a_workshop_version_of_a_paper(venue: str, recorded: str, reported: bool
     assert ("REF014" in rules(assess(entry, item, current_year=YEAR))) is reported
 
 
+@pytest.mark.parametrize(
+    ("extra", "reported"),
+    [
+        ("", True),  # a bare "Technical Report" names nobody to ask (Parr 1998 does not exist)
+        ("eprint = {JWST-STScI-008296},", False),  # STScI's report, by its number (heldout16)
+        ("institution = {Space Telescope Science Institute},", False),
+    ],
+)
+def test_a_technical_report_named_by_its_issuer(extra: str, reported: bool) -> None:
+    entry = bib(
+        "@article{taylor2022, title = {NIRISS Commissioning Results: NIS-011a Illumination Flat"
+        " Fields}, author = {Taylor, Jo and Volk, Kevin}, journal = {Technical Report},"
+        f" {extra} year = {{2022}}}}"
+    )
+    searched = {"dblp", "crossref"}
+    item = evidence_for(entry, searched=searched, negative=searched)
+    assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+@pytest.mark.parametrize(
+    ("journal", "reported"),
+    [
+        ("AAS", False),  # an AAS 243 abstract, 360.19 (heldout16)
+        ("American Astronomical Society Meeting Abstracts", False),
+        ("The Messenger", False),  # ESO's, indexed by NASA ADS only
+        ("The Astronomer's Telegram", False),
+        ("Journal of Messenger Studies", True),
+    ],
+)
+def test_abstracts_and_bulletins_only_ads_has(journal: str, reported: bool) -> None:
+    entry = bib(
+        "@article{mcmahon2013, title = {First Scientific Results from the VISTA Hemisphere"
+        f" Survey}}, author = {{McMahon, R. G.}}, journal = {{{journal}}}, year = {{2013}}}}"
+    )
+    searched = {"dblp", "crossref"}
+    item = evidence_for(entry, searched=searched, negative=searched)
+    assert ("REF003" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+@pytest.mark.parametrize(
+    ("journal", "reported"),
+    [("Preprint posted online October", False), ("Journal of Sparse Methods", True)],
+)
+def test_a_preprint_its_venue_says_it_is(journal: str, reported: bool) -> None:
+    # Arvanitidis et al., "Latent space oddity": the October 2017 preprint, ICLR 2018 (heldout16)
+    text = CS_ENTRY.replace("booktitle = {Proceedings of ACL}", f"journal = {{{journal}}}")
+    entry = bib(text.replace("  doi = {10.1234/acl.2023.1},\n", "").replace("2023", "2017"))
+    published = record(source="dblp", year=2018, venue="ICLR")
+    item = evidence_for(entry, candidates=[published], searched={"dblp"})
+    assert ("REF013" in rules(assess(entry, item, current_year=YEAR))) is reported
+
+
+def test_an_author_on_another_version_a_search_found() -> None:
+    # dblp's CoRR record of LLaVA-OneVision lacks Peiyuan Zhang; its TMLR record has him
+    entry = bib(CS_ENTRY)
+    corr = record(authors=(ANN, BOB), source="dblp", venue="CoRR")
+    tmlr = record(source="dblp", year=2024, venue="TMLR")
+    found = rules(assess(entry, evidence_for(entry, anchored=[corr]), current_year=YEAR))
+    assert "REF011" in found
+    item = evidence_for(entry, anchored=[corr], candidates=[tmlr])
+    assert "REF011" not in rules(assess(entry, item, current_year=YEAR))
+    # another work's people are no evidence: a record led by someone else
+    other = record(authors=(CAROL, ANN, BOB), source="dblp", year=2024, venue="TMLR")
+    item = evidence_for(entry, anchored=[corr], candidates=[other])
+    assert "REF011" in rules(assess(entry, item, current_year=YEAR))
+
+
+def test_an_arxiv_number_names_no_issuer() -> None:
+    for eprint in ("2401.01234", "hep-th/9901001", "arXiv:2401.01234"):
+        entry = bib(f"@techreport{{x, title = {{T}}, eprint = {{{eprint}}}, year = 2024}}")
+        assert EntryInfo.from_entry(entry).issuer is None
+
+
 def test_invented_title_on_a_real_doi_is_reported() -> None:
     # HALLMARK "chimeric title": the DOI and the authors are real, the title is invented
     entry = bib(CS_ENTRY)

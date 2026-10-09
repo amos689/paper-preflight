@@ -558,6 +558,11 @@ def _year_gap(year: int | None, record: SourceRecord) -> int:
 # ---------------------------------------------------------------- findings
 
 
+def _same_lead(a: SourceRecord, b: SourceRecord) -> bool:
+    """Two records with one first author."""
+    return bool(a.authors and b.authors) and surname_key(a.authors[0]) == surname_key(b.authors[0])
+
+
 def _missing_everywhere(
     info: EntryInfo, missing: tuple[str, ...], others: tuple[SourceRecord, ...]
 ) -> list[str]:
@@ -1038,8 +1043,16 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
     findings, dead = _dead_identifiers(entry, evidence)
     preprint = cites_preprint(evidence)  # a published version may then be a year or two later
     # so may a copy on a preprint or report server the entry names (Cryptology ePrint Archive
-    # 2015/193, the CHES 2013 paper)
-    preprint_pair = preprint or bool(_PREPRINT_COPY.search(info.venue or ""))
+    # 2015/193, the CHES 2013 paper), or a preprint or draft its venue says it is without an
+    # identifier ("Preprint posted online October", 2017: ICLR 2018; heldout16)
+    preprint_pair = (
+        preprint
+        or bool(_PREPRINT_COPY.search(info.venue or ""))
+        or (
+            info.venue_field in NAMED_VENUE_FIELDS
+            and bool(_PREPRINT_VENUE.search(info.venue or ""))
+        )
+    )
 
     # 1. Records reached through the entry's own identifiers.
     same: list[Match] = []
@@ -1101,6 +1114,16 @@ def assess(entry: BibEntry, evidence: Evidence, *, current_year: int) -> Assessm
                 others=(
                     *(m.record for m in same if m is not bound),
                     *(r for r in evidence.status_records if same_doi(r, bound.record)),
+                    # and the other versions a search found, of one title and first author:
+                    # dblp's CoRR record of LLaVA-OneVision was made from a version without
+                    # Peiyuan Zhang, its TMLR record has him (heldout16)
+                    *(
+                        r
+                        for r in (*evidence.candidates, *evidence.published_versions)
+                        if r is not bound.record
+                        and title_key(r.title) == same_work
+                        and _same_lead(r, bound.record)
+                    ),
                 ),
                 latest_version_only=(
                     "arxiv" in evidence.substituted
@@ -1277,10 +1300,24 @@ _REPORT_VENUE = re.compile(
 )
 
 
+# Meetings' abstracts and astronomy's bulletins and circulars, which NASA ADS indexes and the
+# general indexes do not: an AAS 243 abstract (journal "AAS", pages 360.19), ESO's The Messenger
+# (heldout16), IAU and GCN circulars, ATels, IBVS.
+_ABSTRACTS_AND_BULLETINS = re.compile(
+    r"\bmeeting\s+abstracts?\b|\babstracts?\s+of\s+the\b|american\s+astronomical\s+society\s+meeting"
+    r"|^(?:aas|agu|aps|dps|egu)(?:\s+meeting)?(?:\s+abstracts?)?$"
+    r"|^(?:the\s+)?messenger$|\biau\s+circ|\bgcn\s+circ|\bcbet\b|\batel\b|astronomer'?s\s+telegram"
+    r"|information\s+bulletin\s+on\s+variable\s+stars|\bibvs\b|minor\s+planet\s+(?:electronic\s+)?circ",
+    re.IGNORECASE,
+)
+
+
 def _unindexed_venue(info: EntryInfo) -> bool:
     if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
         return True
     if info.venue and _WEB_VENUES.search(info.venue.strip()):
+        return True
+    if info.venue and _ABSTRACTS_AND_BULLETINS.search(info.venue.strip()):
         return True
     chapter = info.entry_type in {"incollection", "inbook"}
     return chapter and info.year is not None and info.year < UNINDEXED_CHAPTER_YEAR
@@ -1313,11 +1350,12 @@ def _abstention_reasons(
     ]
     # a report or thesis under another entry type: Zhu's "Semi-supervised learning literature
     # survey" as @inproceedings with booktitle "Technical Report, University of Wisconsin-Madison".
-    # It must name who issued it: a bare "Technical Report" (Parr 1998, which does not exist)
-    # says nothing a reader could look up.
+    # It must name who issued it, in the venue or by its institution or number: a bare
+    # "Technical Report" (Parr 1998, which does not exist) says nothing a reader could look up;
+    # one numbered JWST-STScI-008296 is STScI's.
     venue = info.venue or ""
-    report = bool(_REPORT_VENUE.search(venue)) and bool(
-        re.search(r"[^\W\d_]{3,}", _REPORT_VENUE.sub(" ", venue))
+    report = bool(_REPORT_VENUE.search(venue)) and (
+        bool(re.search(r"[^\W\d_]{3,}", _REPORT_VENUE.sub(" ", venue))) or bool(info.issuer)
     )
     if (info.entry_type in GREY_TYPES or report) and not live_ids:
         reasons.append(Reason.GREY_LITERATURE)
