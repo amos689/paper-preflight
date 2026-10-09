@@ -349,6 +349,12 @@ def early_access(**changes: Any) -> dict[str, Any]:
             {"DOI": "10.1037/xlm0001244", "published-online": {"date-parts": [[2024, 4]]}},
             {2023, 2024},
         ),
+        # an online date of its own, after the print date (Taylor & Francis's JASA, 2017): the
+        # DOI was created for an accepted manuscript, a year before
+        (
+            {"DOI": "10.1037/xlm0001244", "published-online": {"date-parts": [[2024, 4, 12]]}},
+            {2024},
+        ),
         # not two years before an issue whose online date is deposited
         (
             {

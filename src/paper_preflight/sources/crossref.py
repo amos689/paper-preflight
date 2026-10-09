@@ -119,11 +119,15 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
         and created
         and years
         and min(years) - created == 1
-        and _year(item, "published-online") == min(years)
+        and item.get("published-online")
+        and item["published-online"].get("date-parts")
+        == (item.get("issued") or {}).get("date-parts")
     ):
-        # or an online date deposited as the issue's: APA's 10.1037/xlm0001244, online in 2023
-        # (DOI created May 2023), "published online" April 2024 with its issue; ACM's TOSEM
-        # 10.1145/3771557, online October 2025, dated June 2026 (dev2)
+        # or an online date that is the issue's own, deposited for it: APA's 10.1037/xlm0001244,
+        # online in 2023 (DOI created May 2023), "published online" April 2024 with its issue;
+        # ACM's TOSEM 10.1145/3771557, online October 2025, dated 17 June 2026 (dev2). Not an
+        # online date of its own: Taylor & Francis posted JASA's 10.1080/01621459.2016.1167694
+        # as an accepted manuscript in 2016, and published it, online and in print, in 2017.
         years.add(created)
     # A December print date is often next year's first issue (MNRAS 500(4), cover date January
     # 2021, printed 10 December 2020); the issue's year is cited too. A book printed late in the
