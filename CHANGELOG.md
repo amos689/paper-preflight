@@ -25,6 +25,12 @@ All notable changes to this project are documented here. The format follows
   dated by the test, 2006; its manual a 2007 book) is looked up in Open Library too: 12 classic
   books on the development papers that could not be determined are now confirmed (Gibson 1979,
   Breiman et al. 1984, Lehmann and Romano 2005, ...).
+- **Books Open Library files under their main title.** When the full title finds nothing, the
+  title before the colon is asked with the first author's surname (Open Library has Murphy's
+  "Machine Learning: A Probabilistic Perspective" as "Machine learning"); the record must still
+  fit by author and by an edition's year. 15 more books on 380 development papers are
+  confirmed (Sutton and Barto 2018, van der Vaart and Wellner 1996, Rawlings et al. 2017, ...),
+  no finding gained or lost. A subtitle is not checked this way.
 
 ### Fixed
 
