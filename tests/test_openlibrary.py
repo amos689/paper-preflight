@@ -78,3 +78,31 @@ async def test_a_book_a_record_dates_otherwise_is_asked_of_open_library(
     assert found.verdict is Verdict.VERIFIED
     assert found.record is not None
     assert found.record.source == "openlibrary"
+
+
+MURPHY = {  # Open Library's work record, filed under the main title alone (CC0)
+    "key": "/works/OL16816178W", "title": "Machine learning", "author_name": ["Kevin P. Murphy"],
+    "first_publish_year": 2012, "publish_year": [2012], "publisher": ["MIT Press"],
+}  # fmt: skip
+
+
+@pytest.mark.anyio
+async def test_a_book_open_library_files_under_its_main_title(
+    recorded_web: FakeWeb, tmp_path: Path, fast: None
+) -> None:
+    recorded_web.openlibrary["=Machine learning"] = [MURPHY]
+    bib = (
+        "@book{murphy2012, title={Machine learning: a probabilistic perspective},"
+        " author={Murphy, Kevin P}, year={2012}, publisher={MIT press}}"
+        "@book{murphy2010, title={Machine learning: a probabilistic perspective},"
+        " author={Murphy, Kevin P}, year={2010}, publisher={MIT press}}"
+    )
+    entries = parse_bib_text(bib, Path("refs.bib")).entries
+    options = VerifyOptions(cache_path=tmp_path / "c.sqlite3", current_year=2026, environ={})
+    _, verdicts, _ = await verify_entries(entries, options)
+    found = verdicts["murphy2012"]
+    assert found.verdict is Verdict.VERIFIED
+    assert found.record is not None
+    assert found.record.source == "openlibrary"
+    # no edition of 2010: not confirmed, and never held against the entry
+    assert verdicts["murphy2010"].verdict is Verdict.CANNOT_DETERMINE

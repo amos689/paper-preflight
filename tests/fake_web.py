@@ -79,7 +79,8 @@ class FakeWeb:
         # 401, as the Hub does) and OpenML datasets (number -> description; unknown: 412)
         self.huggingface: dict[str, dict[str, object]] = {}
         self.openml: dict[str, dict[str, object]] = {}
-        # Open Library's book search: a phrase in the title asked for -> its docs (CC0). The
+        # Open Library's book search: a phrase in the title asked for ("=title": that title
+        # exactly) -> its docs (CC0). The
         # demo's Deep Learning, as Open Library has it (trimmed)
         self.openlibrary: dict[str, list[dict[str, object]]] = {
             "Deep Learning": [
@@ -153,7 +154,14 @@ class FakeWeb:
             return httpx.Response(412, json=unknown)
         if host == "openlibrary.org" and request.url.path == "/search.json":
             asked = request.url.params.get("title", "")
-            docs = next((d for phrase, d in self.openlibrary.items() if phrase in asked), [])
+            docs = next(
+                (
+                    d
+                    for phrase, d in self.openlibrary.items()
+                    if (asked == phrase[1:] if phrase.startswith("=") else phrase in asked)
+                ),
+                [],
+            )
             return httpx.Response(200, json={"numFound": len(docs), "docs": docs})
         if host == "api.semanticscholar.org" and request.url.path.endswith("/search/match"):
             paper = self.s2_papers.get(request.url.params.get("query", "").lower())

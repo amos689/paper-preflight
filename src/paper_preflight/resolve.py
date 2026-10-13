@@ -1072,6 +1072,10 @@ def _unfound_book(item: Evidence) -> bool:
     )
 
 
+# A book's main title, before its subtitle: "Machine learning: a probabilistic perspective"
+_MAIN_TITLE = re.compile(r"^(?P<head>[^:]{6,}?)\s*:\s+\S")
+
+
 async def _search_books(item: Evidence, sources: Sources) -> None:
     """Open Library's records of a book, kept only when its title, an author and one of its
     editions' years all fit the entry: a reader-made record confirms a book, never accuses."""
@@ -1084,29 +1088,37 @@ async def _search_books(item: Evidence, sources: Sources) -> None:
     people = info.authors.people
     author = people[0].family if people and not people[0].literal else None
     isbn = next((i.value for i in item.identifiers if i.scheme == "isbn"), None)
-    records: list[SourceRecord] = []
+    # Open Library often files a book under its main title alone: Murphy's "Machine Learning: A
+    # Probabilistic Perspective" (2012) is its "Machine learning"
+    main_title = _MAIN_TITLE.match(info.title)
+    titles = [info.title] + (
+        [main_title["head"]]
+        if main_title and word_count(main_title["head"]) >= 2 and author
+        else []
+    )
     try:
-        if isbn:
-            records = await openlibrary.search_books(
-                client, info.title, author, isbn=isbn, mailto=sources.mailto
-            )
-        if not records:
-            records = await openlibrary.search_books(
-                client, info.title, author, mailto=sources.mailto
-            )
+        for number, title in enumerate(titles):
+            records: list[SourceRecord] = []
+            if isbn and number == 0:
+                records = await openlibrary.search_books(
+                    client, title, author, isbn=isbn, mailto=sources.mailto
+                )
+            if not records:
+                records = await openlibrary.search_books(
+                    client, title, author, mailto=sources.mailto
+                )
+            for record in records:
+                m = evaluate(info, record)
+                if (
+                    m.title.status in {"match", "variant"}
+                    and m.authors.status in {"match", "variant"}
+                    and m.authors.first_author_match
+                    and m.year.status == "match"
+                ):
+                    item.candidates.append(record)
+                    return
     except SourceUnavailable as error:
         item.optional_unavailable.setdefault(error.source, error.reason.value)
-        return
-    for record in records:
-        m = evaluate(info, record)
-        if (
-            m.title.status in {"match", "variant"}
-            and m.authors.status in {"match", "variant"}
-            and m.authors.first_author_match
-            and m.year.status == "match"
-        ):
-            item.candidates.append(record)
-            return
 
 
 async def _search_s2(item: Evidence, client: SourceClient, api_key: str) -> None:
