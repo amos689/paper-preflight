@@ -206,7 +206,10 @@ def subtitle_variant(a: str, b: str) -> bool:
     for full, rest in ((b, ka), (a, kb)):
         name, colon, tail = full.partition(":")
         short_name = colon and len(name.split()) <= 2
-        if short_name and long_prefix(rest) and title_key(tail) == rest:
+        # hyphens aside: "ICC: Intra-Cluster Contraction ..." is Crossref's "Intracluster
+        # Contraction ..." (heldout25)
+        same = title_key(tail).replace(" ", "") == rest.replace(" ", "")
+        if short_name and long_prefix(rest) and same:
             return True
     if len(kb) >= len(ka):
         return False
@@ -222,6 +225,7 @@ _SPELLING = (
     (re.compile(r"ll(ed|ing|er|ers)$"), r"l\1"),
     (re.compile(r"tre(s?)$"), r"ter\1"),
     (re.compile(r"ogue(s?)$"), r"og\1"),
+    (re.compile(r"(?<=g)ement(s?)$"), r"ment\1"),  # "judgement", "acknowledgement"
 )
 
 
@@ -246,8 +250,11 @@ _SYMBOL_WORDS_RE = re.compile("|".join(_SYMBOL_WORDS))
 # the plates section ADS lists apart, in Semantic Scholar's title (". Plates."), or a journal's
 # note that discussions follow ("... of MCMC (with Discussion)", Bayesian Analysis on Crossref)
 # A chapter's or article's number before its title: "Chapter 4 - ...", Graphics Gems' "VIII.5. -
-# Contrast Limited ..." (ScienceDirect), Phil. Trans.'s "XVI. Functions of Positive ..." (Crossref)
-_CHAPTER_NUMBER = re.compile(r"^\s*(?:(?i:chapter)\s+\d+|[IVXLC]+\.(?:\d+\.?)?)\s*[-–—:.]?\s+")
+# Contrast Limited ..." (ScienceDirect), Phil. Trans.'s "XVI. Functions of Positive ..." (Crossref),
+# De Gruyter's "17. A Value for n-Person Games" (heldout23)
+_CHAPTER_NUMBER = re.compile(
+    r"^\s*(?:(?i:chapter)\s+\d+|[IVXLC]+\.(?:\d+\.?)?|\d{1,3}\.)\s*[-–—:.]?\s+"
+)
 _EDITION = re.compile(
     r",?\s*\(?(?:\d+(?:st|nd|rd|th)|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)"
     r"\s+edition\)?\s*$",
@@ -260,6 +267,11 @@ _SECTION_LABEL = re.compile(
     re.I,
 )
 _ARTICLES = frozenset({"a", "an", "the"})
+_YEAR_IN_TITLE = re.compile(r"(?<!\d)(?:19|20)\d\d(?!\d)")
+# a parenthesis or brackets of three words or more after a title, closing it
+_TRAILING_GLOSS = re.compile(
+    r"^(?P<head>.{8,}?)\s*[\[(](?P<gloss>[^\[\]()]*\w+\s+\w+\s+\w+[^\[\]()]*)[\])]\.?\s*$"
+)
 _ACRONYM_AFTER = re.compile(r"^(?P<head>.{8,}?)\s*\((?P<acronym>[A-Z][A-Za-z]{1,11})\)\s*$")
 
 
@@ -287,8 +299,9 @@ _ROMAN = {
 }
 # Words an entry gives for a symbol a registry dropped: ADS's "Z$_{solar}$", Crossref's "Z"
 _SYMBOL_NAMES = frozenset({"sun", "solar", "odot", "earth", "oplus", "jup", "jupiter"})
-# A footnote mark a registry kept on the title's last word: Crossref's "... Absorption1"
-_FOOTNOTE_MARK = re.compile(r"([a-z]{3,})\d")
+# A footnote mark a registry kept on the title's last word: Crossref's "... Absorption1", "...
+# in Cs3Sb1", "... in Parametric Downconversiona" (heldout23)
+_FOOTNOTE_MARK = re.compile(r"(\w{3,}?)(?:\d|[ab])")
 
 
 def _same_word(a: str, b: str) -> bool:
@@ -346,7 +359,7 @@ def changed_words(entry_title: str, record_title: str) -> tuple[tuple[str, str],
         if not recorded and mine in _SYMBOL_NAMES and quantity:
             continue  # "Z solar" where the registry dropped the symbol after "Z"
         footnote = _FOOTNOTE_MARK.fullmatch(recorded)
-        if j2 == len(theirs) and footnote and footnote[1] == mine:
+        if j2 == len(theirs) and footnote and footnote[1] == mine.replace(" ", ""):
             continue  # the registry kept a footnote mark on the last word
         if not (mine + recorded).isascii() or (len(mine) <= 1 and len(recorded) <= 1):
             continue  # math: registries render "ε" as "ε", "epsilon" or "e", and variables vary
@@ -396,6 +409,28 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
         # one side in Chinese script, the other in Latin script: a translation cannot be compared
         # (ISTIC's record of a paper an English entry cites by its translated title)
         return FieldCheck("unknown")
+    years_cited, years_recorded = (
+        _YEAR_IN_TITLE.findall(entry_title),
+        _YEAR_IN_TITLE.findall(record.title),
+    )
+    if (
+        years_cited
+        and years_recorded
+        and years_cited != years_recorded
+        and _YEAR_IN_TITLE.sub("", title_key(entry_title))
+        == _YEAR_IN_TITLE.sub("", title_key(record.title))
+    ):
+        # another year's edition of a series: "NTIRE 2026 ... Challenge Report" is not the NTIRE
+        # 2025 report of that name (heldout23)
+        return FieldCheck("mismatch", 0.0, "another year's edition")
+    gloss = _TRAILING_GLOSS.match(entry_title)
+    if gloss and not _TRAILING_GLOSS.match(record.title):
+        # a translation after the title, in brackets: Goeppert-Mayer's "Über Elementarakte mit
+        # zwei Quantensprüngen [On elementary processes ...]", a Czech journal's English title
+        # with its Czech one in parentheses (heldout23)
+        found = check_title(gloss["head"], record)
+        if found.status == "match" and not found.changed:
+            return found
     named = _SOFTWARE_NAME.match(entry_title)
     # Zenodo titles a release by its GitHub repository: "rdkit/rdkit: 2026_09_1 (Q3 2026) Release"
     repository = _REPOSITORY_RELEASE.match(record.title)
@@ -685,7 +720,10 @@ def same_person(a: Person, b: Person) -> bool:
     # record), accepted only when the full given names agree; or, in a surname of eight letters
     # or more, their initials ("Trakhenbrot" for B. Trakhtenbrot in Crossref and arXiv).
     key_a, key_b = surname_key(a), surname_key(b)
-    if min(len(key_a), len(key_b)) < 2 or Levenshtein.distance(key_a, key_b) > 1:
+    # or two neighbouring letters swapped: Crossref's "Varnavksi" for Oleg Varnavski (heldout23)
+    if min(len(key_a), len(key_b)) < 2 or (
+        Levenshtein.distance(key_a, key_b) > 1 and not _swapped(key_a, key_b)
+    ):
         return False
     given, other = _first_given(a), _first_given(b)
     if len(given) >= 2 and given == other:
@@ -697,6 +735,19 @@ def same_person(a: Person, b: Person) -> bool:
 
 
 _LONG_SURNAME = 8
+
+
+def _swapped(a: str, b: str) -> bool:
+    """Two neighbouring letters of one word swapped in the other."""
+    if len(a) != len(b):
+        return False
+    diff = [i for i, (x, y) in enumerate(zip(a, b, strict=True)) if x != y]
+    return (
+        len(diff) == 2
+        and diff[1] == diff[0] + 1
+        and a[diff[0]] == b[diff[1]]
+        and (a[diff[1]] == b[diff[0]])
+    )
 
 
 def _transliterated(word: str) -> str:

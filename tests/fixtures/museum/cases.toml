@@ -2448,3 +2448,171 @@ source = "real_papers:2609.04261v1"
 key = "o2014antimicrobial"
 expect = []
 note = "was REF003: The Review on Antimicrobial Resistance's 2014 report (chaired by Jim O'Neill), written as an @article; a report no source indexes."
+
+[[case]]
+name = "fp-etpfm-2020-goodson-jacs"
+source = "real_papers:2604.13375v2"
+key = "ETPFM-2020-goodson-JACS"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('T.~{Goodson III}'); we did not, and read the whole as one group's name. Theodore Goodson is on the record."
+
+[[case]]
+name = "fp-goeppertmayer31"
+source = "real_papers:2604.13375v2"
+key = "GoeppertMayer31"
+expect = []
+note = "was REF012: The entry adds an English translation in brackets after the German title, which is right."
+
+[[case]]
+name = "fp-larchuk95"
+source = "real_papers:2604.13375v2"
+key = "Larchuk95"
+expect = []
+note = "was REF012: Crossref's title has a footnote mark on its last word ('Downconversiona')."
+
+[[case]]
+name = "fp-perina98"
+source = "real_papers:2604.13375v2"
+key = "Perina98"
+expect = []
+note = "was REF011: A bug of ours: the entry writes '{J. Peřina, Jr.}' in braces, which BibTeX prints as written; we read it as a group's name. Jan Peřina (Jr.) is on the record."
+
+[[case]]
+name = "fp-sonnenberg64"
+source = "real_papers:2604.13375v2"
+key = "Sonnenberg64"
+expect = []
+note = "was REF012: Crossref's title has a footnote mark after the formula ('Cs3Sb1')."
+
+[[case]]
+name = "fp-goodson-etpf-2017-jpcl"
+source = "real_papers:2604.13375v2"
+key = "goodson-ETPF-2017-JPCL"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('T.~{Goodson III}'); we did not, and read the whole as one group's name. Theodore Goodson is on the record."
+
+[[case]]
+name = "fp-goodson2022etpfm"
+source = "real_papers:2604.13375v2"
+key = "goodson2022ETPFM"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('T.~{Goodson III}'); we did not, and read the whole as one group's name. Theodore Goodson is on the record."
+
+[[case]]
+name = "fp-goodson2024etpfm"
+source = "real_papers:2604.13375v2"
+key = "goodson2024ETPFM"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('T.~{Goodson III}'); we did not, and read the whole as one group's name. Theodore Goodson is on the record."
+
+[[case]]
+name = "fp-goodson2026etpfm"
+source = "real_papers:2604.13375v2"
+key = "goodson2026ETPFM"
+expect = []
+note = "was REF011: Crossref misspells the first author 'Varnavksi'; the entry's Oleg Varnavski is right."
+
+[[case]]
+name = "fp-jimenez2022"
+source = "real_papers:2604.13375v2"
+key = "jimenez2022"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('C.~H.~{Camp,~Jr.}'); we did not, and read the whole as one group's name. Charles H. Camp is on the record."
+
+[[case]]
+name = "fp-jimenez2025"
+source = "real_papers:2604.13375v2"
+key = "jimenez2025"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('C.~H.~{Camp,~Jr.}'); we did not, and read the whole as one group's name. Charles H. Camp is on the record."
+
+[[case]]
+name = "fp-perina2009ppln"
+source = "real_papers:2604.13375v2"
+key = "perina2009ppln"
+expect = []
+note = "was REF011: A bug of ours: the entry writes '{J. Peřina, Jr.}' in braces, which BibTeX prints as written; we read it as a group's name. Jan Peřina (Jr.) is on the record."
+
+[[case]]
+name = "fp-perina2010"
+source = "real_papers:2604.13375v2"
+key = "perina2010"
+expect = []
+note = "was REF011: A bug of ours: the entry writes '{J. Peřina, Jr.}' in braces, which BibTeX prints as written; we read it as a group's name. Jan Peřina (Jr.) is on the record."
+
+[[case]]
+name = "fp-perina2013oe"
+source = "real_papers:2604.13375v2"
+key = "perina2013OE"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('J.~{Peřina~Jr.}'); we did not, and read the whole as one group's name. Jan Peřina is on the record."
+
+[[case]]
+name = "fp-perina2014pra"
+source = "real_papers:2604.13375v2"
+key = "perina2014PRA"
+expect = []
+note = "was REF011: A bug of ours: the entry writes '{J. Peřina, Jr.}' in braces, which BibTeX prints as written; we read it as a group's name. Jan Peřina (Jr.) is on the record."
+
+[[case]]
+name = "fp-perina2016pra"
+source = "real_papers:2604.13375v2"
+key = "perina2016PRA"
+expect = []
+note = "was REF010: A bug of ours: the entry writes '{J. Peřina, Jr.}' in braces, which BibTeX prints as written; we read it as a group's name. Jan Peřina (Jr.) is on the record."
+
+[[case]]
+name = "fp-perina2016sr"
+source = "real_papers:2604.13375v2"
+key = "perina2016SR"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('J.~{Peřina~Jr.}'); we did not, and read the whole as one group's name. Jan Peřina is on the record."
+
+[[case]]
+name = "fp-perina2017pra"
+source = "real_papers:2604.13375v2"
+key = "perina2017PRA"
+expect = []
+note = "was REF011: A bug of ours: BibTeX reads '~' as a space between a name's parts ('J.~{Peřina~Jr.}'); we did not, and read the whole as one group's name. Jan Peřina is on the record."
+
+[[case]]
+name = "fp-teich1997"
+source = "real_papers:2604.13375v2"
+key = "teich1997"
+expect = []
+note = "was REF012: The entry adds the Czech title in parentheses after the English one, as the journal printed both."
+
+[[case]]
+name = "fp-vasluianu2026ntirealn"
+source = "real_papers:2604.13383v1"
+key = "vasluianu2026ntirealn"
+expect = []
+note = "was REF012, REF013: The entry cites the NTIRE 2026 challenge report (CVPRW 2026), not yet indexed; it was compared with the NTIRE 2025 report of that name."
+
+[[case]]
+name = "fp-shapley1953value"
+source = "real_papers:2604.13395v1"
+key = "shapley1953value"
+expect = []
+note = "was REF012: Crossref's title carries the chapter's number ('17. A Value for n-Person Games')."
+
+[[case]]
+name = "fp-wang202310990"
+source = "real_papers:2604.13525v1"
+key = "Wang202310990"
+expect = []
+note = "was REF002: A bug of ours: the url is a Scopus link, and the DOI read from it ran on into '&partnerid=40&md5=...'; the doi field's DOI exists."
+
+[[case]]
+name = "fp-lernerkeltner2000"
+source = "real_papers:2604.06562v1"
+key = "LernerKeltner2000"
+expect = []
+note = "was REF012: 'Judgment' and Crossref's 'judgement' are one word's spellings."
+
+[[case]]
+name = "fp-wang2025icc"
+source = "real_papers:2604.00360v1"
+key = "wang2025icc"
+expect = []
+note = "was REF012: The entry puts the acronym first ('ICC: Intra-Cluster Contraction ...'), which Crossref's title leaves out; the title is the same."

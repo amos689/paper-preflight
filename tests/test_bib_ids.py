@@ -55,6 +55,15 @@ def test_a_percent_encoded_doi_in_a_link() -> None:
     assert ids(bib) == ["doi:10.1002/1097-0142(1950)3:1<32::aid-cncr2820030106>3.0.co;2-3"]
 
 
+def test_a_dois_link_parameters_are_not_the_doi() -> None:
+    # a Scopus link (heldout23): the DOI is a parameter, followed by others
+    bib = (
+        "@article{a, doi = {10.1109/TPAMI.2023.3259640}, url = {https://www.scopus.com/inward/"
+        "record.uri?eid=2-s2.0-85151503803&doi=10.1109%2fTPAMI.2023.3259640&partnerID=40&md5=5e0}}"
+    )
+    assert ids(bib) == ["doi:10.1109/tpami.2023.3259640"]
+
+
 def test_arxiv_from_eprint_journal_url_and_datacite_doi() -> None:
     assert ids("@misc{a, eprint={1706.03762v5}, archivePrefix={arXiv}}") == ["arxiv:1706.03762v5"]
     assert ids("@article{a, journal={arXiv preprint arXiv:1810.04805}}") == ["arxiv:1810.04805"]

@@ -84,6 +84,28 @@ def test_parse_authors_and_others() -> None:
     assert not parse_authors("Ralph, Paul").truncated
 
 
+@pytest.mark.parametrize(
+    ("raw", "given", "family"),
+    [
+        # BibTeX's tie between a name's parts (heldout23)
+        ("T.~{Goodson III}", "T.", "Goodson III"),
+        ("J.~{Pe{\\v r}ina~Jr.}", "J.", "Peřina Jr."),
+        ("C.~H.~{Camp,~Jr.}", "C. H.", "Camp, Jr."),
+        # a person braced whole with the suffix, printed as written
+        ("{J.~Pe{\\v r}ina, Jr.}", "J.", "Peřina Jr."),
+        ("{J. Peřina, Jr.}", "J.", "Peřina Jr."),
+    ],
+)
+def test_names_as_bibtex_reads_them(raw: str, given: str, family: str) -> None:
+    (person,) = parse_authors(raw).people
+    assert (person.given, person.family, person.literal) == (given, family, "")
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t",
+        authors=(Person.from_display(f"Ann {family.split()[0].rstrip(',')}"),),
+    )  # fmt: skip
+    assert check_authors(parse_authors(raw), record).missing == ()
+
+
 def test_people_inside_one_pair_of_braces() -> None:
     # Rev. Mod. Phys. 81, 865 as a real paper cites it (heldout18)
     braced = parse_authors("{R. Horodecki, P. Horodecki, M. Horodecki, and\n K. Horodecki}")
@@ -730,6 +752,9 @@ def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
         # a single name a registry misspelt (Crossref; heldout22)
         ("{Kismiantini}", "Kiasmiantini", True),
         ("Kismiantini", "Kiasmiantini", True),
+        # two letters a registry swapped, with the same given name (Crossref; heldout23)
+        ("Varnavski, Oleg", "Varnavksi, Oleg", True),
+        ("Varnavski, Oleg", "Varnavksi, Olga", False),
     ],
 )  # fmt: skip
 def test_one_person_in_another_form(ours: str, theirs: str, same: bool) -> None:
@@ -1016,6 +1041,31 @@ def test_a_solar_symbol_is_the_word_sun() -> None:
 )  # fmt: skip
 def test_symbols_registries_write_otherwise(written: str, recorded: str) -> None:
     assert title_key(written) == title_key(recorded)
+
+
+@pytest.mark.parametrize(
+    ("written", "recorded", "status"),
+    [
+        # a chapter's number, footnote marks, a translation after the title (heldout23)
+        ("A value for n-person games", "17. A Value for n-Person Games", "match"),
+        ("Coincidences in Parametric Downconversion",
+         "Coincidences in Parametric Downconversiona", "match"),
+        ("Two-photon photoelectric effect in Cs$_3$Sb",
+         "TWO-PHOTON PHOTOELECTRIC EFFECT IN Cs3Sb1", "match"),
+        ("Über Elementarakte mit zwei Quantensprüngen [On elementary processes with "
+         "two-quantum transitions]", "Über Elementarakte mit zwei Quantensprüngen",
+         "match"),
+        ("Toward a Model of Influences on Judgment and Choice",
+         "Toward a model of influences on judgement and choice", "match"),
+        # another year's edition of a series is another work
+        ("NTIRE 2026 Ambient Lighting Normalization Challenge Report",
+         "NTIRE 2025 Ambient Lighting Normalization Challenge Report", "mismatch"),
+    ],
+)  # fmt: skip
+def test_titles_a_registry_marks_otherwise(written: str, recorded: str, status: str) -> None:
+    found = check_title(written, SourceRecord(source="x", source_id="x", title=recorded))
+    assert found.status == status
+    assert found.changed == () or status == "mismatch"
 
 
 def test_titles_registries_write_otherwise() -> None:

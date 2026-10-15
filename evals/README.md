@@ -150,9 +150,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout20` | 2026-05-06..12 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 950 | 133 | 126 | 7 | 0 | 0.7 |
 | `heldout21` | 2026-04-29..05-05 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 1,118 | 106 | 84 | 19 | 3 | **1.7** |
 | `heldout22` | 2026-04-22..28 (an earlier week) | held out for 1.0, second try (#205; run with #204); studied for #208 | 910 | 126 | 114 | 11 | 1 | 1.2 |
-| `heldout23` | 2026-04-15..21 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 1,341 | 226 | 194 | 28 | 4 | **2.1** |
-| `heldout24` | 2026-04-08..14 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 1,088 | 194 | 181 | 7 | 6 | 0.6 |
-| `heldout25` | 2026-04-01..07 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 763 | 86 | 80 | 6 | 0 | 0.8 |
+| `heldout23` | 2026-04-15..21 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 1,341 | 226 | 194 | 28 | 4 | **2.1** |
+| `heldout24` | 2026-04-08..14 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 1,088 | 194 | 181 | 7 | 6 | 0.6 |
+| `heldout25` | 2026-04-01..07 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 763 | 86 | 80 | 6 | 0 | 0.8 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -200,6 +200,10 @@ translation after a title, a Scopus link's DOI run on into its parameters, a pat
 to a paper of its title, names a registry misspells or a later version adds. Among the 455
 real problems: a quantum-optics review with fourteen DOIs that do not exist or are other
 papers', and papers whose author lists are largely invented.
+
+The fourth try fixes that bug and the other kinds (#211: 25 of the 41 gone on a replay of 560
+papers, no real problem lost), measured on `heldout26` (2026-03-25..31), `heldout27`
+(03-18..24) and `heldout28` (03-11..17), committed before it (#210).
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
