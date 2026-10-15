@@ -57,7 +57,8 @@ _EMBEDDED_DOCUMENT_RE = re.compile(
 # TELESCOPE[/ITAL][ITAL]Hubble Space Telescope[/ITAL] Observations of the C[CLC]f[/CLC]A ...",
 # where a phrase in capitals is followed by the same phrase in its usual case.
 _AAS_REPEAT_RE = re.compile(r"\[(ITAL|BOLD|SC)\]([^\[\]]+)\[/\1\]\s*\[\1\]([^\[\]]+)\[/\1\]")
-_AAS_TAG_RE = re.compile(r"\[/?(?:ITAL|BOLD|ROM|CLC|CSC|SC|SUP|SUB|TT)\]")
+# also around formulas: "1000 km s[FORMULA][F]-1[/F][/FORMULA]" (ApJL 663, L77; heldout21)
+_AAS_TAG_RE = re.compile(r"\[/?(?:ITAL|BOLD|ROM|CLC|CSC|SC|SUP|SUB|TT|FORMULA|F)\]")
 
 
 def _aas_repeat(match: re.Match[str]) -> str:

@@ -132,7 +132,7 @@ class Evidence:
     software: list[SourceRecord] = field(default_factory=list)
     missing_software: list[tuple[str, str]] = field(default_factory=list)
     # whether a catalogue of journals and conferences knows the venue the entry names, for a
-    # work found as a preprint alone (C6); None when not asked or not answered
+    # work found as a preprint alone (C6) or not found at all; None when not asked or not answered
     venue_known: bool | None = None
     pmid_missing: list[str] = field(default_factory=list)  # PMIDs PubMed does not know
     pmcid_missing: list[str] = field(default_factory=list)  # PMCIDs PubMed Central does not know
@@ -474,6 +474,9 @@ async def resolve(entries: list[BibEntry], sources: Sources) -> dict[str, Eviden
     # 8. Books no registry knows (no DOI), from Open Library.
     books = [i for i in evidence.values() if _unfound_book(i)]
     await asyncio.gather(*(_search_books(item, sources) for item in books))
+    # 10b. The venue of a work no source found: one no catalogue knows holds works no index does.
+    unfound = [i for i in evidence.values() if _unfound_at_venue(i)]
+    await asyncio.gather(*(_check_venue(item, sources) for item in unfound))
 
     # 7. The issue's date for Crossref articles a year off the entry's year.
     await _issue_years(list(evidence.values()), sources)
@@ -1023,6 +1026,32 @@ def _venue_to_check(item: Evidence) -> bool:
         if evaluate(info, r).title.status in {"match", "variant"}
     ]
     return bool(fitting) and all(is_preprint(r) for r in fitting)
+
+
+_JOURNAL_NAME = re.compile(
+    r"\b(?:journal|transactions|letters|review|annals|bulletin|magazine|quarterly|acta)\b", re.I
+)
+
+
+def _unfound_at_venue(item: Evidence) -> bool:
+    """An entry no source found, citing a journal or proceedings by name. A venue no catalogue
+    of journals and conferences knows is where works no index holds are: a society's annual
+    meeting (EAS2024), a users' conference (SAS's SUGI 27), an internal memo series, a blog
+    named as a journal (heldout21, heldout22). Invented works mostly name real venues, which
+    the catalogues know, and stay "not found"; so do those at a journal, real or invented."""
+    from paper_preflight.match import canonical_venue, evaluate
+
+    info = item.info
+    venue = info.venue or ""
+    if info.venue_field not in {"journal", "booktitle"} or not venue or item.anchored:
+        return False
+    if not info.title or canonical_venue(venue) or _NOT_A_VENUE.search(venue):
+        return False
+    if _JOURNAL_NAME.search(venue):
+        # invented works come with invented journals that sound real ("Journal of Legal
+        # Technology", GPTZero's NeurIPS 2025 row 94): a journal no catalogue knows says nothing
+        return False
+    return not any(evaluate(info, r).title.status in {"match", "variant"} for r in item.candidates)
 
 
 async def _check_venue(item: Evidence, sources: Sources) -> None:

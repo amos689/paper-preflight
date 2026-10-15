@@ -1383,6 +1383,18 @@ def test_corr_names_a_preprint(venue: str) -> None:
           "Language Processing"}, (Reason.UNINDEXED_VENUE,)),
         ({"Proceedings of ACL": "Proceedings of the 61st Annual Meeting of the Association for "
           "Computational Linguistics"}, ()),
+        # works only NASA ADS or nobody indexes (heldout21, heldout22)
+        ({"Proceedings of ACL": "EAS2024, European Astronomical Society Annual Meeting"},
+         (Reason.UNINDEXED_VENUE,)),
+        ({"Proceedings of ACL": "Astronomical Data Analysis Software and Systems XXV"},
+         (Reason.UNINDEXED_VENUE,)),
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {SAS User Group International (SUGI27) Online Proceedings}"},
+         (Reason.UNINDEXED_VENUE,)),
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {Notion Blog}"}, (Reason.UNINDEXED_VENUE,)),
+        ({"@inproceedings": "@article", "booktitle = {Proceedings of ACL}":
+          "journal = {Askap memorandum}"}, (Reason.GREY_LITERATURE,)),
         # CVPR's workshops are indexed: GPTZero's invented papers cite them (NeurIPS 2025, 68)
         ({"Proceedings of ACL": "Proceedings of the IEEE/CVF Conference on Computer Vision and "
           "Pattern Recognition (CVPR) Workshops"}, ()),
@@ -1418,6 +1430,20 @@ def test_works_the_indexes_leave_out(changes: dict[str, str], reasons: tuple[Rea
     result = assess(entry, item, current_year=YEAR)
     assert result.reasons == reasons
     assert result.verdict is (Verdict.CANNOT_DETERMINE if reasons else Verdict.NOT_FOUND)
+
+
+def test_a_venue_no_catalogue_knows() -> None:
+    # nobody found the work, and no catalogue of journals and conferences has its venue: the
+    # venue holds works no index does (resolve._unfound_at_venue asks the catalogues)
+    entry = bib(NO_DOI.replace("Proceedings of ACL", "Proceedings of the Lunar Society Meeting"))
+    searched = {"searched": {"dblp", "crossref"}, "negative": {"dblp", "crossref"}}
+    unknown = assess(entry, evidence_for(entry, venue_known=False, **searched), current_year=YEAR)
+    assert (unknown.verdict, unknown.reasons) == (
+        Verdict.CANNOT_DETERMINE,
+        (Reason.UNINDEXED_VENUE,),
+    )
+    known = assess(entry, evidence_for(entry, venue_known=True, **searched), current_year=YEAR)
+    assert known.verdict is Verdict.NOT_FOUND
 
 
 def test_a_books_doi_on_a_chapter_is_its_container() -> None:

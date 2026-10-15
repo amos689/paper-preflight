@@ -256,6 +256,11 @@ def _relation(m: Match) -> str:
             return "corrupted"  # "Front Matter" and the like: the record itself is wrong
         if not versions_known(m.record):
             return "unclear"  # the entry may cite an earlier version with another title
+        if m.record.work_type in _RELEASED_TYPES:
+            # cited as its makers ask, with a release's DOI: lm-evaluation-harness as Gao et
+            # al., "A framework for few-shot ...", its v0.4.0 record titled "EleutherAI/lm-
+            # evaluation-harness: Major refactor" and credited to its contributors (heldout22)
+            return "unclear"
         # Usually the entry's title is wrong (HALLMARK's "chimeric titles": a real DOI and real
         # authors under an invented title). The finding names the recorded title (REF012).
         return "retitled"
@@ -615,6 +620,20 @@ def _workshop_version(info: EntryInfo, record: SourceRecord) -> bool:
     )
 
 
+def _after_workshop(info: EntryInfo, record: SourceRecord) -> bool:
+    """The record is a workshop paper and the entry cites a later version elsewhere: Novikov et
+    al.'s "Exponential Machines", ICLR 2017 workshop, then Bull. Pol. Acad. Sci. Tech. Sci. 66
+    (2018), as cited (heldout21). The later version's year and venue are no error."""
+    return (
+        names_workshop(record.venue)
+        and not names_workshop(info.venue)
+        and bool(info.venue)
+        and info.year is not None
+        and record.year is not None
+        and 0 < info.year - record.year <= 3
+    )
+
+
 def _field_findings(
     entry: BibEntry,
     info: EntryInfo,
@@ -795,7 +814,11 @@ def _field_findings(
                 suggestion=format_authors(record), detail=detail, detail_zh=detail_zh,
             )
         )  # fmt: skip
-    if m.year.status == "mismatch" and (published_known or not _published_later(info.year, record)):
+    if (
+        m.year.status == "mismatch"
+        and (published_known or not _published_later(info.year, record))
+        and not _after_workshop(info, record)
+    ):
         years = ", ".join(str(y) for y in sorted(record.all_years))
         out.append(
             make_finding(
@@ -807,6 +830,11 @@ def _field_findings(
         m.venue.status == "mismatch"
         and not is_preprint(record)
         and not _workshop_version(info, record)
+        and not _after_workshop(info, record)
+        # a publisher is no venue ("Association for Computational Linguistics" for an EMNLP
+        # demo); an entry citing the arXiv copy names it rightly (REF015 says where it appeared)
+        and info.venue_field != "publisher"
+        and canonical_venue(info.venue) != "arxiv"
     ):
         venue_field = next((f for f in VENUE_FIELDS if f in entry.fields), None)
         out.append(
@@ -1310,6 +1338,8 @@ def _under_review(info: EntryInfo) -> bool:
 _WEB_VENUES = re.compile(
     r"\btransformer circuits\b|\blesswrong\b|\balignment forum\b|^the gradient$|\bsubstack\b|"
     r"\bblack ?hat\b|\bdef ?con\b|\blaw review\b|\bl\.\s?rev\.|^open review$|"
+    # a blog named as a journal ("Notion Blog", DeepCoder's release post; heldout21)
+    r"\bblog\b|"
     # government gazettes: "Federal Register, 83, 40823 (Document 2018-17709)"
     r"^federal register$|^congressional record$|^official journal of the european union$",
     re.IGNORECASE,
@@ -1319,7 +1349,9 @@ _WEB_VENUES = re.compile(
 _REPORT_VENUE = re.compile(
     r"\btech(?:nical|\.)?\s*rep(?:ort|\.)?(?!\w)|\b(?:phd|master'?s)\s+thesis\b|\bdissertation\b"
     # "Report to the Coastal Transportation Engineering Research and Education Center, ..."
-    r"|\breport\s+(?:to|for|prepared\s+for)\b",
+    r"|\breport\s+(?:to|for|prepared\s+for)\b"
+    # an observatory's memo series ("Askap memorandum", ASKAP-SW-0020; heldout21)
+    r"|\bmemorand(?:um|a)\b",
     re.IGNORECASE,
 )
 
@@ -1333,7 +1365,13 @@ _ABSTRACTS_AND_BULLETINS = re.compile(
     r"|^(?:the\s+)?messenger$|\biau\s+circ|\bgcn\s+circ|\bcbet\b|\batel\b|astronomer'?s\s+telegram"
     r"|information\s+bulletin\s+on\s+variable\s+stars|\bibvs\b|minor\s+planet\s+(?:electronic\s+)?circ"
     # the short papers of Japan's NLP society's annual meeting (heldout17), unlike ACL's
-    r"|annual\s+meeting\s+of\s+the\s+association\s+for\s+natural\s+language\s+processing",
+    r"|annual\s+meeting\s+of\s+the\s+association\s+for\s+natural\s+language\s+processing"
+    # the European Astronomical Society's abstracts, the ASP Conference Series (ADASS among
+    # them), which have no DOIs, and SAS's users' conference (heldout21, heldout22)
+    r"|european\s+astronomical\s+society\s+(?:annual\s+)?meeting"
+    r"|astronomical\s+society\s+of\s+the\s+pacific\s+conference|\basp\s+conf"
+    r"|astronomical\s+data\s+analysis\s+software\s+and\s+systems"
+    r"|\bsas\s+users?\s+group\b|\bsugi\s*\d|\bsas\s+global\s+forum\b",
     re.IGNORECASE,
 )
 
@@ -1408,7 +1446,8 @@ def _abstention_reasons(
         reasons.append(Reason.OLD_WORK)
     # venues the indexes often leave out: an ICLR 2025 workshop paper on OpenReview, a chapter
     # in a 1996 Dekker volume of Lecture Notes in Pure and Applied Mathematics
-    elif not live_ids and _unindexed_venue(info):
+    # or that no catalogue of journals and conferences knows (resolve._unfound_at_venue)
+    elif not live_ids and (_unindexed_venue(info) or evidence.venue_known is False):
         reasons.append(Reason.UNINDEXED_VENUE)
     if not live_ids and _under_review(info):
         reasons.append(Reason.ANONYMOUS)

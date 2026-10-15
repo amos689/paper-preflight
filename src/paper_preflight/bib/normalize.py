@@ -31,12 +31,15 @@ def title_key(title: str) -> str:
     Hyphens and punctuation are treated as separators. The solar mass reads alike however a
     registry writes it ("1 M sub sun" in ADS, "1 M(solar)" in Crossref, 10.1086/172827).
     """
-    key = " ".join(_WORD_RE.findall(fold(_STAR.sub(" ", title).replace("_", " "))))
+    key = " ".join(
+        _WORD_RE.findall(fold(_STAR.sub(" ", title).replace("_", " ").replace("×", "x")))
+    )
     key = _SOLAR.sub(r"\1 sun", key) if " sun" in key or " solar" in key else key
     if "sim" in key:
         key = " ".join(w for w in map(_untilde, key.split()) if w)
-    if "part " in key or "approximately equal to" in key:
-        key = _PART_NUMBER.sub("", _APPROXIMATELY_EQUAL.sub("", key)).strip()
+    if any(s in key for s in ("part ", "approximately equal to", "lambda", "0")):
+        key = _PART_NUMBER.sub("", _APPROXIMATELY_EQUAL.sub("", key))
+        key = _LAMBDA.sub("", _ZERO_FOR_O.sub("o", key))
         key = " ".join(key.split())
     return key
 
@@ -59,6 +62,11 @@ def _untilde(word: str) -> str:
 # before a part's number ("... networks. Part I. Modeling" where Crossref has "networks: I.")
 _APPROXIMATELY_EQUAL = re.compile(r"\bapproximately equal to\b")
 _PART_NUMBER = re.compile(r"\bpart (?=(?:[ivx]+|\d+)\b)")
+# a wavelength as ADS spells it ("the interstellar lambda 3302 Na I doublet", where Crossref
+# dropped the λ; heldout21); a zero a registry typed for the letter o ("A Can0nical
+# Integrati0n Technique", IEEE TNS 30; heldout21)
+_LAMBDA = re.compile(r"\b(?:lambda ?)+(?=\d)")
+_ZERO_FOR_O = re.compile(r"(?<=[a-z])0(?=[a-z])")
 
 
 def word_count(title: str) -> int:

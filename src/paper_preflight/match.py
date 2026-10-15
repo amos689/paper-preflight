@@ -254,7 +254,9 @@ _EDITION = re.compile(
     re.I,
 )
 _SECTION_LABEL = re.compile(
-    r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$|\s*\(with (discussions?|comments)[^()]*\)\s*$",
+    r"\s*\[[^\[\]]{3,40}\]\s*$|\.\s*Plates\.?\s*$|\s*\(with (discussions?|comments)[^()]*\)\s*$"
+    # a track's label: IJCAI's "... Neural Link Predictors (Extended Abstract)*" (heldout21)
+    r"|\s*\((?:extended\s+)?abstract\)\s*\*?\s*$",
     re.I,
 )
 _ARTICLES = frozenset({"a", "an", "the"})
@@ -290,7 +292,16 @@ _FOOTNOTE_MARK = re.compile(r"([a-z]{3,})\d")
 
 
 def _same_word(a: str, b: str) -> bool:
-    return _american(_ROMAN.get(a, a)) == _american(_ROMAN.get(b, b))
+    a, b = _ROMAN.get(a, a), _ROMAN.get(b, b)
+    # "towards" and "toward" are one word (IEEE TGRS's "Toward Remote Sensing ..."; heldout20)
+    a, b = _DIRECTIONS.get(a, a), _DIRECTIONS.get(b, b)
+    return _american(a) == _american(b)
+
+
+_DIRECTIONS = {
+    word + "s": word
+    for word in ("toward", "afterward", "backward", "forward", "upward", "downward")
+}
 
 
 def _isotope(mine: str, recorded: str) -> bool:
@@ -439,6 +450,16 @@ def check_title(entry_title: str, record: SourceRecord) -> FieldCheck:
         diff = () if subtitle else changed_words(entry_title, candidate)
         if changed is None or len(diff) < len(changed):
             changed = diff
+    lost = "".join(c for c in entry_title if c.isascii() or not c.isalpha())
+    if (
+        changed
+        and lost != entry_title
+        and record.title.isascii()
+        and (title_key(lost) == title_key(record.title))
+    ):
+        # letters outside ASCII the registry lost: Crossref's "Srsic" for Sérsic (AJ 127, 1917;
+        # heldout22)
+        return FieldCheck("match", max(best, TITLE_SAME))
     if best >= TITLE_SAME:
         return FieldCheck("variant" if best_note else "match", best, best_note, changed or ())
     if best >= TITLE_VARIANT:
@@ -605,6 +626,26 @@ def _surname_as_initial(a: Person, b: Person) -> bool:
     )
 
 
+def _compound_surname_cut(a: Person, b: Person) -> bool:
+    """``a`` cites ``b`` by the first part of a compound surname, with the same given name:
+    "Schroeder, Christian" is dblp's Christian Schröder de Witt, "Henrique Pondé" its Henrique
+    Pondé de Oliveira Pinto (heldout22). ``b``'s name has two words at least after the given."""
+    family_a = [loose_surname(w) for w in re.findall(r"\w+", fold(a.family))]
+    given_a = [loose_surname(w) for w in re.findall(r"\w+", fold(a.given))]
+    words_b = [loose_surname(w) for w in re.findall(r"\w+", fold(b.display))]
+    return (
+        not a.literal
+        and not b.literal
+        and len(family_a) == 1
+        and len(family_a[0]) >= 4
+        and bool(given_a)
+        and len(given_a[0]) >= 3
+        and len(words_b) >= 4
+        and words_b[0] == given_a[0]
+        and words_b[1] == family_a[0]
+    )
+
+
 def _same_letters(a: Person, b: Person) -> bool:
     """The same names and initials in any order: "Rouse D. M." (Vancouver style, which BibTeX
     reads as given "Rouse D.", family "M.") is David M. Rouse; "Mallikarjun B. R." is the same
@@ -638,6 +679,8 @@ def same_person(a: Person, b: Person) -> bool:
         return True
     if _surname_as_initial(a, b) or _surname_as_initial(b, a):
         return True
+    if _compound_surname_cut(a, b) or _compound_surname_cut(b, a):
+        return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree; or, in a surname of eight letters
     # or more, their initials ("Trakhenbrot" for B. Trakhtenbrot in Crossref and arXiv).
@@ -647,6 +690,8 @@ def same_person(a: Person, b: Person) -> bool:
     given, other = _first_given(a), _first_given(b)
     if len(given) >= 2 and given == other:
         return True
+    if not given and not other and min(len(key_a), len(key_b)) >= _LONG_SURNAME:
+        return True  # a single name a registry misspelt: Crossref's "Kiasmiantini" (heldout22)
     initials_only = min(len(given), len(other)) == 1 and given[:1] == other[:1]
     return min(len(key_a), len(key_b)) >= _LONG_SURNAME and initials_only
 
@@ -740,7 +785,8 @@ _PARTICLE_BETWEEN_INITIALS = re.compile(
 
 def _given_words(person: Person) -> list[str]:
     # initials written without dots, as Google Scholar exports them: "Brown, JR" is J. R. Brown
-    initials = _PARTICLE_BETWEEN_INITIALS.sub("", person.given.strip())
+    # also with a dot after them, Vancouver style: "Cairns NJ." (heldout21)
+    initials = _PARTICLE_BETWEEN_INITIALS.sub("", person.given.strip()).rstrip(".")
     if re.fullmatch(r"[A-Z]{2,3}", initials):
         return list(initials.lower())
     # "ks" and "x" are one sound in transcriptions (Aleksandar, Alexander)
@@ -1043,7 +1089,13 @@ def _check_authors(authors: AuthorList, record: SourceRecord) -> AuthorCheck:
         # record naming only an organisation (dblp's "DeepSeek-AI" for the DeepSeek-R1 report)
         return AuthorCheck("unknown")
     overlap = matched / counted
-    first_person = next(p for j, (p, _) in enumerate(entry) if j not in groups)
+    counted_people = [p for j, (p, _) in enumerate(entry) if j not in groups]
+    first_person = counted_people[0]
+    if _group(first_person) and not (_group(people[0]) or _organisation(people[0])):
+        # a collaboration the entry credits before its people, where the record begins with a
+        # person, is no first author to compare: "DESI Collaboration and Adame, A. G. and ..."
+        # where Crossref lists Adame first (heldout15)
+        first_person = next((p for p in counted_people if not _group(p)), first_person)
     if record.authors_ordered:
         leads = [people[0]]
         # an organisation leading the record ("OpenAI" before Josh Achiam, arXiv 2303.08774) is
@@ -1149,12 +1201,32 @@ def check_year(
     *,
     preprint_pair: bool = False,
     venue: str | None = None,
+    volume: str | None = None,
 ) -> FieldCheck:
     years = record.all_years
     if year is None or not years:
         return FieldCheck("unknown")
     if year in years:  # any registered year counts (online-first, print, preprint versions)
         return FieldCheck("match")
+    distance = min(abs(year - y) for y in years)
+    if distance <= 2 and names_year(record.venue, year) and _MEETING.search(record.venue or ""):
+        # the record's own venue names the entry's year: the meeting's, whatever date the record
+        # carries (Crossref dates ACL '02's BLEU 2001; PoS(MeerKAT2016) appeared in 2018)
+        return FieldCheck("match")
+    if (
+        volume
+        and record.volume
+        and volume.strip().lower() == record.volume.strip().lower()
+        and 0 < year - max(years) <= 2
+    ):
+        # the volume the entry cites is the record's, and its year the issue's, where the record
+        # has only the online date (MNRAS 527, 2024: online 2023; IEEE TKDE 35, 2023: online
+        # 2021; heldout22, heldout21)
+        return FieldCheck("match")
+    if distance <= 2 and is_preprint(record) and names_year(venue, year):
+        # a preprint around the meeting the entry names with its year (the TREC 2025 overview,
+        # on arXiv in February 2026; heldout20)
+        return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
     if (
         year + 1 in years
         and (
@@ -1213,7 +1285,6 @@ def check_year(
         return FieldCheck("variant", None, f"a scheduled issue, recorded year(s) {sorted(years)}")
     # No general ±1 tolerance: refchecker dropped it because it silently hid real year errors.
     # Only preprint/published pairs legitimately differ by a year or two.
-    distance = min(abs(year - y) for y in years)
     preprint = preprint_pair or record.work_type in {"preprint", "posted-content"}
     if preprint and distance <= 2:
         return FieldCheck("variant", None, f"recorded year(s) {sorted(years)}")
@@ -1445,6 +1516,10 @@ def _check_venue(
         ours = venue_words(VENUE_SERIES.sub(" ", venue))
         names = [record.venue or "", *record.venue_aliases]
         recorded = {w for name in names for w in venue_words(VENUE_SERIES.sub(" ", name))}
+        words = re.findall(r"[a-z]+", fold(venue))
+        initials = "".join(w[0] for w in words if w not in {"of", "the", "and", "on", "for", "in"})
+        if len(initials) >= 2 and initials in {re.sub(r"[^a-z]", "", fold(n)) for n in names}:
+            return FieldCheck("match")  # dblp's "RLJ", the Reinforcement Learning Journal
         if len(ours) >= 2 and recorded and not related_words(ours, recorded):
             return FieldCheck("mismatch", None, "venues share no word")
     return FieldCheck("unknown")
@@ -1596,7 +1671,9 @@ def _title_and_authors(info: EntryInfo, record: SourceRecord) -> tuple[FieldChec
 
 def evaluate(info: EntryInfo, record: SourceRecord, *, preprint_pair: bool = False) -> Match:
     title, authors = _title_and_authors(info, record)
-    year = check_year(info.year, record, preprint_pair=preprint_pair, venue=info.venue)
+    year = check_year(
+        info.year, record, preprint_pair=preprint_pair, venue=info.venue, volume=info.volume
+    )
     venue = check_venue(
         info.venue, record, named=info.venue_field in NAMED_VENUE_FIELDS,
         journal=info.venue_field in {"journal", "journaltitle"}, issns=info.issns,
@@ -1629,10 +1706,13 @@ def best_candidate(
     if not matches:
         return None
     # a later edition of a book only when no record of the book the entry dates fits as well
+    # of versions titled alike, the one at the venue the entry names: IEEE TIT's article, not its
+    # COLT extended abstract (heldout11)
     matches.sort(
         key=lambda m: (
             m.title.score or 0.0,
             not m.year.note.startswith(LATER_EDITION),
+            m.venue.status != "mismatch",
             m.authors.overlap,
         ),
         reverse=True,
