@@ -144,9 +144,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188); studied for #195 | 983 | 90 | 71 | 18 | 1 | **1.8** |
 | `dev2` | 2026-06-03..09 (an earlier week) | development batch, run with #195; studied for #198 | 1,038 | 72 | 59 | 12 | 1 | 1.2 |
 | `dev3` | 2026-05-27..06-02 (an earlier week) | development batch, run with #195; studied for #198 | 881 | 105 | 89 | 14 | 2 | 1.6 |
-| `heldout17` | 2026-10-07..13 (the fresh week) | held out for 1.0 (#198-#201; list committed before #201, #200) | 991 | 81 | 76 | 4 | 1 | 0.4 |
-| `heldout18` | 2026-05-20..26 (an earlier week) | held out for 1.0 (#200) | 1,136 | 174 | 148 | 22 | 4 | **1.9** |
-| `heldout19` | 2026-05-13..19 (an earlier week) | held out for 1.0 (#200) | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
+| `heldout17` | 2026-10-07..13 (the fresh week) | held out for 1.0 (#198-#201; list committed before #201, #200); studied for #204 | 991 | 81 | 76 | 4 | 1 | 0.4 |
+| `heldout18` | 2026-05-20..26 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,136 | 174 | 148 | 22 | 4 | **1.9** |
+| `heldout19` | 2026-05-13..19 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -157,8 +157,11 @@ Text-to-SQL papers that do not exist as written (invented titles under real syst
 (#200) before any of them was run, then each run once on the same code (main d99cac5, with
 #201). The gate is each week at most 1.5 false positives per 100 references and the three
 averaging at most 1.0. **It was not met**: `heldout18` is at 1.9, and the three together at
-1.08 (34 false positives in 3,135 references). The next round fixes these kinds and is
-measured on three new weeks.
+1.08 (34 false positives in 3,135 references). The next round fixes these kinds (#204: 22
+gone on a replay, 5 more when Semantic Scholar answers) and is measured on three new weeks:
+`heldout20` (2026-05-06..12) and `heldout21` (04-29..05-05), committed before #204 (#203), and
+the fresh week 2026-10-14..20 once arXiv has announced it. `evals/replay.py` leaves out a
+batch that has not had its run, so a frozen week is never replayed before it is measured.
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
