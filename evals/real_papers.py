@@ -86,6 +86,12 @@ BATCHES = {
     # the next fresh week (heldout17, 2026-10-07..13) is run; never held out
     "dev2": ("202606030000", "202606092359"),
     "dev3": ("202605270000", "202606022359"),
+    # held out for 1.0 (decided 2026-10-15): the next fresh week, collected once arXiv had
+    # announced it, and two earlier weeks never sampled; the three lists are committed before
+    # any of them is run, and each is run once on the same code
+    "heldout17": ("202610070000", "202610132359"),
+    "heldout18": ("202605200000", "202605262359"),
+    "heldout19": ("202605130000", "202605192359"),
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,
