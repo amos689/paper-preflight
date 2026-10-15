@@ -319,6 +319,37 @@ def test_a_meetings_year_named_by_its_venue() -> None:
     assert check_year(2003, article, venue="Journal of SAT 2003").status == "mismatch"
 
 
+def test_a_year_the_record_itself_names() -> None:
+    # Crossref dates ACL '02's BLEU 2001; PoS(MeerKAT2016) appeared in 2018 (heldout20, 21)
+    bleu = SourceRecord(
+        source="crossref", source_id="10.3115/1073083.1073135", title="BLEU", year=2001,
+        years=frozenset({2001}), venue="Proceedings of the 40th Annual Meeting on Association "
+        "for Computational Linguistics - ACL '02",
+    )  # fmt: skip
+    assert check_year(2002, bleu).status == "match"
+    assert check_year(2003, bleu).status == "mismatch"
+    meerkat = replace(
+        bleu, year=2018, years=frozenset({2018}),
+        venue="Proceedings of MeerKAT Science: On the Pathway to the SKA — PoS(MeerKAT2016)",
+    )  # fmt: skip
+    assert check_year(2016, meerkat).status == "match"
+    # an issue's year, by the volume the entry cites (MNRAS 527, 2024: online 2023; heldout22)
+    online = SourceRecord(
+        source="crossref", source_id="10.1093/mnras/stad3137", title="t", year=2023,
+        years=frozenset({2023}), volume="527",
+    )  # fmt: skip
+    assert check_year(2024, online, volume="527").status == "match"
+    assert check_year(2024, online, volume="528").status == "mismatch"
+    assert check_year(2026, online, volume="527").status == "mismatch"
+    # a preprint around the meeting the entry names (TREC 2025's overview, arXiv 2026)
+    preprint = SourceRecord(
+        source="dblp", source_id="journals/corr/abs-2602-10024", title="t", year=2026,
+        years=frozenset({2026}), venue="CoRR",
+    )  # fmt: skip
+    assert check_year(2025, preprint, venue="TREC 2025 Proceedings (TREC2025)").status == "variant"
+    assert check_year(2025, preprint, venue="TREC Proceedings").status == "mismatch"
+
+
 def test_years_a_registry_records_badly() -> None:
     # Int. J. Epidemiol. 49(6), December 2020: Crossref has the online date and the print one
     ije = SourceRecord(
@@ -671,6 +702,7 @@ def test_only_venue_names_are_judged() -> None:
         ("Rana, Md Mashud", "Rana, Mashud", False),
         ("Rana, Md Sohel", "Rana, Mashud", True),
         ("Xavier, JdeB", "Xavier, Joao de Bivar", False),  # initials run together
+        ("Cairns, NJ.", "Cairns, Nigel J.", False),  # Vancouver initials with a dot
         # a name and one initial are a middle name's, not the other's initials
         ("Horowitz, Seth A.", "Horowitz, Aaron", True),
     ],
@@ -691,6 +723,13 @@ def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
         ("Olugbara, Oludayo O", "O, Oludayo", True),
         ("Olugbara, Oludayo O", "K, Oludayo", False),
         ("Okafor, Chinedu", "O, Oludayo", False),
+        # the first part of a compound surname (dblp's names; heldout22)
+        ("Schroeder, Christian", "Christian Schr{\\\"o}der de Witt", True),
+        ("Henrique Pond{\\'e}", "Henrique Pond{\\'e} de Oliveira Pinto", True),
+        ("Schroeder, Anna", "Christian Schr{\\\"o}der de Witt", False),
+        # a single name a registry misspelt (Crossref; heldout22)
+        ("{Kismiantini}", "Kiasmiantini", True),
+        ("Kismiantini", "Kiasmiantini", True),
     ],
 )  # fmt: skip
 def test_one_person_in_another_form(ours: str, theirs: str, same: bool) -> None:
@@ -969,10 +1008,48 @@ def test_a_solar_symbol_is_the_word_sun() -> None:
         # a symbol spelt out (ApJ 285, 426) and "Part" before a part's number (heldout18)
         ("Populations since Z 0.5", "Populations since Z approximately equal to 0.5"),
         ("Metabolic networks. Part I. Modeling", "Metabolic networks: I. Modeling"),
+        # 4$\times$, ADS's "lambda 3302", zeros for o (heldout21)
+        ("Approaching 4× Speedup on A64FX", "Approaching 4x Speedup on A64FX"),
+        ("The interstellar lambda 3302 Na I doublet", "The interstellar 3302 Na I doublet"),
+        ("A Canonical Integration Technique", "A Can0nical Integrati0n Technique"),
     ],
 )  # fmt: skip
 def test_symbols_registries_write_otherwise(written: str, recorded: str) -> None:
     assert title_key(written) == title_key(recorded)
+
+
+def test_titles_registries_write_otherwise() -> None:
+    def status(entry: str, recorded: str) -> tuple[str, tuple[tuple[str, str], ...]]:
+        found = check_title(entry, SourceRecord(source="x", source_id="x", title=recorded))
+        return found.status, found.changed
+
+    # a letter the registry lost (AJ 127, 1917), a track's label (IJCAI 2022), "towards"
+    assert status(
+        "Elliptical-Galaxy Paradigm: Sérsic and Core Galaxies",
+        "Elliptical-Galaxy Paradigm: Srsic and Core Galaxies",
+    ) == ("match", ())
+    assert (
+        status(
+            "Complex Query Answering with Neural Link Predictors",
+            "Complex Query Answering with Neural Link Predictors (Extended Abstract)*",
+        )[0]
+        == "match"
+    )
+    assert (
+        status(
+            "Advancing Plain Vision Transformer Towards Remote Sensing Foundation Model",
+            "Advancing Plain Vision Transformer Toward Remote Sensing Foundation Model",
+        )[1]
+        == ()
+    )
+    # a word that is not the record's still is
+    assert (
+        status(
+            "Elliptical-Galaxy Paradigm: Sersic and Cored Galaxies",
+            "Elliptical-Galaxy Paradigm: Srsic and Core Galaxies",
+        )[1]
+        != ()
+    )
 
 
 def test_a_footnote_star_is_no_word() -> None:

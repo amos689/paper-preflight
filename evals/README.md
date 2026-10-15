@@ -147,9 +147,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout17` | 2026-10-07..13 (the fresh week) | held out for 1.0 (#198-#201; list committed before #201, #200); studied for #204 | 991 | 81 | 76 | 4 | 1 | 0.4 |
 | `heldout18` | 2026-05-20..26 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,136 | 174 | 148 | 22 | 4 | **1.9** |
 | `heldout19` | 2026-05-13..19 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
-| `heldout20` | 2026-05-06..12 (an earlier week) | held out for 1.0, second try (#203; run with #204) | 950 | 133 | 126 | 7 | 0 | 0.7 |
-| `heldout21` | 2026-04-29..05-05 (an earlier week) | held out for 1.0, second try (#203; run with #204) | 1,118 | 106 | 84 | 19 | 3 | **1.7** |
-| `heldout22` | 2026-04-22..28 (an earlier week) | held out for 1.0, second try (#205; run with #204) | 910 | 126 | 114 | 11 | 1 | 1.2 |
+| `heldout20` | 2026-05-06..12 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 950 | 133 | 126 | 7 | 0 | 0.7 |
+| `heldout21` | 2026-04-29..05-05 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 1,118 | 106 | 84 | 19 | 3 | **1.7** |
+| `heldout22` | 2026-04-22..28 (an earlier week) | held out for 1.0, second try (#205; run with #204); studied for #208 | 910 | 126 | 114 | 11 | 1 | 1.2 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -178,6 +178,13 @@ compared with its workshop version, and software cited as its makers ask. Among 
 problems: three papers with author lists largely invented (remote sensing, RL, quantization),
 ACM's unregistered 10.5555 DOIs in five entries, and DOIs or arXiv IDs that do not exist or
 belong to other papers in twelve more.
+
+The third try (#208) changes how such works are judged: a work no source found, at proceedings,
+a meeting or another venue that is no journal and that no catalogue of venues knows, cannot be
+determined rather than "not found" (a journal no catalogue knows may be invented). With
+the other fixes, 29 of the 37 are gone on a replay of 500 papers (9 more on earlier weeks), and
+none of the real "not found" findings; it is measured on `heldout23` (2026-04-15..21),
+`heldout24` (04-08..14) and `heldout25` (04-01..07), committed before it (#207).
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted

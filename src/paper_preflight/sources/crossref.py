@@ -141,11 +141,17 @@ def parse_work(item: dict[str, Any]) -> SourceRecord:
     # An article online late in the year, with no print date, is often in next year's volume
     # (Quantum Sci. Technol. 4(1) 014004: online 9 October 2018, volume 4 is 2019). Other gaps
     # are settled by the issue's own date (:func:`issue_years`).
+    # MNRAS's records keep only the online date, never the volume: its papers online from
+    # October are in next year's first volumes (MNRAS 491, January 2020: online 11 November 2019)
     online = ((item.get("published-online") or {}).get("date-parts") or [[None]])[0]
     if (
         item.get("type") == "journal-article"
         and not item.get("published-print")
-        and (item.get("volume") or (len(online) >= 2 and online[1] == 12))
+        and (
+            item.get("volume")
+            or (len(online) >= 2 and online[1] == 12)
+            or doi.startswith("10.1093/mnras")
+        )
         and len(online) >= 2
         and online[0]
         and online[1] >= 10

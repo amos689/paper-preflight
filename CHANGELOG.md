@@ -15,6 +15,16 @@ All notable changes to this project are documented here. The format follows
   shorter list (Brian Ichter joined Chain-of-Thought after v1), none a false positive. Against
   a preprint's record (arXiv, DataCite, bioRxiv), whose later versions add people, and for a
   list cut short, it stays an info.
+- **A work no source found, at a venue no catalogue knows, cannot be determined** rather than
+  "not found" (REF003). The journal or proceedings it names is asked of OpenAlex's sources,
+  dblp's venues and Crossref's containers, as for a venue of a work found only as a preprint:
+  one none of them has (a society's annual meeting, a users' conference, a memo series, a blog
+  named as a journal) holds works no index does. Invented works mostly name real venues, which
+  the catalogues know, and are still not found; so are works at a journal no catalogue knows,
+  since invented works come with invented journals (two of GPTZero's). On 500 development
+  papers, with the venues named below, 13 "not found" false positives and an unclear one
+  went, and none of the 39 real ones; HALLMARK `dev_public` and GPTZero (142 of 151) are
+  unchanged.
 
 ### Added
 
@@ -44,6 +54,28 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- **False positives found on heldout20-22** (the 1.0 gate's second try: 37 in 2,978 references,
+  1.24 per 100): 29 of them gone on a replay of 500 papers, 9 more on earlier weeks; no real
+  problem lost, two more found (a title the entry abbreviates, an author who is not the
+  paper's). The false-positive museum gains 37 cases (349).
+  - Venues: ADS's journal macros (`\aap`, `\mnras`, ...) as the journals they stand for; the
+    European Astronomical Society's abstracts, the ASP Conference Series (ADASS) and SAS's
+    users' conference, which no general index holds; memoranda as reports; a blog named as a
+    journal; dblp's acronym for a journal ("RLJ"); a publisher in place of a venue, or CoRR
+    for an arXiv copy, compared as a venue no more; of versions titled alike, the one at the
+    venue the entry names (an IEEE TIT article, not its COLT abstract).
+  - Years: a year the record's own venue names ("ACL '02", "PoS(MeerKAT2016)"); an issue's year
+    by the volume the entry cites, where the record has only the online date; MNRAS papers
+    online from October, in next year's volumes; a preprint around the meeting the entry
+    names with its year; a later version of a workshop paper, at a journal, a year or more on.
+  - Titles: a registry's lost accented letter ("Srsic"), zeros for o ("Can0nical"), a track's
+    label ("(Extended Abstract)"), AAS's `[FORMULA]` markup, "×" for "x", ADS's "lambda" before
+    a wavelength, "towards" for "toward".
+  - Names: Vancouver initials with a dot ("Cairns NJ."); the first part of a compound surname
+    ("Schroeder" for Christian Schröder de Witt); a single name a registry misspelt; a
+    collaboration credited before its people, where the record begins with a person.
+  - Software cited as its makers ask, with a release's DOI whose record titles and credits it
+    otherwise (lm-evaluation-harness), is unclear rather than retitled.
 - **False positives found on heldout17-19** (the 1.0 gate's three weeks, run once on the same
   code: 34 false positives in 3,135 references, 1.08 per 100, heldout18 alone 1.9): 22 of them
   gone on a replay of 440 papers, 5 more when Semantic Scholar answers; no real problem lost,

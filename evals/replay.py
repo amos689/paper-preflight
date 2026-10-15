@@ -47,7 +47,10 @@ def papers(batch: str) -> list[str]:
 
 def has_run(batch: str) -> bool:
     """The batch has had its one run: a held-out batch frozen for a later run is never replayed
-    by default, since its first run is the measurement."""
+    by default, since its first run is the measurement. A batch not collected yet has not run."""
+    name = "real_papers.toml" if batch == "dev" else f"real_papers_{batch}.toml"
+    if not (ROOT / name).exists():
+        return False
     return all((REPORTS / f"{pid.replace('/', '_')}.json").exists() for pid in papers(batch))
 
 

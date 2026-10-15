@@ -223,10 +223,12 @@ GUIDES: dict[str, Guide] = {
         ("The work was searched for by its title in every source that searches titles, every "
          "source answered, and nothing matched. Not reported for "
          "references the indexes are known to miss (grey literature, very new or pre-1990 works, "
-         "workshop papers, non-Latin titles): those are REF090.",
+         "workshop papers, non-Latin titles, works at a journal or proceedings no catalogue of "
+         "venues knows): those are REF090.",
          "按标题在所有支持标题检索的来源中检索了该作品，所有来源都正常应答，但没有任何匹配。"
          "对已知索引常常漏收的文献（灰色文献、很新或 1990 年以前的作品、研讨会论文、"
-         "非拉丁文字的标题）不报此规则，而报 REF090。"),
+         "非拉丁文字的标题、发表在任何期刊/会议目录都查不到的刊物或会议上的作品）不报此规则，"
+         "而报 REF090。"),
         ("A real work can be missing from every index: an internal report, a thesis, a regional "
          "journal, a work cited by a translated title. A badly garbled title does not match "
          "either.",

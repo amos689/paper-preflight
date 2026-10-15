@@ -59,12 +59,36 @@ _TEXT_CONTEXT = latex2text.get_default_latex_context_db()
 # Text-style macros whose argument the default context drops ("\texttt{torch}" lost its word;
 # a real paper's chapter title was set in \textup{...})
 _KEEP_ARGUMENT = ("textup", "textmd", "textsf", "texttt", "mbox")
+# AASTeX's journal macros, as NASA ADS exports them (journal = {\aap}): the journals they stand
+# for, which were lost (an A&A 1993 article was then sought as a journal-less work; heldout21)
+AAS_JOURNALS = {
+    "aj": "The Astronomical Journal", "apj": "The Astrophysical Journal",
+    "apjl": "The Astrophysical Journal Letters",
+    "apjs": "The Astrophysical Journal Supplement Series",
+    "aap": "Astronomy and Astrophysics", "aaps": "Astronomy and Astrophysics Supplement Series",
+    "aapr": "Astronomy and Astrophysics Review",
+    "araa": "Annual Review of Astronomy and Astrophysics",
+    "mnras": "Monthly Notices of the Royal Astronomical Society",
+    "pasp": "Publications of the Astronomical Society of the Pacific",
+    "pasj": "Publications of the Astronomical Society of Japan",
+    "pasa": "Publications of the Astronomical Society of Australia",
+    "apss": "Astrophysics and Space Science", "nat": "Nature", "icarus": "Icarus",
+    "jcap": "Journal of Cosmology and Astroparticle Physics", "solphys": "Solar Physics",
+    "ssr": "Space Science Reviews", "nar": "New Astronomy Reviews", "na": "New Astronomy",
+    "prd": "Physical Review D", "prl": "Physical Review Letters", "physrep": "Physics Reports",
+    "actaa": "Acta Astronomica", "baas": "Bulletin of the American Astronomical Society",
+    "psj": "The Planetary Science Journal", "procspie": "Proceedings of the SPIE",
+}  # fmt: skip
 _TEXT_CONTEXT.add_context_category(
     "paper-preflight",
     prepend=True,
     macros=[
         latex2text.MacroTextSpec("raisebox", simplify_repl="%(4)s"),  # its text only
         *(latex2text.MacroTextSpec(name, simplify_repl="%(1)s") for name in _KEEP_ARGUMENT),
+        *(
+            latex2text.MacroTextSpec(name, simplify_repl=title)
+            for name, title in AAS_JOURNALS.items()
+        ),
     ],
 )
 _latex2text = latex2text.LatexNodes2Text(
