@@ -2,8 +2,7 @@
 
 From 1.0, paper-preflight follows [Semantic Versioning](https://semver.org/): what this page
 calls stable changes incompatibly only in a new major version, and the
-[changelog](../CHANGELOG.md) names every change. Until 1.0, minor versions may still change it,
-and the changelog says so.
+[changelog](../CHANGELOG.md) names every change.
 
 ## Stable
 

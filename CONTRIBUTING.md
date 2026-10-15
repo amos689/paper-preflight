@@ -1,7 +1,6 @@
 # Contributing to paper-preflight
 
-Thanks for your interest! The project is in its 0.x releases, on the way to a stable 1.0, so
-please open an issue before starting larger changes.
+Thanks for your interest! Please open an issue before starting larger changes.
 
 ## Development setup
 

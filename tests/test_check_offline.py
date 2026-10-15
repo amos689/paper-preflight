@@ -164,7 +164,7 @@ def test_cli_json_output(project: Path, tmp_path: Path) -> None:
     )
     assert result.exit_code == EXIT_FINDINGS
     payload = json.loads(out.read_text(encoding="utf-8"))
-    assert payload["schema_version"] == "0.1"
+    assert payload["schema_version"] == "1.0"
     assert payload["project"]["main"] == "main.tex"
     assert payload["project"]["bib_files"] == ["refs.bib"]
     assert len(payload["findings"]) == 2
