@@ -779,16 +779,19 @@ def _field_findings(
         detail = f"the entry lists {listed} of {total} authors without 'and others'"
         detail_zh = f"条目只列出了 {total} 位作者中的 {listed} 位，且没有写 'and others'"
         if authors.left_out:
-            # a name dropped from the middle, not a list cut short: a warning since heldout17
-            # (on heldout14-16 it fired 4 times in 3,200 references, every time on a real
-            # omission; a list cut short stays an info)
+            # a name dropped from the middle, not a list cut short
             dropped, dropped_zh = ", ".join(authors.left_out), "、".join(authors.left_out)
             detail += f"; it leaves out {dropped} from the middle of the list"
             detail_zh += f"；漏掉了列表中间的 {dropped_zh}"
+        # A warning against a published version's record (on 380 papers: Brian Ichter left out
+        # of NeurIPS 2022's Chain-of-Thought, Eric Hambro of Toolformer), an info against a
+        # preprint's, whose later versions add people the entry's earlier one did not have
+        # (GraphRAG's v1 has 8 of the 10 authors arXiv lists now). A list cut short: an info.
+        omitted = bool(authors.left_out) and not is_preprint(record)
         out.append(
             make_finding(
                 "REF011", _location(entry, author_field), key=key, field=author_field,
-                severity=None if authors.left_out else Severity.INFO, source=source,
+                severity=None if omitted else Severity.INFO, source=source,
                 suggestion=format_authors(record), detail=detail, detail_zh=detail_zh,
             )
         )  # fmt: skip
