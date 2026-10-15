@@ -208,8 +208,7 @@ paper-preflight 1.0.0 · main.tex · 12 条参考文献，12 个被引用的键
 
 ### 通过了同行评审的幻觉引用
 
-GPTZero 公布了它在 NeurIPS 2025 论文和 ICLR 2026 投稿中发现的 151 条幻觉引用，每条都经其人工确认。
-按论文印出的样子粘贴成纯文本来检查：
+GPTZero 公布了它在 [NeurIPS 2025 论文](https://gptzero.me/news/neurips/)和 [ICLR 2026 投稿](https://gptzero.me/news/iclr-2026/)中发现的 151 条幻觉引用，每条都经其人工确认。按论文印出的样子粘贴成纯文本来检查：
 
 | 参考文献 | 报出 | 无法确定 | 判为核实 |
 |---|---|---|---|
