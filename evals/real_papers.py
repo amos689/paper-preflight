@@ -99,6 +99,12 @@ BATCHES = {
     "heldout20": ("202605060000", "202605122359"),
     "heldout21": ("202604290000", "202605052359"),
     "heldout22": ("202604220000", "202604282359"),
+    # the 1.0 gate's third try (heldout21 failed the second, 2026-10-15): three more earlier
+    # weeks never sampled, committed before the next round of fixes is written; each is run
+    # once on the same code
+    "heldout23": ("202604150000", "202604212359"),
+    "heldout24": ("202604080000", "202604142359"),
+    "heldout25": ("202604010000", "202604072359"),
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,
