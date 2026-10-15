@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **A name left out from the middle of a published version's author list is a warning**
+  (REF011; C5 of the plan, an info until now). On 380 development papers it adds 24 warnings:
+  17 real omissions (Lu Wang from LoRA, Ronan Le Bras from PIQA and CLIPScore, seven of
+  ERSEM's 18 authors, ...) and 7 entries that cite the published paper with arXiv v1's
+  shorter list (Brian Ichter joined Chain-of-Thought after v1), none a false positive. Against
+  a preprint's record (arXiv, DataCite, bioRxiv), whose later versions add people, and for a
+  list cut short, it stays an info.
+
 ### Added
 
 - **More invented authors caught on real titles.** GPTZero's hallucinated references flagged:
