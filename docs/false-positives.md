@@ -5,10 +5,11 @@
 ## English
 
 paper-preflight reports a problem only when a record backs it, or when every source that could
-know a work answered that it does not. Even so, about one flag in ten on real papers is a false
-alarm: on the latest held-out week, 7 false alarms against 79 real problems in 1,014 references
-(0.7 per 100 references; the README has [every week](../README.md#on-real-papers)). This page
-says where they come from and what to do.
+know a work answered that it does not. Even so, about one flag in twenty on real papers is a
+false alarm: on the three held-out weeks that measured 1.0, 21 false alarms against 409 real
+problems in 2,714 references (0.79 per 100 references; every week measured is in
+[evals/README.md](../evals/README.md#real-papers)). This page says where they come from and
+what to do.
 
 ### Where false alarms come from
 
@@ -53,9 +54,9 @@ says where they come from and what to do.
 ## 中文
 
 只有当某条记录能作为依据，或所有可能收录该作品的来源都答复“没有”时，paper-preflight 才会报告问题。
-即便如此，在真实论文上大约每十个报警中有一个是误报：在最近一周的留出集上，1,014 条参考文献中有 79
-个真问题、7 个误报（每百条 0.7 个；每周的结果见 [README](../README.zh-CN.md)）。本页说明误报从何而来、
-遇到时怎么办。
+即便如此，在真实论文上大约每二十个报警中有一个是误报：在衡量 1.0 的三个留出周上，2,714 条参考文献中有
+409 个真问题、21 个误报（每百条 0.79 个；历次测量的每一周见
+[evals/README.md](../evals/README.md#real-papers)）。本页说明误报从何而来、遇到时怎么办。
 
 ### 误报从何而来
 
