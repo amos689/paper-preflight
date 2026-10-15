@@ -392,6 +392,7 @@ HALLMARK 用最终代码重跑：dev_public 与 test_public 的结论与 0.1.0 �
 - [x] 修名字解析 bug 及本轮其他误报（#211）：回放 560 篇去掉 25 个误报，不丢真问题；HALLMARK dev、GPTZero 不变
 - [x] heldout26–28 在同一份代码上各跑一次（#212）：0.99 / 0.50 / 0.89，平均 0.79，**通过**
 - [x] 1.0.0（#213）：HALLMARK test 只测一次，召回 93.5%、误报率 1.9%，通过；GPTZero 142/151；JSON schema_version 1.0；灰色文献（不含网页）188 → 117，按用户决定不作为发布条件
+- [x] README 中英文重构（#214），之后发布 **v1.0.0（2026-10-16，main a6ebfec）**：GitHub Release → PyPI（1.0.0，Production/Stable，页面即新 README；从 PyPI 装的 1.0.0 跑示例论文结果不变）→ MCP Registry（1.0.0 为 latest、active）。Glama 页面仍是旧 README，等它定期重新抓取，或由用户登录后在 Admin 里手动同步
 - [ ] 1.0 之后：中文参考文献（先测量再发布）
 - 宣发不在本轮范围内（用户决定）；awesome-mcp-servers 的 PR 已于 2026-10-09 由维护者合并，awesome-LaTeX 的 PR 仍开着
 - Glama：2026-10-08 至约 10-12 Glama 的构建服务整体故障（502，已在 Glama Discord #support 报告）；10-13 恢复，已发布 Glama 版本 0.1.1（main 171c39e），自动发布恢复
