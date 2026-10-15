@@ -222,8 +222,10 @@ stayed under 1.0, each run once with the version of its time; every week measure
 
 ### Hallucinations that passed peer review
 
-GPTZero published 151 hallucinated references it found in NeurIPS 2025 papers and ICLR 2026
-submissions, each confirmed by its staff. Pasted as plain text, as the papers printed them:
+GPTZero published 151 hallucinated references it found in
+[NeurIPS 2025 papers](https://gptzero.me/news/neurips/) and
+[ICLR 2026 submissions](https://gptzero.me/news/iclr-2026/), each confirmed by its staff.
+Pasted as plain text, as the papers printed them:
 
 | References | Flagged | Cannot determine | Verified |
 |---|---|---|---|
