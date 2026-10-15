@@ -1,4 +1,4 @@
-"""Machine-readable JSON report (schema version 0.1; agents and scripts consume this)."""
+"""Machine-readable JSON report (schema version 1.0; agents and scripts consume this)."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from paper_preflight.check import CheckResult
 from paper_preflight.findings import Severity
 from paper_preflight.verdict import Assessment
 
-SCHEMA_VERSION = "0.1"
+SCHEMA_VERSION = "1.0"
 
 
 def _iso(timestamp: float) -> str:

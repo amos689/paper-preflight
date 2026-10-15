@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
-__version__ = "0.8.0"
+__version__ = "1.0.0"
 __all__ = ["Finding", "MatchedRecord", "Reference", "Report", "__version__", "check_paper"]
 
 _API = frozenset({"Finding", "MatchedRecord", "Reference", "Report", "check_paper"})

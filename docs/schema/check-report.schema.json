@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/amos689/paper-preflight/blob/main/docs/schema/check-report.schema.json",
   "title": "paper-preflight check report",
-  "description": "What `paper-preflight check --format json` writes (schema_version 0.1). Fields may be added; none is removed or changes meaning without a new schema_version.",
+  "description": "What `paper-preflight check --format json` writes (schema_version 1.0). Fields may be added; none is removed or changes meaning without a new schema_version.",
   "type": "object",
   "required": ["schema_version", "tool", "run", "project", "summary", "verification", "references", "findings", "pagination"],
   "properties": {
-    "schema_version": {"type": "string", "const": "0.1"},
+    "schema_version": {"type": "string", "const": "1.0"},
     "tool": {
       "type": "object",
       "required": ["name", "version"],

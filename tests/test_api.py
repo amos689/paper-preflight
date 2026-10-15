@@ -27,7 +27,7 @@ def test_the_demo_paper_from_code(recorded_web: FakeWeb, tmp_path: Path, fast: N
     assert "CIT001" in rules  # citation rules too
     assert report.findings[0].severity == "error"  # errors first
     assert report.blocking("error")
-    assert report.to_dict()["schema_version"] == "0.1"
+    assert report.to_dict()["schema_version"] == "1.0"
     # frozen, plain values
     assert dataclasses.is_dataclass(report.references[0])
     first = report.findings[0]

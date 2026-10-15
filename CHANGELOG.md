@@ -6,8 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-15
+
+The first stable release: what [docs/stability.md](docs/stability.md) calls stable (rule IDs,
+exit codes, the JSON report, settings, commands, the Python API and the MCP tools) now changes
+incompatibly only in a new major version. On three held-out weeks of real papers, committed
+together before any was run and each run once on this code: 1.0, 0.5 and 0.9 false positives
+per 100 references, 0.79 on average (21 in 2,714), against 409 real problems; the gate (each
+week at most 1.5, the three at most 1.0) was met on its fourth try, after 1.08, 1.24 and 1.28.
+HALLMARK `test_public`, any issue: recall 93.5% at a 1.9% false-positive rate, as in 0.8.0;
+author lists that leave people out, a stress type, 9.7% to 93.5%. GPTZero's hallucinated
+references are flagged 142 of 151 (139 in 0.8.0), none verified.
+
 ### Changed
 
+- **The JSON report's `schema_version` is 1.0** (0.1 until now). No field is removed or changes
+  meaning; from now on, one that does comes with a new major `schema_version`.
 - **A name left out from the middle of a published version's author list is a warning**
   (REF011; C5 of the plan, an info until now). On 380 development papers it adds 24 warnings:
   17 real omissions (Lu Wang from LoRA, Ronan Le Bras from PIQA and CLIPScore, seven of
@@ -1035,7 +1049,8 @@ The first release.
 - A search result by the same people at the same venue in the same year binds when its title
   is one or two words off, even below the usual similarity threshold; REF012 names the words.
 
-[Unreleased]: https://github.com/amos689/paper-preflight/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/amos689/paper-preflight/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/amos689/paper-preflight/compare/v0.8.0...v1.0.0
 [0.8.0]: https://github.com/amos689/paper-preflight/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/amos689/paper-preflight/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/amos689/paper-preflight/compare/v0.5.3...v0.6.0

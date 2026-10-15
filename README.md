@@ -42,15 +42,16 @@ datasets) about every cited work:
 
 When it cannot tell, it says so instead of guessing.
 
-> **Status: 0.x releases, on the way to a stable 1.0.** False positives are the bugs we most
-> want to hear about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
+> **Status: 1.0.** Rule IDs, the JSON report, settings, commands and the Python API are kept
+> through 1.x ([what is stable](docs/stability.md)). False positives are the bugs we most want
+> to hear about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
 purpose. A real run, against the live sources:
 
 ```text
 $ paper-preflight check examples/demo-paper
-paper-preflight 0.8.0 · main.tex · 12 entries, 12 cited keys
+paper-preflight 1.0.0 · main.tex · 12 entries, 12 cited keys
 
 error   CIT001 main.tex:31
     Citation key 'nonexistent2023' is not defined in any bibliography file (1 use(s)).
@@ -144,7 +145,26 @@ error reviewed by hand:
 | 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
 | 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
 | 2026-06-24..30, an earlier week | 0.8.0 | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
+| 2026-03-25..31, an earlier week | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| 2026-03-18..24, an earlier week | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| 2026-03-11..17, an earlier week | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
 
+- **1.0: about one false alarm every three papers** (45 references on average), against 409
+  real problems, on three weeks committed together before any was run and each run once on
+  the same code: 1.0, 0.5 and 0.9 per 100 references, 0.79 on average (21 in 2,714). The false
+  alarms are registries' own errors (a cut or misspelt title, a garbled name, a dropped symbol)
+  5, groups credited as their makers ask and Zotero's 'N other authors' placeholder 6, works no
+  index holds or that a later version retitled 3, a conference paper compared in place of its
+  journal version 2, APA's '[software]' and '[dataset]' labels after a title 2, and three
+  others. Among the real problems: reference lists largely invented in medical-imaging and LLM
+  papers, NeurIPS 2025 papers dated 2026, and author fields BibTeX misreads.
+- **The 1.0 gate took four tries.** Each try is three weeks never used before, committed
+  before the changes they measure; each week must be at most 1.5 per 100 references and the
+  three at most 1.0 on average. The first three tries averaged 1.08, 1.24 and 1.28, each with
+  one week over 1.5 (1.9, 1.7 and 2.1, the last mostly one bug of ours reading names written
+  with `~`), and each try's false alarms were fixed before the next. The first try's fresh week
+  (2026-10-07..13), the control for 0.8.0's earlier week, was at 0.4. All twelve weeks are in
+  [`evals/README.md`](evals/README.md#real-papers).
 - **0.8.0: one false alarm every two papers** (56 references on average), against 132 real
   problems: 93 cited preprints since published, 17 identifiers written as links, wrong authors
   or given names in 10 entries (in four, most given names are invented), 6 wrong years, 2
@@ -208,22 +228,25 @@ BibTeX entries.
 | `dev_public`: 1,119 entries, used during development | Any issue | 97.7% | 94.3% | 2.1% | 98.9% |
 | | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-HALLMARK v1.2.3, every entry of both public splits, run with 0.8.0 on 2026-10-09. *Fabrication* counts a
-wrong identifier, a work not found and no author in common; *any issue* also counts wrong
-authors, title, year or venue.
+HALLMARK v1.2.3, every entry of both public splits: `test_public` run with 1.0.0 on 2026-10-15
+(the same totals as 0.8.0's run on 2026-10-09), `dev_public` with 0.8.0 on 2026-10-09.
+*Fabrication* counts a wrong identifier, a work not found and no author in common; *any issue*
+also counts wrong authors, title, year or venue.
 
 - **The held-out split confirms the development numbers:** a little higher precision and less
   than a point less recall on entries no rule was ever tuned on. 0.8.0 catches 97% of invented
-  venues (78% in 0.7.0) and 85% of near-miss titles (70%).
+  venues (78% in 0.7.0) and 85% of near-miss titles (70%); 1.0 catches 94% of author lists
+  that leave people out (a stress type, outside the totals; 10% in 0.8.0), now that a name
+  missing from the middle of a published list is a warning.
 - **Every flag on a `dev_public` entry labelled VALID was checked by hand.** The 11 that remain are not
   correct citations: DOIs that belong to other papers, author lists naming people who did not
   write the paper, a shifted year and a truncated title.
 - **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
   with a reason one lookup confirms, is in
   [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
-- **What is still missed:** author lists that merely leave people out (named in an info until
-  held-out weeks show the check never fires on a correct list) and invented entries that borrow
-  a title several real works share. See
+- **What is still missed:** author lists cut short at the end or checked against a preprint,
+  whose later versions add people (named in an info), and invented entries that borrow a title
+  several real works share. See
   [`evals/results/`](evals/results/) for every hallucination type.
 
 Precision comes first: a reference is called fabricated only on positive evidence, and an
@@ -534,10 +557,10 @@ or "complete" references from memory, or name and shame authors.
   whole in a note read as plain text (v0.6); Word, Markdown, Quarto, R Markdown and Typst
   manuscripts, and CSL-JSON, RIS and YAML bibliographies (v0.7); books, software, models,
   datasets, RFCs and web links checked against their own registries, invented venues and
-  near-miss titles caught, project settings, a Python API and a page for every rule (v0.8)
-- Next: a stable 1.0, once three held-out weeks average at most one false alarm per 100
-  references
-- After 1.0: references in Chinese script, measured before anything ships
+  near-miss titles caught, project settings, a Python API and a page for every rule (v0.8); a
+  stable 1.0, with three held-out weeks of real papers at most 1.5 false alarms per 100
+  references each and 0.79 on average (v1.0)
+- Next: references in Chinese script, measured before anything ships
 
 Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
 [changelog](CHANGELOG.md).
