@@ -7,6 +7,7 @@ from typing import Any
 import pytest
 
 from paper_preflight.bib.names import parse_authors, parse_name
+from paper_preflight.bib.normalize import title_key
 from paper_preflight.bib.parse import parse_bib_file, parse_bib_text
 from paper_preflight.match import (
     EntryInfo,
@@ -81,6 +82,17 @@ def test_parse_authors_and_others() -> None:
     assert [(p.given, p.family) for p in cut.people] == [("Paul", "Ralph")]
     assert cut.truncated
     assert not parse_authors("Ralph, Paul").truncated
+
+
+def test_people_inside_one_pair_of_braces() -> None:
+    # Rev. Mod. Phys. 81, 865 as a real paper cites it (heldout18)
+    braced = parse_authors("{R. Horodecki, P. Horodecki, M. Horodecki, and\n K. Horodecki}")
+    assert [(p.given, p.family) for p in braced.people] == [
+        ("R.", "Horodecki"), ("P.", "Horodecki"), ("M.", "Horodecki"), ("K.", "Horodecki"),
+    ]  # fmt: skip
+    # a group's name with a comma stays one name
+    assert len(parse_authors("{Google DeepMind, Inc.}").people) == 1
+    assert len(parse_authors("{Cancer Research UK, Wellcome Trust}").people) == 1
 
 
 # ------------------------------------------------------------------ titles
@@ -655,6 +667,10 @@ def test_only_venue_names_are_judged() -> None:
         ("Ren, Freddy", "Ren, Frederic", False),  # Crossref's Frederic Ren
         ("Srebro, Nati", "Srebro, Nathan", False),  # dblp has Nathan, papers Nati
         ("Chen, Ricky T. Q.", "Chen, Tian Qi", False),  # dblp's Tian Qi Chen
+        ("Rana, Md", "Rana, Mashud", False),  # Md is Mohammad, which Crossref leaves out
+        ("Rana, Md Mashud", "Rana, Mashud", False),
+        ("Rana, Md Sohel", "Rana, Mashud", True),
+        ("Xavier, JdeB", "Xavier, Joao de Bivar", False),  # initials run together
         # a name and one initial are a middle name's, not the other's initials
         ("Horowitz, Seth A.", "Horowitz, Aaron", True),
     ],
@@ -671,6 +687,10 @@ def test_given_names_differ(ours: str, theirs: str, differ: bool) -> None:
         ("Karthikeyan, P.", "Palanisamy, K.", True),  # Crossref's order for one name
         ("Kim, P.", "Park, K.", False),  # surnames too short to tell: two people
         ("Garcia, Ana", "Lopez, Ana", False),
+        # Crossref's given name "Oludayo", family name "O" (IJACSA 11(9))
+        ("Olugbara, Oludayo O", "O, Oludayo", True),
+        ("Olugbara, Oludayo O", "K, Oludayo", False),
+        ("Okafor, Chinedu", "O, Oludayo", False),
     ],
 )  # fmt: skip
 def test_one_person_in_another_form(ours: str, theirs: str, same: bool) -> None:
@@ -941,6 +961,30 @@ def test_a_solar_symbol_is_the_word_sun() -> None:
 @pytest.mark.parametrize(
     ("written", "recorded"),
     [
+        # a subscript star (MNRAS 462, 1470; heldout17)
+        ("GAMA: M_star - R_e relations", "GAMA: \u2133_\u22c6\u2013R_e relations"),
+        ("GAMA: M_* - R_e relations", "GAMA: M\u22c6 - R_e relations"),
+        # Crossref's \lsim without its backslash (MNRAS 377, 1717; heldout18)
+        ("Red galaxies at 2 <~z <~3", "Red galaxies at 2 lsimzlsim 3"),
+        # a symbol spelt out (ApJ 285, 426) and "Part" before a part's number (heldout18)
+        ("Populations since Z 0.5", "Populations since Z approximately equal to 0.5"),
+        ("Metabolic networks. Part I. Modeling", "Metabolic networks: I. Modeling"),
+    ],
+)  # fmt: skip
+def test_symbols_registries_write_otherwise(written: str, recorded: str) -> None:
+    assert title_key(written) == title_key(recorded)
+
+
+def test_a_footnote_star_is_no_word() -> None:
+    # A&A's footnote marks after a title (real paper 2607.00291v1)
+    assert title_key("Radial abundance gradients across the thin disk\u2605\u2605\u2605") == (
+        title_key("Radial abundance gradients across the thin disk")
+    )
+
+
+@pytest.mark.parametrize(
+    ("written", "recorded"),
+    [
         ("O'Connell, Julia", "O\u2019Connell"),  # Crossref's curly apostrophe (real papers)
         ("D'Orazi, V.", "D\u2019Orazi"),
         ("Dell'Oro, A.", "Dell\u2019Oro"),
@@ -1056,6 +1100,22 @@ def test_a_group_written_another_way_is_the_group(written: str, recorded: str) -
     record = SourceRecord(source="x", source_id="x", title="t", authors=tuple(people))
     check = check_authors(parse_authors(written), record)
     assert (check.missing, check.first_author_match) == ((), True)
+
+
+@pytest.mark.parametrize(
+    "group",
+    [
+        "EACVI-ASE-Industry Standardization Task Force",  # JACC CV Imaging 11, 15 (heldout17)
+        "on behalf of the American Heart Association Council on Epidemiology",  # (heldout18)
+    ],
+)
+def test_a_group_the_people_write_for_is_no_missing_person(group: str) -> None:
+    record = SourceRecord(
+        source="crossref", source_id="x", title="t",
+        authors=(Person("Mirea", "Oana"), Person("Voigt", "Jens-Uwe")),
+    )  # fmt: skip
+    check = check_authors(parse_authors(f"Mirea, Oana and Voigt, Jens-Uwe and {group}"), record)
+    assert (check.status, check.missing) == ("match", ())
 
 
 def test_groups_and_people_are_not_compared() -> None:

@@ -190,12 +190,60 @@ def _decode_entity(match: re.Match[str]) -> str:
 
 _IFMMODE_RE = re.compile(r"\\ifmmode\s*(?P<math>.*?)\\else\s*(?P<text>.*?)\\fi(?:\{\})?", re.S)
 _UTF_RE = re.compile(r"\\UTF\{([0-9A-Fa-f]{4,6})\}")
+_HREF_RE = re.compile(r"\\href\s*(?=\{)")
+# Fields that carry links; elsewhere a link prints as its text alone
+LINK_FIELDS = frozenset({"note", "howpublished", "addendum", "annote", "annotation"})
 
 
-def latex_to_text(value: str) -> str:
+def _group_end(value: str, start: int) -> int | None:
+    """The index just past the braced group that opens at ``value[start]``."""
+    depth = 0
+    i = start
+    while i < len(value):
+        if value[i] == "\\":
+            i += 2  # an escaped brace does not count
+            continue
+        if value[i] == "{":
+            depth += 1
+        elif value[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return None
+
+
+def _unlink(value: str, keep_url: bool) -> str:
+    """``\\href{URL}{text}`` as the text it prints, followed by ``\\url{URL}`` if ``keep_url``.
+
+    pylatexenc reads \\href without its arguments and fails, and the fallback ran the URL into
+    the text: a paper whose titles were all links was searched by its URLs (heldout18)."""
+    out: list[str] = []
+    pos = 0
+    for match in _HREF_RE.finditer(value):
+        if match.start() < pos:
+            continue
+        url_end = _group_end(value, match.end())
+        if url_end is None:
+            break
+        text_start = len(value) - len(value[url_end:].lstrip())
+        text_end = _group_end(value, text_start) if value.startswith("{", text_start) else None
+        if text_end is None:
+            continue
+        text = value[text_start + 1 : text_end - 1]
+        # a percent-encoded link must not read as a comment in \url
+        url = re.sub(r"(?<!\\)%", r"\\%", value[match.end() + 1 : url_end - 1])
+        out += [value[pos : match.start()], f"{text} \\url{{{url}}}" if keep_url else text]
+        pos = text_end
+    return "".join(out) + value[pos:]
+
+
+def latex_to_text(value: str, *, keep_links: bool = False) -> str:
     # BibTeX copied from web pages carries HTML entities ("Francesco d&apos;Amore" in a dblp-
     # scraped HALLMARK entry); decode them first, or "&" reaches LaTeX as an alignment tab.
     value = _HTML_ENTITY_RE.sub(_decode_entity, value)
+    if "\\href" in value:
+        value = _unlink(value, keep_links)
     value = MARKUP_TAG_RE.sub("", value)  # ADS: "<ASTROBJ>NGC 1068</ASTROBJ>"
     # APS: "\ifmmode \check{S}\else \v{S}\fi{}upi\ifmmode \acute{c}\else \'{c}\fi{}" is Šupić
     value = _IFMMODE_RE.sub(lambda m: m["text"], value)
@@ -235,7 +283,10 @@ def _build_entry(
             continue
         raw_value = str(f.value)
         value = resolve_value(raw_value, strings)
-        text = unescape_identifier(value) if name in VERBATIM_FIELDS else latex_to_text(value)
+        if name in VERBATIM_FIELDS:
+            text = unescape_identifier(value)
+        else:
+            text = latex_to_text(value, keep_links=name in LINK_FIELDS)
         field_line = _line(f.start_line, _line(raw_entry.start_line, 1))
         fields[name] = BibField(name, raw_value, value, text, field_line)
     line = _line(raw_entry.start_line, 1)

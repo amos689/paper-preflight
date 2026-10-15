@@ -45,6 +45,16 @@ def test_escaped_doi_field() -> None:
     assert ids(r"@article{a, doi = {10.1162/tacl\_a\_00276}}") == ["doi:10.1162/tacl_a_00276"]
 
 
+def test_a_percent_encoded_doi_in_a_link() -> None:
+    # Wiley's link for Youden 1950 (heldout19): the same DOI as the doi field, not another
+    bib = (
+        "@article{a, doi = {10.1002/1097-0142(1950)3:1<32::AID-CNCR2820030106>3.0.CO;2-3},\n"
+        "  url = {https://acsjournals.onlinelibrary.wiley.com/doi/abs/10.1002/1097-0142%281950"
+        "%293%3A1%3C32%3A%3AAID-CNCR2820030106%3E3.0.CO%3B2-3}}"
+    )
+    assert ids(bib) == ["doi:10.1002/1097-0142(1950)3:1<32::aid-cncr2820030106>3.0.co;2-3"]
+
+
 def test_arxiv_from_eprint_journal_url_and_datacite_doi() -> None:
     assert ids("@misc{a, eprint={1706.03762v5}, archivePrefix={arXiv}}") == ["arxiv:1706.03762v5"]
     assert ids("@article{a, journal={arXiv preprint arXiv:1810.04805}}") == ["arxiv:1810.04805"]

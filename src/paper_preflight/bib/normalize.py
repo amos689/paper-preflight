@@ -31,11 +31,34 @@ def title_key(title: str) -> str:
     Hyphens and punctuation are treated as separators. The solar mass reads alike however a
     registry writes it ("1 M sub sun" in ADS, "1 M(solar)" in Crossref, 10.1086/172827).
     """
-    key = " ".join(_WORD_RE.findall(fold(title.replace("_", " "))))
-    return _SOLAR.sub(r"\1 sun", key) if " sun" in key or " solar" in key else key
+    key = " ".join(_WORD_RE.findall(fold(_STAR.sub(" ", title).replace("_", " "))))
+    key = _SOLAR.sub(r"\1 sun", key) if " sun" in key or " solar" in key else key
+    if "sim" in key:
+        key = " ".join(w for w in map(_untilde, key.split()) if w)
+    if "part " in key or "approximately equal to" in key:
+        key = _PART_NUMBER.sub("", _APPROXIMATELY_EQUAL.sub("", key)).strip()
+        key = " ".join(key.split())
+    return key
 
 
 _SOLAR = re.compile(r"\b([mlr]) (?:sub )?(?:sun|solar)\b")
+# a subscript star, however written: the stellar mass M_⋆ is the M_star an entry writes (MNRAS
+# 462, 1470 in Crossref; heldout17) and the M_* or M⋆ of others, all read as "M"
+_STAR = re.compile(r"_\s*(?:[⋆★*]|star\b)", re.IGNORECASE)
+# \lsim and \gsim lost their backslash in a registry's title: Crossref's "at 2 lsimzlsim 3" is
+# "at 2 <~ z <~ 3" (MNRAS 377, 1717; heldout18)
+_TILDE_RELATION = re.compile(r"([lg]sim)?(\w{0,3}?)([lg]sim)?")
+
+
+def _untilde(word: str) -> str:
+    match = _TILDE_RELATION.fullmatch(word)
+    return match[2] if match and (match[1] or match[3]) else word
+
+
+# a symbol a registry spelt out ("Z approximately equal to 0.5", ApJ 285, 426), and the "Part"
+# before a part's number ("... networks. Part I. Modeling" where Crossref has "networks: I.")
+_APPROXIMATELY_EQUAL = re.compile(r"\bapproximately equal to\b")
+_PART_NUMBER = re.compile(r"\bpart (?=(?:[ivx]+|\d+)\b)")
 
 
 def word_count(title: str) -> int:

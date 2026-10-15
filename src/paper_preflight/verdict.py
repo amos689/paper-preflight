@@ -1331,7 +1331,9 @@ _ABSTRACTS_AND_BULLETINS = re.compile(
     r"\bmeeting\s+abstracts?\b|\babstracts?\s+of\s+the\b|american\s+astronomical\s+society\s+meeting"
     r"|^(?:aas|agu|aps|dps|egu)(?:\s+meeting)?(?:\s+abstracts?)?$"
     r"|^(?:the\s+)?messenger$|\biau\s+circ|\bgcn\s+circ|\bcbet\b|\batel\b|astronomer'?s\s+telegram"
-    r"|information\s+bulletin\s+on\s+variable\s+stars|\bibvs\b|minor\s+planet\s+(?:electronic\s+)?circ",
+    r"|information\s+bulletin\s+on\s+variable\s+stars|\bibvs\b|minor\s+planet\s+(?:electronic\s+)?circ"
+    # the short papers of Japan's NLP society's annual meeting (heldout17), unlike ACL's
+    r"|annual\s+meeting\s+of\s+the\s+association\s+for\s+natural\s+language\s+processing",
     re.IGNORECASE,
 )
 
@@ -1346,6 +1348,7 @@ AANDA_DOI_YEAR = 2000
 
 
 def _unindexed_venue(info: EntryInfo) -> bool:
+    # not "Workshops": CVPR's and ICCV's are indexed, and GPTZero's invented papers cite them
     if info.venue and re.search(r"\bworkshop\b", info.venue, re.IGNORECASE):
         return True
     if info.venue and _WEB_VENUES.search(info.venue.strip()):
