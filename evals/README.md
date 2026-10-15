@@ -117,7 +117,7 @@ uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one r
 `why.py` shows a reference as written, every record found for it with how each field compares,
 and its findings in two replays: what most judgements and most fixes start from.
 
-There are twenty-four reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are twenty-seven reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
@@ -150,6 +150,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout20` | 2026-05-06..12 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 950 | 133 | 126 | 7 | 0 | 0.7 |
 | `heldout21` | 2026-04-29..05-05 (an earlier week) | held out for 1.0, second try (#203; run with #204); studied for #208 | 1,118 | 106 | 84 | 19 | 3 | **1.7** |
 | `heldout22` | 2026-04-22..28 (an earlier week) | held out for 1.0, second try (#205; run with #204); studied for #208 | 910 | 126 | 114 | 11 | 1 | 1.2 |
+| `heldout23` | 2026-04-15..21 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 1,341 | 226 | 194 | 28 | 4 | **2.1** |
+| `heldout24` | 2026-04-08..14 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 1,088 | 194 | 181 | 7 | 6 | 0.6 |
+| `heldout25` | 2026-04-01..07 (an earlier week) | held out for 1.0, third try (#207; run with #208) | 763 | 86 | 80 | 6 | 0 | 0.8 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -185,6 +188,18 @@ determined rather than "not found" (a journal no catalogue knows may be invented
 the other fixes, 29 of the 37 are gone on a replay of 500 papers (9 more on earlier weeks), and
 none of the real "not found" findings; it is measured on `heldout23` (2026-04-15..21),
 `heldout24` (04-08..14) and `heldout25` (04-01..07), committed before it (#207).
+
+**The third try was not met either**: `heldout23` is at 2.1, `heldout24` at 0.6 and
+`heldout25` at 0.8 (41 false positives in 3,192 references, 1.28 per 100). Fifteen of
+heldout23's 28 come from one bug of ours in one paper: BibTeX reads `~` as a space between a
+name's parts (`T.~{Goodson III}`, `J.~{Peřina~Jr.}`), and prints a name braced whole with its
+suffix (`{J. Peřina, Jr.}`) as written; we read both as one group's name, so the person was
+"not on the record". The others are new kinds again: yearly reports of one series bound to
+another year's edition, a chapter number or footnote mark in a registry's title, a
+translation after a title, a Scopus link's DOI run on into its parameters, a patent bound
+to a paper of its title, names a registry misspells or a later version adds. Among the 455
+real problems: a quantum-optics review with fourteen DOIs that do not exist or are other
+papers', and papers whose author lists are largely invented.
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
