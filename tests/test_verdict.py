@@ -580,6 +580,23 @@ def test_a_preprint_servers_copy_against_its_published_title() -> None:
     assert [f.severity.value for f in result.findings if f.rule_id == "REF012"] in ([], ["info"])
 
 
+@pytest.mark.parametrize(
+    ("source", "severity"),
+    [("crossref", "warning"), ("arxiv", "info")],
+)
+def test_a_name_left_out_from_the_middle(source: str, severity: str) -> None:
+    # C5: Brian Ichter left out of NeurIPS 2022's Chain-of-Thought; a preprint's later
+    # versions may add people the entry's earlier one did not have
+    entry = bib(
+        CS_ENTRY.replace("Smith, Ann and Jones, Bob and Lee, Carol", "Smith, Ann and Lee, Carol")
+    )
+    kind = {"work_type": "preprint", "venue": "arXiv"} if source == "arxiv" else {}
+    full = record(source=source, **kind)
+    result = assess(entry, evidence_for(entry, anchored=[full]), current_year=YEAR)
+    found = [f.severity.value for f in result.findings if f.rule_id == "REF011"]
+    assert found == [severity]
+
+
 def test_an_author_on_another_version_a_search_found() -> None:
     # dblp's CoRR record of LLaVA-OneVision lacks Peiyuan Zhang; its TMLR record has him
     entry = bib(CS_ENTRY)

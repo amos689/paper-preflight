@@ -7244,3 +7244,102 @@ note = "arXiv 2210.17323 (v1 and since) is 'GPTQ: Accurate Post-Training Quantiz
 [finding."2605.27808v1:piskala2025profasrbench:REF012"]
 verdict = "correct"
 note = "arXiv 2512.23686 (one version) is 'PROFASR-BENCH: A Benchmark for Context-Conditioned ASR in High-Stakes Professional Speech'; the entry's title is not it."
+
+# C5 (a name left out from the middle of an author list) as a warning, 2026-10-15: the REF011
+# warnings it gained on the development batches, each checked against arXiv's first version
+
+[finding."2607.19378v3:hatamizadeh2022swin:REF011"]
+verdict = "correct"
+note = "Swin UNETR (BrainLes 2021; arXiv 2201.01266 from v1) lists Dong Yang fourth; the entry leaves him out."
+
+[finding."2607.06875v1:kou122024exploiting:REF011"]
+verdict = "unclear"
+note = "arXiv 2308.01742 v1 has the entry's four authors; the IJCAI 2024 paper adds Jiawei Tang and Boyu Shi. The entry follows v1."
+
+[finding."2607.13389v1:wang2023selfconsistency:REF011"]
+verdict = "unclear"
+note = "Sharan Narang and Aakanksha Chowdhery are on the ICLR 2023 paper but not on arXiv 2203.11171 v1, whose six authors the entry lists."
+
+[finding."2607.13395v1:bisk2020piqa:REF011"]
+verdict = "correct"
+note = "PIQA (AAAI 2020; arXiv 1911.11641 from v1) lists Ronan Le Bras; the entry leaves him out."
+
+[finding."2607.13342v1:wang2015quantum:REF011"]
+verdict = "correct"
+note = "Sci. Rep. 5, 8555 (arXiv 1408.6659 from v1) is by S.-T. Wang, C. Shen and L.-M. Duan; the entry leaves out C. Shen."
+
+[finding."2609.17560v1:hu2022lora:REF011"]
+verdict = "correct"
+note = "LoRA (ICLR 2022; arXiv 2106.09685 from v1) lists Lu Wang; the entry leaves him out."
+
+[finding."2607.26438v1:Jin2015:REF011"]
+verdict = "correct"
+note = "Opt. Express 23, 28836 (arXiv 1507.02424 from v1) lists Masahiro Takeoka; the entry leaves him out."
+
+[finding."2608.04302v1:rohrbach2014tacos:REF011"]
+verdict = "correct"
+note = "The GCPR 2014 paper is by A. Rohrbach, M. Rohrbach, W. Qiu, A. Friedrich, M. Pinkal and B. Schiele; the entry leaves out the middle three."
+
+[finding."2608.04481v1:Blunt-2022:REF011"]
+verdict = "correct"
+note = "The author field has 'O. Crawford adn R. Izsák', a typo for 'and' that merges two people into one."
+
+[finding."2608.16951v1:li2026agentic:REF011"]
+verdict = "correct"
+note = "Nature Biotechnology's article lists Jose Guadalupe Hernandez third; the entry leaves him out."
+
+[finding."2608.18413v1:dai2024gaussian:REF011"]
+verdict = "correct"
+note = "Gaussian Surfels (SIGGRAPH 2024; arXiv 2404.17774 from v1) lists Xinguo Liu; the entry leaves him out."
+
+[finding."2609.01997v1:wu2023qalign:REF011"]
+verdict = "correct"
+note = "Q-Align (ICML 2024; arXiv 2312.17090 from v1, 14 authors) lists Yixuan Gao; the entry leaves her out."
+
+[finding."2609.09610v1:Valenti2009:REF011"]
+verdict = "correct"
+note = "The ICIAP 2009 paper is by Valenti, Staiano, Sebe and Gevers; the entry leaves out Jacopo Staiano."
+
+[finding."2609.09582v2:schick23toolformer:REF011"]
+verdict = "unclear"
+note = "Eric Hambro is on the NeurIPS 2023 paper but not on arXiv 2302.04761 v1, whose eight authors the entry lists."
+
+[finding."2609.27194v1:protovae:REF011"]
+verdict = "correct"
+note = "ProtoVAE (NeurIPS 2022; arXiv 2210.08151 from v1) lists Suaiba Salahuddin and Robert Jenssen; the entry leaves them out."
+
+[finding."2609.38792v1:madaan2023selfrefine:REF011"]
+verdict = "unclear"
+note = "Katherine Hermann is on the NeurIPS 2023 paper but not on arXiv 2303.17651 v1, whose fifteen authors the entry lists."
+
+[finding."2609.38683v1:guo2024animatediff:REF011"]
+verdict = "unclear"
+note = "Zhengyang Liang and Maneesh Agrawala are on the ICLR 2024 paper but not on arXiv 2307.04725 v1, whose seven authors the entry lists."
+
+[finding."2609.38683v1:wang2024motionctrl:REF011"]
+verdict = "unclear"
+note = "Yaowei Li is on the SIGGRAPH 2024 paper but not on arXiv 2312.03641 v1, whose seven authors the entry lists."
+
+[finding."2606.27168v1:butenschon2016ersem:REF011"]
+verdict = "correct"
+note = "ERSEM 15.06 (GMD 9, 1293) has 18 authors; the entry lists 11 and leaves out seven from the middle (Lessin to Stephens)."
+
+[finding."2606.18553v1:hessel2021clipscore:REF011"]
+verdict = "correct"
+note = "CLIPScore (EMNLP 2021; arXiv 2104.08718 from v1) lists Ronan Le Bras; the entry leaves him out."
+
+[finding."2606.18575v1:wang2020epidemiological:REF011"]
+verdict = "correct"
+note = "J. Data Sci. 18(3) lists Michael Kleinsasser and Daniel Barker; the entry leaves them out."
+
+[finding."2606.04343v1:qin2023nim:REF011"]
+verdict = "correct"
+note = "NIM-Nets (IEEE TIP 2023) lists Donglian Qi; the entry leaves her out."
+
+[finding."2606.04391v1:zheran2018reinforcement:REF011"]
+verdict = "correct"
+note = "The ICLR 2018 paper (arXiv 1802.08802 from v1) lists Tianlin Shi; the entry leaves him out."
+
+[finding."2607.22572v1:Wei2022:REF011"]
+verdict = "unclear"
+note = "Brian Ichter is on the NeurIPS 2022 paper but not on arXiv 2201.11903 v1, whose seven authors the entry lists."

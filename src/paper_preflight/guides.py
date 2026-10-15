@@ -275,12 +275,15 @@ GUIDES: dict[str, Guide] = {
     ),
     "REF011": _guide(
         ("Some authors are not on the record, the first author differs, a given name belongs to "
-         "someone else, or a suffix (Jr.) is read as the given name. An info when the entry lists "
-         "only some of the authors without \"and others\", or when the record is likely short "
-         "(older Crossref records, DataCite standing in for arXiv).",
-         "有作者不在记录里、第一作者不同、名字属于另一个人，或后缀（Jr.）被当成了名字。"
-         "条目只列出部分作者却没写 \"and others\"，或记录很可能不全（较早的 Crossref 记录、"
-         "代替 arXiv 应答的 DataCite）时，只作为提示。"),
+         "someone else, a suffix (Jr.) is read as the given name, or a name is left out from the "
+         "middle of a published version's list. An info when the entry cuts the list short "
+         "without \"and others\", when the name left out is on a preprint's record (a later "
+         "version may have added it), or when the record is likely short (older Crossref "
+         "records, DataCite standing in for arXiv).",
+         "有作者不在记录里、第一作者不同、名字属于另一个人、后缀（Jr.）被当成了名字，"
+         "或正式发表版本的作者列表中间漏掉了某人。条目把列表截短却没写 \"and others\"、"
+         "漏掉的人只出现在预印本的记录里（可能是后来的版本加上的），或记录很可能不全"
+         "（较早的 Crossref 记录、代替 arXiv 应答的 DataCite）时，只作为提示。"),
         ("Author lists change between versions (an author added in v2), and records can be "
          "incomplete. Every record of the work is consulted before a name is reported missing.",
          "作者列表会随版本变化（第二版新增作者），记录也可能不全。"

@@ -1739,8 +1739,8 @@ note = "was REF013: Math. Biosci. Eng. 19 is the 2022 volume (the DOI says mbe.2
 name = "fp-wang2020epidemiological"
 source = "real_papers:2606.18575v1"
 key = "wang2020epidemiological"
-expect = ["REF017"]
-note = "was REF013: J. Data Sci. 18(3) is the July 2020 issue (the DOI says 202007); Crossref dates the record 2021."
+expect = ["REF011", "REF017"]
+note = "was REF013: J. Data Sci. 18(3) is the July 2020 issue (the DOI says 202007); Crossref dates the record 2021. REF011 since C5 became a warning: the entry leaves out Michael Kleinsasser and Daniel Barker from the middle of the list (a real omission)."
 
 [[case]]
 name = "fp-eval-harness"
