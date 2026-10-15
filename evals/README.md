@@ -117,7 +117,7 @@ uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one r
 `why.py` shows a reference as written, every record found for it with how each field compares,
 and its findings in two replays: what most judgements and most fixes start from.
 
-There are eighteen reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are twenty-one reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
@@ -144,11 +144,50 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout16` | 2026-06-10..16 (an earlier week) | held out for #193 (list committed before it, #188); studied for #195 | 983 | 90 | 71 | 18 | 1 | **1.8** |
 | `dev2` | 2026-06-03..09 (an earlier week) | development batch, run with #195; studied for #198 | 1,038 | 72 | 59 | 12 | 1 | 1.2 |
 | `dev3` | 2026-05-27..06-02 (an earlier week) | development batch, run with #195; studied for #198 | 881 | 105 | 89 | 14 | 2 | 1.6 |
+| `heldout17` | 2026-10-07..13 (the fresh week) | held out for 1.0 (#198-#201; list committed before #201, #200) | 991 | 81 | 76 | 4 | 1 | 0.4 |
+| `heldout18` | 2026-05-20..26 (an earlier week) | held out for 1.0 (#200) | 1,136 | 174 | 148 | 22 | 4 | **1.9** |
+| `heldout19` | 2026-05-13..19 (an earlier week) | held out for 1.0 (#200) | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
 `heldout17`) is run; they are never held out. Among their real problems: one paper cites six
 Text-to-SQL papers that do not exist as written (invented titles under real systems' names).
+
+`heldout17`-`heldout19` are the 1.0 gate: three weeks whose lists were committed together
+(#200) before any of them was run, then each run once on the same code (main d99cac5, with
+#201). The gate is each week at most 1.5 false positives per 100 references and the three
+averaging at most 1.0. **It was not met**: `heldout18` is at 1.9, and the three together at
+1.08 (34 false positives in 3,135 references). The next round fixes these kinds and is
+measured on three new weeks.
+
+- **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
+  written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
+  titles, four of them HTML small-caps markup printed as text, wrong or invented authors in 4
+  entries, 2 DOIs that do not exist, a withdrawn preprint) and 4 false positives, 0.4 per 100
+  references: proceedings of Japan's NLP association no index has, an ICLR 2026 paper compared
+  with a reprint, a task force credited beside the people, and ℳ⋆ written 'M_star'. 4% cannot
+  determine.
+- **On `heldout18`**: 148 real problems (52 published preprints, 86 identifiers written as
+  links, wrong authors in 3 entries, 2 links that lead nowhere, 2 wrong years, 2 misquoted
+  titles, an arXiv ID of another work) and **22 false positives, 1.9 per 100 references**.
+  Nine are a bug of ours in one paper: titles written `\href{URL}{Title}` were searched by the
+  URL. The others: works no index has (a KDD and a NeurIPS workshop paper, a journal, CelebA's
+  web page under a garbled Google Scholar record, a comment printed under the article's DOI)
+  5; titles (a subtitle left out, 'Part I.' for 'I.', a registry's 'lsimzlsim' and spelt-out
+  '≈') 4; names ('Md' for Mohammad, a council 'on behalf of' which the authors write, four
+  people in one pair of braces) 3; a JMLR paper's year compared with its CoRR version 1. 5%
+  cannot determine.
+- **On `heldout19`**: 123 real problems (62 published preprints, 33 identifiers written as
+  links, wrong or invented authors in 8 entries, 6 misquoted titles, 5 wrong years (one finding
+  of each comes from an entry whose DOI is the authors' earlier paper), 5 DOIs or arXiv IDs of
+  other works, 3 DOIs that do not exist, a garbled entry for Breiman's Random Forests) and 8 false
+  positives, 0.8 per 100 references: two bugs of ours (an arXiv comment saying the paper 'had
+  erroneously been withdrawn' read as withdrawn; a percent-encoded DOI in a URL), given names
+  (Spassena/Sena, 'JdeB' for João de Bivar, a registry's family name 'O') 3, works no index
+  has (the SVHN workshop paper, a handbook chapter) 2, and a bioRxiv preprint cited by its
+  first version's title 1. 4% cannot determine.
+- The middle-author warning (C5, #201) fired 5 times on the three weeks: 3 real omissions and 2
+  entries citing the published paper with arXiv v1's shorter list (unclear), no false positive.
 
 - **On `heldout7`**, run once with every 0.5.0 change (#139-#144): 41 real problems (25
   published preprints, 5 wrong years, 5 identifiers written as URLs, 4 wrong given names or a
