@@ -186,14 +186,24 @@ evaluation harness and every run's summary are in [`evals/`](evals/README.md).
 Each week is 20 arXiv papers (cs, stat, q-bio, quant-ph and astro-ph) chosen mechanically. For
 1.0, three weeks never used before were committed together, before the changes they measure,
 and each was run once on the same code. The gate was at most 1.5 false alarms per 100
-references in each week and at most 1.0 on average.
+references in each week and at most 1.0 on average. Above them are the more recent weeks that
+stayed under 1.0, each run once with the version of its time; every week measured, those over
+1.0 too, is in [`evals/README.md`](evals/README.md#real-papers).
 
-| Papers first submitted | References | Flags | Real problems | False alarms | Unclear | False alarms per 100 references |
-|---|---|---|---|---|---|---|
-| 2026-03-25..31 | 809 | 220 | 209 | 8 | 3 | 1.0 |
-| 2026-03-18..24 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
-| 2026-03-11..17 | 898 | 104 | 95 | 8 | 1 | 0.9 |
-| **Together** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
+| Papers first submitted | Version | References | Flags | Real problems | False alarms | Unclear | False alarms per 100 references |
+|---|---|---|---|---|---|---|---|
+| 2026-10-07..13 | 1.0 candidate, 1st try | 991 | 81 | 76 | 4 | 1 | 0.4 |
+| 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
+| 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
+| 2026-06-24..30 | 0.8.0 | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
+| 2026-05-13..19 | 1.0 candidate, 1st try | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
+| 2026-05-06..12 | 1.0 candidate, 2nd try | 950 | 133 | 126 | 7 | 0 | 0.7 |
+| 2026-04-08..14 | 1.0 candidate, 3rd try | 1,088 | 194 | 181 | 7 | 6 | 0.6 |
+| 2026-04-01..07 | 1.0 candidate, 3rd try | 763 | 86 | 80 | 6 | 0 | 0.8 |
+| 2026-03-25..31 | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| 2026-03-18..24 | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| 2026-03-11..17 | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
+| **The three 1.0.0 weeks together** | **1.0.0** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
 
 - **The 409 real problems:** 220 cited preprints since published, 149 identifiers written so
   that links break, 30 entries with wrong authors, titles or years (NeurIPS 2025 papers dated
