@@ -64,6 +64,8 @@ def _split_commas(name: str) -> list[str]:
 
 
 def _words(text: str) -> list[str]:
+    """A name's words, split as BibTeX does: at spaces and at ties (``T.~{Goodson III}``), but
+    not inside braces."""
     words: list[str] = []
     depth = 0
     current: list[str] = []
@@ -72,7 +74,7 @@ def _words(text: str) -> list[str]:
             depth += 1
         elif ch == "}":
             depth -= 1
-        if ch.isspace() and depth == 0:
+        if (ch.isspace() or ch == "~") and depth == 0:
             if current:
                 words.append("".join(current))
                 current = []
@@ -91,8 +93,33 @@ def _is_von(word: str) -> bool:
     return bool(stripped) and stripped[0].islower()
 
 
+# A person braced whole with a generational suffix, which BibTeX prints as written: "{J.~Pe{\v
+# r}ina, Jr.}" (heldout23); initials, a surname and the suffix
+_BRACED_SUFFIXED = re.compile(
+    r"(?P<given>(?:[A-Z]\.\s*(?:-\s*[A-Z]\.\s*)?){1,3})(?P<family>[^\W\d_][\w'-]+)\s*,?\s*"
+    r"(?P<suffix>Jr\.?|Sr\.?|II|III|IV)"
+)
+
+
+def _whole_braced(raw: str) -> bool:
+    """One pair of braces around all of ``raw``."""
+    if not (raw.startswith("{") and raw.endswith("}")):
+        return False
+    depth = 0
+    for i, ch in enumerate(raw):
+        depth += {"{": 1, "}": -1}.get(ch, 0)
+        if depth == 0 and i < len(raw) - 1:
+            return False
+    return True
+
+
 def parse_name(raw: str) -> Person:
     raw = raw.strip()
+    if _whole_braced(raw):
+        suffixed = _BRACED_SUFFIXED.fullmatch(" ".join(latex_to_text(raw[1:-1]).split()))
+        if suffixed:
+            family = f"{suffixed['family']} {suffixed['suffix']}"
+            return Person(family=family, given=suffixed["given"].strip())
     if raw.startswith("{") and raw.endswith("}") and raw.count("{") == 1:
         literal = latex_to_text(raw)
         return Person(family=literal, literal=literal)

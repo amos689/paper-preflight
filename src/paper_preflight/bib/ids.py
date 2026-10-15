@@ -155,6 +155,10 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
             # %3C32..." is Wiley's 10.1002/1097-0142(1950)3:1<32::...> (heldout19)
             if re.search(r"%[0-9A-Fa-f]{2}", value):
                 value = unquote(value)
+            # a link's next parameter is no part of the DOI: Scopus's "...&doi=10.1109/TPAMI.2023.
+            # 3259640&partnerID=40&md5=..." (heldout23)
+            if field == "url":
+                value = re.sub(r"(10\.\d{4,9}/[^&\s]+)&\w+=.*$", r"\1", value)
             doi = normalize_doi(value)
             # ACM's own 10.5555 numbers are registered with no agency: a Digital Library link
             # carrying one (dl.acm.org/doi/10.5555/3666122.3666563) is a working page, not a

@@ -54,6 +54,20 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- **Names as BibTeX reads them** (heldout23, the 1.0 gate's third try: 15 of its 28 false
+  positives, all in one paper). A tie between a name's parts is a space (`T.~{Goodson III}`,
+  `J.~{Peřina~Jr.}`), and a person braced whole with a suffix (`{J. Peřina, Jr.}`), which BibTeX
+  prints as written, is that person; both were read as a group's name, so the person was "not
+  on the record". With the other fixes, 25 of heldout23-25's 41 false positives are gone on a
+  replay of 560 papers; no real problem lost; HALLMARK `dev_public` and GPTZero (142 of 151)
+  unchanged. The false-positive museum gains 24 cases (373).
+  - Titles: a chapter's number before a registry's title ("17. A Value for n-Person Games"),
+    a footnote mark on its last word ("Cs3Sb1", "Downconversiona"), a translation after the
+    entry's title in brackets or parentheses, an acronym before it ("ICC: Intra-Cluster ...");
+    "judgement" for "judgment". Another year's edition of a series ("NTIRE 2026 ... Challenge
+    Report" against the 2025 one) is another work.
+  - Names: two neighbouring letters a registry swapped ("Varnavksi"), with the same given name.
+  - A DOI in a link followed by the link's other parameters (Scopus's `&partnerID=...`).
 - **False positives found on heldout20-22** (the 1.0 gate's second try: 37 in 2,978 references,
   1.24 per 100): 29 of them gone on a replay of 500 papers, 9 more on earlier weeks; no real
   problem lost, two more found (a title the entry abbreviates, an author who is not the
