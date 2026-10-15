@@ -4,7 +4,7 @@
 
 ![paper-preflight](docs/assets/brand/paper-preflight-logo.svg)
 
-**Check every reference of a LaTeX paper against real scholarly records before you submit.<br>
+**Check every reference of a paper against real scholarly records before you submit.<br>
 No LLM guessing, no false accusations.**
 
 [![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
@@ -13,7 +13,7 @@ No LLM guessing, no false accusations.**
 [![paper-preflight MCP server on Glama](https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg)](https://glama.ai/mcp/servers/amos689/paper-preflight)
 
 [![Python 3.11 to 3.14](docs/assets/badges/python.en.svg)](pyproject.toml)
-[![Input: LaTeX, BibTeX and PDF](docs/assets/badges/input.en.svg)](#quick-start)
+[![Input: LaTeX, Word, Markdown and PDF](docs/assets/badges/input.en.svg)](#what-it-reads)
 [![Checked against six scholarly databases](docs/assets/badges/sources.en.svg)](#how-it-works)
 [![No LLM in the verdicts](docs/assets/badges/verdicts.en.svg)](#design-principles)
 [![Read-only MCP tools](docs/assets/badges/mcp.en.svg)](docs/mcp.md)
@@ -30,24 +30,56 @@ No LLM guessing, no false accusations.**
 ![paper-preflight checking the demo paper: errors for an undefined citation key, a DOI that belongs to another paper, a reference no source knows, a retracted paper and a duplicate entry key; warnings for a published preprint, two entries for the same work, a wrong year and a LaTeX-escaped DOI](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 
 Language models invent references, and copy-pasted BibTeX carries wrong years, wrong authors
-and dead DOIs. paper-preflight reads your `.tex` and `.bib` files and asks Crossref, dblp,
-arXiv, DataCite, PubMed and OpenAlex (and Semantic Scholar, if you have a key; Open Library for
-books without a DOI; GitHub, PyPI, CRAN, Hugging Face and OpenML for software, models and
-datasets) about every cited work:
+and dead DOIs. paper-preflight reads your paper (LaTeX, Word, Markdown, Typst, a PDF or a plain
+reference list) and asks Crossref, dblp, arXiv, DataCite, PubMed and OpenAlex about every cited
+work, with Semantic Scholar too if you have a free key, Open Library for books without a DOI,
+and GitHub, PyPI, CRAN, Hugging Face and OpenML for software, models and datasets:
 
 - Does it exist?
 - Does it match what you wrote?
 - Has it been retracted?
 - Has the preprint you cite been published since?
 
-When it cannot tell, it says so instead of guessing.
+Every finding is backed by a record, or by every source that could know the work answering
+"no". When it cannot tell, it says "cannot determine" and why, instead of guessing. No language
+model takes part in a verdict.
 
-> **Status: 1.0.** Rule IDs, the JSON report, settings, commands and the Python API are kept
-> through 1.x ([what is stable](docs/stability.md)). False positives are the bugs we most want
-> to hear about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
+> **Status: 1.0.** On three weeks of real arXiv papers held out for the release: 0.79 false
+> alarms per 100 references, against 409 real problems found ([accuracy](#how-accurate-is-it)).
+> Rule IDs, the JSON report, settings, commands and the Python API are kept through 1.x
+> ([what is stable](docs/stability.md)). False positives are the bugs we most want to hear
+> about: please [open an issue](https://github.com/amos689/paper-preflight/issues).
+
+## Quick start
+
+With [uv](https://docs.astral.sh/uv/) nothing needs installing:
+
+```bash
+uvx paper-preflight check path/to/paper
+```
+
+`path/to/paper` is the project's folder, its main `.tex` file or a `.bib` file. To install it
+for good (Python 3.11 or later):
+
+```bash
+pip install paper-preflight
+```
+
+| Extra | Adds | Install |
+|---|---|---|
+| `pdf` | Reading the reference list of a PDF | `pip install "paper-preflight[pdf]"` |
+| `mcp` | The MCP server for coding agents | `pip install "paper-preflight[mcp]"` |
+| `support` | The experimental evidence finder, with its local model | `pip install "paper-preflight[support]"` |
 
 The repository's [demo paper](examples/demo-paper) cites eleven works, several of them wrong on
-purpose. A real run, against the live sources:
+purpose. The animation above is a real run of `paper-preflight check examples/demo-paper`
+against the live sources. In it, the correct NeurIPS paper is verified through dblp although
+Crossref only holds fake copies of it, the book without an identifier is confirmed by Open
+Library, and the Chinese book, whose script is not supported yet, is "cannot determine", not
+"not found".
+
+<details>
+<summary>The same run as text</summary>
 
 ```text
 $ paper-preflight check examples/demo-paper
@@ -82,12 +114,36 @@ References: 7 verified · 1 metadata mismatch · 1 identifier conflict · 1 not 
 5 error(s) · 4 warning(s) · 3 info
 ```
 
-Each finding is backed by a record (or by every source answering "no"). The correct NeurIPS
-paper is verified through dblp even though Crossref only holds fake copies of it, the book
-without an identifier is confirmed by Open Library, and the Chinese one, whose script is not
-supported yet, is reported as "cannot determine" instead of "not found".
+</details>
 
-## What it catches
+## What it reads
+
+| You have | Command |
+|---|---|
+| A LaTeX project: its folder, main `.tex` or `.bib`; a project that ships only its compiled `.bbl`, as many arXiv sources do, is read from it (checked, never edited) | `paper-preflight check path/to/paper` |
+| A Word manuscript: citations inserted by Zotero, Mendeley or EndNote, Word's own sources, or the reference list as typed | `paper-preflight check paper.docx` |
+| Markdown, Quarto or R Markdown: `[@key]` against its bibliography | `paper-preflight check paper.qmd` |
+| Typst: `@key` against `#bibliography(...)`, a `.bib` or Hayagriva `.yml` | `paper-preflight check paper.typ` |
+| A bibliography on its own: BibTeX, CSL-JSON (`.json`), RIS (`.ris`) or YAML (`.yml`) | `paper-preflight check refs.ris` |
+| A reference list as plain text, in the common styles (APA, IEEE, ACM, Nature, Vancouver, Springer, Elsevier, MDPI, GOST, Chicago, MLA) | `paper-preflight check references.txt`, or `-` for stdin |
+| Only the PDF (with the `pdf` extra) | `paper-preflight check paper.pdf` |
+| Any arXiv paper: its source is downloaded to a temporary folder, checked and deleted | `paper-preflight check arxiv:2607.06922` |
+
+What each input can and cannot tell, in detail: [docs/inputs.md](docs/inputs.md).
+
+## What it checks
+
+Every reference gets one verdict:
+
+| Verdict | Means |
+|---|---|
+| verified | A record of the work was found and agrees with the entry |
+| metadata mismatch | The work was found, but the entry says something else about it: the findings name the field |
+| identifier conflict | The entry's DOI or arXiv ID belongs to another work |
+| not found | Every source that could know the work answered, and none has it |
+| cannot determine | It could not be decided, and the report says why |
+
+The findings say what is wrong:
 
 | Rule | Finding |
 |---|---|
@@ -102,98 +158,74 @@ supported yet, is reported as "cannot determine" instead of "not found".
 | REF018 | A cited arXiv preprint was withdrawn by its authors |
 | REF019 · REF021 | A linked repository, package or dataset does not exist; a linked web page is gone, with no archived copy |
 | REF020 | A preprint is cited with a venue no catalogue of journals and conferences has |
-| CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
 | REF090 | Cannot determine, always with the reason (source unavailable, grey literature, …) |
+| CIT001–CIT008 | Undefined, duplicate, unused or near-duplicate citation keys; broken `.bib` syntax |
+| TEX001–TEX004 | Included files missing, unreadable or including each other; a remote bibliography left unchecked |
+| RUN001 · RUN002 · CFG001 | A run left incomplete by a source outage; a source answered in place of another; a suppression comment that silenced nothing |
 
 Every rule has [a page](docs/rules/README.md): what it checks, when it can be wrong, and what to
 do. `paper-preflight explain REF003` prints it in the terminal.
 
 ## How accurate is it?
 
-Four measurements, all against the live sources: hallucinations found in published papers, the
-bibliographies of real papers, a head-to-head with published tools, and a public benchmark.
+Four measurements, all against the live sources:
 
-### On hallucinations that got past peer review
+| Measured on | Result |
+|---|---|
+| [Real papers](#real-papers): 60 arXiv papers from three weeks held out for 1.0, 2,714 references, every flag reviewed by hand | **0.79 false alarms per 100 references** (one every three papers), against 409 real problems |
+| [Hallucinations that passed peer review](#hallucinations-that-passed-peer-review): the 151 GPTZero found in NeurIPS 2025 and ICLR 2026 papers | **142 flagged (94%)**, 9 cannot determine, **none verified** |
+| [HALLMARK](#hallmark), a public benchmark: 831 entries never used during development | Any issue: precision 98.5%, recall 93.5%, false-positive rate 1.9% |
+| [Next to five other tools](#next-to-other-tools), on 104 references labelled by hand in a published study | Precision 72.5%, against 31–51% for the others, at 87.9% recall |
+
+Precision comes first: a reference is called fabricated only on positive evidence, and an
+unanswered or ambiguous lookup is reported as "cannot determine", never as "not found". The
+evaluation harness and every run's summary are in [`evals/`](evals/README.md).
+
+### Real papers
+
+| arXiv papers first submitted (20 a week) | Run with | References | Flags | Real problems | False alarms | Unclear | False alarms per 100 references |
+|---|---|---|---|---|---|---|---|
+| 2026-10-07..13, the latest week | the first 1.0 candidate | 991 | 81 | 76 | 4 | 1 | 0.4 |
+| 2026-03-25..31 | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| 2026-03-18..24 | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| 2026-03-11..17 | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
+| **The three weeks held out for 1.0** | **1.0.0** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
+
+### Hallucinations that passed peer review
 
 GPTZero published 151 hallucinated references it found in NeurIPS 2025 papers and ICLR 2026
-submissions, each confirmed by its staff. Pasted as plain text, as the papers printed them:
+submissions, each confirmed by its staff. Pasted as plain text, as the papers printed them,
+142 are flagged and none is verified. The 9 left undecided are web pages and blog posts, a
+workshop no source indexes, real titles given with invented authors where several works share
+the title, and two references too garbled to search; each is listed with its reason in
+[`evals/results/gptzero.md`](evals/results/gptzero.md). GPTZero's own tool found these, so they
+are the hallucinations a search can find; recall on every kind of hallucination is lower (see
+HALLMARK).
 
-| References | Flagged | Cannot determine | Verified |
-|---|---|---|---|
-| 151 | **142 (94%)** | 9 | **0** |
+### HALLMARK
 
-- **None of them is verified.** The 9 left undecided are web pages and blog posts, a workshop
-  no source indexes, real titles given with invented authors where several works share the
-  title, and two references too garbled to search. Each is listed with its reason in
-  [`evals/results/gptzero.md`](evals/results/gptzero.md).
-- GPTZero's own tool found these, so they are the hallucinations a search can find; recall on
-  every kind of hallucination is lower (see HALLMARK below).
+[HALLMARK](https://github.com/rpatrik96/hallmark) (v1.2.3) is a public benchmark of real and
+hallucinated BibTeX entries. *Fabrication* counts a wrong identifier, a work not found and no
+author in common; *any issue* also counts wrong authors, title, year or venue.
 
-### On real papers
+| Split | Mode | Precision | Recall | False-positive rate | Coverage |
+|---|---|---|---|---|---|
+| `test_public`: 831 entries, never used during development | Any issue | 98.5% | 93.5% | 1.9% | 97.7% |
+| | Fabrication | 99.0% | 50.2% | 0.6% | 97.7% |
+| `dev_public`: 1,119 entries, used during development | Any issue | 97.7% | 94.3% | 2.1% | 98.9% |
+| | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
 
-Weeks of arXiv papers (20 each, cs, stat, q-bio, quant-ph and astro-ph), chosen
-mechanically, each list fixed before the changes it measures, run once, with every warning and
-error reviewed by hand:
+`test_public` was run with 1.0.0, `dev_public` with 0.8.0; no rule was tuned on `test_public`.
 
-| Papers first submitted | Version | References | Flags | Real problems | False positives | Unclear | False positives per 100 references |
-|---|---|---|---|---|---|---|---|
-| 2026-08-19..25 | 0.5.0 | 962 | 53 | 41 | 10 | 2 | 1.0 |
-| 2026-08-26..09-01 | 0.5.1 | 780 | 101 | 81 | 19 | 1 | 2.4 |
-| 2026-09-02..08 | 0.5.2 | 975 | 48 | 31 | 13 | 4 | 1.3 |
-| 2026-09-09..15 | 0.5.3 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
-| 2026-09-16..22 | 0.6.0 candidate | 868 | 89 | 76 | 13 | 0 | 1.5 |
-| 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
-| 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
-| 2026-06-24..30, an earlier week | 0.8.0 | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
-| 2026-03-25..31, an earlier week | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
-| 2026-03-18..24, an earlier week | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
-| 2026-03-11..17, an earlier week | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
-
-- **1.0: about one false alarm every three papers** (45 references on average), against 409
-  real problems, on three weeks committed together before any was run and each run once on
-  the same code: 1.0, 0.5 and 0.9 per 100 references, 0.79 on average (21 in 2,714). The false
-  alarms are registries' own errors (a cut or misspelt title, a garbled name, a dropped symbol)
-  5, groups credited as their makers ask and Zotero's 'N other authors' placeholder 6, works no
-  index holds or that a later version retitled 3, a conference paper compared in place of its
-  journal version 2, APA's '[software]' and '[dataset]' labels after a title 2, and three
-  others. Among the real problems: reference lists largely invented in medical-imaging and LLM
-  papers, NeurIPS 2025 papers dated 2026, and author fields BibTeX misreads.
-- **The 1.0 gate took four tries.** Each try is three weeks never used before, committed
-  before the changes they measure; each week must be at most 1.5 per 100 references and the
-  three at most 1.0 on average. The first three tries averaged 1.08, 1.24 and 1.28, each with
-  one week over 1.5 (1.9, 1.7 and 2.1, the last mostly one bug of ours reading names written
-  with `~`), and each try's false alarms were fixed before the next. The first try's fresh week
-  (2026-10-07..13), the control for 0.8.0's earlier week, was at 0.4. All twelve weeks are in
-  [`evals/README.md`](evals/README.md#real-papers).
-- **0.8.0: one false alarm every two papers** (56 references on average), against 132 real
-  problems: 93 cited preprints since published, 17 identifiers written as links, wrong authors
-  or given names in 10 entries (in four, most given names are invented), 6 wrong years, 2
-  misquoted titles, a wrong venue, a DOI that does not exist and an arXiv ID of another paper.
-  Six false alarms are registries' own writing ('Ueber' for 'Über', a title that lost its
-  '3/4'), three are author fields written by hand ('and 324 others'), one an ITU-R report no
-  source indexes. This week was sampled from before the first one, never used until then, so
-  that 0.8.0 need not wait for next week's papers; checked months after it was written, it may
-  read a little better than a fresh week, which follows as a control.
-- **0.7.0: about one false alarm every three papers**, against 79 real problems. The false
-  alarms are three articles a registry dates only by their online appearance, a book against
-  its online edition, two symbols a registry writes its own way, and a paper's code offered as
-  its published version; all are fixed in 0.8.0.
-- **The two weeks before (0.6.0): 1.5, then 0.8.** 8 of the first week's 13 false alarms were
-  registries' own errors (a short author list, misspelt names, an HTML entity, a typo, a wrong
-  year); 5 are fixed in 0.6.0.
-- **One week was over our target of 1.5** (2.4); 11 of its 19 false alarms are fixed in 0.5.2.
-- **In the first week, one false alarm every two papers** (48 references on average), against
-  41 real problems:
-  16 errors in the entries (wrong years, given names and titles, a missing first author, one
-  paper's title with another's authors, identifiers written so that links break) and 25 cited
-  preprints that have since been published.
-- **The false alarms are mostly registry records with errors of their own** (author lists that
-  stop short, a garbled symbol, an English given name) **and collaboration names in author
-  lists** ("MAGPI Team"); two come from a title cited without its last words.
-- **Seven earlier batches of 20 papers were used to find false positives,** each first measured
-  as it came out (0.1.0: 4.5 per 100 references; 0.1.1: 2.3; 0.1.2 before its last fixes: 3.0;
-  0.1.2: 1.7; 0.2.1: 1.9; 0.3.0: 1.9; 0.4.0: 1.2). Details in
-  [`evals/README.md`](evals/README.md#real-papers).
+- **Most of the false positives are disputed labels.** Every flag on a `dev_public` entry
+  labelled VALID was checked by hand: the 11 that remain are not correct citations (DOIs that
+  belong to other papers, author lists naming people who did not write the paper, a shifted
+  year, a truncated title). Without them, both modes reach 100% precision. The list, each with
+  a reason one lookup confirms: [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
+- **What is still missed:** author lists cut short at the end, or checked only against a
+  preprint whose later versions add people (named in an info), and invented entries that borrow
+  a title several real works share. Every hallucination type is broken down in
+  [`evals/results/`](evals/results/).
 
 ### Next to other tools
 
@@ -209,120 +241,32 @@ and published what five tools flagged. On the same references, with their labels
 | RefChecker | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
 | **paper-preflight** | **72.5% [57.2%, 83.9%]** | 87.9% | **15.5** |
 
-The sample is small, so the intervals are wide. Some flags count as false here because the study
-labels a reference correct when the work exists: five of paper-preflight's flags on such
-references point at real errors (a wrong author, a broken DOI). Two causes of false flags found
-in this data were fixed, and four names the study's CSV garbled were restored, before the run
-above; the first run measured 62.8%. See
-[`evals/results/badalova-mayr.md`](evals/results/badalova-mayr.md).
+The sample is small, so the intervals are wide. The study labels a reference correct when the
+work exists, so five of paper-preflight's "false" flags point at real errors (a wrong author, a
+broken DOI). Two causes of false flags found in this data were fixed before the run above (the
+first run measured 62.8%); see [`evals/results/badalova-mayr.md`](evals/results/badalova-mayr.md).
 
-### On a benchmark: HALLMARK
+## Limits
 
-[HALLMARK](https://github.com/rpatrik96/hallmark) is a public benchmark of real and hallucinated
-BibTeX entries.
-
-| Split | Mode | Precision | Recall | False-positive rate | Coverage |
-|---|---|---|---|---|---|
-| `test_public`: 831 entries, never used during development | Any issue | 98.5% | 93.5% | 1.9% | 97.7% |
-| | Fabrication | 99.0% | 50.2% | 0.6% | 97.7% |
-| `dev_public`: 1,119 entries, used during development | Any issue | 97.7% | 94.3% | 2.1% | 98.9% |
-| | Fabrication | 98.2% | 53.7% | 1.0% | 98.9% |
-
-HALLMARK v1.2.3, every entry of both public splits: `test_public` run with 1.0.0 on 2026-10-15
-(the same totals as 0.8.0's run on 2026-10-09), `dev_public` with 0.8.0 on 2026-10-09.
-*Fabrication* counts a wrong identifier, a work not found and no author in common; *any issue*
-also counts wrong authors, title, year or venue.
-
-- **The held-out split confirms the development numbers:** a little higher precision and less
-  than a point less recall on entries no rule was ever tuned on. 0.8.0 catches 97% of invented
-  venues (78% in 0.7.0) and 85% of near-miss titles (70%); 1.0 catches 94% of author lists
-  that leave people out (a stress type, outside the totals; 10% in 0.8.0), now that a name
-  missing from the middle of a published list is a warning.
-- **Every flag on a `dev_public` entry labelled VALID was checked by hand.** The 11 that remain are not
-  correct citations: DOIs that belong to other papers, author lists naming people who did not
-  write the paper, a shifted year and a truncated title.
-- **Without them, both modes reach 100% precision and 0% false positives.** The list, each item
-  with a reason one lookup confirms, is in
-  [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml).
-- **What is still missed:** author lists cut short at the end or checked against a preprint,
-  whose later versions add people (named in an info), and invented entries that borrow a title
-  several real works share. See
-  [`evals/results/`](evals/results/) for every hallucination type.
-
-Precision comes first: a reference is called fabricated only on positive evidence, and an
-unanswered or ambiguous lookup is reported as "cannot determine", never as "not found". The
-evaluation harness and every run's summary are in [`evals/`](evals/README.md).
-
-## Quick start
-
-With [uv](https://docs.astral.sh/uv/) nothing needs installing (or `pip install paper-preflight`):
-
-```bash
-uvx paper-preflight check path/to/paper
-```
-
-`path/to/paper` is the project directory, its main `.tex` file, or a single `.bib` file.
-A project that ships no `.bib`, as many arXiv sources do, is read from its compiled `.bbl`
-(checked, but never edited).
-
-Writing in Word, Markdown or Typst? The manuscript is checked the same way:
-
-```bash
-uvx paper-preflight check paper.docx     # Word: Zotero, Mendeley or EndNote citations, or the typed list
-uvx paper-preflight check paper.qmd      # Markdown, Quarto, R Markdown: [@key] against its bibliography
-uvx paper-preflight check paper.typ      # Typst: @key against #bibliography(...), .bib or Hayagriva .yml
-```
-
-In a Word manuscript, citations inserted by Zotero, Mendeley or EndNote carry the reference
-manager's own record of each work (field codes), which is read first; Word's source manager
-next; else the reference list as typed, after its "References" heading. A bibliography may also
-be checked on its own as CSL-JSON (`.json`), RIS (`.ris`) or YAML (`.yml`, Hayagriva or CSL).
-
-No manuscript at all? A reference list as plain text works too, in the common styles (APA,
-IEEE, ACM, Nature, Vancouver, Springer, Elsevier, MDPI, GOST, Chicago, MLA), one reference per
-line, per paragraph or numbered:
-
-```bash
-uvx paper-preflight check references.txt
-pbpaste | uvx paper-preflight check -      # or from stdin
-```
-
-Any arXiv paper, by its ID: the source is downloaded to a temporary folder, checked, and
-deleted.
-
-```bash
-uvx paper-preflight check arxiv:2607.06922
-```
-
-Only the PDF? Its reference list is read too, with the `pdf` extra:
-
-```bash
-uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
-```
-
-| Option | Effect |
-|---|---|
-| `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning) |
-| `--offline` | Never touch the network; use only answers already in the local cache |
-| `--refresh` | Ask every source again instead of using cached answers (after a correction, say) |
-| `--recheck` | Search again now for references found too new to be indexed on earlier runs (otherwise once a day) |
-| `--fail-on warning` | Make warnings fail the run too (the default is errors) |
-| `--details` | List every finding; by default a suggestion that applies to many entries (published preprints, available DOIs) is one line |
-| `--lang zh` | Chinese messages (also chosen automatically from your locale) |
-
-Exit codes:
-
-| Code | Meaning |
-|---|---|
-| 0 | Nothing at or above `--fail-on` was found |
-| 1 | Blocking findings |
-| 2 | No blocking findings, but a source was unavailable and nothing could answer in its place, so the paper cannot be called clean yet |
-| 3 | Usage error |
-| 4 | Internal error (please report it) |
-
-The JSON report follows [a published JSON Schema](docs/schema/check-report.schema.json)
-(`schema_version` 0.1): fields may be added, but none is removed or changes meaning without a
-new `schema_version`. The tests check every report against it.
+- **Titles in scripts other than Latin** (Chinese, Japanese, Cyrillic, …) are "cannot
+  determine" for now, and so is a Chinese-language work cited by a translated English title,
+  which the open indexes rarely hold.
+- **Grey literature without an identifier** (reports, theses, manuals, standards) is often
+  "cannot determine": the open registries hold little of it. Books are asked of Open Library,
+  software of GitHub, PyPI and CRAN, models and datasets of Hugging Face and OpenML.
+- **Web pages are never judged true or false.** A linked page that is gone, with no archived
+  copy, is reported (REF021).
+- **A work no open index holds** is "cannot determine" when its venue is unknown to the
+  catalogues too, but at a venue they know it can be reported as not found: read
+  [REF003's page](docs/rules/REF003.md) before acting on that finding.
+- **Not caught:** an invented reference that borrows a real title several works share, an
+  author list cut short at the end (an info), and a citation of a real paper for a claim it
+  does not make (only the experimental [`support`](#experimental-find-the-passage-behind-each-citation)
+  reads the claims).
+- **It needs the network** on a first run: about 0.4 s per reference on a cold cache, so a
+  50-reference paper takes about 20 seconds. Answers are cached, and `--offline` works from the
+  cache. A source that is down, with nothing to answer in its place, makes the run incomplete
+  (exit code 2), never "clean".
 
 ## Fetch verified BibTeX
 
@@ -351,7 +295,7 @@ paper-preflight bib fetch 1810.04805
 - **Titles:** `--title` (with `--author`/`--year` if needed) lists the candidates instead of
   choosing when several works match.
 - **Retractions:** a retracted work comes with a warning.
-- **Agents:** `--format json` is for scripts and agents.
+- **Scripts and agents:** `--format json`.
 
 ## Fix the bibliography
 
@@ -382,22 +326,30 @@ paper-preflight bib fix path/to/paper --level unsafe
 - Only the affected fields change; comments, formatting, line endings and encoding are kept.
   A reference nobody could find is never "fixed": only you can say what was meant.
 
-## Silence a finding you have checked
+## Options and exit codes
 
-A comment directly above an entry silences rules for that entry, with an optional reason:
+| Option | Effect |
+|---|---|
+| `--format json` / `--format sarif` | Machine-readable output (SARIF works with GitHub code scanning); `-o` writes it to a file |
+| `--fail-on warning` | Make warnings fail the run too (the default is errors; `never` for neither) |
+| `--offline` | Never touch the network; use only answers already in the local cache |
+| `--refresh` | Ask every source again instead of using cached answers (after a correction, say) |
+| `--recheck` | Search again now for references found too new to be indexed on earlier runs (otherwise once a day) |
+| `--details` | List every finding; by default a suggestion that applies to many entries (published preprints, available DOIs) is one line |
+| `--hide-info` | Leave out infos |
+| `--lang zh` | Chinese messages (also chosen automatically from your locale) |
 
-```bibtex
-% preflight: ignore[REF003] reason="internal technical report, not indexed anywhere"
-@techreport{lab2024internal,
-  ...
-}
-```
+| Exit code | Meaning |
+|---|---|
+| 0 | Nothing at or above `--fail-on` was found |
+| 1 | Blocking findings |
+| 2 | No blocking findings, but a source was unavailable and nothing could answer in its place, so the paper cannot be called clean yet |
+| 3 | Usage error |
+| 4 | Internal error (please report it) |
 
-The verdict stays in the JSON report; only the finding is dropped. A suppression that silenced
-nothing is reported as CFG001 (info), so stale comments do not pile up. Reference rules are only
-judged after a complete online run, since offline answers and outages may leave them unrun.
-
-A finding you believe is wrong: [where false alarms come from, and what to do](docs/false-positives.md).
+The JSON report follows [a published JSON Schema](docs/schema/check-report.schema.json)
+(`schema_version` 1.0): fields may be added, but none is removed or changes meaning within 1.x.
+Every option, the cache and its lifetimes: [docs/configuration.md](docs/configuration.md).
 
 ## Project settings
 
@@ -415,89 +367,28 @@ fail-on = "warning"                        # as --fail-on; the command line wins
 
 `check --config <path>` names the file instead. The optional sources are `s2`, `openlibrary`,
 `github`, `pypi`, `cran`, `huggingface`, `openml`, `web` (links to web pages) and `wayback`;
-the registries that judge a reference cannot be turned off, and a mistake in the file (an
-unknown rule or setting) is an error, never silently ignored. The JSON report names the file in `run.notes`; the MCP server reads it too.
+the registries that judge a reference cannot be turned off. A mistake in the file (an unknown
+rule or setting) is an error, never silently ignored. The JSON report names the file in
+`run.notes`, and the MCP server reads it too.
 
-## Experimental: find the passage behind each citation
+### Silence a finding you have checked
 
-`support` looks in each cited work for a passage that says what the citing sentence claims. It
-reads the work's text: the arXiv source, an open-access full text or PDF, or else the abstract.
-A small local model (HHEM-2.1-open, 0.4 GB) then scores the passages ranked best for the claim.
+A comment directly above an entry silences rules for that entry, with an optional reason:
 
-```bash
-pip install "paper-preflight[support]"
+```bibtex
+% preflight: ignore[REF003] reason="internal technical report, not indexed anywhere"
+@techreport{lab2024internal,
+  ...
+}
 ```
 
-```bash
-paper-preflight support path/to/paper --download-model --all
-```
+The verdict stays in the JSON report; only the finding is dropped. A suppression that silenced
+nothing is reported as CFG001 (info), so stale comments do not pile up (for reference rules,
+only after a complete online run, since offline answers and outages may leave them unrun).
 
-`--download-model` fetches the model's weights once. `--all` also lists the confirmed
-citations with their quotes, and `arxiv:<id>` works as a target, as it does for `check`.
+A finding you believe is wrong: [where false alarms come from, and what to do](docs/false-positives.md).
 
-- **What it says:** "confirmed", with the passage quoted word for word, or "could not
-  confirm". A citation it could not confirm comes with the reason: no text, only the abstract,
-  or no passage close enough. A citation that only names what it cites ("Adam \cite{...}") is
-  confirmed when the cited work's title carries the name.
-- **It never calls a citation wrong.** On a gold set of 298 citations, 93% of its
-  confirmations were right [95% CI 82%, 98%]. But it confirms only about one real citation in
-  six, and a low score pointed at a mis-citation less than half the time. The gold set's
-  labels were made by AI models, not experts; see
-  [`evals/results/support.md`](evals/results/support.md).
-- **Or let your agent judge.** The MCP tool `preflight_cited_passages` returns each claim with
-  the cited work's best passages, for Claude, Codex or another agent to judge by the same
-  rules. It needs no model and no `support` extra. On 100 gold-set citations, a Claude agent
-  judging from it confirmed 39% of the real ones, against HHEM's 9%, and every confirmation
-  was at least partially supported (the labels come from the same model family).
-- **What leaves your machine:** the claims are scored locally. Only the cited works'
-  identifiers go out, to fetch their text, which is then kept in the local cache.
-
-## Use it from Python
-
-```python
-import paper_preflight
-
-report = paper_preflight.check_paper("paper/")
-for ref in report.references:
-    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
-```
-
-The results are plain, frozen dataclasses; see [docs/python-api.md](docs/python-api.md).
-
-## Use it from your coding agent
-
-**Claude Code** — install the plugin. It bundles an MCP server and a skill that makes Claude
-check the references before calling a paper finished, fix only what is proven wrong, and never
-invent a reference.
-
-```bash
-claude plugin marketplace add amos689/paper-preflight
-```
-
-```bash
-claude plugin install paper-preflight@paper-preflight
-```
-
-**Codex, Gemini CLI, Copilot, Cursor and other agents** — install the same skill. It runs the
-CLI when no MCP server is configured:
-
-```bash
-npx skills add amos689/paper-preflight
-```
-
-`gh skill install amos689/paper-preflight paper-preflight` installs it too.
-
-**MCP clients (Codex, Cursor, VS Code, …)** — run `paper-preflight mcp`. The tools are
-read-only and confined to your workspace; see [docs/mcp.md](docs/mcp.md).
-
-**pre-commit** — check citation keys and cached verdicts on every commit in seconds; see
-[docs/pre-commit.md](docs/pre-commit.md).
-
-**GitHub Actions** — `uses: amos689/paper-preflight@main` checks the paper on every push, with
-the report in the job summary and optional code-scanning alerts; see
-[docs/github-action.md](docs/github-action.md).
-
-## Better results with free credentials
+### Better results with free credentials
 
 paper-preflight works without any account. These optional environment variables make it faster
 and more complete; their values are never printed or logged.
@@ -512,6 +403,78 @@ and more complete; their values are never printed or logged.
 
 `paper-preflight doctor` shows which are set and whether each source answers right now.
 
+## Use it in your workflow
+
+**Claude Code:** install the plugin. It bundles an MCP server and a skill that makes Claude
+check the references before calling a paper finished, fix only what is proven wrong, and never
+invent a reference.
+
+```bash
+claude plugin marketplace add amos689/paper-preflight
+```
+
+```bash
+claude plugin install paper-preflight@paper-preflight
+```
+
+**Codex, Gemini CLI, Copilot, Cursor and other agents:** install the same skill
+(`gh skill install amos689/paper-preflight paper-preflight` works too). It runs the CLI when no
+MCP server is configured:
+
+```bash
+npx skills add amos689/paper-preflight
+```
+
+**MCP clients (Codex, Cursor, VS Code, …):** run `paper-preflight mcp` (the `mcp` extra). The
+tools are read-only and confined to your workspace; see [docs/mcp.md](docs/mcp.md).
+
+**GitHub Actions:** `uses: amos689/paper-preflight@main` checks the paper on every push, with
+the report in the job summary and optional code-scanning alerts; see
+[docs/github-action.md](docs/github-action.md).
+
+**pre-commit:** check citation keys and cached verdicts on every commit in seconds; see
+[docs/pre-commit.md](docs/pre-commit.md).
+
+**Python:**
+
+```python
+import paper_preflight
+
+report = paper_preflight.check_paper("paper/")
+for ref in report.references:
+    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
+```
+
+The results are plain, frozen dataclasses; see [docs/python-api.md](docs/python-api.md).
+
+## Experimental: find the passage behind each citation
+
+`support` looks in each cited work for a passage that says what the citing sentence claims. It
+reads the work's text (the arXiv source, an open-access full text or PDF, or else the abstract)
+and a small local model (HHEM-2.1-open, 0.4 GB) scores the passages ranked best for the claim.
+It needs the `support` extra.
+
+```bash
+paper-preflight support path/to/paper --download-model --all
+```
+
+`--download-model` fetches the model's weights once; `--all` also lists the confirmed citations
+with their quotes. `arxiv:<id>` works as a target, as it does for `check`.
+
+- **What it says:** "confirmed", with the passage quoted word for word, or "could not
+  confirm", with the reason (no text, only the abstract, or no passage close enough).
+- **It never calls a citation wrong.** On a gold set of 298 citations, 93% of its
+  confirmations were right [95% CI 82%, 98%], but it confirms only about one real citation in
+  six, and a low score pointed at a mis-citation less than half the time. The gold set's labels
+  were made by AI models, not experts; see [`evals/results/support.md`](evals/results/support.md).
+- **Or let your agent judge.** The MCP tool `preflight_cited_passages` returns each claim with
+  the cited work's best passages, for the agent to judge by the same rules, without the model.
+  On 100 gold-set citations, a Claude agent judging from it confirmed 39% of the real ones,
+  against HHEM's 9%, every confirmation at least partly supported (the labels come from the
+  same model family).
+- **What leaves your machine:** only the cited works' identifiers, to fetch their text; the
+  claims are scored locally.
+
 ## How it works
 
 1. **Source-first.** It reads the LaTeX project as LaTeX sees it: comments, `\iffalse` blocks and
@@ -519,56 +482,49 @@ and more complete; their values are never printed or logged.
    definition of a duplicated key wins, as in BibTeX.
 2. **Identifier-first routing.** DOIs go to their registration agency (doi.org tells which:
    Crossref, DataCite, …). arXiv IDs go to arXiv, with DataCite as a fallback, and PMIDs and
-   PMCIDs to PubMed (which also marks retracted articles). Entries without identifiers are searched by
-   title in dblp and Crossref. dblp is read through its SPARQL endpoint, which still answers
-   scripts now that dblp's search API is behind a bot challenge.
-3. **Field-by-field matching with guards.** It compares titles (including earlier arXiv version
-   titles), authors (tolerating transcriptions such as Reiß/Reis), year and venue. A search
-   result is used only when enough of these agree and no other work fits as well; known fake
-   DOI copies are skipped.
-4. **One verdict per reference:** verified, metadata mismatch, identifier conflict, not found,
-   or cannot determine with a reason. "Not found" needs every required source to answer "no".
-5. **No LLM anywhere in the verdict.** Answers are cached locally (SQLite), so re-runs are fast
-   and `--offline` works.
+   PMCIDs to PubMed, which also marks retracted articles. Entries without identifiers are
+   searched by title in dblp and Crossref; dblp through its SPARQL endpoint, since its search
+   API is behind a bot challenge. Which source is asked what, and how politely:
+   [docs/sources.md](docs/sources.md).
+3. **Field-by-field matching with guards.** Titles (including earlier arXiv versions'), authors
+   (tolerating transcriptions such as Reiß/Reis), year and venue are compared. A search result
+   is used only when enough of these agree and no other work fits as well; known fake DOI copies
+   are skipped.
+4. **One verdict per reference**, as in [What it checks](#what-it-checks). "Not found" needs
+   every required source to answer "no".
+5. **Cached locally.** Answers are kept in a SQLite file, so re-runs are fast and `--offline`
+   works.
 
-## Design principles
+### Design principles
 
 - **Positive confirmation or abstain.** Rate limits, outages and unindexed works lead to "cannot
   determine", never to "not found".
+- **No LLM in the verdicts.** Every verdict comes from records and fixed rules, so the same
+  records give the same report.
 - **Neutral wording.** Findings state observations ("not found in Crossref, dblp and Semantic
   Scholar, and every source responded"), never accusations.
 - **Local-first, no telemetry.** Only the metadata of the cited works (DOIs, titles, authors) is
   sent to the public scholarly APIs above. Your manuscript never leaves your machine.
 
-## What it will never do
+### What it will never do
 
 Help evade plagiarism or AI-text detection, scrape paywalled or bot-protected sites, recommend
 or "complete" references from memory, or name and shame authors.
 
 ## Roadmap
 
-- Done: releases on PyPI (v0.1); references from a `.bbl`, plain text, a PDF or an arXiv ID
-  (v0.2); an experimental evidence finder for citations, `support` (v0.3); installs into more
-  agents, an agent-judged `support`, and recall measured on hallucinations found in published
-  papers (v0.4); references without titles found by journal, volume and page, short titles and
-  real titles with invented authors judged where the sources allow it (v0.5); Chinese-language
-  works cited in English no longer called "not found" (v0.5.2); fewer false alarms on double
-  surnames, subtitles, workshop papers and books (v0.5.3); twice as fast, and references written
-  whole in a note read as plain text (v0.6); Word, Markdown, Quarto, R Markdown and Typst
-  manuscripts, and CSL-JSON, RIS and YAML bibliographies (v0.7); books, software, models,
-  datasets, RFCs and web links checked against their own registries, invented venues and
-  near-miss titles caught, project settings, a Python API and a page for every rule (v0.8); a
-  stable 1.0, with three held-out weeks of real papers at most 1.5 false alarms per 100
-  references each and 0.79 on average (v1.0)
-- Next: references in Chinese script, measured before anything ships
+- **Next: references in Chinese script**, measured on held-out papers before anything ships.
+- **Fewer references left undecided** among grey literature (reports, theses, manuals) without
+  an identifier.
 
-Progress is tracked in [docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese) and the
-[changelog](CHANGELOG.md).
+What each release brought is in the [changelog](CHANGELOG.md); day-to-day progress in
+[docs/PROGRESS.md](docs/PROGRESS.md) (in Chinese).
 
 ## Contributing
 
 Bug reports with a reproducible `.bib` entry are the most valuable contribution, especially
-false positives. See [CONTRIBUTING.md](CONTRIBUTING.md).
+false positives. See [CONTRIBUTING.md](CONTRIBUTING.md); security issues:
+[SECURITY.md](SECURITY.md).
 
 ## License
 

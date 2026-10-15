@@ -2,7 +2,7 @@
 
 ![paper-preflight](docs/assets/brand/paper-preflight-logo.svg)
 
-**投稿前，把 LaTeX 论文的每一条参考文献拿到真实学术数据库里核对一遍。<br>
+**投稿前，把论文的每一条参考文献拿到真实学术数据库里核对一遍。<br>
 不靠大模型猜，不乱扣"伪造"的帽子。**
 
 [![CI](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/amos689/paper-preflight/actions/workflows/ci.yml)
@@ -11,7 +11,7 @@
 [![paper-preflight 在 Glama 上的 MCP 服务器评分](https://glama.ai/mcp/servers/amos689/paper-preflight/badges/score.svg)](https://glama.ai/mcp/servers/amos689/paper-preflight)
 
 [![Python 3.11 至 3.14](docs/assets/badges/python.zh-CN.svg)](pyproject.toml)
-[![输入：LaTeX、BibTeX 和 PDF](docs/assets/badges/input.zh-CN.svg)](#快速上手)
+[![输入：LaTeX、Word、Markdown 和 PDF](docs/assets/badges/input.zh-CN.svg)](#能读哪些稿件)
 [![核对 6 个学术数据库](docs/assets/badges/sources.zh-CN.svg)](#工作原理)
 [![判定不用大模型](docs/assets/badges/verdicts.zh-CN.svg)](#设计原则)
 [![只读的 MCP 工具](docs/assets/badges/mcp.zh-CN.svg)](docs/mcp.md)
@@ -27,26 +27,55 @@
 
 ![paper-preflight 检查示例论文：未定义的引用键、指向另一篇论文的 DOI、所有数据源都查不到的文献、已撤稿论文和重复的条目键报为错误；已正式发表的预印本、指向同一作品的两个条目、错误的年份和带 LaTeX 转义的 DOI 报为警告](https://raw.githubusercontent.com/amos689/paper-preflight/main/docs/demo/demo.gif)
 
-大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight
-读取你的 `.tex` 和 `.bib`，就每一条被引文献去问 Crossref、dblp、arXiv、DataCite、PubMed 和 OpenAlex（配置
-了 key 的话还有 Semantic Scholar；没有 DOI 的图书还会问 Open Library，软件、模型和数据集问 GitHub、PyPI、CRAN、Hugging Face 和 OpenML）：
+大模型会编造参考文献，复制来的 BibTeX 也常带着错误的年份、作者和失效的 DOI。paper-preflight 读取你的论文
+（LaTeX、Word、Markdown、Typst、PDF 或纯文本的参考文献列表），就每一条被引文献去问 Crossref、dblp、arXiv、
+DataCite、PubMed 和 OpenAlex；配置了免费 key 的话还会问 Semantic Scholar，没有 DOI 的图书问 Open Library，
+软件、模型和数据集问 GitHub、PyPI、CRAN、Hugging Face 和 OpenML：
 
 - 它真的存在吗？
 - 和你写的一致吗？
 - 撤稿了吗？
 - 你引用的预印本后来正式发表了吗？
 
-判断不了的时候，它会直说"无法确定"，而不是去猜。
+每一条发现都有记录作依据，或者所有可能收录该作品的来源都明确回答了"没有"。判断不了的时候，它会直说
+"无法确定"并给出原因，而不是去猜。判定过程中没有任何大模型参与。
 
-> **状态：0.x 版本，正在走向稳定的 1.0。** 最希望收到的是误报反馈：请
+> **状态：1.0。** 在为这次发布专门留出的三周真实 arXiv 论文上，每百条参考文献 0.79 个误报，同时报出
+> 409 个真问题（见[准确度](#准确度如何)）。规则编号、JSON 报告、项目设置、命令和 Python API 在整个 1.x
+> 内保持兼容（[哪些是稳定的](docs/stability.md)，英文）。最希望收到的是误报反馈：请
 > [提交 issue](https://github.com/amos689/paper-preflight/issues)。
 
-仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。下面是一次真实运行
-（直连真实数据源）的完整输出：
+## 快速上手
+
+有 [uv](https://docs.astral.sh/uv/) 就无需安装：
+
+```bash
+uvx paper-preflight check path/to/paper
+```
+
+`path/to/paper` 可以是论文目录、主 `.tex` 文件或 `.bib` 文件。想长期安装（需要 Python 3.11 或更高）：
+
+```bash
+pip install paper-preflight
+```
+
+| 扩展 | 增加的功能 | 安装 |
+|---|---|---|
+| `pdf` | 读取 PDF 里的参考文献列表 | `pip install "paper-preflight[pdf]"` |
+| `mcp` | 给编码助手用的 MCP 服务 | `pip install "paper-preflight[mcp]"` |
+| `support` | 实验性的引用原文查找，含本地模型 | `pip install "paper-preflight[support]"` |
+
+仓库里的[示例论文](examples/demo-paper)引用了 11 篇文献，其中几条是故意写错的。上面的动图就是
+`paper-preflight check examples/demo-paper` 直连真实数据源的一次真实运行：那篇正确的 NeurIPS 论文虽然在
+Crossref 里只有假冒副本，仍然通过 dblp 得到核实；没有标识符的那本书由 Open Library 确认；暂不支持其文字的
+那本中文书被报告为"无法确定"，而不是"未找到"。
+
+<details>
+<summary>同一次运行的中文文本输出</summary>
 
 ```text
 $ paper-preflight check examples/demo-paper --lang zh
-paper-preflight 0.8.0 · main.tex · 12 条参考文献，12 个被引用的键
+paper-preflight 1.0.0 · main.tex · 12 条参考文献，12 个被引用的键
 
 错误    CIT001 main.tex:31
     引用键 'nonexistent2023' 未在任何参考文献文件中定义（共被引用 1 次）。
@@ -77,11 +106,36 @@ paper-preflight 0.8.0 · main.tex · 12 条参考文献，12 个被引用的键
 错误 5 · 警告 4 · 提示 3
 ```
 
-每一条发现都有记录作依据（或者所有来源都明确回答了"没有"）。那篇正确的 NeurIPS 论文虽然在 Crossref
-里只有假冒副本，仍然通过 dblp 得到核实；没有标识符的那本书由 Open Library 确认；暂不支持其文字的那本中文书
-被报告为"无法确定"，而不是"未找到"。
+</details>
+
+## 能读哪些稿件
+
+| 你手上有 | 命令 |
+|---|---|
+| LaTeX 项目：目录、主 `.tex` 或 `.bib`；只附带编译生成的 `.bbl` 的项目（很多 arXiv 源码就是这样）会读取 `.bbl`（只检查，不修改） | `paper-preflight check path/to/paper` |
+| Word 稿件：Zotero、Mendeley 或 EndNote 插入的引用，Word 自带的源管理器，或手打的参考文献列表 | `paper-preflight check paper.docx` |
+| Markdown、Quarto 或 R Markdown：`[@key]` 对照其文献库 | `paper-preflight check paper.qmd` |
+| Typst：`@key` 对照 `#bibliography(...)`、`.bib` 或 Hayagriva `.yml` | `paper-preflight check paper.typ` |
+| 单独的文献库：BibTeX、CSL-JSON（`.json`）、RIS（`.ris`）或 YAML（`.yml`） | `paper-preflight check refs.ris` |
+| 纯文本的参考文献列表，常见格式均可（APA、IEEE、ACM、Nature、Vancouver、Springer、Elsevier、MDPI、GOST、Chicago、MLA） | `paper-preflight check references.txt`，或用 `-` 从标准输入读取 |
+| 只有 PDF（需 `pdf` 扩展） | `paper-preflight check paper.pdf` |
+| 任何一篇 arXiv 论文：源码下载到临时目录，检查完即删除 | `paper-preflight check arxiv:2607.06922` |
+
+每种输入能看出什么、看不出什么，详见 [docs/inputs.md](docs/inputs.md)（英文）。
 
 ## 能查出什么
+
+每条参考文献得到一个判定：
+
+| 判定 | 含义 |
+|---|---|
+| 已核实 | 找到了这篇作品的记录，且与条目一致 |
+| 元数据不符 | 找到了作品，但条目里写的不一样：具体哪个字段由发现指明 |
+| 标识符冲突 | 条目里的 DOI 或 arXiv 编号属于另一篇作品 |
+| 未找到 | 所有可能收录它的来源都已应答，都没有这篇作品 |
+| 无法确定 | 判断不了，报告里写明原因 |
+
+具体问题由各条规则报出：
 
 | 规则 | 发现 |
 |---|---|
@@ -96,72 +150,72 @@ paper-preflight 0.8.0 · main.tex · 12 条参考文献，12 个被引用的键
 | REF018 | 引用的 arXiv 预印本已被作者撤回 |
 | REF019 · REF021 | 链接的代码仓库、软件包或数据集不存在；链接的网页已失效且没有存档 |
 | REF020 | 引用预印本时写的发表场所，期刊与会议目录中都查不到 |
-| CIT001–CIT008 | 引用键未定义、重复、未被引用或疑似重复；`.bib` 语法错误 |
 | REF090 | 无法确定，并且一定给出原因（来源不可用、灰色文献等） |
+| CIT001–CIT008 | 引用键未定义、重复、未被引用或疑似重复；`.bib` 语法错误 |
+| TEX001–TEX004 | 包含的文件缺失、无法读取或互相包含；远程文献库未检查 |
+| RUN001 · RUN002 · CFG001 | 有数据源不可用、核查不完整；由替代来源代为应答；屏蔽注释没有屏蔽任何发现 |
 
 每条规则都有[说明页](docs/rules/README.md)：检查什么、什么时候可能误报、怎么处理。
 `paper-preflight explain REF003` 会在终端里显示同样的内容。
 
 ## 准确度如何？
 
-四项实测，全部直连真实数据源：已发表论文里的幻觉引用、真实论文的参考文献、与已发表工具的对比，以及一个
-公开基准。
+四项实测，全部直连真实数据源：
 
-### 通过了同行评审的幻觉引用
+| 测在哪里 | 结果 |
+|---|---|
+| [真实论文](#真实论文)：为 1.0 留出的三周 arXiv 论文，共 60 篇、2,714 条参考文献，每个报警都人工复核 | **每百条 0.79 个误报**（大约每三篇论文一个），同时报出 409 个真问题 |
+| [通过了同行评审的幻觉引用](#通过了同行评审的幻觉引用)：GPTZero 在 NeurIPS 2025 和 ICLR 2026 论文里找到的 151 条 | **报出 142 条（94%）**，9 条无法确定，**没有一条判为核实** |
+| [HALLMARK](#hallmark) 公开基准：开发中从未用过的 831 条 | 任何问题：精确率 98.5%、召回率 93.5%、误报率 1.9% |
+| [与五个工具对比](#与其他工具对比)：一项已发表研究人工标注的 104 条 | 精确率 72.5%（其余工具 31%–51%），召回率 87.9% |
 
-GPTZero 公布了它在 NeurIPS 2025 论文和 ICLR 2026 投稿中发现的 151 条幻觉引用，每条都经其人工确认。
-按论文印出的样子粘贴成纯文本来检查：
-
-| 参考文献 | 报出 | 无法确定 | 判为核实 |
-|---|---|---|---|
-| 151 | **142（94%）** | 9 | **0** |
-
-- **没有一条被判为核实。** 没有报出的 9 条是网页和博客、没有数据源收录的研讨会、配上编造作者而多篇作品
-  共用其标题的真实标题，以及两条乱到无法检索的条目；每条的原因见
-  [`evals/results/gptzero.md`](evals/results/gptzero.md)。
-- 这些是 GPTZero 自己的工具找到的，也就是检索能发现的那类幻觉；对各类幻觉的整体召回率更低（见下文
-  HALLMARK）。
+精确率优先：只有拿到正面证据才会判为伪造；查询无应答或候选有歧义时，结论是"无法确定"，绝不是
+"未找到"。评测框架和每次运行的结果都在 [`evals/`](evals/README.md)。
 
 ### 真实论文
 
-连续几周的 arXiv 论文（每周 20 篇，cs、stat、q-bio、quant-ph、astro-ph），按固定规则选取，名单都在所
-衡量的改动之前固定，只跑一次；每条警告和错误都人工复核过：
-
-| 首次提交 | 版本 | 参考文献 | 报出的问题 | 真问题 | 误报 | 不确定 | 每百条误报 |
+| arXiv 论文首次提交（每周 20 篇） | 所用版本 | 参考文献 | 报警 | 真问题 | 误报 | 不确定 | 每百条误报 |
 |---|---|---|---|---|---|---|---|
-| 2026-08-19..25 | 0.5.0 | 962 | 53 | 41 | 10 | 2 | 1.0 |
-| 2026-08-26..09-01 | 0.5.1 | 780 | 101 | 81 | 19 | 1 | 2.4 |
-| 2026-09-02..08 | 0.5.2 | 975 | 48 | 31 | 13 | 4 | 1.3 |
-| 2026-09-09..15 | 0.5.3 | 1,067 | 98 | 83 | 14 | 1 | 1.3 |
-| 2026-09-16..22 | 0.6.0 候选 | 868 | 89 | 76 | 13 | 0 | 1.5 |
-| 2026-09-23..29 | 0.6.0 | 786 | 48 | 42 | 6 | 0 | 0.8 |
-| 2026-09-30..10-06 | 0.7.0 | 1,014 | 89 | 79 | 7 | 3 | 0.7 |
-| 2026-06-24..30（更早的一周） | 0.8.0 | 1,127 | 143 | 132 | 10 | 1 | 0.9 |
+| 2026-10-07..13，最近一周 | 1.0 的第一个候选 | 991 | 81 | 76 | 4 | 1 | 0.4 |
+| 2026-03-25..31 | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| 2026-03-18..24 | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| 2026-03-11..17 | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
+| **为 1.0 留出的三周** | **1.0.0** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
 
-- **0.8.0：大约每两篇论文一次误报**（平均 56 条参考文献），同时报出 132 个真问题：93 个已正式发表的预印本、
-  17 个写成链接的标识符、10 个条目的作者或名字写错（其中四条的名字大多是编的）、6 个写错的年份、2 个引错的标题、
-  1 个写错的会议、1 个不存在的 DOI、1 个指向别篇论文的 arXiv 编号。误报中 6 个是登记处自己的写法（用 Ueber
-  写 Über、标题丢了“3/4”），3 个是手写的作者栏（“and 324 others”），1 个是没有被任何来源收录的 ITU-R 报告。
-  这一周取自第一批之前、此前从未用过的论文，0.8.0 因此不必等下一周的新论文；由于是几个月后才检查，结果可能比
-  新的一周略好，新的一周随后会作为对照。
-- **0.7.0：大约每三篇论文一次误报**，同时报出 79 个真问题。误报是登记处只按在线日期记年份的三篇文章、一本书
-  对它的电子版、登记处自己写法的两个符号，以及被当成论文正式版本的论文代码；都已在 0.8.0 修复。
-- **之前两周（0.6.0）：1.5，然后 0.8。** 第一周 13 个误报中 8 个是登记处记录自身的错误（作者不全、名字拼错、
-  HTML 实体、错字、年份错），其中 5 个已在 0.6.0 修复。
-- **有一周超过了 1.5 的目标**（2.4），其中 19 个误报有 11 个已在 0.5.2 修复。
-- **第一周平均每两篇论文一次误报**（平均 48 条参考文献），同时报出 41 个真问题：16 个条目本身的错误（写错的年份、
-  名字和标题，漏掉的第一作者，把一篇论文的标题配上另一篇的作者，写法会让链接失效的标识符），25 个引用的
-  预印本已经正式发表。
-- **误报大多来自登记处自身的记录错误**（作者列表不全、乱码符号、作者的英文名）**以及作者列表里的合作组
-  名称**（"MAGPI Team"）；另有两个来自被截掉结尾的标题。
-- **另有七批各 20 篇论文专门用来找误报，** 每批都先如实测过一次（0.1.0：每百条 4.5 个；0.1.1：2.3 个；
-  0.1.2 最后一轮修复前：3.0 个；0.1.2：1.7 个；0.2.1：1.9 个；0.3.0：1.9 个；0.4.0：1.2 个）。详见
-  [`evals/README.md`](evals/README.md#real-papers)。
+### 通过了同行评审的幻觉引用
+
+GPTZero 公布了它在 NeurIPS 2025 论文和 ICLR 2026 投稿中发现的 151 条幻觉引用，每条都经其人工确认。按论文
+印出的样子粘贴成纯文本来检查，报出 142 条，没有一条被判为核实。没有报出的 9 条是网页和博客、没有数据源收录
+的研讨会、配上编造作者而多篇作品共用其标题的真实标题，以及两条乱到无法检索的条目；每条的原因见
+[`evals/results/gptzero.md`](evals/results/gptzero.md)。这些是 GPTZero 自己的工具找到的，也就是检索能发现的
+那类幻觉；对各类幻觉的整体召回率更低（见 HALLMARK）。
+
+### HALLMARK
+
+[HALLMARK](https://github.com/rpatrik96/hallmark)（v1.2.3）是真实与伪造 BibTeX 条目混合的公开基准。"只算
+伪造"指标识符错误、查无此文、作者完全对不上；"任何问题"另加作者、标题、年份或发表场所不符。
+
+| 数据集 | 口径 | 精确率 | 召回率 | 误报率 | 覆盖率 |
+|---|---|---|---|---|---|
+| `test_public`：831 条，开发中从未使用 | 任何问题 | 98.5% | 93.5% | 1.9% | 97.7% |
+| | 只算伪造 | 99.0% | 50.2% | 0.6% | 97.7% |
+| `dev_public`：1,119 条，开发中使用 | 任何问题 | 97.7% | 94.3% | 2.1% | 98.9% |
+| | 只算伪造 | 98.2% | 53.7% | 1.0% | 98.9% |
+
+`test_public` 用 1.0.0 运行，`dev_public` 用 0.8.0 运行；没有任何规则是在 `test_public` 上调出来的。
+
+- **误报大多是有争议的标签。** `dev_public` 中被标为"真实"的条目，凡是我们报了问题的，都逐条人工核查过：
+  剩下的 11 条其实并不是正确的引用（DOI 属于别的论文、作者列表里有并非作者的人、年份被改动、标题被截断）。
+  剔除后两种口径都是 100% 精确率。清单及每条可一查即证的理由见
+  [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml)。
+- **目前还会漏掉的：** 只在末尾漏掉部分作者的作者列表，或只能拿预印本（后续版本会增加作者）来比的作者列表
+  （只作为提示点名），以及借用了多篇真实作品共有标题的编造条目。各种伪造类型的明细见
+  [`evals/results/`](evals/results/)。
 
 ### 与其他工具对比
 
-[Badalova & Mayr (2026)](https://doi.org/10.5281/zenodo.21457492) 人工核对了 104 条参考文献，并公布了
-五个工具各自报了哪些。在同样的参考文献上、按他们的标注：
+[Badalova & Mayr (2026)](https://doi.org/10.5281/zenodo.21457492) 人工核对了 104 条参考文献，并公布了五个
+工具各自报了哪些。在同样的参考文献上、按他们的标注：
 
 | 工具 | 精确率 [95% 置信区间] | 召回率 | 每百条正确文献的误报 |
 |---|---|---|---|
@@ -172,102 +226,25 @@ GPTZero 公布了它在 NeurIPS 2025 论文和 ICLR 2026 投稿中发现的 151 
 | RefChecker | 47.1% [35.7%, 58.8%] | 97.0% | 50.7 |
 | **paper-preflight** | **72.5% [57.2%, 83.9%]** | 87.9% | **15.5** |
 
-样本小，区间很宽。研究把"作品存在"的参考文献都标为正确，所以有些报警在这里算作误报：paper-preflight
-在这类文献上的报警中，有 5 条指出的是真实错误（作者写错、DOI 损坏）。在这份数据里发现的两类误报原因，
-以及研究的 CSV 弄乱的四个人名，都在上表这次运行之前修好了；第一次运行的精确率是 62.8%。详见
-[`evals/results/badalova-mayr.md`](evals/results/badalova-mayr.md)。
+样本小，区间很宽。研究把"作品存在"的参考文献都标为正确，所以 paper-preflight 的"误报"中有 5 条指出的
+其实是真实错误（作者写错、DOI 损坏）。在这份数据里发现的两类误报原因，都在上表这次运行之前修好了（第一次
+运行的精确率是 62.8%），详见 [`evals/results/badalova-mayr.md`](evals/results/badalova-mayr.md)。
 
-### 公开基准：HALLMARK
+## 局限
 
-[HALLMARK](https://github.com/rpatrik96/hallmark) 是真实与伪造 BibTeX 条目混合的公开基准。
-
-| 数据集 | 口径 | 精确率 | 召回率 | 误报率 | 覆盖率 |
-|---|---|---|---|---|---|
-| `test_public`：831 条，开发中从未使用 | 任何问题 | 98.5% | 93.5% | 1.9% | 97.7% |
-| | 只算伪造 | 99.0% | 50.2% | 0.6% | 97.7% |
-| `dev_public`：1119 条，开发中使用 | 任何问题 | 97.7% | 94.3% | 2.1% | 98.9% |
-| | 只算伪造 | 98.2% | 53.7% | 1.0% | 98.9% |
-
-HALLMARK v1.2.3 两个公开数据集的全部条目，2026-10-09 用 0.8.0 运行。"只算伪造"指标识符错误、查无此文、作者
-完全对不上；"任何问题"另加作者、标题、年份或发表场所不符。
-
-- **留出测试集印证了开发集的结果：** 在从未用来调整规则的条目上，精确率略高，召回率低不到一个百分点。
-  0.8.0 能抓出 97% 的编造会议（0.7.0 是 78%）和 85% 的近似标题（70%）。
-- **`dev_public` 中被标为"真实"的条目，凡是我们报了问题的，都逐条人工核查过。** 剩下的 11 条其实并不是正确的
-  引用：DOI 属于别的论文、作者列表里有并非作者的人、年份被改动、标题被截断。
-- **剔除这 11 条后，两种口径都是 100% 精确率、0% 误报。** 清单及每条可一查即证的理由见
-  [`evals/hallmark_disputed.toml`](evals/hallmark_disputed.toml)。
-- **目前还会漏掉的：** 只是漏掉部分作者的作者列表（目前只作为提示点名，等留出周证明它从不在正确的列表上
-  触发后再升级），以及借用了多篇真实作品共有标题的编造条目。各种伪造类型的明细见 [`evals/results/`](evals/results/)。
-
-精确率优先：只有拿到正面证据才会判为伪造；查询无应答或候选有歧义时，结论是"无法确定"，绝不是
-"未找到"。评测框架和每次运行的结果都在 [`evals/`](evals/README.md)。
-
-## 快速上手
-
-有 [uv](https://docs.astral.sh/uv/) 就无需安装（也可以 `pip install paper-preflight`）：
-
-```bash
-uvx paper-preflight check path/to/paper
-```
-
-`path/to/paper` 可以是论文目录、主 `.tex` 文件，或单个 `.bib` 文件。没有 `.bib` 的项目（很多 arXiv
-源码就是这样）会读取编译生成的 `.bbl`（只检查，不修改）。
-
-用 Word、Markdown 或 Typst 写作？稿件同样可以检查：
-
-```bash
-uvx paper-preflight check paper.docx     # Word：Zotero、Mendeley、EndNote 插入的引用，或手打的列表
-uvx paper-preflight check paper.qmd      # Markdown、Quarto、R Markdown：[@key] 对照其文献库
-uvx paper-preflight check paper.typ      # Typst：@key 对照 #bibliography(...)，.bib 或 Hayagriva .yml
-```
-
-Word 稿件里由 Zotero、Mendeley 或 EndNote 插入的引用，域代码中带有文献管理软件对每篇作品的完整记录，优先读取；
-其次是 Word 自带的源管理器；都没有时，读取"参考文献"标题之后手打的列表。文献库也可以单独检查：
-CSL-JSON（`.json`）、RIS（`.ris`）、YAML（`.yml`，Hayagriva 或 CSL）。
-
-没有稿件？纯文本的参考文献列表也可以检查，支持常见格式（APA、IEEE、ACM、Nature、Vancouver、
-Springer、Elsevier、MDPI、GOST、Chicago、MLA），每行一条、每段一条或带编号均可：
-
-```bash
-uvx paper-preflight check references.txt
-pbpaste | uvx paper-preflight check -      # 或从标准输入读取
-```
-
-任何一篇 arXiv 论文，直接给编号即可：源码会下载到临时目录，检查完即删除。
-
-```bash
-uvx paper-preflight check arxiv:2607.06922
-```
-
-只有 PDF？装上 `pdf` 扩展后，也能读出其中的参考文献列表：
-
-```bash
-uvx --from 'paper-preflight[pdf]' paper-preflight check paper.pdf
-```
-
-| 选项 | 作用 |
-|---|---|
-| `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描） |
-| `--offline` | 完全不联网，只用本地缓存里已有的结果 |
-| `--refresh` | 不用缓存，向所有来源重新查询（例如记录刚被更正之后） |
-| `--recheck` | 立即重新检索以前因"太新、尚未被收录"而无法判断的条目（不加时每天自动重查一次） |
-| `--fail-on warning` | 警告也算失败（默认只有错误算失败） |
-| `--details` | 逐条列出所有发现；默认情况下，适用于很多条目的建议（预印本已发表、可补的 DOI）合并成一行 |
-| `--lang zh` | 中文输出（也会按系统语言自动选择） |
-
-退出码：
-
-| 退出码 | 含义 |
-|---|---|
-| 0 | 没有达到 `--fail-on` 级别的发现 |
-| 1 | 有阻塞性发现 |
-| 2 | 没有阻塞性发现，但有数据源不可用，也没有其他来源能替它回答，暂时不能宣称"没问题" |
-| 3 | 用法错误 |
-| 4 | 内部错误（请报告给我们） |
-
-JSON 报告遵循[公开的 JSON Schema](docs/schema/check-report.schema.json)（`schema_version` 0.1）：
-可以新增字段，但不会删除字段或改变含义，除非换新的 `schema_version`。测试会用它校验每一份报告。
+- **非拉丁文字的标题**（中文、日文、西里尔字母等）目前一律报"无法确定"；以英译题名引用的中文文献也一样，
+  因为开放索引很少收录译名。
+- **没有标识符的灰色文献**（报告、学位论文、手册、标准）常常是"无法确定"：开放登记处收录得很少。图书会问
+  Open Library，软件问 GitHub、PyPI 和 CRAN，模型和数据集问 Hugging Face 和 OpenML。
+- **网页从不判真伪。** 只有链接的网页已失效且没有存档时才会报出（REF021）。
+- **没有任何开放索引收录的作品**：如果它的发表场所在期刊与会议目录里也查不到，结论是"无法确定"；但如果
+  场所是目录里有的，仍可能报"未找到"。处理这条发现之前，请先看 [REF003 的说明页](docs/rules/REF003.md)。
+- **查不出的情况：** 借用多篇作品共有的真实标题编造的引用，只在末尾漏掉作者的作者列表（只作为提示），
+  以及引用了真实论文、但论文里并没有那个说法（只有实验性的
+  [`support`](#实验功能为每处引用找到原文出处) 会去读说法）。
+- **第一次运行需要联网：** 冷缓存下每条参考文献约 0.4 秒，50 条的论文大约 20 秒。查询结果会缓存，
+  `--offline` 只用缓存。有数据源宕机、又没有别的来源能替它回答时，结论是"核查不完整"（退出码 2），绝不会
+  宣称"没问题"。
 
 ## 获取已核实的 BibTeX
 
@@ -292,15 +269,14 @@ paper-preflight bib fetch 1810.04805
 
 - **预印本：** 已经正式发表的 arXiv 预印本会返回正式版本，并保留 `eprint`；要预印本本身请加
   `--prefer preprint`。
-- **按标题查：** `--title`（需要时配合 `--author`/`--year`）遇到多篇作品都吻合时会列出候选，而不是
-  替你挑一篇。
+- **按标题查：** `--title`（需要时配合 `--author`/`--year`）遇到多篇作品都吻合时会列出候选，而不是替你挑一篇。
 - **撤稿：** 已撤稿的作品会附带警告。
-- **给脚本和 AI 助手用：** 加 `--format json`。
+- **给脚本和智能体用：** 加 `--format json`。
 
 ## 修复参考文献
 
-`bib fix` 把核查发现变成对 `.bib` 文件的修改，修改内容取自已核实的记录。它默认只输出 diff，加上
-`--apply` 才会写回文件：
+`bib fix` 把核查发现变成对 `.bib` 文件的修改，修改内容取自已核实的记录。它默认只输出 diff，加上 `--apply`
+才会写回文件：
 
 ```bash
 paper-preflight bib fix path/to/paper --level unsafe
@@ -318,30 +294,37 @@ paper-preflight bib fix path/to/paper --level unsafe
  }
 ```
 
-- `--level safe`（默认）只修不会改变所引作品的问题：会让链接失效的标识符写法，以及登记机构有、
-  条目里却缺的 DOI。
-- `--level unsafe` 还会按记录改写作者、标题、年份和发表场所，删除指向别的论文的标识符，并把已正式
-  发表的预印本改引正式版本（条目类型、发表场所、年份、卷、页码和 DOI；保留 eprint）。请先看 diff 再
-  应用。
-- 只改涉及的字段；注释、排版、换行符和编码都保持原样。查无此文的条目永远不会被"修好"：引用的到底
-  是什么，只有你能回答。
+- `--level safe`（默认）只修不会改变所引作品的问题：会让链接失效的标识符写法，以及登记机构有、条目里却缺的
+  DOI。
+- `--level unsafe` 还会按记录改写作者、标题、年份和发表场所，删除指向别的论文的标识符，并把已正式发表的
+  预印本改引正式版本（条目类型、发表场所、年份、卷、页码和 DOI；保留 eprint）。请先看 diff 再应用。
+- 只改涉及的字段；注释、排版、换行符和编码都保持原样。查无此文的条目永远不会被"修好"：引用的到底是什么，
+  只有你能回答。
 
-## 屏蔽已确认无误的发现
+## 选项与退出码
 
-在条目正上方写一行注释，即可对该条目屏蔽指定规则，还可以注明理由：
+| 选项 | 作用 |
+|---|---|
+| `--format json` / `--format sarif` | 机器可读的输出（SARIF 可接入 GitHub 代码扫描）；`-o` 写入文件 |
+| `--fail-on warning` | 警告也算失败（默认只有错误算失败；`never` 表示都不算） |
+| `--offline` | 完全不联网，只用本地缓存里已有的结果 |
+| `--refresh` | 不用缓存，向所有来源重新查询（例如记录刚被更正之后） |
+| `--recheck` | 立即重新检索以前因"太新、尚未被收录"而无法判断的条目（不加时每天自动重查一次） |
+| `--details` | 逐条列出所有发现；默认情况下，适用于很多条目的建议（预印本已发表、可补的 DOI）合并成一行 |
+| `--hide-info` | 不显示提示 |
+| `--lang zh` | 中文输出（也会按系统语言自动选择） |
 
-```bibtex
-% preflight: ignore[REF003] reason="内部技术报告，任何数据库都未收录"
-@techreport{lab2024internal,
-  ...
-}
-```
+| 退出码 | 含义 |
+|---|---|
+| 0 | 没有达到 `--fail-on` 级别的发现 |
+| 1 | 有阻塞性发现 |
+| 2 | 没有阻塞性发现，但有数据源不可用，也没有其他来源能替它回答，暂时不能宣称"没问题" |
+| 3 | 用法错误 |
+| 4 | 内部错误（请报告给我们） |
 
-判定结果仍保留在 JSON 报告里，只是不再报出这条发现。没有屏蔽掉任何发现的注释会以 CFG001（提示）报出，
-免得过时的注释越积越多。参考文献类规则只在完整的联网核查之后才判断是否被用到，因为离线答复和来源故障
-都可能让这些规则没有运行。
-
-认为某条发现有误？请看[误报的原因与处理](docs/false-positives.md#中文)。
+JSON 报告遵循[公开的 JSON Schema](docs/schema/check-report.schema.json)（`schema_version` 1.0）：可以新增
+字段，但在 1.x 内不会删除字段或改变含义。全部选项、缓存及其有效期见
+[docs/configuration.md](docs/configuration.md)（英文）。
 
 ## 项目设置
 
@@ -357,85 +340,29 @@ fail-on = "warning"                        # 同 --fail-on；命令行参数优�
 ```
 
 也可以用 `check --config <路径>` 指定文件。可选来源有 `s2`、`openlibrary`、`github`、`pypi`、`cran`、
-`huggingface`、`openml`、`web`（网页链接）和 `wayback`；判定所依据的核心数据源不能关闭；文件里的错误（未知的规则或设置项）
-会直接报错，不会被悄悄忽略。JSON 报告在 `run.notes` 里写明用了哪个文件；MCP 服务也会读取它。
+`huggingface`、`openml`、`web`（网页链接）和 `wayback`；判定所依据的核心数据源不能关闭。文件里的错误（未知的
+规则或设置项）会直接报错，不会被悄悄忽略。JSON 报告在 `run.notes` 里写明用了哪个文件；MCP 服务也会读取它。
 
-## 实验功能：为每处引用找到原文出处
+### 屏蔽已确认无误的发现
 
-`support` 会到每篇被引文献里，找一段与引用句的说法相符的原文。它读取被引文献的文本：arXiv 源码、
-开放获取的全文或 PDF，都没有时用摘要。然后由一个本地小模型（HHEM-2.1-open，0.4 GB）给与这句话最相关
-的几个段落打分。
+在条目正上方写一行注释，即可对该条目屏蔽指定规则，还可以注明理由：
 
-```bash
-pip install "paper-preflight[support]"
+```bibtex
+% preflight: ignore[REF003] reason="内部技术报告，任何数据库都未收录"
+@techreport{lab2024internal,
+  ...
+}
 ```
 
-```bash
-paper-preflight support path/to/paper --download-model --all
-```
+判定结果仍保留在 JSON 报告里，只是不再报出这条发现。没有屏蔽掉任何发现的注释会以 CFG001（提示）报出，
+免得过时的注释越积越多（参考文献类规则要等一次完整的联网核查之后才判断，因为离线答复和来源故障都可能让
+这些规则没有运行）。
 
-`--download-model` 只在第一次下载模型权重。`--all` 会把已确认的引用和原文一并列出。目标也可以写成
-`arxiv:<编号>`，用法与 `check` 相同。
+认为某条发现有误？请看[误报的原因与处理](docs/false-positives.md#中文)。
 
-- **结论只有两种**："已确认"，并逐字引出那段原文；或者"未能确认"，并说明原因：拿不到文本、只有
-  摘要，或者没有足够接近的段落。只是点名所引对象的引用（"Adam \cite{...}"），如果被引文献的标题里就是
-  这个名字，也算确认。
-- **它从不说某处引用是错的。** 在 298 处引用的标注集上，它的"已确认"有 93% 是对的（95% 置信区间
-  82%–98%）。但真实引用中它只能确认大约六分之一；而得分低的引用，真是错引的还不到一半。标注集的标签
-  由 AI 模型给出，不是专家标注，详见 [`evals/results/support.md`](evals/results/support.md)。
-- **也可以让你的智能体来判断。** MCP 工具 `preflight_cited_passages` 返回每句话的说法和被引文献里
-  最相关的段落，交给 Claude、Codex 等智能体按同样的规则判断；它不需要模型，也不需要 `support` 扩展。在标注集的 100 处
-  引用上，Claude 智能体据此确认了 39% 的真实引用（HHEM 为 9%），每一处确认至少部分成立（标签出自同一
-  系列的模型）。
-- **哪些内容会离开你的电脑**：引用句只在本地打分。发出去的只有被引文献的标识符，用来获取它们的文本；
-  拿到的文本保存在本地缓存里。
+### 配置免费凭据，效果更好
 
-## 在 Python 里调用
-
-```python
-import paper_preflight
-
-report = paper_preflight.check_paper("paper/")
-for ref in report.references:
-    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
-```
-
-返回的是简单、不可变的数据类，详见 [docs/python-api.md](docs/python-api.md)（英文）。
-
-## 在编码助手里使用
-
-**Claude Code**：安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考
-文献，只修有证据证明错了的地方，绝不编造参考文献。
-
-```bash
-claude plugin marketplace add amos689/paper-preflight
-```
-
-```bash
-claude plugin install paper-preflight@paper-preflight
-```
-
-**Codex、Gemini CLI、Copilot、Cursor 等智能体**：安装同一个技能。没有配置 MCP 服务时，它会改用命令行：
-
-```bash
-npx skills add amos689/paper-preflight
-```
-
-也可以用 `gh skill install amos689/paper-preflight paper-preflight` 安装。
-
-**支持 MCP 的客户端（Codex、Cursor、VS Code 等）**：运行 `paper-preflight mcp`。工具都是只读的，并且限
-制在你的工作区内，配置见 [docs/mcp.md](docs/mcp.md)。
-
-**pre-commit**：每次提交时几秒内检查引用键和缓存中的核查结果，见
-[docs/pre-commit.md](docs/pre-commit.md)。
-
-**GitHub Actions**：`uses: amos689/paper-preflight@main` 在每次推送时检查论文，报告写进任务摘要页，
-也可以生成代码扫描告警，见 [docs/github-action.md](docs/github-action.md)。
-
-## 配置免费凭据，效果更好
-
-不注册任何账号也能用。下面这些环境变量是可选的，能让核查更快、更完整；它们的值永远不会被打印或
-记录。
+不注册任何账号也能用。下面这些环境变量是可选的，能让核查更快、更完整；它们的值永远不会被打印或记录。
 
 | 环境变量 | 作用 |
 |---|---|
@@ -447,52 +374,108 @@ npx skills add amos689/paper-preflight
 
 `paper-preflight doctor` 会显示哪些已经设置，以及每个数据源此刻能否连通。
 
+## 接入你的工作流
+
+**Claude Code：** 安装插件。插件自带 MCP 服务和一个技能：让 Claude 在说"论文完成"之前先核查参考文献，只修
+有证据证明错了的地方，绝不编造参考文献。
+
+```bash
+claude plugin marketplace add amos689/paper-preflight
+```
+
+```bash
+claude plugin install paper-preflight@paper-preflight
+```
+
+**Codex、Gemini CLI、Copilot、Cursor 等智能体：** 安装同一个技能（也可以用
+`gh skill install amos689/paper-preflight paper-preflight`）。没有配置 MCP 服务时，它会改用命令行：
+
+```bash
+npx skills add amos689/paper-preflight
+```
+
+**支持 MCP 的客户端（Codex、Cursor、VS Code 等）：** 运行 `paper-preflight mcp`（需 `mcp` 扩展）。工具都是
+只读的，并且限制在你的工作区内，配置见 [docs/mcp.md](docs/mcp.md)（英文）。
+
+**GitHub Actions：** `uses: amos689/paper-preflight@main` 在每次推送时检查论文，报告写进任务摘要页，也可以
+生成代码扫描告警，见 [docs/github-action.md](docs/github-action.md)（英文）。
+
+**pre-commit：** 每次提交时几秒内检查引用键和缓存中的核查结果，见 [docs/pre-commit.md](docs/pre-commit.md)
+（英文）。
+
+**Python：**
+
+```python
+import paper_preflight
+
+report = paper_preflight.check_paper("paper/")
+for ref in report.references:
+    print(ref.key, ref.verdict, [f.rule for f in ref.findings])
+```
+
+返回的是简单、不可变的数据类，详见 [docs/python-api.md](docs/python-api.md)（英文）。
+
+## 实验功能：为每处引用找到原文出处
+
+`support` 会到每篇被引文献里，找一段与引用句的说法相符的原文。它读取被引文献的文本（arXiv 源码、开放获取
+的全文或 PDF，都没有时用摘要），再由一个本地小模型（HHEM-2.1-open，0.4 GB）给与这句话最相关的几个段落打分。
+需要 `support` 扩展。
+
+```bash
+paper-preflight support path/to/paper --download-model --all
+```
+
+`--download-model` 只在第一次下载模型权重；`--all` 会把已确认的引用和原文一并列出。目标也可以写成
+`arxiv:<编号>`，用法与 `check` 相同。
+
+- **结论只有两种**："已确认"，并逐字引出那段原文；或者"未能确认"，并说明原因（拿不到文本、只有摘要，或者
+  没有足够接近的段落）。
+- **它从不说某处引用是错的。** 在 298 处引用的标注集上，它的"已确认"有 93% 是对的（95% 置信区间
+  82%–98%）；但真实引用中它只能确认大约六分之一，而得分低的引用真是错引的还不到一半。标注集的标签由 AI 模型
+  给出，不是专家标注，详见 [`evals/results/support.md`](evals/results/support.md)。
+- **也可以让你的智能体来判断。** MCP 工具 `preflight_cited_passages` 返回每句话的说法和被引文献里最相关的
+  段落，交给智能体按同样的规则判断，不需要模型。在标注集的 100 处引用上，Claude 智能体据此确认了 39% 的真实
+  引用（HHEM 为 9%），每一处确认至少部分成立（标签出自同一系列的模型）。
+- **哪些内容会离开你的电脑：** 只有被引文献的标识符，用来获取它们的文本；引用句只在本地打分。
+
 ## 工作原理
 
-1. **源码优先。** 按 LaTeX 的方式读取项目：会跳过注释和 `\iffalse` 块，遵守 `\includeonly`，`.aux`
-   文件新鲜时直接采用；键重复时以第一个定义为准，和 BibTeX 一致。
-2. **标识符优先的路由。** DOI 交给它的注册机构（由 doi.org 告诉我们是 Crossref、DataCite 还是
-   其他）；arXiv 编号交给 arXiv，arXiv 限流时改走 DataCite；PMID 和 PMCID 交给 PubMed（它也会标出已撤稿的
-   文章）；没有标识符的条目按标题在 dblp 和 Crossref 中检索。dblp 的搜索接口现在会给脚本弹出反爬验证，我们走的是它的
-   SPARQL 接口，不受影响。
-3. **逐字段比对，带防护。** 比对标题（包括 arXiv 早期版本的标题）、作者（容忍 Reiß/Reis 这类转写
-   差异）、年份和发表场所。检索结果只有在足够多字段一致、且没有其他作品同样吻合时才会被采用；已
-   知的假冒 DOI 副本会被跳过。
-4. **每条文献一个判定**：已核实、元数据不符、标识符冲突、未找到，或带原因的"无法确定"。"未找到"
-   要求每个必需来源都明确回答"没有"。
-5. **判定过程中没有任何大模型。** 查询结果缓存在本地（SQLite），重复运行很快，`--offline` 也
-   能用。
+1. **源码优先。** 按 LaTeX 的方式读取项目：会跳过注释和 `\iffalse` 块，遵守 `\includeonly`，`.aux` 文件新鲜时
+   直接采用；键重复时以第一个定义为准，和 BibTeX 一致。
+2. **标识符优先的路由。** DOI 交给它的注册机构（由 doi.org 告诉我们是 Crossref、DataCite 还是其他）；arXiv
+   编号交给 arXiv，arXiv 限流时改走 DataCite；PMID 和 PMCID 交给 PubMed（它也会标出已撤稿的文章）；没有标识符
+   的条目按标题在 dblp 和 Crossref 中检索。dblp 的搜索接口会给脚本弹出反爬验证，我们走的是它的 SPARQL 接口。
+   哪个来源问什么、如何控制请求频率，见 [docs/sources.md](docs/sources.md)（英文）。
+3. **逐字段比对，带防护。** 比对标题（包括 arXiv 早期版本的标题）、作者（容忍 Reiß/Reis 这类转写差异）、年份
+   和发表场所。检索结果只有在足够多字段一致、且没有其他作品同样吻合时才会被采用；已知的假冒 DOI 副本会被跳过。
+4. **每条文献一个判定**，见[能查出什么](#能查出什么)。"未找到"要求每个必需来源都明确回答"没有"。
+5. **本地缓存。** 查询结果保存在本地的 SQLite 文件里，重复运行很快，`--offline` 也能用。
 
-## 设计原则
+### 设计原则
 
 - **正面确认，否则弃权。** 限流、宕机或未收录，结论都是"无法确定"，绝不是"未找到"。
-- **中性措辞。** 只陈述观察（"在 Crossref、dblp 和 Semantic Scholar 中均未找到，且所有来源都已
-  正常应答"），不作指控。
-- **本地优先，零遥测。** 只把*被引文献*的元数据（DOI、标题、作者）发给上述公开学术接口；你的论文
-  正文不会离开你的电脑。
+- **判定不用大模型。** 每个判定都来自记录和固定的规则，同样的记录得出同样的报告。
+- **中性措辞。** 只陈述观察（"在 Crossref、dblp 和 Semantic Scholar 中均未找到，且所有来源都已正常应答"），
+  不作指控。
+- **本地优先，零遥测。** 只把*被引文献*的元数据（DOI、标题、作者）发给上述公开学术接口；你的论文正文不会离开
+  你的电脑。
 
-## 我们绝不做的事
+### 我们绝不做的事
 
-帮助规避查重或 AI 文本检测（降重、降 AI 率）、爬取付费墙或反爬保护的网站、凭记忆替你推荐或"补全"
-参考文献、点名羞辱作者。
+帮助规避查重或 AI 文本检测（降重、降 AI 率）、爬取付费墙或反爬保护的网站、凭记忆替你推荐或"补全"参考文献、
+点名羞辱作者。
 
 ## 路线图
 
-- 已完成：发布到 PyPI（v0.1）；从 `.bbl`、纯文本、PDF 或 arXiv 编号读取参考文献（v0.2）；
-  实验性的引用原文查找 `support`（v0.3）；更多智能体可装、由智能体判断的 `support`、在已发表论文的幻觉引用
-  上实测召回（v0.4）；没有标题的条目按期刊、卷、页查找，在数据源允许时判断短标题和配上编造作者的真实标题
-  （v0.5）；以英译题名引用的中文文献不再被判为"查无此文"（v0.5.2）；复姓、副标题、研讨会论文和图书的
-  误报更少（v0.5.3）；速度翻倍，note 里整条写出的参考文献按纯文本读取（v0.6）；Word、Markdown、Quarto、
-  R Markdown 和 Typst 稿件，CSL-JSON、RIS 与 YAML 文献库（v0.7）；到各自的登记处核对图书、软件、模型、
-  数据集、RFC 和网页链接，抓出编造的会议和近似标题，项目设置、Python API、每条规则一页说明（v0.8）
-- 下一步：稳定的 1.0，条件是三个留出周平均每百条误报不超过 1 个
-- 1.0 之后：中文原文参考文献，先测量再决定是否发布
+- **下一步：中文原文参考文献**，先在留出的论文上测量，达标后才发布。
+- **让更多灰色文献有结论**：没有标识符的报告、学位论文、手册等。
 
-进度见 [docs/PROGRESS.md](docs/PROGRESS.md) 和[更新日志](CHANGELOG.md)。
+每个版本带来了什么，见[更新日志](CHANGELOG.md)（英文）；日常进度见 [docs/PROGRESS.md](docs/PROGRESS.md)。
 
 ## 参与贡献
 
-最有价值的贡献是附带可复现 `.bib` 条目的问题报告，尤其是误报。见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+最有价值的贡献是附带可复现 `.bib` 条目的问题报告，尤其是误报。见 [CONTRIBUTING.md](CONTRIBUTING.md)；安全
+问题见 [SECURITY.md](SECURITY.md)。
 
 ## 许可证
 

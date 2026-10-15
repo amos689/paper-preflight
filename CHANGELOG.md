@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-10-15
+## [1.0.0] - 2026-10-16
 
 The first stable release: what [docs/stability.md](docs/stability.md) calls stable (rule IDs,
 exit codes, the JSON report, settings, commands, the Python API and the MCP tools) now changes
@@ -22,6 +22,11 @@ references are flagged 142 of 151 (139 in 0.8.0), none verified.
 
 - **The JSON report's `schema_version` is 1.0** (0.1 until now). No field is removed or changes
   meaning; from now on, one that does comes with a new major `schema_version`.
+- **The README, in English and Chinese, is reorganised** around what a new user needs: quick
+  start with the extras, a table of inputs, the verdicts, the 1.0 measurements in one table (the
+  history of every week moves to `evals/README.md`), a new section on what it cannot check,
+  options and settings together. The demo animation is re-recorded with 1.0.0 (it showed
+  0.4.0), and the input badge names Word and Markdown.
 - **A name left out from the middle of a published version's author list is a warning**
   (REF011; C5 of the plan, an info until now). On 380 development papers it adds 24 warnings:
   17 real omissions (Lu Wang from LoRA, Ronan Le Bras from PIQA and CLIPScore, seven of
