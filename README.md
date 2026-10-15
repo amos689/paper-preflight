@@ -183,13 +183,32 @@ evaluation harness and every run's summary are in [`evals/`](evals/README.md).
 
 ### Real papers
 
-| arXiv papers first submitted (20 a week) | Run with | References | Flags | Real problems | False alarms | Unclear | False alarms per 100 references |
-|---|---|---|---|---|---|---|---|
-| 2026-10-07..13, the latest week | the first 1.0 candidate | 991 | 81 | 76 | 4 | 1 | 0.4 |
-| 2026-03-25..31 | 1.0.0 | 809 | 220 | 209 | 8 | 3 | 1.0 |
-| 2026-03-18..24 | 1.0.0 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
-| 2026-03-11..17 | 1.0.0 | 898 | 104 | 95 | 8 | 1 | 0.9 |
-| **The three weeks held out for 1.0** | **1.0.0** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
+Each week is 20 arXiv papers (cs, stat, q-bio, quant-ph and astro-ph) chosen mechanically. For
+1.0, three weeks never used before were committed together, before the changes they measure,
+and each was run once on the same code. The gate was at most 1.5 false alarms per 100
+references in each week and at most 1.0 on average.
+
+| Papers first submitted | References | Flags | Real problems | False alarms | Unclear | False alarms per 100 references |
+|---|---|---|---|---|---|---|
+| 2026-03-25..31 | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| 2026-03-18..24 | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| 2026-03-11..17 | 898 | 104 | 95 | 8 | 1 | 0.9 |
+| **Together** | **2,714** | **434** | **409** | **21** | **4** | **0.79** |
+
+- **The 409 real problems:** 220 cited preprints since published, 149 identifiers written so
+  that links break, 30 entries with wrong authors, titles or years (NeurIPS 2025 papers dated
+  2026, invented co-authors, author fields BibTeX misreads), and 10 works that are not there as
+  cited: 5 found nowhere, 3 identifiers that do not exist, 2 that belong to other works. A few
+  papers' reference lists are largely invented (medical imaging, LLMs).
+- **The 21 false alarms:** registries' own errors (a cut or misspelt title, a garbled name, a
+  dropped symbol) 5; groups credited as their makers ask and Zotero's "N other authors"
+  placeholder 6; works no index holds or that a later version retitled 3; a conference paper
+  compared in place of its journal version 2; APA's `[software]` and `[dataset]` labels after a
+  title 2; three others. [When a finding is wrong](docs/false-positives.md) says what to do.
+- **The gate took four tries.** The first three averaged 1.08, 1.24 and 1.28 per 100
+  references, each with one week over 1.5; each try's false alarms were fixed before the next,
+  on new weeks. The first release, 0.1.0, measured 4.5. Every week measured since is in
+  [`evals/README.md`](evals/README.md#real-papers).
 
 ### Hallucinations that passed peer review
 
@@ -385,8 +404,6 @@ A comment directly above an entry silences rules for that entry, with an optiona
 The verdict stays in the JSON report; only the finding is dropped. A suppression that silenced
 nothing is reported as CFG001 (info), so stale comments do not pile up (for reference rules,
 only after a complete online run, since offline answers and outages may leave them unrun).
-
-A finding you believe is wrong: [where false alarms come from, and what to do](docs/false-positives.md).
 
 ### Better results with free credentials
 
