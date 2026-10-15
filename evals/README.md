@@ -117,7 +117,7 @@ uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one r
 `why.py` shows a reference as written, every record found for it with how each field compares,
 and its findings in two replays: what most judgements and most fixes start from.
 
-There are twenty-one reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are twenty-four reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
@@ -147,6 +147,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout17` | 2026-10-07..13 (the fresh week) | held out for 1.0 (#198-#201; list committed before #201, #200); studied for #204 | 991 | 81 | 76 | 4 | 1 | 0.4 |
 | `heldout18` | 2026-05-20..26 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,136 | 174 | 148 | 22 | 4 | **1.9** |
 | `heldout19` | 2026-05-13..19 (an earlier week) | held out for 1.0 (#200); studied for #204 | 1,008 | 133 | 123 | 8 | 2 | 0.8 |
+| `heldout20` | 2026-05-06..12 (an earlier week) | held out for 1.0, second try (#203; run with #204) | 950 | 133 | 126 | 7 | 0 | 0.7 |
+| `heldout21` | 2026-04-29..05-05 (an earlier week) | held out for 1.0, second try (#203; run with #204) | 1,118 | 106 | 84 | 19 | 3 | **1.7** |
+| `heldout22` | 2026-04-22..28 (an earlier week) | held out for 1.0, second try (#205; run with #204) | 910 | 126 | 114 | 11 | 1 | 1.2 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -160,8 +163,21 @@ averaging at most 1.0. **It was not met**: `heldout18` is at 1.9, and the three 
 1.08 (34 false positives in 3,135 references). The next round fixes these kinds (#204: 22
 gone on a replay, 5 more when Semantic Scholar answers) and is measured on three new weeks:
 `heldout20` (2026-05-06..12) and `heldout21` (04-29..05-05), committed before #204 (#203), and
-the fresh week 2026-10-14..20 once arXiv has announced it. `evals/replay.py` leaves out a
-batch that has not had its run, so a frozen week is never replayed before it is measured.
+`heldout22` (04-22..28; the fresh week was measured by heldout17, so the third is an earlier
+week too, #205). `evals/replay.py` leaves out a batch that has not had its run, so a frozen
+week is never replayed before it is measured.
+
+**The second try was not met either**: run once each on main with #204, `heldout20` is at 0.7,
+`heldout21` at 1.7 and `heldout22` at 1.2 (37 false positives in 2,978 references, 1.24 per
+100). Each week brings kinds not seen before, mostly works no index holds (workshop and
+society proceedings, the ASP Conference Series, an ASKAP memo, a SAS users' paper, a blog
+post) and registries' own errors (a misspelt name, zeros for o, a lost accent, an online date
+for an issue's year, a track's label in a title); the rest are names cited by part of a
+double surname or by initials, a publisher read as the venue, a journal article not found and
+compared with its workshop version, and software cited as its makers ask. Among the real
+problems: three papers with author lists largely invented (remote sensing, RL, quantization),
+ACM's unregistered 10.5555 DOIs in five entries, and DOIs or arXiv IDs that do not exist or
+belong to other papers in twelve more.
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
