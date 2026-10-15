@@ -117,7 +117,7 @@ uv run python evals/why.py 2606.11568v1:li2024llava --against base new   # one r
 `why.py` shows a reference as written, every record found for it with how each field compares,
 and its findings in two replays: what most judgements and most fixes start from.
 
-There are twenty-seven reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
+There are thirty reported batches of 20 papers, each with the same mix (cs.CL 3, cs.LG 3, cs.CV 3, cs.AI 2,
 stat.ML 2, q-bio.QM 2, quant-ph 2, astro-ph.GA 2, cs.SE 1). Each was collected after the fixes
 the batches before it led to, and reported as it came out; its own false positives were then
 studied, which makes it development data for the next round. The first four rows are the 0.1.2
@@ -153,6 +153,9 @@ candidate's (main 43a5544); the others are each batch as it came out:
 | `heldout23` | 2026-04-15..21 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 1,341 | 226 | 194 | 28 | 4 | **2.1** |
 | `heldout24` | 2026-04-08..14 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 1,088 | 194 | 181 | 7 | 6 | 0.6 |
 | `heldout25` | 2026-04-01..07 (an earlier week) | held out for 1.0, third try (#207; run with #208); studied for #211 | 763 | 86 | 80 | 6 | 0 | 0.8 |
+| `heldout26` | 2026-03-25..31 (an earlier week) | held out for 1.0, fourth try (#210; run with #211) | 809 | 220 | 209 | 8 | 3 | 1.0 |
+| `heldout27` | 2026-03-18..24 (an earlier week) | held out for 1.0, fourth try (#210; run with #211) | 1,007 | 110 | 105 | 5 | 0 | 0.5 |
+| `heldout28` | 2026-03-11..17 (an earlier week) | held out for 1.0, fourth try (#210; run with #211) | 898 | 104 | 95 | 8 | 1 | 0.9 |
 
 `dev2` and `dev3` are two more never-sampled weeks, collected on 2026-10-09 as development data
 only, so that more kinds of false positive are studied before the next fresh week (2026-10-07..13,
@@ -204,6 +207,17 @@ papers', and papers whose author lists are largely invented.
 The fourth try fixes that bug and the other kinds (#211: 25 of the 41 gone on a replay of 560
 papers, no real problem lost), measured on `heldout26` (2026-03-25..31), `heldout27`
 (03-18..24) and `heldout28` (03-11..17), committed before it (#210).
+
+**The fourth try met the gate**: run once each on main with #211, `heldout26` is at 0.99,
+`heldout27` at 0.50 and `heldout28` at 0.89 false positives per 100 references, each under 1.5
+and 0.79 on average (21 in 2,714). The 21 are works no index holds or that a later version
+retitled (3), registries' own errors (a cut or misspelt title, a garbled name, a dropped
+symbol) (5), groups credited as their makers ask and Zotero's 'N other authors' placeholder
+(6), a conference paper compared in place of its journal version (2), APA's '[software]' and
+'[dataset]' labels after a title (2), and a living dataset cited by the year it was used, a
+section heading before a title and a spelt-out '~' (3). Among the 409
+real problems: invented reference lists in medical-imaging and LLM papers, NeurIPS 2025
+papers dated 2026, and author fields BibTeX misreads.
 
 - **On `heldout17`**, the fresh week: 76 real problems (24 published preprints, 31 identifiers
   written as links, 7 wrong years, three of them NeurIPS 2025 papers dated 2026, 7 misquoted
