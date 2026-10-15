@@ -111,6 +111,19 @@ def test_html_entities_from_web_pages_are_decoded() -> None:
     assert entry.text("author") == "Francesco d'Amore and Shin-Fang Ch'ng"
 
 
+def test_a_link_prints_its_text() -> None:
+    # heldout18: every title of one paper's .bib was a link to the paper
+    text = (
+        r"@inproceedings{a, title = {{\href{https://aclanthology.org/2024.emnlp-main.360/}"
+        r"{{Uni-Sign}: Reconsidering \textit{sentence-level} translation}}}," "\n"
+        r"  note = {\href{https://doi.org/10.1002/x%281950%29}{arXiv:1907.06724}}}"
+    )  # fmt: skip
+    (entry,) = parse_bib_text(text, Path("refs.bib")).entries
+    assert entry.text("title") == "Uni-Sign: Reconsidering sentence-level translation"
+    # a note keeps the link, as \url would print it
+    assert entry.text("note") == "arXiv:1907.06724 <https://doi.org/10.1002/x%281950%29>"
+
+
 def test_ads_markup_and_raisebox_in_titles() -> None:
     # ADS exports seen in real astronomy papers
     text = (

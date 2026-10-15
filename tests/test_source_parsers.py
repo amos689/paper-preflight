@@ -119,6 +119,21 @@ def test_arxiv_withdrawn_and_journal_ref() -> None:
     assert with_jref[0].doi == "10.1016/j.physletb.2012.08.020"
 
 
+@pytest.mark.parametrize(
+    ("comment", "withdrawn"),
+    [
+        ("This paper has been withdrawn by the author due to an error in Lemma 2", True),
+        ("This submission was made in error and has been withdrawn", True),
+        # arXiv 2112.13495v4 (heldout19)
+        ("Note: 2112.13495 had erroneously been withdrawn (cf. 2112.13495:v3). This new "
+         "version, 2112.13495:v4 is identical to 2112.13495:v2.", False),
+        ("v2 was withdrawn by mistake; this version restores v1", False),
+    ],
+)  # fmt: skip
+def test_arxiv_withdrawal_undone(comment: str, withdrawn: bool) -> None:
+    assert arxiv._withdrawn(comment) is withdrawn
+
+
 def test_dblp_prefix_candidates_and_full_records() -> None:
     candidates = dblp.parse_title_candidates(load("dblp/prefix_t1.json"))
     pubs = {pub for pub, _ in candidates}

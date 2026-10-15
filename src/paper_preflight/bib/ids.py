@@ -15,6 +15,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterable
 from dataclasses import dataclass
+from urllib.parse import unquote
 
 from paper_preflight.bib.parse import BibEntry
 
@@ -150,6 +151,10 @@ def extract_identifiers(entry: BibEntry) -> list[Identifier]:
         if not value:
             continue
         if field in ("url", "note", "howpublished") and "doi" in value.lower():
+            # a link percent-encodes the DOI in it: ".../doi/abs/10.1002/1097-0142%281950%293%3A1
+            # %3C32..." is Wiley's 10.1002/1097-0142(1950)3:1<32::...> (heldout19)
+            if re.search(r"%[0-9A-Fa-f]{2}", value):
+                value = unquote(value)
             doi = normalize_doi(value)
             # ACM's own 10.5555 numbers are registered with no agency: a Digital Library link
             # carrying one (dl.acm.org/doi/10.5555/3666122.3666563) is a working page, not a

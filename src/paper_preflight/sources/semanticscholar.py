@@ -26,14 +26,18 @@ FIELDS = "title,authors,venue,externalIds,publicationVenue"
 # rate limit to below this threshold". One connection and >= 1.1 s between request starts
 # (plus up to 10% jitter) keeps a run at about 0.85 requests/s; retries are paced the same way.
 # Two runs at the same time share the key and could exceed it together. S2's 429 carries no
-# Retry-After, so the client backs off on its own.
+# Retry-After, so the client backs off on its own. S2 refuses in bursts even within the rate:
+# after one refused request the default ten minutes' cooldown left the rest of a run without
+# it, and works only S2 knows were called "not found" (a KDD and a NeurIPS workshop paper, a
+# comment in Statistical Science; heldout18). With a shorter cooldown later entries ask again.
 POLICY = SourcePolicy(
     name="s2",
     min_interval=1.1,
     max_concurrency=1,
     timeout=15.0,
-    rate_limit_retries=3,
+    rate_limit_retries=4,
     backoff=2.0,
+    cooldown=120.0,
     exportable=False,
 )
 

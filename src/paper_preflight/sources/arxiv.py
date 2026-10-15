@@ -26,6 +26,13 @@ NS = {
 }
 _ID_RE = re.compile(r"arxiv\.org/abs/(?P<id>.+?)(?P<version>v\d+)?$")
 _WITHDRAWN_RE = re.compile(r"\bwithdra", re.IGNORECASE)
+# a withdrawal undone: "2112.13495 had erroneously been withdrawn (cf. 2112.13495:v3). This new
+# version, 2112.13495:v4 is identical to 2112.13495:v2" (heldout19)
+_RESTORED_RE = re.compile(
+    r"\b(?:erroneously|mistakenly|accidentally)\s+(?:been\s+)?withdra"
+    r"|\bwithdra\w*\s+(?:erroneously|mistakenly|accidentally|by\s+mistake)",
+    re.IGNORECASE,
+)
 
 POLICY = SourcePolicy(name="arxiv", min_interval=3.1, max_concurrency=1, timeout=30.0)
 
@@ -33,6 +40,10 @@ POLICY = SourcePolicy(name="arxiv", min_interval=3.1, max_concurrency=1, timeout
 def _text(element: ET.Element, path: str) -> str | None:
     found = element.find(path, NS)
     return collapse(found.text) if found is not None and found.text else None
+
+
+def _withdrawn(comment: str) -> bool:
+    return bool(_WITHDRAWN_RE.search(comment)) and not _RESTORED_RE.search(comment)
 
 
 def parse_feed(xml_text: str) -> list[SourceRecord]:
@@ -78,8 +89,8 @@ def parse_feed(xml_text: str) -> list[SourceRecord]:
                 venue="arXiv",
                 work_type="preprint",
                 identifiers=identifiers,
-                status=frozenset({"withdrawn"}) if _WITHDRAWN_RE.search(comment) else frozenset(),
-                status_sources=("arxiv:comment",) if _WITHDRAWN_RE.search(comment) else (),
+                status=frozenset({"withdrawn"}) if _withdrawn(comment) else frozenset(),
+                status_sources=("arxiv:comment",) if _withdrawn(comment) else (),
                 relations=relations,
                 url=f"https://arxiv.org/abs/{base_id}",
             )

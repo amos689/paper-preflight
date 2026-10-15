@@ -119,6 +119,22 @@ def parse_name(raw: str) -> Person:
     return Person(family=latex_to_text(family), given=latex_to_text(given))
 
 
+# People written inside one pair of braces, which BibTeX prints as written: "{R. Horodecki,
+# P. Horodecki, M. Horodecki, and K. Horodecki}" (heldout18). Only initials and a surname each,
+# so that a group's name with a comma in it ("{Google DeepMind, Inc.}") stays one name.
+_BRACED_PERSON = re.compile(r"(?:[A-Z]\.\s*(?:-\s*[A-Z]\.\s*)?){1,3}[A-Z][\w'-]+")
+_LIST_SEPARATOR = re.compile(r"\s*,\s*(?:and\s+)?|\s+and\s+")
+
+
+def _braced_people(part: str) -> list[str]:
+    if not (part.startswith("{") and part.endswith("}") and part.count("{") == 1):
+        return []
+    names = [name for name in _LIST_SEPARATOR.split(part[1:-1].strip()) if name]
+    if len(names) >= 2 and all(_BRACED_PERSON.fullmatch(name) for name in names):
+        return names
+    return []
+
+
 def parse_authors(value: str | None) -> AuthorList:
     """Parse the (macro-resolved, LaTeX-kept) value of an author or editor field."""
     if not value:
@@ -133,5 +149,5 @@ def parse_authors(value: str | None) -> AuthorList:
         if cut != part:  # "Paul Ralph et al." written as one name
             truncated = True
             part = cut
-        people.append(parse_name(part))
+        people += [parse_name(name) for name in _braced_people(part)] or [parse_name(part)]
     return AuthorList(tuple(people), truncated)

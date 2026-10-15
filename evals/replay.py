@@ -28,7 +28,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from real_papers import BATCHES  # noqa: E402
+from real_papers import BATCHES, REPORTS  # noqa: E402
 
 from paper_preflight.cache import Cache  # noqa: E402
 from paper_preflight.check import VerifyOptions, run_check  # noqa: E402
@@ -43,6 +43,12 @@ def papers(batch: str) -> list[str]:
     name = "real_papers.toml" if batch == "dev" else f"real_papers_{batch}.toml"
     manifest = tomllib.loads((ROOT / name).read_text(encoding="utf-8"))
     return [paper["id"] for paper in manifest["paper"]]
+
+
+def has_run(batch: str) -> bool:
+    """The batch has had its one run: a held-out batch frozen for a later run is never replayed
+    by default, since its first run is the measurement."""
+    return all((REPORTS / f"{pid.replace('/', '_')}.json").exists() for pid in papers(batch))
 
 
 def flagged(payload: dict[str, Any]) -> set[tuple[str, str]]:
@@ -67,7 +73,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("out", type=Path, help="directory for this replay's reports")
     parser.add_argument("--against", type=Path, help="an earlier replay's directory")
-    parser.add_argument("--batch", nargs="+", default=list(BATCHES), choices=list(BATCHES))
+    parser.add_argument(
+        "--batch", nargs="+", default=[b for b in BATCHES if has_run(b)], choices=list(BATCHES)
+    )
     parser.add_argument("--fill", action="store_true", help="fetch the answers the cache lacks")
     args = parser.parse_args()
     every_answer_counts()

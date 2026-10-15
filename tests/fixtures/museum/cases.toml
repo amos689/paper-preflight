@@ -2035,3 +2035,157 @@ source = "real_papers:2605.30399v1"
 key = "stereoYOLO"
 expect = []
 note = "was REF013: Presented at ICMV 2023, as SPIE's record of the proceedings names it; the volume is dated 2024."
+
+[[case]]
+name = "fp-reazonspeech2023"
+source = "real_papers:2610.09321v1"
+key = "reazonspeech2023"
+expect = []
+note = "was REF003: A real paper of the 29th Annual Meeting of Japan's Association for Natural Language Processing (NLP2023), whose proceedings no index has."
+
+[[case]]
+name = "fp-lange2016"
+source = "real_papers:2610.09564v1"
+key = "lange2016"
+expect = []
+note = "was REF012: 'M_star' is the entry's way of writing the symbol ℳ_⋆ Crossref has; the title is the same."
+
+[[case]]
+name = "fp-mirea-variability-2018"
+source = "real_papers:2610.10913v1"
+key = "mirea_variability_2018"
+expect = []
+note = "was REF011: The entry credits the EACVI-ASE-Industry Standardization Task Force, on whose behalf the authors wrote; Crossref's record leaves the task force out. No person is missing."
+
+[[case]]
+name = "fp-mda"
+source = "real_papers:2605.20580v1"
+key = "MDA"
+expect = []
+note = "was REF011: 'Md' stands for Mohammad in Md Mashud Rana's name; Crossref has 'Mashud Rana'. The same person."
+
+[[case]]
+name = "fp-fish2025geosign"
+source = "real_papers:2605.20588v2"
+key = "fish2025geosign"
+expect = []
+note = "was REF003: A real paper (NeurIPS 2025); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-inan2025align"
+source = "real_papers:2605.20588v2"
+key = "inan2025align"
+expect = []
+note = "was REF003: A real paper (NAACL 2025, 10.18653/v1/2025.naacl-long.202); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-jiang2025meaningful"
+source = "real_papers:2605.20588v2"
+key = "jiang2025meaningful"
+expect = []
+note = "was REF003: A real paper (WMT 2025, aclanthology 2025.wmt-1.4); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-kim2025mmslt"
+source = "real_papers:2605.20588v2"
+key = "kim2025mmslt"
+expect = []
+note = "was REF003: A real paper (ICCV 2025); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-li2025unisign"
+source = "real_papers:2605.20588v2"
+key = "li2025unisign"
+expect = []
+note = "was REF003: A real paper (ICLR 2025); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-salvador2007fastdtw"
+source = "real_papers:2605.20588v2"
+key = "salvador2007fastdtw"
+expect = []
+note = "was REF003: A real paper (Intelligent Data Analysis 11(5), 10.3233/IDA-2007-11508); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-shi2022open"
+source = "real_papers:2605.20588v2"
+key = "shi2022open"
+expect = []
+note = "was REF003: A real paper (EMNLP 2022, aclanthology 2022.emnlp-main.427); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-tanzer2024reconsidering"
+source = "real_papers:2605.20588v2"
+key = "tanzer2024reconsidering"
+expect = []
+note = "was REF003: A real paper (EMNLP 2024, aclanthology 2024.emnlp-main.360); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-uthus2023youtubeasl"
+source = "real_papers:2605.20588v2"
+key = "uthus2023youtubeasl"
+expect = []
+note = "was REF003: A real paper (NeurIPS 2023 Datasets and Benchmarks); the title field wraps the title in href{URL}{...}, and paper-preflight searched for the URL with it."
+
+[[case]]
+name = "fp-butcher1984"
+source = "real_papers:2605.20590v1"
+key = "Butcher1984"
+expect = []
+note = "was REF012: The entry's title, as ADS exports it, lost the '≈' Crossref spells out ('approximately equal to'); the title is the same."
+
+[[case]]
+name = "fp-kodama2007"
+source = "real_papers:2605.20590v1"
+key = "Kodama2007"
+expect = []
+note = "was REF012: Crossref's title has 'lsimzlsim' for '≲ z ≲'; the entry writes it as ADS exports it."
+
+[[case]]
+name = "fp-quantumentanglement2009"
+source = "real_papers:2605.20656v2"
+key = "Quantumentanglement2009"
+expect = []
+note = "was REF010: The four Horodeckis are written inside one pair of braces, which BibTeX prints as written; they are the right people."
+
+[[case]]
+name = "fp-aha2026"
+source = "real_papers:2605.22968v1"
+key = "AHA2026"
+expect = []
+note = "was REF011: 'on behalf of the American Heart Association Council on Epidemiology ...' credits the council; no person is missing."
+
+[[case]]
+name = "fp-wiechert1997"
+source = "real_papers:2605.25079v1"
+key = "Wiechert1997"
+expect = []
+note = "was REF012: The entry writes 'Part I.' where Crossref has 'I.'; the title is the same."
+
+[[case]]
+name = "fp-mutanga2020hate"
+source = "real_papers:2605.12856v2"
+key = "mutanga2020hate"
+expect = []
+note = "was REF011: Crossref files Olugbara with given name 'Oludayo' and family name 'O'; the entry names him right."
+
+[[case]]
+name = "fp-bajari2021multiple"
+source = "real_papers:2605.12899v1"
+key = "bajari2021multiple"
+expect = []
+note = "was REF018: arXiv 2112.13495 v4 restores the paper; its comment says v3 had been withdrawn by mistake."
+
+[[case]]
+name = "fp-youden1950index"
+source = "real_papers:2605.12925v4"
+key = "youden1950index"
+expect = ["REF017"]
+note = "was REF002: The url's DOI is percent-encoded ('%28', '%3A'); decoded, it is the doi field's DOI, which exists."
+
+[[case]]
+name = "fp-xavier05"
+source = "real_papers:2605.15364v1"
+key = "Xavier05"
+expect = []
+note = "was REF011: 'JdeB' is the initials of Joao de Bivar Xavier; the same person."

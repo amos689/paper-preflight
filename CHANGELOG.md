@@ -44,6 +44,28 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- **False positives found on heldout17-19** (the 1.0 gate's three weeks, run once on the same
+  code: 34 false positives in 3,135 references, 1.08 per 100, heldout18 alone 1.9): 22 of them
+  gone on a replay of 440 papers, 5 more when Semantic Scholar answers; no real problem lost,
+  nothing new flagged; HALLMARK `dev_public` and GPTZero (142 of 151) unchanged. The
+  false-positive museum gains the 22 (312 cases).
+  - A title written as a link, `\href{URL}{Title}`, is its title: one paper's nine titles were
+    searched by their URLs. Notes and `howpublished` keep the link.
+  - An arXiv comment saying a paper "had erroneously been withdrawn" does not make it withdrawn.
+  - A DOI percent-encoded in a link (Wiley's `...%281950%293%3A1...`) is decoded.
+  - Names: "Md" for Mohammad, which registries leave out; initials run together with a
+    particle ("JdeB" for Joao de Bivar); a registry's family name cut to its initial (Crossref's
+    "Oludayo O" for Oludayo O. Olugbara); people written in one pair of braces ("{R. Horodecki,
+    P. Horodecki, ...}"); a task force, a council or "on behalf of" a group credited beside the
+    people.
+  - Titles: a subscript star however written (M_star, M_*, ℳ_⋆), a registry's `\lsim` without
+    its backslash ("lsimzlsim"), a symbol spelt out ("approximately equal to"), "Part I." for
+    "I.".
+  - The proceedings of the Annual Meeting of the Association for Natural Language Processing
+    (Japan's NLP society, not ACL), which no index holds, are not called "not found".
+  - Semantic Scholar refuses in bursts: after one refused request it was left out for ten
+    minutes, and works only it knows were called "not found" meanwhile. It is now asked again
+    after two minutes, with one more retry.
 - **False positives found on heldout15** (an earlier week never used before; 39 false
   positives, 3.6 per 100 references, over the 1.5 gate): 27 of them gone on a replay, one
   turned into another (13 left, 1.2 per 100 on that now-studied week), one more on heldout14;

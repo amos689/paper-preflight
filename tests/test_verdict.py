@@ -1378,6 +1378,14 @@ def test_corr_names_a_preprint(venue: str) -> None:
         # an ICLR 2025 workshop paper on OpenReview (2607.13380v1, qi2025training)
         ({"Proceedings of ACL": "New Frontiers in Associative Memories Workshop, ICLR"},
          (Reason.UNINDEXED_VENUE,)),
+        # Japan's NLP society's annual meeting (2610.09321v1, reazonspeech2023), not ACL's
+        ({"Proceedings of ACL": "Proc. 29th Annual Meeting of the Association for Natural "
+          "Language Processing"}, (Reason.UNINDEXED_VENUE,)),
+        ({"Proceedings of ACL": "Proceedings of the 61st Annual Meeting of the Association for "
+          "Computational Linguistics"}, ()),
+        # CVPR's workshops are indexed: GPTZero's invented papers cite them (NeurIPS 2025, 68)
+        ({"Proceedings of ACL": "Proceedings of the IEEE/CVF Conference on Computer Vision and "
+          "Pattern Recognition (CVPR) Workshops"}, ()),
         # a chapter in a 1996 Dekker volume (2607.13414v1, baillon_bruck_1996)
         ({"@inproceedings": "@incollection", "2023": "1996"}, (Reason.UNINDEXED_VENUE,)),
         ({"@inproceedings": "@incollection"}, ()),  # a recent chapter is indexed

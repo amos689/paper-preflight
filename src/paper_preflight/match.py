@@ -587,6 +587,24 @@ def _first_surname(a: Person, b: Person) -> bool:
     )
 
 
+def _surname_as_initial(a: Person, b: Person) -> bool:
+    """``b``'s family name is the initial of ``a``'s and their first given names agree: Crossref
+    files Oludayo O. Olugbara as given name "Oludayo", family name "O" (IJACSA 11(9); heldout19)."""
+    initial = fold(b.family).strip(". ")
+    given_b = re.findall(r"\w+", fold(b.given))
+    given_a = re.findall(r"\w+", fold(a.given))
+    return (
+        not a.literal
+        and not b.literal
+        and len(initial) == 1
+        and len(given_b) == 1
+        and len(given_b[0]) >= 3
+        and given_a[:1] == given_b
+        and len(surname_key(a)) >= 3
+        and surname_key(a).startswith(initial)
+    )
+
+
 def _same_letters(a: Person, b: Person) -> bool:
     """The same names and initials in any order: "Rouse D. M." (Vancouver style, which BibTeX
     reads as given "Rouse D.", family "M.") is David M. Rouse; "Mallikarjun B. R." is the same
@@ -617,6 +635,8 @@ def same_person(a: Person, b: Person) -> bool:
     if _in_other_order(a, b) or _double_surname(a, b) or _double_surname(b, a):
         return True
     if _first_surname(a, b) or _first_surname(b, a):
+        return True
+    if _surname_as_initial(a, b) or _surname_as_initial(b, a):
         return True
     # A one-letter slip in one source ("Hut" for Jiahui Hu, "Rent" for Kui Ren in a Crossref
     # record), accepted only when the full given names agree; or, in a surname of eight letters
@@ -708,12 +728,25 @@ _COGNATES = {
 }
 
 
+# "Md" (also "Mohd", "Muhd") abbreviates Mohammad, which many authors write before the name
+# they go by and registries often leave out: the entry's "Rana, Md" is Crossref's Mashud Rana
+# (heldout18)
+_MOHAMMAD = frozenset({"md", "mohd", "muhd"})
+# particles between initials run together: "Xavier, JdeB" is Joao de Bivar Xavier (heldout19)
+_PARTICLE_BETWEEN_INITIALS = re.compile(
+    r"(?<=[A-Z])(?:de|da|do|dos|das|del|di|du|van|von)(?=[A-Z])"
+)
+
+
 def _given_words(person: Person) -> list[str]:
     # initials written without dots, as Google Scholar exports them: "Brown, JR" is J. R. Brown
-    if re.fullmatch(r"[A-Z]{2,3}", person.given.strip()):
-        return list(person.given.strip().lower())
+    initials = _PARTICLE_BETWEEN_INITIALS.sub("", person.given.strip())
+    if re.fullmatch(r"[A-Z]{2,3}", initials):
+        return list(initials.lower())
     # "ks" and "x" are one sound in transcriptions (Aleksandar, Alexander)
     words = re.findall(r"[a-z]+", fold(person.given).replace("ks", "x"))
+    if words and words[0] in _MOHAMMAD:
+        words = words[1:]
     return [_transliterated(w) for w in words]
 
 
@@ -810,8 +843,15 @@ def _organisation(person: Person) -> bool:
 
 def _group(person: Person) -> bool:
     """A group credited as an author: "{The Tabula Sapiens Consortium}", "Thinking Machines
-    Lab" (which BibTeX splits into given and family name)."""
-    return any(word in COLLECTIVE_WORDS for word in _name_words(person.display))
+    Lab" (which BibTeX splits into given and family name), "EACVI-ASE-Industry Standardization
+    Task Force", "on behalf of the American Heart Association Council on Epidemiology" (heldout17,
+    heldout18: the people write on the group's behalf, and Crossref lists only them)."""
+    words = _name_words(person.display)
+    return (
+        any(word in COLLECTIVE_WORDS for word in words)
+        or bool(words & {"council", "subcommittee", "behalf"})
+        or {"task", "force"} <= words
+    )
 
 
 # words of a name that is no person's: an affiliation a registry took for an author ("Ural
