@@ -92,6 +92,11 @@ BATCHES = {
     "heldout17": ("202610070000", "202610132359"),
     "heldout18": ("202605200000", "202605262359"),
     "heldout19": ("202605130000", "202605192359"),
+    # the 1.0 gate's second try (heldout18 failed the first, 2026-10-15): two more earlier
+    # weeks never sampled, and the next fresh week (heldout22) once arXiv has announced it; each
+    # list is committed before any of the three is run, and each is run once on the same code
+    "heldout20": ("202605060000", "202605122359"),
+    "heldout21": ("202604290000", "202605052359"),
 }
 QUOTAS = {
     "cs.CL": 3, "cs.LG": 3, "cs.CV": 3, "cs.AI": 2, "stat.ML": 2,
